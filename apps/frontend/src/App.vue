@@ -1,11 +1,12 @@
 <template>
-  <v-app>
-    <v-main>
-      <HelloWorld />
-    </v-main>
-  </v-app>
+  <VApp>
+    <VMain>
+      <VAppBar>
+        <VAppBarNavIcon></VAppBarNavIcon>
+        <VAppBarTitle>AoiUI</VAppBarTitle>
+      </VAppBar>
+    </VMain>
+  </VApp>
 </template>
 
-<script setup lang="ts">
-import HelloWorld from '@/components/HelloWorld.vue'
-</script>
+<script setup lang="ts"></script>
