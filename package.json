@@ -12,5 +12,10 @@
     "eslint-config-prettier": "^8.8.0",
     "prettier": "^3.0.0",
     "typescript": "^5.1.6"
+  },
+  "scripts": {
+    "check:style": "eslint --ext .ts,.js,.vue .",
+    "check:format": "prettier --check .",
+    "check:all": "run check:style && run check:format"
   }
 }
