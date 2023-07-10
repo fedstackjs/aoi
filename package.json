@@ -16,9 +16,9 @@
   },
   "scripts": {
     "postinstall": "husky install",
-    "check:style": "eslint --ext .ts,.js,.vue .",
-    "check:format": "prettier --check .",
-    "check:all": "run check:style && run check:format",
-    "git:precommit": "run check:all"
+    "all:lint": "yarn workspaces foreach run lint",
+    "all:format": "yarn workspaces foreach run format",
+    "all:check": "run all:lint && run all:format",
+    "git:precommit": "run all:check"
   }
 }

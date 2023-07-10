@@ -5,7 +5,8 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --fix --ignore-path .gitignore"
+    "lint": "run -T eslint --ignore-path .gitignore .",
+    "format": "run -T prettier --ignore-path .gitignore --check ."
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
@@ -22,10 +23,10 @@
     "@types/webfontloader": "^1.6.35",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",
-    "eslint": "^8.0.0",
     "eslint-plugin-vue": "^9.0.0",
-    "typescript": "^5.0.0",
+    "unocss": "^0.53.5",
     "vite": "^4.2.0",
+    "vite-plugin-pages": "^0.31.0",
     "vite-plugin-vuetify": "^1.0.0",
     "vue-tsc": "^1.2.0"
   }

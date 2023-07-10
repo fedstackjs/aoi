@@ -1,0 +1,10 @@
+{
+  "name": "@aoi/server",
+  "packageManager": "yarn@3.6.0",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "run -T tsc",
+    "lint": "run -T eslint --ignore-path .gitignore .",
+    "format": "run -T prettier --ignore-path .gitignore --check ."
+  }
+}
