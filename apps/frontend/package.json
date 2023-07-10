@@ -3,26 +3,32 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
+    "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "preview": "vite preview",
     "lint": "run -T eslint --ignore-path .gitignore .",
     "format": "run -T prettier --ignore-path .gitignore --check ."
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
+    "@vueuse/core": "^10.2.1",
     "pinia": "^2.0.23",
     "roboto-fontface": "*",
     "vue": "^3.2.0",
+    "vue-i18n": "^9.3.0-beta.19",
     "vue-router": "^4.0.0",
     "vuetify": "^3.0.0",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
     "@babel/types": "^7.21.4",
+    "@intlify/unplugin-vue-i18n": "^0.12.2",
     "@types/node": "^18.15.0",
     "@types/webfontloader": "^1.6.35",
     "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/eslint-config-prettier": "^7.1.0",
     "@vue/eslint-config-typescript": "^11.0.0",
+    "@vue/tsconfig": "^0.4.0",
     "eslint-plugin-vue": "^9.0.0",
     "unocss": "^0.53.5",
     "vite": "^4.2.0",

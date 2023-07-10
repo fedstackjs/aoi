@@ -5,6 +5,7 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import { defineConfig } from 'vite'
 import pages from 'vite-plugin-pages'
 import uno from 'unocss/vite'
+import vueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 
 const gitHash = execSync('git rev-parse --short HEAD').toString().trim()
 
@@ -17,7 +18,11 @@ export default defineConfig({
       autoImport: true
     }),
     pages(),
-    uno()
+    uno(),
+    vueI18nPlugin({
+      defaultSFCLang: 'yml',
+      include: fileURLToPath(new URL('./src/locales/**', import.meta.url))
+    })
   ],
   define: {
     'process.env': {},
