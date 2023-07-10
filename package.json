@@ -10,12 +10,15 @@
     "@typescript-eslint/parser": "latest",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
+    "husky": "^8.0.3",
     "prettier": "^3.0.0",
     "typescript": "^5.1.6"
   },
   "scripts": {
+    "postinstall": "husky install",
     "check:style": "eslint --ext .ts,.js,.vue .",
     "check:format": "prettier --check .",
-    "check:all": "run check:style && run check:format"
+    "check:all": "run check:style && run check:format",
+    "git:precommit": "run check:all"
   }
 }
