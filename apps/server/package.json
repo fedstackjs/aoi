@@ -4,10 +4,13 @@
   "main": "lib/index.js",
   "type": "module",
   "dependencies": {
+    "@fastify/jwt": "^7.2.0",
+    "@fastify/sensible": "^5.2.0",
     "@fastify/swagger": "^8.8.0",
     "@fastify/swagger-ui": "^1.9.2",
     "@fastify/type-provider-typebox": "^3.3.0",
     "@sinclair/typebox": "^0.29.4",
+    "bcrypt": "^5.1.0",
     "fastify": "^4.19.2",
     "mongodb": "^5.7.0",
     "pino": "^8.14.1"
@@ -16,9 +19,13 @@
     "build": "run -T tsc",
     "lint": "run -T eslint --ignore-path .gitignore .",
     "format": "run -T prettier --ignore-path .gitignore --check .",
-    "dev": "nodemon . | pino-pretty"
+    "dev-build": "run build -w",
+    "dev-serve": "nodemon . | pino-pretty",
+    "dev": "concurrently \"yarn:dev-*\""
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "concurrently": "^8.2.0",
     "nodemon": "^3.0.1",
     "pino-pretty": "^10.0.1"
   }
