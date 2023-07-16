@@ -1,13 +1,23 @@
-import { FastifyPluginAsyncTypebox, TSchema, Type } from '@fastify/type-provider-typebox'
+import { TSchema, Type } from '@fastify/type-provider-typebox'
+import { BSON } from 'mongodb'
+import { IOrgMembership, OrgCapability, orgMemberships } from '../../db/org.js'
+import { defineRoutes } from '../common/index.js'
+import { orgProblemRoutes } from './problem.js'
 
 const orgIdSchema = Type.Object({
   orgId: Type.String()
 })
 
-export const orgRoutes: FastifyPluginAsyncTypebox = async (srv) => {
-  srv.decorateRequest('orgId', '')
+declare module 'fastify' {
+  interface FastifyRequest {
+    orgMembership: IOrgMembership
+  }
+}
 
-  srv.addHook('onRoute', (route) => {
+export const orgRoutes = defineRoutes(async (s) => {
+  s.decorateRequest('orgMembership', null)
+
+  s.addHook('onRoute', (route) => {
     const oldParams = route.schema?.params
     if (oldParams) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -17,17 +27,23 @@ export const orgRoutes: FastifyPluginAsyncTypebox = async (srv) => {
     }
   })
 
-  srv.addHook('onRequest', async (req, rep) => {
+  s.addHook('onRequest', async (req, rep) => {
     try {
       await req.jwtVerify()
       const { orgId } = req.params as Record<string, string>
-      console.log(orgId)
+      if (!orgId) throw s.httpErrors.badRequest()
+      const member = await orgMemberships.findOne({
+        userId: req.user.userId,
+        orgId: new BSON.UUID(orgId)
+      })
+      if (!member || member.capability.and(OrgCapability.CAP_ACCESS).isZero()) {
+        throw s.httpErrors.forbidden()
+      }
+      req.orgMembership = member
     } catch (err) {
       rep.send(err)
     }
   })
 
-  srv.get('/', async () => {
-    return ''
-  })
-}
+  s.register(orgProblemRoutes, { prefix: '/problem' })
+})

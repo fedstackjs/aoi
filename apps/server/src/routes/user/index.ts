@@ -1,8 +1,8 @@
-import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
 import { UserProfileSchema, users } from '../../db/user.js'
+import { defineRoutes } from '../common/index.js'
 
-export const userRoutes: FastifyPluginAsyncTypebox = async (srv) => {
-  srv.addHook('onRequest', async (req, rep) => {
+export const userRoutes = defineRoutes(async (s) => {
+  s.addHook('onRequest', async (req, rep) => {
     try {
       await req.jwtVerify()
     } catch (err) {
@@ -10,7 +10,7 @@ export const userRoutes: FastifyPluginAsyncTypebox = async (srv) => {
     }
   })
 
-  srv.get(
+  s.get(
     '/profile',
     {
       schema: {
@@ -24,4 +24,4 @@ export const userRoutes: FastifyPluginAsyncTypebox = async (srv) => {
       return user?.profile
     }
   )
-}
+})
