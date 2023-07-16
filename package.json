@@ -8,6 +8,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
+    "concurrently": "^8.2.0",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "husky": "^8.0.3",
@@ -16,9 +17,10 @@
   },
   "scripts": {
     "postinstall": "husky install",
-    "all:lint": "yarn workspaces foreach run lint",
-    "all:format": "yarn workspaces foreach run format",
-    "all:check": "run all:lint && run all:format",
+    "all:check-lint": "yarn workspaces foreach run lint",
+    "all:check-format": "yarn workspaces foreach run format",
+    "all:check-type": "yarn workspaces foreach run type-check",
+    "all:check": "concurrently -m 1 \"yarn:all:check-*\"",
     "git:precommit": "run all:check"
   }
 }

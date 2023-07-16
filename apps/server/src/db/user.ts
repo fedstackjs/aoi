@@ -2,11 +2,6 @@ import { BSON } from 'mongodb'
 import { db } from './client.js'
 import { Static, Type } from '@sinclair/typebox'
 import { StrictObject } from '../utils/types.js'
-import { effectiveMask } from '../utils/long.js'
-
-export const AdminCapability = {
-  CAP_ACCESS: effectiveMask(0)
-}
 
 export const UserProfileSchema = StrictObject({
   username: Type.String(),

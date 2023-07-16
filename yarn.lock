@@ -54,6 +54,7 @@ __metadata:
     "@vue/tsconfig": ^0.4.0
     "@vueuse/core": ^10.2.1
     eslint-plugin-vue: ^9.0.0
+    ky: ^0.33.3
     pinia: ^2.0.23
     roboto-fontface: "*"
     unocss: ^0.53.5
@@ -102,6 +103,7 @@ __metadata:
   dependencies:
     "@typescript-eslint/eslint-plugin": latest
     "@typescript-eslint/parser": latest
+    concurrently: ^8.2.0
     eslint: ^8.44.0
     eslint-config-prettier: ^8.8.0
     husky: ^8.0.3
@@ -3828,6 +3830,13 @@ __metadata:
   version: 1.8.0
   resolution: "kolorist@npm:1.8.0"
   checksum: b056de671acc8a17f1e78d6d46c47dae3e06481eabc9fed213dd9079a7454fd3a7ea1226ec718df81c9208877f7475d038ac27a400958fec278d975839e33643
+  languageName: node
+  linkType: hard
+
+"ky@npm:^0.33.3":
+  version: 0.33.3
+  resolution: "ky@npm:0.33.3"
+  checksum: d1869e1f33c0165355f621b6726fcc1a9de20a31f4a826ca0cfd5753d83b9cba8723402d554a00194e0ee3959e0dda0638f4b99d54a3a7de928b55ff870b0bcc
   languageName: node
   linkType: hard
 
