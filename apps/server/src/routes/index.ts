@@ -5,10 +5,27 @@ import { adminRoutes } from './admin/index.js'
 import { defineRoutes } from './common/index.js'
 
 export const apiRoutes = defineRoutes(async (s) => {
-  s.get('/ping', async () => ({ ping: 'pong' }))
+  s.addHook('onRequest', async (req, rep) => {
+    if (Array.isArray(req.routeSchema.security) && !req.routeSchema.security.length) return
+    try {
+      await req.jwtVerify()
+    } catch (err) {
+      rep.send(err)
+    }
+  })
+
+  s.get(
+    '/ping',
+    {
+      schema: {
+        description: 'Server health check',
+        security: []
+      }
+    },
+    async () => ({ ping: 'pong' })
+  )
   s.register(authRoutes, { prefix: '/auth' })
   s.register(userRoutes, { prefix: '/user' })
-  s.register(orgRoutes, { prefix: '/org/:orgId' })
-  s.register(orgRoutes, { prefix: '/group/:groupId' })
+  s.register(orgRoutes, { prefix: '/org' })
   s.register(adminRoutes, { prefix: '/admin' })
 })

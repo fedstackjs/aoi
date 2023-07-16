@@ -2,14 +2,6 @@ import { UserProfileSchema, users } from '../../db/user.js'
 import { defineRoutes } from '../common/index.js'
 
 export const userRoutes = defineRoutes(async (s) => {
-  s.addHook('onRequest', async (req, rep) => {
-    try {
-      await req.jwtVerify()
-    } catch (err) {
-      rep.send(err)
-    }
-  })
-
   s.get(
     '/profile',
     {

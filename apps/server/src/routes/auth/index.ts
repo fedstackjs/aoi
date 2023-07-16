@@ -6,6 +6,10 @@ import { BSON } from 'mongodb'
 import { defineRoutes } from '../common/index.js'
 
 export const authRoutes = defineRoutes(async (s) => {
+  s.addHook('onRoute', (route) => {
+    ;(route.schema ??= {}).security = []
+  })
+
   s.post(
     '/login',
     {

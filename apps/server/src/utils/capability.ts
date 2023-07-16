@@ -8,7 +8,7 @@ import { IOrgMembership } from '../db/org.js'
  * @param n
  */
 export function capabilityMask(n: number) {
-  return BSON.Long.fromInt(1).shl(n)
+  return BSON.Long.fromInt(1, true).shl(n)
 }
 
 export function computeCapability(object: IPrincipalControlable, membership: IOrgMembership) {

@@ -17,6 +17,7 @@
   },
   "scripts": {
     "build": "run -T tsc",
+    "type-check": "run -T tsc --noEmit",
     "lint": "run -T eslint --ignore-path .gitignore .",
     "format": "run -T prettier --ignore-path .gitignore --check .",
     "dev-build": "run build -w --preserveWatchOutput",

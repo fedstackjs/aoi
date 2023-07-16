@@ -1,8 +1,15 @@
 import { TSchema, Type } from '@fastify/type-provider-typebox'
 import { BSON } from 'mongodb'
-import { IOrgMembership, OrgCapability, orgMemberships } from '../../db/org.js'
+import {
+  IOrgMembership,
+  OrgCapability,
+  OrgProfileSchema,
+  orgMemberships,
+  orgs
+} from '../../db/org.js'
 import { defineRoutes } from '../common/index.js'
 import { orgProblemRoutes } from './problem.js'
+import { StrictObject, TypeUUID } from '../../utils/types.js'
 
 const orgIdSchema = Type.Object({
   orgId: Type.String()
@@ -14,7 +21,7 @@ declare module 'fastify' {
   }
 }
 
-export const orgRoutes = defineRoutes(async (s) => {
+const orgScopedRoutes = defineRoutes(async (s) => {
   s.decorateRequest('orgMembership', null)
 
   s.addHook('onRoute', (route) => {
@@ -46,4 +53,62 @@ export const orgRoutes = defineRoutes(async (s) => {
   })
 
   s.register(orgProblemRoutes, { prefix: '/problem' })
+})
+
+export const orgRoutes = defineRoutes(async (s) => {
+  s.post(
+    '/',
+    {
+      schema: {
+        description: 'Create a new organization',
+        body: StrictObject({
+          profile: OrgProfileSchema
+        }),
+        response: {
+          200: Type.Object({
+            orgId: Type.String()
+          })
+        }
+      }
+    },
+    async (req) => {
+      const { insertedId } = await orgs.insertOne({
+        _id: new BSON.UUID(),
+        ownerId: req.user.userId,
+        profile: req.body.profile,
+        settings: {}
+      })
+      return { orgId: insertedId.toString() }
+    }
+  )
+
+  s.get(
+    '/',
+    {
+      schema: {
+        description: 'List joined organizations',
+        response: {
+          200: Type.Array(
+            Type.Object({
+              _id: TypeUUID(),
+              profile: OrgProfileSchema
+            })
+          )
+        }
+      }
+    },
+    async (req) => {
+      const memberships = await orgMemberships.find({ userId: req.user.userId }).toArray()
+      const orgIds = memberships.map((m) => m.orgId)
+      const orgList = await orgs
+        .find(
+          { $or: [{ _id: { $in: orgIds } }, { ownerId: req.user.userId }] },
+          { projection: { profile: 1 } }
+        )
+        .toArray()
+      return orgList
+    }
+  )
+
+  s.register(orgScopedRoutes, { prefix: '/:orgId' })
 })

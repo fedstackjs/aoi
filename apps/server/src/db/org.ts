@@ -25,6 +25,7 @@ export interface IOrgSettings extends Static<typeof OrgSettings> {}
 export interface IOrg {
   _id: BSON.UUID
 
+  ownerId: BSON.UUID
   profile: IOrgProfile
   settings: IOrgSettings
 }
