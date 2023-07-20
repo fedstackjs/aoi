@@ -46,6 +46,7 @@ __metadata:
     "@babel/types": ^7.21.4
     "@intlify/unplugin-vue-i18n": ^0.12.2
     "@mdi/font": 7.0.96
+    "@types/blueimp-md5": ^2.18.0
     "@types/node": ^18.15.0
     "@types/webfontloader": ^1.6.35
     "@vitejs/plugin-vue": ^4.0.0
@@ -53,6 +54,7 @@ __metadata:
     "@vue/eslint-config-typescript": ^11.0.0
     "@vue/tsconfig": ^0.4.0
     "@vueuse/core": ^10.2.1
+    blueimp-md5: ^2.19.0
     eslint-plugin-vue: ^9.0.0
     ky: ^0.33.3
     pinia: ^2.0.23
@@ -830,6 +832,13 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 063c32c7a519d64768dfc0169a319b8244d6a6cb50a355c93992b3c5fee1dbc236526a1111f0e7bb25abc8b0473e5f40a5edfeb8b33cad2a6ea35aa2d7d7db14
+  languageName: node
+  linkType: hard
+
+"@types/blueimp-md5@npm:^2.18.0":
+  version: 2.18.0
+  resolution: "@types/blueimp-md5@npm:2.18.0"
+  checksum: 95df99e314485327b2d0030de7ae343b6653c1bf9a227151509da94e1e9883f7d11260a028d03facba56c24a4dadb0c37745decdb43efa58b35d9504c5dc254c
   languageName: node
   linkType: hard
 
@@ -1829,6 +1838,13 @@ __metadata:
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
   checksum: ccd267956c58d2315f5d3ea6757cf09863c5fc703e50fbeb13a7dc849b812ef76e3cf9ca8f35a0c48498776a7478d7b4a0418e1e2b8cb9cb9731f2922aaad7f8
+  languageName: node
+  linkType: hard
+
+"blueimp-md5@npm:^2.19.0":
+  version: 2.19.0
+  resolution: "blueimp-md5@npm:2.19.0"
+  checksum: 28095dcbd2c67152a2938006e8d7c74c3406ba6556071298f872505432feb2c13241b0476644160ee0a5220383ba94cb8ccdac0053b51f68d168728f9c382530
   languageName: node
   linkType: hard
 
