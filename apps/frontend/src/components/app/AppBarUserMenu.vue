@@ -4,7 +4,7 @@
       <VBtn v-bind="props" :loading="userInfo.isLoading.value" class="text-none">
         <template #prepend>
           <VAvatar>
-            <AppGravatar :email="userInfo.state.value?.email" />
+            <AppGravatar :email="userInfo.state.value?.email ?? ''" />
           </VAvatar>
         </template>
         {{ userInfo.state.value?.username }}

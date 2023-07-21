@@ -1,12 +1,6 @@
 import { TSchema, Type } from '@fastify/type-provider-typebox'
 import { BSON } from 'mongodb'
-import {
-  IOrgMembership,
-  OrgCapability,
-  OrgProfileSchema,
-  orgMemberships,
-  orgs
-} from '../../db/org.js'
+import { IOrgMembership, OrgProfileSchema, orgMemberships, orgs } from '../../db/org.js'
 import { defineRoutes } from '../common/index.js'
 import { orgProblemRoutes } from './problem.js'
 import { StrictObject, TypeUUID } from '../../utils/types.js'
@@ -17,11 +11,13 @@ const orgIdSchema = Type.Object({
 
 declare module 'fastify' {
   interface FastifyRequest {
-    orgMembership: IOrgMembership
+    orgId: BSON.UUID
+    orgMembership: IOrgMembership | null
   }
 }
 
 const orgScopedRoutes = defineRoutes(async (s) => {
+  s.decorateRequest('orgId', null)
   s.decorateRequest('orgMembership', null)
 
   s.addHook('onRoute', (route) => {
@@ -39,13 +35,11 @@ const orgScopedRoutes = defineRoutes(async (s) => {
       await req.jwtVerify()
       const { orgId } = req.params as Record<string, string>
       if (!orgId) throw s.httpErrors.badRequest()
+      req.orgId = new BSON.UUID(orgId)
       const member = await orgMemberships.findOne({
         userId: req.user.userId,
-        orgId: new BSON.UUID(orgId)
+        orgId: req.orgId
       })
-      if (!member || member.capability.and(OrgCapability.CAP_ACCESS).isZero()) {
-        throw s.httpErrors.forbidden()
-      }
       req.orgMembership = member
     } catch (err) {
       rep.send(err)
@@ -53,6 +47,22 @@ const orgScopedRoutes = defineRoutes(async (s) => {
   })
 
   s.register(orgProblemRoutes, { prefix: '/problem' })
+
+  s.get(
+    '/profile',
+    {
+      schema: {
+        response: {
+          200: OrgProfileSchema
+        }
+      }
+    },
+    async (req) => {
+      const org = await orgs.findOne({ _id: req.orgId })
+      if (!org) throw s.httpErrors.badRequest()
+      return org.profile
+    }
+  )
 })
 
 export const orgRoutes = defineRoutes(async (s) => {
