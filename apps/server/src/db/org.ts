@@ -6,7 +6,8 @@ import { capabilityMask } from '../utils/capability.js'
 
 export const OrgCapability = {
   CAP_ACCESS: capabilityMask(0),
-  CAP_CREATE: capabilityMask(1)
+  CAP_PROBLEM: capabilityMask(1),
+  CAP_ADMIN: capabilityMask(2)
 }
 
 export const OrgProfileSchema = StrictObject({

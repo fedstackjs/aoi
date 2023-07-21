@@ -8,3 +8,7 @@ export function StrictObject<T extends TProperties>(properties: T, options: Obje
 export function TypeUUID() {
   return Type.Unsafe<BSON.UUID>(Type.String())
 }
+
+export function StringEnum<T extends string[]>(values: [...T]) {
+  return Type.Unsafe<T[number]>({ type: 'string', enum: values })
+}
