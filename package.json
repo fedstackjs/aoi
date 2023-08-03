@@ -3,7 +3,8 @@
   "packageManager": "yarn@3.6.0",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "libs/*"
   ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "latest",

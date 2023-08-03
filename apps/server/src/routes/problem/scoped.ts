@@ -1,17 +1,21 @@
-import { TSchema, Type } from '@sinclair/typebox'
-import { IOrgMembership, OrgCapability } from '../../db/org.js'
-import { IProblem, ProblemAccessLevel, ProblemCapability, problems } from '../../db/problem.js'
-import { computeCapability, ensureCapability, hasCapability } from '../../utils/capability.js'
+import { Type } from '@sinclair/typebox'
+import { BSON } from 'mongodb'
+import { problemConfigSchema } from '@aoi/common'
+import { IProblem, ProblemCapability, problems } from '../../db/problem.js'
 import {
   defineRoutes,
   getUrl,
   getUrlSchema,
-  paginationSchema,
-  paginationToOptions
+  loadCapability,
+  loadMembership,
+  loadUUID,
+  paramSchemaMerger
 } from '../common/index.js'
-import { StrictObject, TypeUUID } from '../../utils/types.js'
-import { BSON } from 'mongodb'
+import { CAP_ALL, ensureCapability } from '../../utils/capability.js'
+import { OrgCapability } from '../../db/org.js'
+import { TypeUUID, TypeAccessLevel, StrictObject } from '../../utils/types.js'
 import { getUploadUrl } from '../../oss/index.js'
+import { SolutionState, solutions } from '../../db/solution.js'
 
 const problemIdSchema = Type.Object({
   problemId: Type.String()
@@ -25,54 +29,25 @@ declare module 'fastify' {
   }
 }
 
-function defaultCapability(level: ProblemAccessLevel, membership: IOrgMembership | null) {
-  if (level === ProblemAccessLevel.PUBLIC) {
-    return ProblemCapability.CAP_ACCESS
-  }
-  if (level === ProblemAccessLevel.RESTRICED) {
-    if (!membership) return BSON.Long.ZERO
-    return ProblemCapability.CAP_ACCESS
-  }
-  return BSON.Long.ZERO
-}
+export const problemScopedRoutes = defineRoutes(async (s) => {
+  s.addHook('onRoute', paramSchemaMerger(problemIdSchema))
 
-const problemScopedRoutes = defineRoutes(async (s) => {
-  s.decorateRequest('problemId', null)
-  s.decorateRequest('problemCapability', null)
-  s.decorateRequest('problem', null)
-
-  s.addHook('onRoute', (route) => {
-    const oldParams = route.schema?.params
-    if (oldParams) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      route.schema!.params = Type.Intersect([oldParams as TSchema, problemIdSchema])
-    } else {
-      ;(route.schema ??= {}).params = problemIdSchema
-    }
-  })
-
-  s.addHook('onRequest', async (req, rep) => {
-    const { problemId } = req.params as Record<string, string>
-    if (!BSON.UUID.isValid(problemId)) {
-      return rep.send(rep.notFound())
-    }
-    const _problemId = new BSON.UUID(problemId)
-    // TODO: optimize this query with projection
-    const problem = await problems.findOne({ _id: _problemId, orgId: req._orgId })
-    if (!problem) {
-      return rep.send(rep.notFound())
-    }
-    const capability = computeCapability(
+  s.addHook('onRequest', async (req) => {
+    const problemId = loadUUID(req.params, 'problemId', s.httpErrors.notFound())
+    const problem = await problems.findOne({ _id: problemId })
+    if (!problem) throw s.httpErrors.notFound()
+    const membership = await loadMembership(req.user.userId, problem.orgId)
+    const capability = loadCapability(
       problem,
-      req._orgMembership,
-      defaultCapability(problem.accessLevel, req._orgMembership)
+      membership,
+      OrgCapability.CAP_PROBLEM,
+      ProblemCapability.CAP_ACCESS,
+      CAP_ALL
     )
-    if (!hasCapability(capability, ProblemCapability.CAP_ACCESS)) {
-      return rep.send(rep.forbidden())
-    }
-    req._problemId = _problemId
-    req._problem = problem
+    ensureCapability(capability, ProblemCapability.CAP_ACCESS, s.httpErrors.forbidden())
+    req._problemId = problemId
     req._problemCapability = capability
+    req._problem = problem
   })
 
   s.get(
@@ -83,11 +58,10 @@ const problemScopedRoutes = defineRoutes(async (s) => {
         response: {
           200: Type.Object({
             _id: TypeUUID(),
-            accessLevel: Type.Integer({ enum: Object.values(ProblemAccessLevel) }),
+            accessLevel: TypeAccessLevel(),
             slug: Type.String(),
             title: Type.String(),
             description: Type.String(),
-            tags: Type.Array(Type.String()),
             attachments: Type.Record(
               Type.String(),
               Type.Object({
@@ -95,7 +69,7 @@ const problemScopedRoutes = defineRoutes(async (s) => {
                 description: Type.String()
               })
             ),
-            config: Type.String()
+            config: problemConfigSchema
           })
         }
       }
@@ -213,7 +187,7 @@ const problemScopedRoutes = defineRoutes(async (s) => {
         body: Type.Object({
           hash: Type.String(),
           size: Type.Integer({ minimum: 0 }),
-          config: Type.String(),
+          config: problemConfigSchema,
           description: Type.String()
         }),
         response: {
@@ -286,7 +260,7 @@ const problemScopedRoutes = defineRoutes(async (s) => {
     '/data/:hash',
     {
       schema: {
-        description: 'Delete problem data version',
+        description: 'Update problem data version',
         params: Type.Object({
           hash: Type.String()
         }),
@@ -389,155 +363,44 @@ const problemScopedRoutes = defineRoutes(async (s) => {
       return { url }
     }
   )
-})
-
-function getAccessLevel(membership: IOrgMembership | null) {
-  if (!membership) {
-    return ProblemAccessLevel.PUBLIC
-  }
-  if (hasCapability(membership.capability, OrgCapability.CAP_PROBLEM)) {
-    return ProblemAccessLevel.PRIVATE
-  }
-  return ProblemAccessLevel.RESTRICED
-}
-
-const problemListSchema = Type.Array(
-  Type.Object({
-    _id: TypeUUID(),
-    accessLevel: Type.Integer({ enum: Object.values(ProblemAccessLevel) }),
-    slug: Type.String(),
-    title: Type.String(),
-    tags: Type.Array(Type.String())
-  })
-)
-
-export const orgProblemRoutes = defineRoutes(async (s) => {
-  s.register(problemScopedRoutes, { prefix: '/:problemId' })
-
-  s.get(
-    '/count',
-    {
-      schema: {
-        description: 'Count all problems in the organization',
-        response: {
-          200: Type.Integer({ minimum: 0 })
-        }
-      }
-    },
-    async (req) => {
-      const accessLevel = getAccessLevel(req._orgMembership)
-      const problemCount = await problems.countDocuments({
-        accessLevel: { $lte: accessLevel },
-        orgId: req._orgId
-      })
-      return problemCount
-    }
-  )
-
-  s.get(
-    '/',
-    {
-      schema: {
-        description: 'List all problems in the organization',
-        querystring: paginationSchema,
-        response: {
-          200: problemListSchema
-        }
-      }
-    },
-    async (req) => {
-      const accessLevel = getAccessLevel(req._orgMembership)
-      const problemList = await problems
-        .find(
-          {
-            accessLevel: { $lte: accessLevel },
-            orgId: req._orgId
-          },
-          {
-            ...paginationToOptions(req.query),
-            projection: {
-              accessLevel: 1,
-              slug: 1,
-              title: 1,
-              tags: 1
-            }
-          }
-        )
-        .toArray()
-      return problemList
-    }
-  )
-
-  s.get(
-    '/me',
-    {
-      schema: {
-        description: 'List assigned problems in the organization',
-        response: {
-          200: problemListSchema
-        }
-      }
-    },
-    async (req) => {
-      const groups = req._orgMembership?.groups.map((g) => g.groupId) ?? []
-      const problemList = await problems
-        .find(
-          {
-            $or: [{ 'associations.principalId': { $in: groups } }, { ownerId: req.user.userId }],
-            orgId: req._orgId
-          },
-          {
-            projection: {
-              accessLevel: 1,
-              slug: 1,
-              title: 1,
-              tags: 1
-            }
-          }
-        )
-        .toArray()
-      return problemList
-    }
-  )
 
   s.post(
-    '/',
+    '/submit',
     {
       schema: {
-        description: 'Create a new problem',
+        description: 'Submit a solution',
         body: Type.Object({
-          accessLevel: Type.Integer({ enum: Object.values(ProblemAccessLevel) }),
-          slug: Type.String(),
-          title: Type.String()
+          hash: Type.String()
         }),
         response: {
           200: Type.Object({
-            problemId: TypeUUID()
+            solutionId: TypeUUID()
           })
         }
       }
     },
     async (req) => {
-      if (getAccessLevel(req._orgMembership) !== ProblemAccessLevel.PRIVATE) {
-        throw s.httpErrors.forbidden()
-      }
-      const { insertedId } = await problems.insertOne({
+      const { data, currentDataHash } = req._problem
+      const currentData = data[currentDataHash]
+      if (!currentData) throw s.httpErrors.badRequest()
+      const { config } = currentData
+      const { insertedId } = await solutions.insertOne({
         _id: new BSON.UUID(),
-        orgId: req._orgId,
-        accessLevel: req.body.accessLevel,
-        slug: req.body.slug,
-        title: req.body.title,
-        description: '',
-        tags: [],
-        attachments: {},
-        data: {},
-        currentDataHash: '',
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        ownerId: req.user.userId,
-        associations: []
+        problemId: req._problemId,
+        userId: req.user.userId,
+        labels: config.labels,
+        problemDataHash: currentDataHash,
+        state: SolutionState.CREATED,
+        solutionDataHash: req.body.hash,
+        score: 0,
+        metrics: {},
+        message: '',
+        details: '',
+        createdAt: Date.now()
       })
-      return { problemId: insertedId }
+      return {
+        solutionId: insertedId
+      }
     }
   )
 })

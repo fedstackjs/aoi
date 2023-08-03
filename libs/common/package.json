@@ -1,0 +1,15 @@
+{
+  "name": "@aoi/common",
+  "packageManager": "yarn@3.6.0",
+  "main": "lib/index.js",
+  "type": "module",
+  "dependencies": {
+    "@sinclair/typebox": "^0.29.4"
+  },
+  "scripts": {
+    "build": "run -T tsc",
+    "type-check": "run -T tsc --noEmit",
+    "lint": "run -T eslint --ignore-path .gitignore .",
+    "format": "run -T prettier --ignore-path .gitignore --check ."
+  }
+}

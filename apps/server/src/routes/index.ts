@@ -3,6 +3,8 @@ import { userRoutes } from './user/index.js'
 import { orgRoutes } from './org/index.js'
 import { adminRoutes } from './admin/index.js'
 import { defineRoutes } from './common/index.js'
+import { problemRoutes } from './problem/index.js'
+import { solutionRoutes } from './solution/index.js'
 
 export const apiRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
@@ -27,5 +29,7 @@ export const apiRoutes = defineRoutes(async (s) => {
   s.register(authRoutes, { prefix: '/auth' })
   s.register(userRoutes, { prefix: '/user' })
   s.register(orgRoutes, { prefix: '/org' })
+  s.register(problemRoutes, { prefix: '/problem' })
+  s.register(solutionRoutes, { prefix: '/solution' })
   s.register(adminRoutes, { prefix: '/admin' })
 })

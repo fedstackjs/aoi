@@ -39,6 +39,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aoi/common@workspace:libs/common":
+  version: 0.0.0-use.local
+  resolution: "@aoi/common@workspace:libs/common"
+  dependencies:
+    "@sinclair/typebox": ^0.29.4
+  languageName: unknown
+  linkType: soft
+
 "@aoi/frontend@workspace:apps/frontend":
   version: 0.0.0-use.local
   resolution: "@aoi/frontend@workspace:apps/frontend"

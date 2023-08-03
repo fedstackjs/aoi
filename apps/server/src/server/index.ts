@@ -6,8 +6,9 @@ import fastifySwaggerUi from '@fastify/swagger-ui'
 import { BSON } from 'mongodb'
 import { apiRoutes } from '../routes/index.js'
 import { useConfig } from '../utils/config.js'
+import { logger } from '../utils/logger.js'
 
-const server = fastify()
+const server = fastify({ logger })
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {

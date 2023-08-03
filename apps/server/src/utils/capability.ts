@@ -17,7 +17,6 @@ export function computeCapability(
   defaultCapability = BSON.Long.ZERO
 ) {
   if (!membership) return defaultCapability
-  if (membership.userId.equals(object.ownerId)) return BSON.Long.MAX_UNSIGNED_VALUE
   return object.associations.reduce(
     (acc, { principalId, capability }) =>
       principalId.equals(membership.userId) ||
@@ -37,3 +36,5 @@ export function ensureCapability<E extends Error>(capability: BSON.Long, mask: B
     throw err
   }
 }
+
+export const CAP_ALL = BSON.Long.MAX_UNSIGNED_VALUE

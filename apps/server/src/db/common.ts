@@ -14,9 +14,6 @@ import { BSON } from 'mongodb'
  * object from database, and use the ACL to determine
  * whether the principal has the capability to perform
  * the action.
- *
- * Also, please note that the owner implicitly has all
- * capabilities.
  */
 
 export interface IPrincipalAssociation {
@@ -32,11 +29,26 @@ export interface IPrincipalAssociation {
 
 export interface IPrincipalControlable {
   /**
-   * The owner's UUID (userId)
-   */
-  ownerId: BSON.UUID
-  /**
    * The ACL
    */
   associations: IPrincipalAssociation[]
+}
+
+export interface IAttachment {
+  name: string
+  description: string
+}
+
+export interface IWithAttachment {
+  attachments: Record<string, IAttachment>
+}
+
+export enum AccessLevel {
+  PUBLIC = 0,
+  RESTRICED = 1,
+  PRIVATE = 2
+}
+
+export interface IWithAccessLevel {
+  accessLevel: AccessLevel
 }

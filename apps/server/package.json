@@ -24,7 +24,7 @@
     "format": "run -T prettier --ignore-path .gitignore --check .",
     "dev-build": "run build -w --preserveWatchOutput",
     "dev-serve": "nodemon -r dotenv/config . | pino-pretty",
-    "dev": "concurrently \"yarn:dev-*\""
+    "dev": "concurrently -i --default-input-target serve \"yarn:dev-*\""
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
