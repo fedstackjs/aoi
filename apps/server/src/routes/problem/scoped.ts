@@ -386,9 +386,10 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       const { config } = currentData
       const { insertedId } = await solutions.insertOne({
         _id: new BSON.UUID(),
+        orgId: req._problem.orgId,
         problemId: req._problemId,
         userId: req.user.userId,
-        labels: config.labels,
+        label: config.label,
         problemDataHash: currentDataHash,
         state: SolutionState.CREATED,
         solutionDataHash: req.body.hash,

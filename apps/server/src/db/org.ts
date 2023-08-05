@@ -12,7 +12,7 @@ export const OrgCapability = {
 
 export const OrgProfileSchema = StrictObject({
   name: Type.String(),
-  email: Type.String()
+  email: Type.String({ format: 'email' })
 })
 
 export interface IOrgProfile extends Static<typeof OrgProfileSchema> {}

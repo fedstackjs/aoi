@@ -10,6 +10,10 @@ export function TypeUUID() {
   return Type.Unsafe<BSON.UUID>(Type.String())
 }
 
+export function TypeLong() {
+  return Type.Unsafe<BSON.Long>(Type.String())
+}
+
 export function TypeAccessLevel() {
   return Type.Unsafe<AccessLevel>(Type.Integer({ enum: Object.values(AccessLevel) }))
 }

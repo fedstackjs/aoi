@@ -27,24 +27,26 @@ export const solutionScopedRoute = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Get solution details',
-        response: Type.Object({
-          _id: TypeUUID(),
-          problemId: TypeUUID(),
-          contestId: Type.Optional(TypeUUID()),
-          userId: TypeUUID(),
-          labels: Type.Array(Type.String()),
-          problemDataHash: Type.String(),
-          state: Type.Integer(),
-          solutionDataHash: Type.String(),
-          score: Type.Number(),
-          metrics: Type.Record(Type.String(), Type.Number()),
-          message: Type.String(),
-          details: Type.String(),
-          taskId: Type.Optional(TypeUUID()),
-          createdAt: Type.Integer(),
-          submittedAt: Type.Optional(Type.Integer()),
-          completedAt: Type.Optional(Type.Integer())
-        })
+        response: {
+          200: Type.Object({
+            _id: TypeUUID(),
+            problemId: TypeUUID(),
+            contestId: Type.Optional(TypeUUID()),
+            userId: TypeUUID(),
+            label: Type.String(),
+            problemDataHash: Type.String(),
+            state: Type.Integer(),
+            solutionDataHash: Type.String(),
+            score: Type.Number(),
+            metrics: Type.Record(Type.String(), Type.Number()),
+            message: Type.String(),
+            details: Type.String(),
+            taskId: Type.Optional(TypeUUID()),
+            createdAt: Type.Integer(),
+            submittedAt: Type.Optional(Type.Integer()),
+            completedAt: Type.Optional(Type.Integer())
+          })
+        }
       }
     },
     async (req) => {

@@ -36,19 +36,32 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
   s.register(orgAdminRoutes, { prefix: '/admin' })
 
   s.get(
-    '/profile',
+    '/',
     {
       schema: {
-        tags: ['organization'],
         response: {
-          200: OrgProfileSchema
+          200: Type.Object({
+            profile: OrgProfileSchema,
+            membership: Type.Optional(
+              Type.Object({
+                capability: Type.String()
+              })
+            )
+          })
         }
       }
     },
     async (req) => {
       const org = await orgs.findOne({ _id: req._orgId })
       if (!org) throw s.httpErrors.badRequest()
-      return org.profile
+      return {
+        profile: org.profile,
+        membership: req._orgMembership
+          ? {
+              capability: req._orgMembership.capability.toString()
+            }
+          : undefined
+      }
     }
   )
 })

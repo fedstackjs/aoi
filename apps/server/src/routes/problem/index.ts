@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox'
 import { StrictObject, TypeAccessLevel, TypeUUID } from '../../utils/types.js'
 import { defineRoutes, loadMembership, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { problemScopedRoutes } from './scoped.js'
-import { ensureCapability } from '../../utils/capability.js'
+import { CAP_NONE, ensureCapability } from '../../utils/capability.js'
 import { BSON } from 'mongodb'
 import { OrgCapability } from '../../db/org.js'
 import { problems } from '../../db/problem.js'
@@ -35,7 +35,7 @@ export const problemRoutes = defineRoutes(async (s) => {
       const orgId = loadUUID(req.body, 'orgId', s.httpErrors.badRequest())
       const membership = await loadMembership(req.user.userId, orgId)
       ensureCapability(
-        membership?.capability ?? BSON.Long.ZERO,
+        membership?.capability ?? CAP_NONE,
         OrgCapability.CAP_PROBLEM,
         s.httpErrors.forbidden()
       )

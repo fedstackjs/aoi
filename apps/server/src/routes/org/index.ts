@@ -1,17 +1,19 @@
 import { Type } from '@fastify/type-provider-typebox'
 import { BSON } from 'mongodb'
 import { OrgProfileSchema, orgMemberships, orgs } from '../../db/org.js'
-import { defineRoutes } from '../common/index.js'
+import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { StrictObject, TypeUUID } from '../../utils/types.js'
 import { orgScopedRoutes } from './scoped.js'
+import { CAP_ALL } from '../../utils/capability.js'
 
 export const orgRoutes = defineRoutes(async (s) => {
+  s.addHook('onRoute', swaggerTagMerger('organization'))
+
   s.post(
     '/',
     {
       schema: {
         description: 'Create a new organization',
-        tags: ['organization'],
         body: StrictObject({
           profile: OrgProfileSchema
         }),
@@ -34,7 +36,7 @@ export const orgRoutes = defineRoutes(async (s) => {
         userId: req.user.userId,
         orgId: insertedId,
         // Owner have all capabilities
-        capability: BSON.Long.MAX_UNSIGNED_VALUE,
+        capability: CAP_ALL,
         groups: []
       })
       return { orgId: insertedId.toString() }
@@ -46,7 +48,6 @@ export const orgRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List joined organizations',
-        tags: ['organization'],
         response: {
           200: Type.Array(
             Type.Object({
@@ -61,7 +62,10 @@ export const orgRoutes = defineRoutes(async (s) => {
       const memberships = await orgMemberships.find({ userId: req.user.userId }).toArray()
       const orgIds = memberships.map((m) => m.orgId)
       const orgList = await orgs
-        .find({ _id: { $in: orgIds } }, { projection: { profile: 1 } })
+        .find(
+          { $or: [{ _id: { $in: orgIds } }, { ownerId: req.user.userId }] },
+          { projection: { profile: 1 } }
+        )
         .toArray()
       return orgList
     }

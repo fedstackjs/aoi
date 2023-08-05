@@ -3,6 +3,14 @@ import { IPrincipalControlable } from '../db/common.js'
 import { IOrgMembership } from '../db/org.js'
 
 /**
+ * See:
+ * https://stackoverflow.com/questions/75000363/how-to-prevent-mongodb-nodejs-driver-converts-long-into-number
+ */
+
+export const CAP_ALL = BSON.Long.MAX_UNSIGNED_VALUE
+export const CAP_NONE = BSON.Long.UZERO
+
+/**
  * return a mask that is `1 << n` in Long
  *
  * @param n
@@ -14,7 +22,7 @@ export function capabilityMask(n: number) {
 export function computeCapability(
   object: IPrincipalControlable,
   membership: IOrgMembership | null,
-  defaultCapability = BSON.Long.ZERO
+  defaultCapability = CAP_NONE
 ) {
   if (!membership) return defaultCapability
   return object.associations.reduce(
@@ -36,5 +44,3 @@ export function ensureCapability<E extends Error>(capability: BSON.Long, mask: B
     throw err
   }
 }
-
-export const CAP_ALL = BSON.Long.MAX_UNSIGNED_VALUE

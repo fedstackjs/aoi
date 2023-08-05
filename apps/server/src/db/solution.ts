@@ -11,11 +11,12 @@ export enum SolutionState {
 
 export interface ISolution {
   _id: BSON.UUID
+  orgId: BSON.UUID
   problemId: BSON.UUID
   contestId?: BSON.UUID
   userId: BSON.UUID
 
-  labels: string[]
+  label: string
   problemDataHash: string
 
   state: SolutionState
@@ -24,6 +25,7 @@ export interface ISolution {
   metrics: Record<string, number>
   message: string
   details: string
+  runnerId?: BSON.UUID
   taskId?: BSON.UUID
 
   createdAt: number

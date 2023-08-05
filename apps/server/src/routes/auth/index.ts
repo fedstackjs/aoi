@@ -3,12 +3,13 @@ import bcrypt from 'bcrypt'
 import { UserProfileSchema, users } from '../../db/user.js'
 import { StrictObject } from '../../utils/types.js'
 import { BSON } from 'mongodb'
-import { defineRoutes } from '../common/index.js'
+import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 
 export const authRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', (route) => {
     ;(route.schema ??= {}).security = []
   })
+  s.addHook('onRoute', swaggerTagMerger('auth'))
 
   s.post(
     '/login',

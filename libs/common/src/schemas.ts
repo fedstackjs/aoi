@@ -1,9 +1,7 @@
 import { Static, Type } from '@sinclair/typebox'
 
 export const problemConfigSchema = Type.Object({
-  labels: Type.Array(Type.String(), {
-    description: 'Labels for runner selection'
-  }),
+  label: Type.String(),
   runner: Type.Record(Type.String(), Type.Any(), {
     description: 'Runner configuration'
   }),

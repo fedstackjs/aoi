@@ -9,14 +9,14 @@ import { loadEnv } from '../utils/config.js'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 const s3Client = new S3Client({
-  region: loadEnv('AOI_S3_REGION', String),
+  region: loadEnv('S3_REGION', String),
   credentials: {
-    accessKeyId: loadEnv('AOI_S3_ACCESS_KEY', String),
-    secretAccessKey: loadEnv('AOI_S3_SECRET_KEY', String)
+    accessKeyId: loadEnv('S3_ACCESS_KEY', String),
+    secretAccessKey: loadEnv('S3_SECRET_KEY', String)
   },
-  endpoint: loadEnv('AOI_S3_ENDPOINT', String)
+  endpoint: loadEnv('S3_ENDPOINT', String)
 })
-const s3Bucket = loadEnv('AOI_S3_BUCKET', String)
+const s3Bucket = loadEnv('S3_BUCKET', String)
 
 export interface IUrlOptions {
   expiresIn: number

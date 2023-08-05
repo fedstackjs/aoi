@@ -5,7 +5,7 @@ import { RouteOptions } from 'fastify'
 import { BSON } from 'mongodb'
 import { IOrgMembership, orgMemberships } from '../../db/org.js'
 import { AccessLevel, IPrincipalControlable, IWithAccessLevel } from '../../db/common.js'
-import { computeCapability } from '../../utils/capability.js'
+import { CAP_NONE, computeCapability } from '../../utils/capability.js'
 
 export const paginationSchema = Type.Object({
   page: Type.Integer({ minimum: 1, default: 1 }),
@@ -82,12 +82,12 @@ export function defaultCapability(
   capAdmin: BSON.Long
 ) {
   if (!membership) {
-    return target.accessLevel === AccessLevel.PUBLIC ? capAccess : BSON.Long.ZERO
+    return target.accessLevel === AccessLevel.PUBLIC ? capAccess : CAP_NONE
   }
   if (membership.capability.and(adminMask).equals(adminMask)) {
     return capAdmin
   }
-  return target.accessLevel === AccessLevel.PRIVATE ? BSON.Long.ZERO : capAccess
+  return target.accessLevel === AccessLevel.PRIVATE ? CAP_NONE : capAccess
 }
 
 export function loadCapability(

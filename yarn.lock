@@ -39,7 +39,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aoi/common@workspace:libs/common":
+"@aoi/common@workspace:^, @aoi/common@workspace:libs/common":
   version: 0.0.0-use.local
   resolution: "@aoi/common@workspace:libs/common"
   dependencies:
@@ -90,6 +90,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@aoi/server@workspace:apps/server"
   dependencies:
+    "@aoi/common": "workspace:^"
     "@aws-sdk/client-s3": ^3.374.0
     "@aws-sdk/s3-request-presigner": ^3.374.0
     "@fastify/jwt": ^7.2.0
