@@ -1,27 +1,13 @@
 import { BSON } from 'mongodb'
-import { Static, Type } from '@sinclair/typebox'
-import { StrictObject } from '../utils/types.js'
 import { db } from './client.js'
 import { capabilityMask } from '../utils/capability.js'
+import { IOrgProfile, IOrgSettings } from '../schemas/org.js'
 
 export const OrgCapability = {
   CAP_ACCESS: capabilityMask(0),
   CAP_PROBLEM: capabilityMask(1),
   CAP_ADMIN: capabilityMask(2)
 }
-
-export const OrgProfileSchema = StrictObject({
-  name: Type.String(),
-  email: Type.String({ format: 'email' })
-})
-
-export interface IOrgProfile extends Static<typeof OrgProfileSchema> {}
-
-export const OrgSettings = StrictObject({
-  //
-})
-
-export interface IOrgSettings extends Static<typeof OrgSettings> {}
 
 export interface IOrg {
   _id: BSON.UUID

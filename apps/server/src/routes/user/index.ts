@@ -1,4 +1,5 @@
-import { UserProfileSchema, users } from '../../db/user.js'
+import { users } from '../../db/user.js'
+import { SUserProfile } from '../../schemas/user.js'
 import { defineRoutes } from '../common/index.js'
 
 export const userRoutes = defineRoutes(async (s) => {
@@ -7,7 +8,7 @@ export const userRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: UserProfileSchema
+          200: SUserProfile
         }
       }
     },

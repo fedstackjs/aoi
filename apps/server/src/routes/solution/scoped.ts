@@ -1,8 +1,8 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
-import { TypeUUID } from '../../utils/types.js'
 import { SolutionState, solutions } from '../../db/solution.js'
+import { TypeUUID } from '../../schemas/common.js'
 
 const solutionIdSchema = Type.Object({
   solutionId: Type.String()

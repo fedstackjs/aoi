@@ -108,6 +108,8 @@ __metadata:
     nodemon: ^3.0.1
     pino: ^8.14.1
     pino-pretty: ^10.0.1
+  bin:
+    aoi-server: lib/cli/index.js
   languageName: unknown
   linkType: soft
 

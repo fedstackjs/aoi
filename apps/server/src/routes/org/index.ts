@@ -1,10 +1,11 @@
 import { Type } from '@fastify/type-provider-typebox'
 import { BSON } from 'mongodb'
-import { OrgProfileSchema, orgMemberships, orgs } from '../../db/org.js'
+import { orgMemberships, orgs } from '../../db/org.js'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
-import { StrictObject, TypeUUID } from '../../utils/types.js'
 import { orgScopedRoutes } from './scoped.js'
 import { CAP_ALL } from '../../utils/capability.js'
+import { StrictObject, TypeUUID } from '../../schemas/common.js'
+import { SOrgProfile } from '../../schemas/org.js'
 
 export const orgRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('organization'))
@@ -15,7 +16,7 @@ export const orgRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Create a new organization',
         body: StrictObject({
-          profile: OrgProfileSchema
+          profile: SOrgProfile
         }),
         response: {
           200: Type.Object({
@@ -52,7 +53,7 @@ export const orgRoutes = defineRoutes(async (s) => {
           200: Type.Array(
             Type.Object({
               _id: TypeUUID(),
-              profile: OrgProfileSchema
+              profile: SOrgProfile
             })
           )
         }

@@ -1,1 +1,1 @@
-export type { IOrgProfile } from '@aoi/server/lib/db/org'
+export type { IOrgProfile } from '@aoi/server'

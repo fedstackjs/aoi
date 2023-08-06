@@ -4,8 +4,6 @@ import { problemConfigSchema } from '@aoi/common'
 import { IProblem, ProblemCapability, problems } from '../../db/problem.js'
 import {
   defineRoutes,
-  getUrl,
-  getUrlSchema,
   loadCapability,
   loadMembership,
   loadUUID,
@@ -13,9 +11,12 @@ import {
 } from '../common/index.js'
 import { CAP_ALL, ensureCapability } from '../../utils/capability.js'
 import { OrgCapability } from '../../db/org.js'
-import { TypeUUID, TypeAccessLevel, StrictObject } from '../../utils/types.js'
 import { getUploadUrl } from '../../oss/index.js'
 import { SolutionState, solutions } from '../../db/solution.js'
+import { TypeUUID, StrictObject, TypeAccessLevel } from '../../schemas/common.js'
+import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
+import { problemAttachmentKey, problemDataKey, solutionDataKey } from '../../oss/key.js'
+import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
 
 const problemIdSchema = Type.Object({
   problemId: Type.String()
@@ -82,147 +83,163 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
     }
   )
 
-  s.put(
-    '/attachment/:key',
-    {
-      schema: {
-        description: 'Update problem attachment',
-        params: Type.Object({
-          key: Type.String()
-        }),
-        body: StrictObject({
-          name: Type.String(),
-          description: Type.String()
-        }),
-        response: {
-          200: Type.Object({})
+  s.register(
+    async (s) => {
+      s.addHook('onRoute', paramSchemaMerger(Type.Object({ key: Type.String() })))
+      s.register(getFileUrl, {
+        prefix: '/url',
+        resolve: async (type, _query, req) => {
+          if (type !== 'download') {
+            ensureCapability(
+              req._problemCapability,
+              ProblemCapability.CAP_CONTENT,
+              s.httpErrors.forbidden()
+            )
+          }
+          const oss = await loadOrgOssSettings(req._problem.orgId)
+          return [oss, problemAttachmentKey(req._problemId, (req.params as { key: string }).key)]
         }
-      }
-    },
-    async (req) => {
-      ensureCapability(
-        req._problemCapability,
-        ProblemCapability.CAP_CONTENT,
-        s.httpErrors.forbidden()
-      )
+      })
 
-      await problems.updateOne(
-        { _id: req._problemId },
-        { $set: { [`attachments.${req.params.key}`]: req.body } }
-      )
-      return {}
-    }
-  )
-
-  s.delete(
-    '/attachment/:key',
-    {
-      schema: {
-        description: 'Delete problem attachment',
-        params: Type.Object({
-          key: Type.String()
-        }),
-        response: {
-          200: Type.Object({})
-        }
-      }
-    },
-    async (req) => {
-      ensureCapability(
-        req._problemCapability,
-        ProblemCapability.CAP_CONTENT,
-        s.httpErrors.forbidden()
-      )
-
-      await problems.updateOne(
-        { _id: req._problemId },
-        { $unset: { [`attachments.${req.params.key}`]: 1 } }
-      )
-      return {}
-    }
-  )
-
-  s.get(
-    '/attachment/:key/url',
-    {
-      schema: {
-        description: 'Get problem attachment presigned url',
-        params: Type.Object({
-          key: Type.String()
-        }),
-        querystring: getUrlSchema,
-        response: {
-          200: Type.Object({
-            url: Type.String()
-          })
-        }
-      }
-    },
-    async (req) => {
-      const attachment = req._problem.attachments[req.params.key]
-      if (!attachment) {
-        throw s.httpErrors.notFound()
-      }
-      const { type } = req.query
-      // Allow download without attachment capability
-      if (type !== 'download') {
-        ensureCapability(
-          req._problemCapability,
-          ProblemCapability.CAP_CONTENT,
-          s.httpErrors.forbidden()
-        )
-      }
-      const key = `org/${req._orgId}/prob/${req._problemId}/attachments/${req.params.key}`
-      const url = await getUrl(req.query, key, s.httpErrors.badRequest())
-
-      return { url }
-    }
-  )
-
-  s.post(
-    '/data',
-    {
-      schema: {
-        description: 'Create a new problem data version',
-        body: Type.Object({
-          hash: Type.String(),
-          size: Type.Integer({ minimum: 0 }),
-          config: problemConfigSchema,
-          description: Type.String()
-        }),
-        response: {
-          200: Type.Object({
-            url: Type.String()
-          })
-        }
-      }
-    },
-    async (req) => {
-      ensureCapability(
-        req._problemCapability,
-        ProblemCapability.CAP_CONTENT,
-        s.httpErrors.forbidden()
-      )
-      const { hash, config, description } = req.body
-      const { modifiedCount } = await problems.updateOne(
-        { _id: req._problemId, [`data.${hash}`]: { $exists: false } },
+      s.put(
+        '/',
         {
-          $set: {
-            [`data.${hash}`]: {
-              createdAt: Date.now(),
-              config,
-              description
+          schema: {
+            description: 'Upsert problem attachment',
+            body: StrictObject({
+              name: Type.String(),
+              description: Type.String()
+            }),
+            response: {
+              200: Type.Object({})
             }
           }
+        },
+        async (req) => {
+          ensureCapability(
+            req._problemCapability,
+            ProblemCapability.CAP_CONTENT,
+            s.httpErrors.forbidden()
+          )
+
+          const key = (req.params as { key: string }).key
+          await problems.updateOne(
+            { _id: req._problemId },
+            { $set: { [`attachments.${key}`]: req.body } }
+          )
+          return {}
         }
       )
-      if (!modifiedCount) {
-        throw s.httpErrors.conflict()
-      }
-      const key = `org/${req._orgId}/prob/${req._problemId}/data/${hash}`
-      const url = await getUploadUrl(key, { size: req.body.size, sha256: hash, expiresIn: 300 })
-      return { url }
-    }
+
+      s.delete(
+        '/',
+        {
+          schema: {
+            description: 'Delete problem attachment',
+            response: {
+              200: Type.Object({})
+            }
+          }
+        },
+        async (req) => {
+          ensureCapability(
+            req._problemCapability,
+            ProblemCapability.CAP_CONTENT,
+            s.httpErrors.forbidden()
+          )
+
+          const key = (req.params as { key: string }).key
+          await problems.updateOne(
+            { _id: req._problemId },
+            { $unset: { [`attachments.${key}`]: 1 } }
+          )
+          return {}
+        }
+      )
+    },
+    { prefix: '/attachment/:key' }
+  )
+  s.register(
+    (async (s) => {
+      s.addHook('onRoute', paramSchemaMerger(Type.Object({ hash: Type.String() })))
+      s.register(getFileUrl, {
+        prefix: '/url',
+        resolve: async (_type, _query, req) => {
+          ensureCapability(
+            req._problemCapability,
+            ProblemCapability.CAP_CONTENT,
+            s.httpErrors.forbidden()
+          )
+          const oss = await loadOrgOssSettings(req._problem.orgId)
+          const hash = (req.params as { hash: string }).hash
+          return [oss, problemDataKey(req._problemId, hash), { sha256: hash, expiresIn: 300 }]
+        }
+      })
+
+      s.put(
+        '/',
+        {
+          schema: {
+            description: 'Upsert problem data',
+            body: StrictObject({
+              size: Type.Integer({ minimum: 0 }),
+              config: problemConfigSchema,
+              description: Type.String()
+            }),
+            response: {
+              200: Type.Object({})
+            }
+          }
+        },
+        async (req, rep) => {
+          ensureCapability(
+            req._problemCapability,
+            ProblemCapability.CAP_CONTENT,
+            s.httpErrors.forbidden()
+          )
+          const oss = await loadOrgOssSettings(req._problem.orgId)
+          if (!oss) return rep.preconditionFailed('OSS not configured')
+
+          const hash = (req.params as { hash: string }).hash
+          const { config, description } = req.body
+          const { modifiedCount } = await problems.updateOne(
+            { _id: req._problemId },
+            { $set: { [`data.${hash}`]: { createdAt: Date.now(), config, description } } }
+          )
+          if (!modifiedCount) return rep.conflict()
+          return {}
+        }
+      )
+
+      s.delete(
+        '/',
+        {
+          schema: {
+            description: 'Delete problem attachment',
+            response: {
+              200: Type.Object({})
+            }
+          }
+        },
+        async (req) => {
+          ensureCapability(
+            req._problemCapability,
+            ProblemCapability.CAP_CONTENT,
+            s.httpErrors.forbidden()
+          )
+          const hash = (req.params as { hash: string }).hash
+          const { modifiedCount } = await problems.updateOne(
+            { _id: req._problemId, currentDataHash: { $ne: hash } },
+            { $unset: { [`data.${hash}`]: 1 } }
+          )
+          if (!modifiedCount) {
+            throw s.httpErrors.conflict()
+          }
+          return {}
+        }
+      )
+    }) satisfies FastifyPluginAsyncTypebox,
+    { prefix: '/data/:hash' }
   )
 
   s.patch(
@@ -256,152 +273,63 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
     }
   )
 
-  s.patch(
-    '/data/:hash',
-    {
-      schema: {
-        description: 'Update problem data version',
-        params: Type.Object({
-          hash: Type.String()
-        }),
-        body: Type.Object({
-          config: Type.String(),
-          description: Type.String()
-        }),
-        response: {
-          200: Type.Object({})
-        }
-      }
-    },
-    async (req) => {
-      ensureCapability(
-        req._problemCapability,
-        ProblemCapability.CAP_CONTENT,
-        s.httpErrors.forbidden()
-      )
-      const { hash } = req.params
-      const { modifiedCount } = await problems.updateOne(
-        { _id: req._problemId, [`data.${hash}`]: { $exists: true } },
-        {
-          $set: {
-            [`data.${hash}.config`]: req.body.config,
-            [`data.${hash}.description`]: req.body.description
-          }
-        }
-      )
-      if (!modifiedCount) {
-        throw s.httpErrors.badRequest()
-      }
-      return {}
-    }
-  )
-
-  s.delete(
-    '/data/:hash',
-    {
-      schema: {
-        description: 'Delete problem data version',
-        params: Type.Object({
-          hash: Type.String()
-        }),
-        response: {
-          200: Type.Object({})
-        }
-      }
-    },
-    async (req) => {
-      ensureCapability(
-        req._problemCapability,
-        ProblemCapability.CAP_CONTENT,
-        s.httpErrors.forbidden()
-      )
-      const { hash } = req.params
-      const { modifiedCount } = await problems.updateOne(
-        { _id: req._problemId, currentDataHash: { $ne: hash } },
-        { $unset: { [`data.${hash}`]: 1 } }
-      )
-      if (!modifiedCount) {
-        throw s.httpErrors.conflict()
-      }
-      return {}
-    }
-  )
-
-  s.get(
-    '/data/:hash/url',
-    {
-      schema: {
-        description: 'Get problem data presigned url',
-        params: Type.Object({
-          hash: Type.String()
-        }),
-        querystring: getUrlSchema,
-        response: {
-          200: Type.Object({
-            url: Type.String()
-          })
-        }
-      }
-    },
-    async (req) => {
-      const data = req._problem.data[req.params.hash]
-      if (!data) {
-        throw s.httpErrors.notFound()
-      }
-      const { type } = req.query
-      // Only allow upload when creating version
-      if (type === 'upload') {
-        throw s.httpErrors.badRequest()
-      }
-      ensureCapability(
-        req._problemCapability,
-        ProblemCapability.CAP_CONTENT,
-        s.httpErrors.forbidden()
-      )
-      const key = `org/${req._orgId}/prob/${req._problemId}/data/${req.params.hash}`
-      const url = await getUrl(req.query, key, s.httpErrors.badRequest())
-      return { url }
-    }
-  )
-
   s.post(
     '/submit',
     {
       schema: {
         description: 'Submit a solution',
         body: Type.Object({
-          hash: Type.String()
+          hash: Type.String(),
+          size: Type.Integer()
         }),
         response: {
           200: Type.Object({
-            solutionId: TypeUUID()
+            solutionId: TypeUUID(),
+            uploadUrl: Type.String()
           })
         }
       }
     },
-    async (req) => {
+    async (req, rep) => {
+      const oss = await loadOrgOssSettings(req._problem.orgId)
+      if (!oss) return rep.preconditionFailed('OSS not configured')
+
       const { data, currentDataHash } = req._problem
       const currentData = data[currentDataHash]
-      if (!currentData) throw s.httpErrors.badRequest()
+      if (!currentData) return rep.preconditionFailed('Current data not found')
       const { config } = currentData
-      const { insertedId } = await solutions.insertOne({
-        _id: new BSON.UUID(),
-        orgId: req._problem.orgId,
-        problemId: req._problemId,
-        userId: req.user.userId,
-        label: config.label,
-        problemDataHash: currentDataHash,
-        state: SolutionState.CREATED,
-        solutionDataHash: req.body.hash,
-        score: 0,
-        metrics: {},
-        message: '',
-        details: '',
-        createdAt: Date.now()
+
+      const maxSize = config.solution?.maxSize ?? 1024 * 1024 * 10 // 10MiB
+      if (req.body.size > maxSize) return rep.badRequest('Solution too large')
+
+      const { value } = await solutions.findOneAndUpdate(
+        { problemId: req._problemId, userId: req.user.userId, state: SolutionState.CREATED },
+        {
+          $set: {
+            label: config.label,
+            problemDataHash: currentDataHash,
+            solutionDataHash: req.body.hash
+          },
+          $setOnInsert: {
+            _id: new BSON.UUID(),
+            orgId: req._problem.orgId,
+            score: 0,
+            metrics: {},
+            message: '',
+            details: '',
+            createdAt: Date.now()
+          }
+        },
+        { upsert: true, returnDocument: 'after' }
+      )
+
+      if (!value) throw s.httpErrors.conflict()
+      const uploadUrl = await getUploadUrl(oss, solutionDataKey(value._id), {
+        expiresIn: 300,
+        size: req.body.size,
+        sha256: req.body.hash
       })
-      return {
-        solutionId: insertedId
-      }
+      return { solutionId: value._id, uploadUrl }
     }
   )
 })

@@ -1,8 +1,9 @@
 import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
-import { IOrgMembership, orgMemberships, OrgProfileSchema, orgs } from '../../db/org.js'
+import { IOrgMembership, orgMemberships, orgs } from '../../db/org.js'
 import { defineRoutes, paramSchemaMerger, loadUUID } from '../common/index.js'
 import { orgAdminRoutes } from './admin.js'
+import { SOrgProfile } from '../../schemas/org.js'
 
 const orgIdSchema = Type.Object({
   orgId: Type.String()
@@ -41,7 +42,7 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
       schema: {
         response: {
           200: Type.Object({
-            profile: OrgProfileSchema,
+            profile: SOrgProfile,
             membership: Type.Optional(
               Type.Object({
                 capability: Type.String()

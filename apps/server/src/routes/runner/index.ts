@@ -5,8 +5,13 @@ import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { randomBytes } from 'node:crypto'
 import { SolutionState, solutions } from '../../db/solution.js'
 import { BSON } from 'mongodb'
-import { TypeUUID } from '../../utils/types.js'
 import { runnerTaskRoutes } from './task.js'
+import { problemConfigSchema } from '@aoi/common'
+import { problems } from '../../db/problem.js'
+import { TypeUUID } from '../../schemas/common.js'
+import { getDownloadUrl } from '../../oss/index.js'
+import { problemDataKey, solutionDataKey } from '../../oss/key.js'
+import { loadOrgOssSettings } from '../common/files.js'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -84,7 +89,14 @@ export const runnerRoutes = defineRoutes(async (s) => {
           200: Type.Union([
             Type.Null(),
             Type.Object({
-              taskId: TypeUUID()
+              taskId: TypeUUID(),
+              problemConfig: problemConfigSchema,
+              problemDataUrl: Type.String(),
+              solutionDataUrl: Type.String()
+            }),
+            Type.Object({
+              taskId: TypeUUID(),
+              errMsg: Type.String()
             })
           ])
         }
@@ -92,7 +104,7 @@ export const runnerRoutes = defineRoutes(async (s) => {
     },
     async (req) => {
       const taskId = new BSON.UUID()
-      const solution = await solutions.findOneAndUpdate(
+      const { value: solution } = await solutions.findOneAndUpdate(
         {
           orgId: req._runner.orgId,
           state: SolutionState.PENDING,
@@ -100,9 +112,27 @@ export const runnerRoutes = defineRoutes(async (s) => {
         },
         { $set: { state: SolutionState.QUEUED, runnerId: req._runner._id, taskId } }
       )
-      if (!solution.value) return null
+      if (!solution) return null
+
+      const oss = await loadOrgOssSettings(req._runner.orgId)
+      if (!oss) return { taskId, errMsg: 'OSS not enabled' }
+      const problem = await problems.findOne({ _id: solution.problemId })
+      if (!problem) return { taskId, errMsg: 'Problem not found' }
+
+      const currentData = problem.data[problem.currentDataHash]
+      if (!currentData) return { taskId, errMsg: 'Problem data not found' }
+
+      const problemDataUrl = await getDownloadUrl(
+        oss,
+        problemDataKey(problem._id, problem.currentDataHash)
+      )
+      const solutionDataUrl = await getDownloadUrl(oss, solutionDataKey(solution._id))
+
       return {
-        taskId
+        taskId,
+        problemConfig: currentData.config,
+        problemDataUrl,
+        solutionDataUrl
       }
     }
   )

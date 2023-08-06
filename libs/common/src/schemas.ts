@@ -2,37 +2,25 @@ import { Static, Type } from '@sinclair/typebox'
 
 export const problemConfigSchema = Type.Object({
   label: Type.String(),
-  runner: Type.Record(Type.String(), Type.Any(), {
-    description: 'Runner configuration'
+  solution: Type.Optional(
+    Type.Partial(
+      Type.Object(
+        {
+          maxSize: Type.Integer()
+        },
+        { description: 'Solution configuration' }
+      )
+    )
+  ),
+  judge: Type.Record(Type.String(), Type.Any(), {
+    description: 'Judge configuration'
   }),
-  submit: Type.Object({
-    files: Type.Array(
-      Type.Object({
-        name: Type.String({
-          description: 'The filename of this file in the solution'
-        }),
-        accept: Type.Optional(
-          Type.String({
-            description:
-              'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept'
-          })
-        ),
-        maxSize: Type.Optional(
-          Type.Number({
-            description: 'The maximum size of this file in bytes'
-          })
-        ),
-        description: Type.Optional(
-          Type.String({
-            description: 'The description of this file'
-          })
-        ),
-        showEditor: Type.Boolean({ default: false })
-      }),
-      { default: [] }
-    ),
-    showDirectUpload: Type.Boolean({ default: false })
-  })
+  submit: Type.Partial(
+    Type.Object({
+      directUpload: Type.Boolean({ default: false }),
+      form: Type.Array(Type.Any())
+    })
+  )
 })
 
 export type ProblemConfig = Static<typeof problemConfigSchema>

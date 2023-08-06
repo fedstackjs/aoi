@@ -1,15 +1,6 @@
 import { BSON } from 'mongodb'
 import { db } from './client.js'
-import { Static, Type } from '@sinclair/typebox'
-import { StrictObject } from '../utils/types.js'
-
-export const UserProfileSchema = StrictObject({
-  username: Type.String(),
-  realname: Type.String(),
-  email: Type.String()
-})
-
-export interface IUserProfile extends Static<typeof UserProfileSchema> {}
+import { IUserProfile } from '../schemas/user.js'
 
 export interface IUserAuthSources {
   password?: string

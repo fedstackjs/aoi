@@ -1,9 +1,10 @@
 import { Type } from '@fastify/type-provider-typebox'
 import bcrypt from 'bcrypt'
-import { UserProfileSchema, users } from '../../db/user.js'
-import { StrictObject } from '../../utils/types.js'
+import { users } from '../../db/user.js'
 import { BSON } from 'mongodb'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
+import { SUserProfile } from '../../schemas/user.js'
+import { StrictObject } from '../../schemas/common.js'
 
 export const authRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', (route) => {
@@ -47,7 +48,7 @@ export const authRoutes = defineRoutes(async (s) => {
     {
       schema: {
         body: StrictObject({
-          profile: UserProfileSchema,
+          profile: SUserProfile,
           password: Type.String()
         })
       }

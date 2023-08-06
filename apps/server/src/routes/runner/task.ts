@@ -1,6 +1,7 @@
 import { Type } from '@sinclair/typebox'
-import { ISolution, solutions } from '../../db/solution.js'
+import { ISolution, SolutionState, solutions } from '../../db/solution.js'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
+import { StrictObject } from '../../index.js'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -26,4 +27,52 @@ export const runnerTaskRoutes = defineRoutes(async (s) => {
     if (!solution) throw s.httpErrors.notFound()
     req._solution = solution
   })
+
+  s.patch(
+    '/',
+    {
+      schema: {
+        description: 'Update solution result',
+        body: Type.Partial(
+          StrictObject({
+            score: Type.Number({ minimum: 0, maximum: 100 }),
+            metrics: Type.Record(Type.String(), Type.Number()),
+            message: Type.String(),
+            details: Type.String()
+          })
+        ),
+        response: {
+          200: Type.Object({})
+        }
+      }
+    },
+    async (req, rep) => {
+      const { matchedCount } = await solutions.updateOne(
+        { _id: req._solutionId, state: { $in: [SolutionState.QUEUED, SolutionState.RUNNING] } },
+        { $set: { state: SolutionState.RUNNING, ...req.body } }
+      )
+      if (matchedCount === 0) return rep.conflict()
+      return {}
+    }
+  )
+
+  s.post(
+    '/completed',
+    {
+      schema: {
+        description: 'Mark solution as completed',
+        response: {
+          200: Type.Object({})
+        }
+      }
+    },
+    async (req, rep) => {
+      const { matchedCount } = await solutions.updateOne(
+        { _id: req._solutionId, state: { $in: [SolutionState.QUEUED, SolutionState.RUNNING] } },
+        { $set: { state: SolutionState.COMPLETED, completedAt: Date.now() } }
+      )
+      if (matchedCount === 0) return rep.conflict()
+      return {}
+    }
+  )
 })

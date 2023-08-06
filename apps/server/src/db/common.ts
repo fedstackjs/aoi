@@ -1,4 +1,5 @@
 import { BSON } from 'mongodb'
+import { AccessLevel } from '../schemas/common.js'
 
 /**
  * The following interfaces describes the datastructure
@@ -41,12 +42,6 @@ export interface IAttachment {
 
 export interface IWithAttachment {
   attachments: Record<string, IAttachment>
-}
-
-export enum AccessLevel {
-  PUBLIC = 0,
-  RESTRICED = 1,
-  PRIVATE = 2
 }
 
 export interface IWithAccessLevel {
