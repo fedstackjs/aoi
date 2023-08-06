@@ -80,12 +80,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@aoi/runner@workspace:apps/runner":
-  version: 0.0.0-use.local
-  resolution: "@aoi/runner@workspace:apps/runner"
-  languageName: unknown
-  linkType: soft
-
 "@aoi/server@workspace:apps/server":
   version: 0.0.0-use.local
   resolution: "@aoi/server@workspace:apps/server"

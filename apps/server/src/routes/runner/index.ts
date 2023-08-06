@@ -58,7 +58,8 @@ export const runnerRoutes = defineRoutes(async (s) => {
         }),
         response: {
           200: Type.Object({
-            key: Type.String()
+            runnerId: TypeUUID(),
+            runnerKey: Type.String()
           })
         }
       }
@@ -68,17 +69,17 @@ export const runnerRoutes = defineRoutes(async (s) => {
       if (!registrationPayload.Check(content)) throw s.httpErrors.badRequest()
       const orgId = loadUUID(content, 'orgId', s.httpErrors.badRequest())
       const runnerId = loadUUID(content, 'runnerId', s.httpErrors.badRequest())
-      const key = randomBytes(32).toString('base64')
+      const runnerKey = randomBytes(32).toString('base64')
       await runners.insertOne({
         _id: runnerId,
         orgId,
         name: req.body.name,
         labels: req.body.labels,
-        key,
+        key: runnerKey,
         createdAt: Date.now(),
         accessedAt: Date.now()
       })
-      return { key }
+      return { runnerId, runnerKey }
     }
   )
 

@@ -1,5 +1,6 @@
 import { TProperties, ObjectOptions, Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
+import './formats.js'
 
 export function StrictObject<T extends TProperties>(properties: T, options: ObjectOptions = {}) {
   return Type.Object(properties, { additionalProperties: false, ...options })
