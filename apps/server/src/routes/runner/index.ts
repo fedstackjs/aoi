@@ -89,19 +89,18 @@ export const runnerRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Poll for a new solution',
         response: {
-          200: Type.Union([
-            Type.Null(),
+          200: Type.Partial(
             Type.Object({
               taskId: TypeUUID(),
+              solutionId: TypeUUID(),
               problemConfig: problemConfigSchema,
               problemDataUrl: Type.String(),
-              solutionDataUrl: Type.String()
-            }),
-            Type.Object({
-              taskId: TypeUUID(),
+              problemDataHash: Type.String(),
+              solutionDataUrl: Type.String(),
+              solutionDataHash: Type.String(),
               errMsg: Type.String()
             })
-          ])
+          )
         }
       }
     },
@@ -115,15 +114,16 @@ export const runnerRoutes = defineRoutes(async (s) => {
         },
         { $set: { state: SolutionState.QUEUED, runnerId: req._runner._id, taskId } }
       )
-      if (!solution) return null
+      if (!solution) return {}
+
+      const info = { taskId, solutionId: solution._id }
 
       const oss = await loadOrgOssSettings(req._runner.orgId)
-      if (!oss) return { taskId, errMsg: 'OSS not enabled' }
+      if (!oss) return { ...info, errMsg: 'OSS not enabled' }
       const problem = await problems.findOne({ _id: solution.problemId })
-      if (!problem) return { taskId, errMsg: 'Problem not found' }
-
+      if (!problem) return { ...info, errMsg: 'Problem not found' }
       const currentData = problem.data[problem.currentDataHash]
-      if (!currentData) return { taskId, errMsg: 'Problem data not found' }
+      if (!currentData) return { ...info, errMsg: 'Problem data not found' }
 
       const problemDataUrl = await getDownloadUrl(
         oss,
@@ -132,10 +132,12 @@ export const runnerRoutes = defineRoutes(async (s) => {
       const solutionDataUrl = await getDownloadUrl(oss, solutionDataKey(solution._id))
 
       return {
-        taskId,
+        ...info,
         problemConfig: currentData.config,
         problemDataUrl,
-        solutionDataUrl
+        problemDataHash: problem.currentDataHash,
+        solutionDataUrl,
+        solutionDataHash: solution.solutionDataHash
       }
     }
   )

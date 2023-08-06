@@ -23,6 +23,7 @@ export interface ISolution {
   solutionDataHash: string
   score: number
   metrics: Record<string, number>
+  status: string
   message: string
   details: string
   runnerId?: BSON.UUID

@@ -315,6 +315,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
             orgId: req._problem.orgId,
             score: 0,
             metrics: {},
+            status: '',
             message: '',
             details: '',
             createdAt: Date.now()

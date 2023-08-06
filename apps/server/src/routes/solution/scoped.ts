@@ -39,6 +39,7 @@ export const solutionScopedRoute = defineRoutes(async (s) => {
             solutionDataHash: Type.String(),
             score: Type.Number(),
             metrics: Type.Record(Type.String(), Type.Number()),
+            status: Type.String(),
             message: Type.String(),
             details: Type.String(),
             taskId: Type.Optional(TypeUUID()),

@@ -35,6 +35,7 @@ export const runnerTaskRoutes = defineRoutes(async (s) => {
         description: 'Update solution result',
         body: Type.Partial(
           StrictObject({
+            status: Type.String(),
             score: Type.Number({ minimum: 0, maximum: 100 }),
             metrics: Type.Record(Type.String(), Type.Number()),
             message: Type.String(),
@@ -57,7 +58,7 @@ export const runnerTaskRoutes = defineRoutes(async (s) => {
   )
 
   s.post(
-    '/completed',
+    '/complete',
     {
       schema: {
         description: 'Mark solution as completed',
