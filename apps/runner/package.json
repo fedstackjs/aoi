@@ -1,8 +1,0 @@
-{
-  "name": "@aoi/runner",
-  "packageManager": "yarn@3.6.0",
-  "scripts": {
-    "go:lint": "go fmt",
-    "build": "go build"
-  }
-}

@@ -3,6 +3,7 @@
   "packageManager": "yarn@3.6.0",
   "main": "lib/index.js",
   "type": "module",
+  "version": "0.0.0",
   "dependencies": {
     "@aoi/common": "workspace:^",
     "@aws-sdk/client-s3": "^3.374.0",

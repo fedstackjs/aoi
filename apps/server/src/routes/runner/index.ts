@@ -12,6 +12,7 @@ import { TypeUUID } from '../../schemas/common.js'
 import { getDownloadUrl } from '../../oss/index.js'
 import { problemDataKey, solutionDataKey } from '../../oss/key.js'
 import { loadOrgOssSettings } from '../common/files.js'
+import { packageJson } from '../../utils/package.js'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -33,14 +34,15 @@ export const runnerRoutes = defineRoutes(async (s) => {
     schema.security ??= [{ runnerKeyAuth: [], runnerId: [] }]
   })
 
-  s.addHook('onRequest', async (req) => {
+  s.addHook('onRequest', async (req, rep) => {
     // Skip register route
     if (!req.routeSchema.security?.length) return
-    const runnerId = loadUUID(req.headers, 'x-runner-id', s.httpErrors.unauthorized())
+    const runnerId = loadUUID(req.headers, 'x-aoi-runner-id', s.httpErrors.unauthorized())
     const runner = await runners.findOne({ _id: runnerId })
     if (!runner) throw s.httpErrors.unauthorized()
-    if (req.headers['x-runner-key'] !== runner.key) throw s.httpErrors.unauthorized()
+    if (req.headers['x-aoi-runner-key'] !== runner.key) throw s.httpErrors.unauthorized()
     req._runner = runner
+    rep.header('x-aoi-api-version', packageJson.version)
   })
 
   s.post(

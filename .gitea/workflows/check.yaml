@@ -18,10 +18,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
-      # - name: Setup Go
-      #   uses: actions/setup-go@v3
-      #   with:
-      #     go-version: '1.20'
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(corepack yarn config get cacheFolder)" >> $GITHUB_OUTPUT
@@ -35,6 +31,6 @@ jobs:
       - name: Install dependencies
         run: corepack yarn
       - name: Build packages
-        run: corepack yarn workspaces foreach --exclude @aoi/frontend --exclude @aoi/runner -t run build
+        run: corepack yarn workspaces foreach --exclude @aoi/frontend -t run build
       - name: Run checks
         run: corepack yarn all:check

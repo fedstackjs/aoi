@@ -17,5 +17,10 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
+  "references": [
+    {
+      "path": "./tsconfig.package.json"
+    }
+  ]
 }
