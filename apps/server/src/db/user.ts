@@ -1,6 +1,6 @@
 import { BSON } from 'mongodb'
 import { db } from './client.js'
-import { IUserProfile } from '../schemas/user.js'
+import { IUserProfile } from '../schemas/index.js'
 
 export interface IUserAuthSources {
   password?: string

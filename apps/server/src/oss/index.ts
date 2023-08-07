@@ -6,22 +6,24 @@ import {
   S3Client
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { IOrgOssSettings } from '../schemas/org.js'
+import { IOrgOssSettings } from '../schemas/index.js'
+export * from './key.js'
 
-function getClient(cred: IOrgOssSettings) {
+export function getS3Client(cred: IOrgOssSettings) {
   return new S3Client({
     region: cred.region,
     credentials: {
-      accessKeyId: cred.accessKeyId,
-      secretAccessKey: cred.secretAccessKey
+      accessKeyId: cred.accessKey,
+      secretAccessKey: cred.secretKey
     },
-    endpoint: cred.endpoint
+    endpoint: cred.endpoint,
+    // If endpoint is set, default to path style
+    forcePathStyle: cred.pathStyle ?? !!cred.endpoint
   })
 }
 
 export interface IUrlOptions {
-  expiresIn: number
-  sha256?: string
+  expiresIn?: number
   size?: number
 }
 
@@ -38,21 +40,20 @@ export async function getDownloadUrl(
     Bucket: cred.bucket,
     Key: key
   })
-  return getSignedUrl(getClient(cred), cmd, { expiresIn })
+  return getSignedUrl(getS3Client(cred), cmd, { expiresIn })
 }
 
 export async function getUploadUrl(
   cred: IOrgOssSettings,
   key: string,
-  { expiresIn, sha256, size } = defaultUrlOptions
+  { expiresIn, size } = defaultUrlOptions
 ) {
   const cmd = new PutObjectCommand({
     Bucket: cred.bucket,
     Key: key,
-    ChecksumSHA256: sha256,
     ContentLength: size
   })
-  return getSignedUrl(getClient(cred), cmd, { expiresIn })
+  return getSignedUrl(getS3Client(cred), cmd, { expiresIn })
 }
 
 export async function getDeleteUrl(
@@ -64,7 +65,7 @@ export async function getDeleteUrl(
     Bucket: cred.bucket,
     Key: key
   })
-  return getSignedUrl(getClient(cred), cmd, { expiresIn })
+  return getSignedUrl(getS3Client(cred), cmd, { expiresIn })
 }
 
 export async function getHeadUrl(
@@ -76,5 +77,5 @@ export async function getHeadUrl(
     Bucket: cred.bucket,
     Key: key
   })
-  return getSignedUrl(getClient(cred), cmd, { expiresIn })
+  return getSignedUrl(getS3Client(cred), cmd, { expiresIn })
 }

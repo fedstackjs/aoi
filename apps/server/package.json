@@ -6,8 +6,8 @@
   "version": "0.0.0",
   "dependencies": {
     "@aoi/common": "workspace:^",
-    "@aws-sdk/client-s3": "^3.374.0",
-    "@aws-sdk/s3-request-presigner": "^3.374.0",
+    "@aws-sdk/client-s3": "^3.385.0",
+    "@aws-sdk/s3-request-presigner": "^3.385.0",
     "@fastify/jwt": "^7.2.0",
     "@fastify/sensible": "^5.2.0",
     "@fastify/swagger": "^8.8.0",

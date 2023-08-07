@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { ISolution, SolutionState, solutions } from '../../db/solution.js'
+import { ISolution, SolutionState, solutions } from '../../db/index.js'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { StrictObject } from '../../index.js'
 
@@ -49,7 +49,7 @@ export const runnerTaskRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const { matchedCount } = await solutions.updateOne(
-        { _id: req._solutionId, state: { $in: [SolutionState.QUEUED, SolutionState.RUNNING] } },
+        { _id: req._solution._id, state: { $in: [SolutionState.QUEUED, SolutionState.RUNNING] } },
         { $set: { state: SolutionState.RUNNING, ...req.body } }
       )
       if (matchedCount === 0) return rep.conflict()
@@ -69,7 +69,7 @@ export const runnerTaskRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const { matchedCount } = await solutions.updateOne(
-        { _id: req._solutionId, state: { $in: [SolutionState.QUEUED, SolutionState.RUNNING] } },
+        { _id: req._solution._id, state: { $in: [SolutionState.QUEUED, SolutionState.RUNNING] } },
         { $set: { state: SolutionState.COMPLETED, completedAt: Date.now() } }
       )
       if (matchedCount === 0) return rep.conflict()

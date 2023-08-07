@@ -1,5 +1,5 @@
-import { users } from '../../db/user.js'
-import { SUserProfile } from '../../schemas/user.js'
+import { users } from '../../db/index.js'
+import { SUserProfile } from '../../schemas/index.js'
 import { defineRoutes } from '../common/index.js'
 
 export const userRoutes = defineRoutes(async (s) => {

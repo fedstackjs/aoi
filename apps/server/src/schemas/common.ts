@@ -24,6 +24,13 @@ export enum AccessLevel {
   PRIVATE = 2
 }
 
+export function TypeIntegerEnum<T extends Record<string, string | number>>(obj: T) {
+  const values = Object.getOwnPropertyNames(obj)
+    .filter((key) => isNaN(key as unknown as number))
+    .map((key) => obj[key]) as T[keyof T][]
+  return Type.Unsafe<T[keyof T]>(Type.Integer({ enum: values }))
+}
+
 export function TypeAccessLevel() {
-  return Type.Unsafe<AccessLevel>(Type.Integer({ enum: Object.values(AccessLevel) }))
+  return TypeIntegerEnum(AccessLevel)
 }

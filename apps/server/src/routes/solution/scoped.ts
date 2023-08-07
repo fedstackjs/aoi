@@ -1,8 +1,8 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
-import { SolutionState, solutions } from '../../db/solution.js'
-import { TypeUUID } from '../../schemas/common.js'
+import { SolutionState, solutions } from '../../db/index.js'
+import { TypeUUID } from '../../schemas/index.js'
 
 const solutionIdSchema = Type.Object({
   solutionId: Type.String()
@@ -70,7 +70,7 @@ export const solutionScopedRoute = defineRoutes(async (s) => {
         { $set: { state: SolutionState.PENDING } }
       )
       if (modifiedCount === 0) throw s.httpErrors.notFound()
-      return 0
+      return {}
     }
   )
 

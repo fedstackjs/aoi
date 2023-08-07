@@ -1,7 +1,7 @@
 import { BSON } from 'mongodb'
 import { db } from './client.js'
 import { capabilityMask } from '../utils/capability.js'
-import { IOrgProfile, IOrgSettings } from '../schemas/org.js'
+import { IOrgProfile, IOrgSettings } from '../schemas/index.js'
 
 export const OrgCapability = {
   CAP_ACCESS: capabilityMask(0),

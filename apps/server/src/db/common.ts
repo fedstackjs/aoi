@@ -1,5 +1,5 @@
 import { BSON } from 'mongodb'
-import { AccessLevel } from '../schemas/common.js'
+import { AccessLevel } from '../schemas/index.js'
 
 /**
  * The following interfaces describes the datastructure

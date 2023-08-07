@@ -8,11 +8,12 @@ export const SOrgProfile = StrictObject({
 export interface IOrgProfile extends Static<typeof SOrgProfile> {}
 
 export const SOrgOssSettings = StrictObject({
-  region: Type.String(),
   bucket: Type.String(),
-  accessKeyId: Type.String(),
-  secretAccessKey: Type.String(),
-  endpoint: Type.Optional(Type.String())
+  accessKey: Type.String(),
+  secretKey: Type.String(),
+  region: Type.Optional(Type.String()),
+  endpoint: Type.Optional(Type.String()), // The default is AWS S3
+  pathStyle: Type.Optional(Type.Boolean())
 })
 export interface IOrgOssSettings extends Static<typeof SOrgOssSettings> {}
 

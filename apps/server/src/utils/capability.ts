@@ -1,6 +1,5 @@
 import { BSON } from 'mongodb'
-import { IPrincipalControlable } from '../db/common.js'
-import { IOrgMembership } from '../db/org.js'
+import { IPrincipalControlable, IOrgMembership } from '../db/index.js'
 
 /**
  * See:

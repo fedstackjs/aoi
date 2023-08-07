@@ -1,10 +1,14 @@
 import { FastifyPluginAsyncTypebox, Static, TSchema, Type } from '@fastify/type-provider-typebox'
 import { RouteOptions } from 'fastify'
 import { BSON } from 'mongodb'
-import { IOrgMembership, orgMemberships } from '../../db/org.js'
-import { IPrincipalControlable, IWithAccessLevel } from '../../db/common.js'
+import {
+  IOrgMembership,
+  orgMemberships,
+  IPrincipalControlable,
+  IWithAccessLevel
+} from '../../db/index.js'
 import { CAP_NONE, computeCapability } from '../../utils/capability.js'
-import { AccessLevel } from '../../schemas/common.js'
+import { AccessLevel } from '../../schemas/index.js'
 
 export const paginationSchema = Type.Object({
   page: Type.Integer({ minimum: 1, default: 1 }),

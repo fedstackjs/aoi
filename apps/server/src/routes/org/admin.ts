@@ -1,7 +1,7 @@
 import { BSON } from 'mongodb'
 import { CAP_NONE, ensureCapability } from '../../utils/capability.js'
 import { defineRoutes } from '../common/index.js'
-import { OrgCapability } from '../../db/org.js'
+import { OrgCapability } from '../../db/index.js'
 import { Type } from '@sinclair/typebox'
 
 export const orgAdminRoutes = defineRoutes(async (s) => {
@@ -64,4 +64,6 @@ export const orgAdminRoutes = defineRoutes(async (s) => {
       return { registrationToken: token }
     }
   )
+
+  s.get('/runner/list', {}, async (req, rep) => rep.notImplemented())
 })

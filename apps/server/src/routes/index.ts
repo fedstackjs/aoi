@@ -36,7 +36,8 @@ export const apiRoutes = defineRoutes(async (s) => {
   })
 
   s.addHook('onRequest', async (req, rep) => {
-    if (Array.isArray(req.routeSchema.security) && !req.routeSchema.security.length) return
+    // JWT is the default security scheme
+    if ('security' in req.routeSchema) return
     try {
       await req.jwtVerify()
     } catch (err) {

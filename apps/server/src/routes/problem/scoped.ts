@@ -1,7 +1,14 @@
 import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
 import { problemConfigSchema } from '@aoi/common'
-import { IProblem, ProblemCapability, problems } from '../../db/problem.js'
+import {
+  IProblem,
+  ProblemCapability,
+  problems,
+  OrgCapability,
+  SolutionState,
+  solutions
+} from '../../db/index.js'
 import {
   defineRoutes,
   loadCapability,
@@ -10,12 +17,10 @@ import {
   paramSchemaMerger
 } from '../common/index.js'
 import { CAP_ALL, ensureCapability } from '../../utils/capability.js'
-import { OrgCapability } from '../../db/org.js'
 import { getUploadUrl } from '../../oss/index.js'
-import { SolutionState, solutions } from '../../db/solution.js'
-import { TypeUUID, StrictObject, TypeAccessLevel } from '../../schemas/common.js'
+import { TypeUUID, StrictObject, TypeAccessLevel } from '../../schemas/index.js'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
-import { problemAttachmentKey, problemDataKey, solutionDataKey } from '../../oss/key.js'
+import { problemAttachmentKey, problemDataKey, solutionDataKey } from '../../oss/index.js'
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
 
 const problemIdSchema = Type.Object({
@@ -70,7 +75,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
                 description: Type.String()
               })
             ),
-            config: problemConfigSchema
+            config: Type.Optional(problemConfigSchema)
           })
         }
       }
@@ -78,7 +83,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
     async (req) => {
       return {
         ...req._problem,
-        config: req._problem.data[req._problem.currentDataHash]?.config ?? ''
+        config: req._problem.data[req._problem.currentDataHash]?.config
       }
     }
   )
@@ -88,7 +93,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       s.addHook('onRoute', paramSchemaMerger(Type.Object({ key: Type.String() })))
       s.register(getFileUrl, {
         prefix: '/url',
-        resolve: async (type, _query, req) => {
+        resolve: async (type, query, req) => {
           if (type !== 'download') {
             ensureCapability(
               req._problemCapability,
@@ -97,7 +102,8 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
             )
           }
           const oss = await loadOrgOssSettings(req._problem.orgId)
-          return [oss, problemAttachmentKey(req._problemId, (req.params as { key: string }).key)]
+          const key = (req.params as { key: string }).key
+          return [oss, problemAttachmentKey(req._problemId, key), query]
         }
       })
 
@@ -164,7 +170,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       s.addHook('onRoute', paramSchemaMerger(Type.Object({ hash: Type.String() })))
       s.register(getFileUrl, {
         prefix: '/url',
-        resolve: async (_type, _query, req) => {
+        resolve: async (_type, query, req) => {
           ensureCapability(
             req._problemCapability,
             ProblemCapability.CAP_CONTENT,
@@ -172,7 +178,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
           )
           const oss = await loadOrgOssSettings(req._problem.orgId)
           const hash = (req.params as { hash: string }).hash
-          return [oss, problemDataKey(req._problemId, hash), { sha256: hash, expiresIn: 300 }]
+          return [oss, problemDataKey(req._problemId, hash), query]
         }
       })
 
@@ -182,7 +188,6 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
           schema: {
             description: 'Upsert problem data',
             body: StrictObject({
-              size: Type.Integer({ minimum: 0 }),
               config: problemConfigSchema,
               description: Type.String()
             }),
@@ -327,8 +332,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       if (!value) throw s.httpErrors.conflict()
       const uploadUrl = await getUploadUrl(oss, solutionDataKey(value._id), {
         expiresIn: 300,
-        size: req.body.size,
-        sha256: req.body.hash
+        size: req.body.size
       })
       return { solutionId: value._id, uploadUrl }
     }

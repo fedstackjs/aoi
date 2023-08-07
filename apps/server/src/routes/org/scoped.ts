@@ -1,9 +1,9 @@
 import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
-import { IOrgMembership, orgMemberships, orgs } from '../../db/org.js'
+import { IOrgMembership, orgMemberships, orgs } from '../../db/index.js'
 import { defineRoutes, paramSchemaMerger, loadUUID } from '../common/index.js'
 import { orgAdminRoutes } from './admin.js'
-import { SOrgProfile } from '../../schemas/org.js'
+import { SOrgProfile } from '../../schemas/index.js'
 
 const orgIdSchema = Type.Object({
   orgId: Type.String()

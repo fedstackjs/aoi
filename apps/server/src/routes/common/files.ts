@@ -1,7 +1,6 @@
 import { FastifyPluginAsyncTypebox, Static, Type } from '@fastify/type-provider-typebox'
-import { StringEnum } from '../../schemas/common.js'
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { IOrgOssSettings } from '../../schemas/org.js'
+import { StringEnum, IOrgOssSettings } from '../../schemas/index.js'
 import {
   IUrlOptions,
   getDeleteUrl,
@@ -10,7 +9,7 @@ import {
   getUploadUrl
 } from '../../oss/index.js'
 import { BSON } from 'mongodb'
-import { orgs } from '../../db/org.js'
+import { orgs } from '../../db/index.js'
 
 const types = Object.freeze({
   upload: getUploadUrl,
@@ -22,7 +21,6 @@ const types = Object.freeze({
 const SGetUrlOptions = Type.Partial(
   Type.Object({
     expiresIn: Type.Integer({ minimum: 1 }),
-    sha256: Type.String(),
     size: Type.Integer({ minimum: 1 })
   })
 )
