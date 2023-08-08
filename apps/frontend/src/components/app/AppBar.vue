@@ -1,6 +1,16 @@
 <template>
   <VAppBar border>
     <VAppBarNavIcon @click="appState.navBar = !appState.navBar" />
+    <VToolbarItems>
+      <VBtn to="/" rounded="lg" :active="false">
+        <template #prepend>
+          <VIcon size="48"><AppLogo /></VIcon>
+        </template>
+        <div class="text-none u-pl-4 u-font-mono u-text-3xl">
+          {{ t('app-name') }}
+        </div>
+      </VBtn>
+    </VToolbarItems>
     <VAppBarTitle>{{ appState.title }}</VAppBarTitle>
 
     <VSpacer></VSpacer>
@@ -22,6 +32,7 @@ import { useAppState } from '@/stores/app'
 import { useI18n } from 'vue-i18n'
 import AppBarUserMenu from './AppBarUserMenu.vue'
 import AppBarAddMenu from './AppBarAddMenu.vue'
+import AppLogo from './AppLogo.vue'
 
 const { t } = useI18n()
 const appState = useAppState()

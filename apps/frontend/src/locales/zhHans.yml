@@ -1,3 +1,4 @@
+app-name: AOI
 home: 首页
 about: 关于
 problems: 题库
@@ -7,3 +8,7 @@ users: 用户
 discussion: 讨论
 signin: 登录
 logout: 注销
+danger-zone: 危险设置
+delete: 删除
+save: 保存
+reset: 重置

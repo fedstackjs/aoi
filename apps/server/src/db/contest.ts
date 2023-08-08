@@ -33,5 +33,5 @@ export interface IContest extends IPrincipalControlable, IWithAttachment {
   description: string
   tags: string[]
 
-  problems: Record<string, IContestProblem>
+  problems: IContestProblem[]
 }

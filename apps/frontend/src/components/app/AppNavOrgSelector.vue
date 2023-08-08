@@ -1,43 +1,46 @@
 <template>
+  <VListItem v-if="appState.orgId" :to="'/org/' + appState.orgId" exact>
+    <template #prepend>
+      <VAvatar rounded="lg">
+        <AppGravatar :email="appState.orgProfile.state.value?.profile.email ?? ''" />
+      </VAvatar>
+    </template>
+    <VListItemTitle>{{ appState.orgProfile.state.value?.profile.name }}</VListItemTitle>
+    <VOverlay
+      :model-value="appState.orgProfile.isLoading.value"
+      contained
+      class="align-center justify-center"
+    >
+      <VProgressCircular color="primary" indeterminate />
+    </VOverlay>
+  </VListItem>
   <VMenu location="end" min-width="160">
     <template v-slot:activator="{ props }">
       <VListItem v-bind="props">
         <template #prepend>
-          <VAvatar v-if="appState.orgId" rounded="lg">
-            <AppGravatar :email="appState.orgProfile.state?.email ?? ''" />
-          </VAvatar>
-          <VIcon v-else>mdi-account-group</VIcon>
+          <VIcon>mdi-account-group</VIcon>
         </template>
-        <template v-if="appState.orgId">
-          <VListItemTitle>{{ appState.orgProfile.state?.name }}</VListItemTitle>
-          <VOverlay
-            :model-value="appState.orgProfile.isLoading"
-            contained
-            class="align-center justify-center"
-          >
-            <VProgressCircular color="primary" indeterminate />
-          </VOverlay>
-        </template>
-        <template v-else>
-          <VListItemTitle>
-            {{ t('select-organization') }}
-          </VListItemTitle>
-        </template>
+        <VListItemTitle>
+          {{ t('select-organization') }}
+        </VListItemTitle>
         <template #append>
-          <VIcon v-if="!appState.orgId">mdi-chevron-right</VIcon>
+          <VIcon>mdi-chevron-right</VIcon>
         </template>
       </VListItem>
     </template>
-    <VList>
-      <VListItem v-for="org in joinedOrgs.state.value" :key="org._id" :to="'/org/' + org._id">
-        <template #prepend>
-          <VAvatar rounded="lg">
-            <AppGravatar :email="org.profile.email" />
-          </VAvatar>
-        </template>
-        <VListItemTitle>{{ org.profile.name }}</VListItemTitle>
-      </VListItem>
-    </VList>
+    <VCard class="u-min-w-64" :title="t('select-organization')">
+      <VDivider />
+      <VList>
+        <VListItem v-for="org in joinedOrgs.state.value" :key="org._id" :to="'/org/' + org._id">
+          <template #prepend>
+            <VAvatar rounded="lg">
+              <AppGravatar :email="org.profile.email" />
+            </VAvatar>
+          </template>
+          <VListItemTitle>{{ org.profile.name }}</VListItemTitle>
+        </VListItem>
+      </VList>
+    </VCard>
   </VMenu>
 </template>
 

@@ -18,10 +18,13 @@ import {
 } from '../common/index.js'
 import { CAP_ALL, ensureCapability } from '../../utils/capability.js'
 import { getUploadUrl } from '../../oss/index.js'
-import { TypeUUID, StrictObject, TypeAccessLevel } from '../../schemas/index.js'
-import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
-import { problemAttachmentKey, problemDataKey, solutionDataKey } from '../../oss/index.js'
-import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
+import { TypeUUID, StrictObject, TypeAccessLevel, TypeHash } from '../../schemas/index.js'
+import { loadOrgOssSettings } from '../common/files.js'
+import { solutionDataKey } from '../../oss/index.js'
+import { SAPIResponseVoid } from '../../schemas/api.js'
+import { manageACL } from '../common/acl.js'
+import { attachmentRoutes } from './attachment.js'
+import { dataRoutes } from './data.js'
 
 const problemIdSchema = Type.Object({
   problemId: Type.String()
@@ -35,11 +38,39 @@ declare module 'fastify' {
   }
 }
 
+const adminRoutes = defineRoutes(async (s) => {
+  s.addHook('onRequest', async (req) => {
+    ensureCapability(req._problemCapability, ProblemCapability.CAP_ADMIN, s.httpErrors.forbidden())
+  })
+
+  s.register(manageACL, {
+    collection: problems,
+    resolve: async (req) => req._problemId,
+    defaultCapability: ProblemCapability.CAP_ACCESS,
+    prefix: '/access'
+  })
+
+  s.delete(
+    '/',
+    {
+      schema: {
+        description: 'Delete problem'
+      }
+    },
+    async (req) => {
+      // TODO: handle dependencies
+      await problems.deleteOne({ _id: req._problemId })
+      return {}
+    }
+  )
+})
+
 export const problemScopedRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', paramSchemaMerger(problemIdSchema))
 
   s.addHook('onRequest', async (req) => {
     const problemId = loadUUID(req.params, 'problemId', s.httpErrors.notFound())
+    // TODO: optimize using projection
     const problem = await problems.findOne({ _id: problemId })
     if (!problem) throw s.httpErrors.notFound()
     const membership = await loadMembership(req.user.userId, problem.orgId)
@@ -68,13 +99,9 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
             slug: Type.String(),
             title: Type.String(),
             description: Type.String(),
-            attachments: Type.Record(
-              Type.String(),
-              Type.Object({
-                name: Type.String(),
-                description: Type.String()
-              })
-            ),
+            tags: Type.Array(Type.String()),
+            capability: Type.String(),
+            currentDataHash: Type.String(),
             config: Type.Optional(problemConfigSchema)
           })
         }
@@ -83,180 +110,25 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
     async (req) => {
       return {
         ...req._problem,
-        config: req._problem.data[req._problem.currentDataHash]?.config
+        capability: req._problemCapability.toString(),
+        config: req._problem.data.find(({ hash }) => hash === req._problem.currentDataHash)?.config
       }
     }
   )
 
-  s.register(
-    async (s) => {
-      s.addHook('onRoute', paramSchemaMerger(Type.Object({ key: Type.String() })))
-      s.register(getFileUrl, {
-        prefix: '/url',
-        resolve: async (type, query, req) => {
-          if (type !== 'download') {
-            ensureCapability(
-              req._problemCapability,
-              ProblemCapability.CAP_CONTENT,
-              s.httpErrors.forbidden()
-            )
-          }
-          const oss = await loadOrgOssSettings(req._problem.orgId)
-          const key = (req.params as { key: string }).key
-          return [oss, problemAttachmentKey(req._problemId, key), query]
-        }
-      })
-
-      s.put(
-        '/',
-        {
-          schema: {
-            description: 'Upsert problem attachment',
-            body: StrictObject({
-              name: Type.String(),
-              description: Type.String()
-            }),
-            response: {
-              200: Type.Object({})
-            }
-          }
-        },
-        async (req) => {
-          ensureCapability(
-            req._problemCapability,
-            ProblemCapability.CAP_CONTENT,
-            s.httpErrors.forbidden()
-          )
-
-          const key = (req.params as { key: string }).key
-          await problems.updateOne(
-            { _id: req._problemId },
-            { $set: { [`attachments.${key}`]: req.body } }
-          )
-          return {}
-        }
-      )
-
-      s.delete(
-        '/',
-        {
-          schema: {
-            description: 'Delete problem attachment',
-            response: {
-              200: Type.Object({})
-            }
-          }
-        },
-        async (req) => {
-          ensureCapability(
-            req._problemCapability,
-            ProblemCapability.CAP_CONTENT,
-            s.httpErrors.forbidden()
-          )
-
-          const key = (req.params as { key: string }).key
-          await problems.updateOne(
-            { _id: req._problemId },
-            { $unset: { [`attachments.${key}`]: 1 } }
-          )
-          return {}
-        }
-      )
-    },
-    { prefix: '/attachment/:key' }
-  )
-  s.register(
-    (async (s) => {
-      s.addHook('onRoute', paramSchemaMerger(Type.Object({ hash: Type.String() })))
-      s.register(getFileUrl, {
-        prefix: '/url',
-        resolve: async (_type, query, req) => {
-          ensureCapability(
-            req._problemCapability,
-            ProblemCapability.CAP_CONTENT,
-            s.httpErrors.forbidden()
-          )
-          const oss = await loadOrgOssSettings(req._problem.orgId)
-          const hash = (req.params as { hash: string }).hash
-          return [oss, problemDataKey(req._problemId, hash), query]
-        }
-      })
-
-      s.put(
-        '/',
-        {
-          schema: {
-            description: 'Upsert problem data',
-            body: StrictObject({
-              config: problemConfigSchema,
-              description: Type.String()
-            }),
-            response: {
-              200: Type.Object({})
-            }
-          }
-        },
-        async (req, rep) => {
-          ensureCapability(
-            req._problemCapability,
-            ProblemCapability.CAP_CONTENT,
-            s.httpErrors.forbidden()
-          )
-          const oss = await loadOrgOssSettings(req._problem.orgId)
-          if (!oss) return rep.preconditionFailed('OSS not configured')
-
-          const hash = (req.params as { hash: string }).hash
-          const { config, description } = req.body
-          const { modifiedCount } = await problems.updateOne(
-            { _id: req._problemId },
-            { $set: { [`data.${hash}`]: { createdAt: Date.now(), config, description } } }
-          )
-          if (!modifiedCount) return rep.conflict()
-          return {}
-        }
-      )
-
-      s.delete(
-        '/',
-        {
-          schema: {
-            description: 'Delete problem attachment',
-            response: {
-              200: Type.Object({})
-            }
-          }
-        },
-        async (req) => {
-          ensureCapability(
-            req._problemCapability,
-            ProblemCapability.CAP_CONTENT,
-            s.httpErrors.forbidden()
-          )
-          const hash = (req.params as { hash: string }).hash
-          const { modifiedCount } = await problems.updateOne(
-            { _id: req._problemId, currentDataHash: { $ne: hash } },
-            { $unset: { [`data.${hash}`]: 1 } }
-          )
-          if (!modifiedCount) {
-            throw s.httpErrors.conflict()
-          }
-          return {}
-        }
-      )
-    }) satisfies FastifyPluginAsyncTypebox,
-    { prefix: '/data/:hash' }
-  )
-
   s.patch(
-    '/currentDataHash',
+    '/content',
     {
       schema: {
-        description: 'Update problem current data hash',
-        body: Type.Object({
-          hash: Type.String()
+        description: 'Update problem content',
+        body: StrictObject({
+          title: Type.String(),
+          slug: Type.String(),
+          description: Type.String(),
+          tags: Type.Array(Type.String())
         }),
         response: {
-          200: Type.Object({})
+          200: SAPIResponseVoid
         }
       }
     },
@@ -266,17 +138,14 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
         ProblemCapability.CAP_CONTENT,
         s.httpErrors.forbidden()
       )
-      const { hash } = req.body
-      const { modifiedCount } = await problems.updateOne(
-        { _id: req._problemId, [`data.${hash}`]: { $exists: true } },
-        { $set: { currentDataHash: hash } }
-      )
-      if (!modifiedCount) {
-        throw s.httpErrors.conflict()
-      }
+      await problems.updateOne({ _id: req._problemId }, { $set: req.body })
       return {}
     }
   )
+
+  s.register(attachmentRoutes, { prefix: '/attachment' })
+  s.register(dataRoutes, { prefix: '/data' })
+  s.register(adminRoutes, { prefix: '/admin' })
 
   s.post(
     '/submit',
@@ -284,7 +153,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Submit a solution',
         body: Type.Object({
-          hash: Type.String(),
+          hash: TypeHash(),
           size: Type.Integer()
         }),
         response: {
@@ -300,7 +169,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       if (!oss) return rep.preconditionFailed('OSS not configured')
 
       const { data, currentDataHash } = req._problem
-      const currentData = data[currentDataHash]
+      const currentData = data.find(({ hash }) => hash === currentDataHash)
       if (!currentData) return rep.preconditionFailed('Current data not found')
       const { config } = currentData
 

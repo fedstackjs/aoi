@@ -5,13 +5,14 @@ import { capabilityMask } from '../utils/capability.js'
 import { ProblemConfig } from '@aoi/common'
 
 export const ProblemCapability = {
-  CAP_ACCESS: capabilityMask(0),
-  CAP_CONTENT: capabilityMask(1),
-  CAP_DATA: capabilityMask(2),
-  CAP_ADMIN: capabilityMask(3)
+  CAP_ACCESS: capabilityMask(0), // Can access(view) this problem
+  CAP_CONTENT: capabilityMask(1), // Can edit problem content
+  CAP_DATA: capabilityMask(2), // Can manage problem data
+  CAP_ADMIN: capabilityMask(3) // Can manage problem ACL
 }
 
 export interface IProblemData {
+  hash: string
   config: ProblemConfig
   description: string
   createdAt: number
@@ -30,7 +31,7 @@ export interface IProblem extends IPrincipalControlable, IWithAttachment, IWithA
    * Data map: hash -> data
    * Stored in S3 <problemId>/data/<hash>
    */
-  data: Record<string, IProblemData>
+  data: IProblemData[]
   currentDataHash: string
 
   createdAt: number

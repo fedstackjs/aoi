@@ -1,8 +1,15 @@
 import { BSON } from 'mongodb'
 import { CAP_NONE, ensureCapability } from '../../utils/capability.js'
 import { defineRoutes } from '../common/index.js'
-import { OrgCapability } from '../../db/index.js'
+import { OrgCapability, orgs } from '../../db/index.js'
 import { Type } from '@sinclair/typebox'
+import { IOrgOssSettings, SOrgSettings } from '../../index.js'
+
+function ossSettingsToUpdate(oss: IOrgOssSettings) {
+  const $set: Record<string, unknown> = oss
+  if (!$set.secretKey) delete $set.secretKey
+  return Object.fromEntries(Object.entries($set).map(([k, v]) => [`settings.oss.${k}`, v]))
+}
 
 export const orgAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req) => {
@@ -21,14 +28,40 @@ export const orgAdminRoutes = defineRoutes(async (s) => {
     }
   )
 
+  s.get(
+    '/settings',
+    {
+      schema: {
+        response: {
+          200: SOrgSettings
+        }
+      }
+    },
+    async (req, rep) => {
+      const org = await orgs.findOne({ _id: req._orgId }, { projection: { settings: 1 } })
+      if (!org) return rep.notFound()
+      if (org.settings.oss) {
+        org.settings.oss.secretKey = ''
+      }
+      return org.settings
+    }
+  )
+
   s.patch(
     '/settings',
     {
-      schema: {}
+      schema: {
+        body: Type.Partial(SOrgSettings)
+      }
     },
-    async () => {
-      // TODO: update settings
-      throw s.httpErrors.notImplemented()
+    async (req) => {
+      const { oss, ...rest } = req.body
+      let $set = rest
+      if (oss) {
+        $set = { ...$set, ...ossSettingsToUpdate(oss) }
+      }
+      await orgs.updateOne({ _id: req._orgId }, { $set })
+      return {}
     }
   )
 

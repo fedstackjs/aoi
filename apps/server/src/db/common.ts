@@ -36,12 +36,13 @@ export interface IPrincipalControlable {
 }
 
 export interface IAttachment {
+  key: string
   name: string
   description: string
 }
 
 export interface IWithAttachment {
-  attachments: Record<string, IAttachment>
+  attachments: IAttachment[]
 }
 
 export interface IWithAccessLevel {

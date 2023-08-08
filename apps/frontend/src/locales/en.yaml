@@ -1,9 +1,15 @@
+app-name: AOI
 home: Home
 about: About
 problems: Problems
 contests: Contests
 submissions: Submissions
 users: Users
+groups: Groups
 discussion: Discussion
 signin: Sign in
 logout: Log out
+danger-zone: Danger Zone
+delete: Delete
+save: Save
+reset: Reset

@@ -45,8 +45,8 @@ export const problemRoutes = defineRoutes(async (s) => {
         title: req.body.title,
         description: '',
         tags: [],
-        attachments: {},
-        data: {},
+        attachments: [],
+        data: [],
         currentDataHash: '',
         associations: [],
         accessLevel: req.body.accessLevel,
@@ -73,7 +73,11 @@ export const problemRoutes = defineRoutes(async (s) => {
         response: {
           200: TypePaginationResult(
             Type.Object({
-              //
+              _id: TypeUUID(),
+              orgId: TypeUUID(),
+              slug: Type.String(),
+              title: Type.String(),
+              tags: Type.Array(Type.String())
             })
           )
         }

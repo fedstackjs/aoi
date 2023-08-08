@@ -2,7 +2,6 @@
   <VNavigationDrawer v-model="appState.navBar">
     <VList nav>
       <AppNavOrgSelector />
-      <VDivider />
       <VListItem v-for="(link, i) of links" :key="i" v-bind="link" />
     </VList>
     <template #append>
@@ -33,7 +32,8 @@ const orgItems = () => {
     { prependIcon: 'mdi-balloon', to: '/contest', title: t('contests') },
     { prependIcon: 'mdi-timer-sand', to: '/submission', title: t('submissions') },
     { prependIcon: 'mdi-account-multiple', to: '/group', title: t('groups') },
-    { prependIcon: 'mdi-chat', to: '/discussion', title: t('discussion') }
+    { prependIcon: 'mdi-chat', to: '/discussion', title: t('discussion') },
+    { prependIcon: 'mdi-cog', to: '/admin', title: t('admin') }
   ].map((item) => ({
     ...item,
     to: `/org/${appState.orgId}${item.to}`
@@ -41,7 +41,6 @@ const orgItems = () => {
 }
 
 const links = computed(() => [
-  { prependIcon: 'mdi-home', to: '/', title: t('home') },
   ...orgItems(),
   { prependIcon: 'mdi-help', to: '/about', title: t('about') }
 ])

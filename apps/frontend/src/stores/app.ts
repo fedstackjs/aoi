@@ -7,12 +7,12 @@ import type { IOrgProfile } from '@/types'
 
 export const useAppState = defineStore('app_state', () => {
   const route = useRoute()
-  const orgId = computed(() => route.params.orgId)
+  const orgId = computed(() => '' + (route.params.orgId ?? ''))
   const orgProfile = useAsyncState(
     async () => {
       if (!orgId.value) return null
-      const resp = await http.get(`org/${orgId.value}/profile`)
-      return resp.json<IOrgProfile>()
+      const resp = await http.get(`org/${orgId.value}`)
+      return resp.json<{ profile: IOrgProfile; membership: { capability: string } }>()
     },
     null,
     { immediate: false }
@@ -27,6 +27,6 @@ export const useAppState = defineStore('app_state', () => {
     title,
     loggedIn,
     orgId,
-    orgProfile
+    orgProfile: computed(() => orgProfile)
   }
 })

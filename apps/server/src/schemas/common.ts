@@ -14,6 +14,10 @@ export function TypeLong() {
   return Type.Unsafe<BSON.Long>(Type.String())
 }
 
+export function TypeHash() {
+  return Type.String({ pattern: '^[0-9a-f]{64}$' })
+}
+
 export function StringEnum<T extends string[]>(values: [...T]) {
   return Type.Unsafe<T[number]>({ type: 'string', enum: values })
 }

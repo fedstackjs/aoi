@@ -4,10 +4,14 @@ import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
 import { apiRoutes } from '../routes/index.js'
 import { logger } from '../utils/logger.js'
+import { schemaRoutes } from './schemas.js'
 
 const server = fastify({ logger })
 
 await server.register(fastifySensible)
+
+await server.register(schemaRoutes, { prefix: '/schemas' })
+
 await server.register(fastifySwagger, {
   openapi: {
     info: {
