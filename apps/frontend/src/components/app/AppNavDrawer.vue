@@ -30,9 +30,7 @@ const orgItems = () => {
   return [
     { prependIcon: 'mdi-list-box', to: '/problem', title: t('problems') },
     { prependIcon: 'mdi-balloon', to: '/contest', title: t('contests') },
-    { prependIcon: 'mdi-timer-sand', to: '/submission', title: t('submissions') },
     { prependIcon: 'mdi-account-multiple', to: '/group', title: t('groups') },
-    { prependIcon: 'mdi-chat', to: '/discussion', title: t('discussion') },
     { prependIcon: 'mdi-cog', to: '/admin', title: t('admin') }
   ].map((item) => ({
     ...item,

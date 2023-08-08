@@ -20,17 +20,12 @@ export interface IOrg {
 export const orgs = db.collection<IOrg>('orgs')
 await orgs.createIndex({ 'profile.name': 1 }, { unique: true })
 
-export interface IGroupMembership {
-  groupId: BSON.UUID
-  capability: BSON.Long
-}
-
 export interface IOrgMembership {
   _id: BSON.UUID
   userId: BSON.UUID
   orgId: BSON.UUID
   capability: BSON.Long
-  groups: IGroupMembership[]
+  groups: BSON.UUID[]
 }
 
 export const orgMemberships = db.collection<IOrgMembership>('orgMemberships')

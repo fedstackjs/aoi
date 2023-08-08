@@ -27,7 +27,7 @@ export function computeCapability(
   return object.associations.reduce(
     (acc, { principalId, capability }) =>
       principalId.equals(membership.userId) ||
-      membership.groups.some(({ groupId }) => groupId.equals(principalId))
+      membership.groups.some((groupId) => groupId.equals(principalId))
         ? acc.or(capability)
         : acc,
     defaultCapability

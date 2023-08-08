@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useAsyncState, useTitle, watchDebounced } from '@vueuse/core'
-import { http, isLoggedIn } from '@/utils/http'
+import { http, isLoggedIn, userId } from '@/utils/http'
 import { useRoute } from 'vue-router'
 import type { IOrgProfile } from '@/types'
 
@@ -26,6 +26,7 @@ export const useAppState = defineStore('app_state', () => {
     navBar,
     title,
     loggedIn,
+    userId,
     orgId,
     orgProfile: computed(() => orgProfile)
   }

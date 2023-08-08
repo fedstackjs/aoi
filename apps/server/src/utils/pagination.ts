@@ -8,6 +8,10 @@ export function TypePaginationResult<T extends TSchema>(itemType: T) {
   })
 }
 
+export function paginationSkip(page: number, perPage: number) {
+  return (page - 1) * perPage
+}
+
 export async function findPaginated<T extends Document>(
   collection: Collection<T>,
   page: number,
@@ -19,7 +23,7 @@ export async function findPaginated<T extends Document>(
   items: WithId<T>[]
   total?: number
 }> {
-  const skip = (page - 1) * perPage
+  const skip = paginationSkip(page, perPage)
   const items = await collection.find(filter, options).skip(skip).limit(perPage).toArray()
   const total = count ? await collection.countDocuments(filter) : undefined
   return { items, total }

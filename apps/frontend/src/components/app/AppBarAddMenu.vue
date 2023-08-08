@@ -20,6 +20,7 @@ const appState = useAppState()
 const orgMenu = () => {
   if (!appState.orgId) return []
   return [
+    { prependIcon: 'mdi-account-multiple', title: t('new-group'), to: '/group/new' },
     { prependIcon: 'mdi-notebook', title: t('new-problem'), to: '/problem/new' },
     { prependIcon: 'mdi-trophy', title: t('new-contest'), to: '/contest/new' },
     { prependIcon: 'mdi-clipboard-clock', title: t('new-plan'), to: '/plan/new' }

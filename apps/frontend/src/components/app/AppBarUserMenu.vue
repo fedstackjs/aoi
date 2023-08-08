@@ -23,12 +23,14 @@ import { useRouter } from 'vue-router'
 import { logout as _logout, http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
 import AppGravatar from './AppGravatar.vue'
+import { useAppState } from '@/stores/app'
 
 const router = useRouter()
 const { t } = useI18n()
+const app = useAppState()
 
 const userInfo = useAsyncState(async () => {
-  const resp = await http.get('user/profile')
+  const resp = await http.get(`user/${app.userId}/profile`)
   const user = await resp.json<{
     username: string
     realname: string

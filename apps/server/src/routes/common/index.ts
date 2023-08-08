@@ -1,4 +1,4 @@
-import { FastifyPluginAsyncTypebox, Static, TSchema, Type } from '@fastify/type-provider-typebox'
+import { FastifyPluginAsyncTypebox, TSchema, Type } from '@fastify/type-provider-typebox'
 import { RouteOptions } from 'fastify'
 import { BSON } from 'mongodb'
 import {
@@ -9,18 +9,6 @@ import {
 } from '../../db/index.js'
 import { CAP_NONE, computeCapability } from '../../utils/capability.js'
 import { AccessLevel } from '../../schemas/index.js'
-
-export const paginationSchema = Type.Object({
-  page: Type.Integer({ minimum: 1, default: 1 }),
-  pageSize: Type.Integer({ minimum: 1, maximum: 100, default: 10 })
-})
-
-export function paginationToOptions(pagination: Static<typeof paginationSchema>) {
-  return {
-    skip: (pagination.page - 1) * pagination.pageSize,
-    limit: pagination.pageSize
-  }
-}
 
 export function defineRoutes(plugin: FastifyPluginAsyncTypebox) {
   return plugin

@@ -14,9 +14,9 @@
                 <VIcon start> mdi-cog </VIcon>
                 {{ t('settings') }}
               </VTab>
-              <VTab value="access" :to="rel('access')">
-                <VIcon start> mdi-lock </VIcon>
-                {{ t('access') }}
+              <VTab value="members" :to="rel('member')">
+                <VIcon start> mdi-account </VIcon>
+                {{ t('members') }}
               </VTab>
             </VTabs>
             <VDivider vertical />

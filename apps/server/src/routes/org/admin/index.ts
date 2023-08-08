@@ -1,9 +1,10 @@
 import { BSON } from 'mongodb'
-import { CAP_NONE, ensureCapability } from '../../utils/capability.js'
-import { defineRoutes } from '../common/index.js'
-import { OrgCapability, orgs } from '../../db/index.js'
+import { CAP_NONE, ensureCapability } from '../../../utils/capability.js'
+import { defineRoutes } from '../../common/index.js'
+import { OrgCapability, orgs } from '../../../db/index.js'
 import { Type } from '@sinclair/typebox'
-import { IOrgOssSettings, SOrgSettings } from '../../index.js'
+import { IOrgOssSettings, SOrgSettings } from '../../../index.js'
+import { orgAdminMemberRoutes } from './member.js'
 
 function ossSettingsToUpdate(oss: IOrgOssSettings) {
   const $set: Record<string, unknown> = oss
@@ -16,6 +17,8 @@ export const orgAdminRoutes = defineRoutes(async (s) => {
     const capability = req._orgMembership?.capability ?? CAP_NONE
     ensureCapability(capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
   })
+
+  s.register(orgAdminMemberRoutes, { prefix: '/member' })
 
   s.patch(
     '/ownership',

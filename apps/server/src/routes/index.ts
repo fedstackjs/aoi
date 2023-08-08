@@ -11,6 +11,7 @@ import fastifyJwt from '@fastify/jwt'
 import { Type } from '@sinclair/typebox'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { loadEnv } from '../utils/config.js'
+import { groupRoutes } from './group/index.js'
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
@@ -58,6 +59,7 @@ export const apiRoutes = defineRoutes(async (s) => {
   s.register(authRoutes, { prefix: '/auth' })
   s.register(userRoutes, { prefix: '/user' })
   s.register(orgRoutes, { prefix: '/org' })
+  s.register(groupRoutes, { prefix: '/group' })
   s.register(problemRoutes, { prefix: '/problem' })
   s.register(solutionRoutes, { prefix: '/solution' })
   s.register(adminRoutes, { prefix: '/admin' })

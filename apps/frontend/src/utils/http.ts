@@ -4,6 +4,9 @@ import { computed } from 'vue'
 
 const token = useLocalStorage('aoi-auth-token', '')
 export const isLoggedIn = computed(() => !!token.value)
+export const userId = computed(
+  () => token.value && JSON.parse(atob(token.value.split('.')[1])).userId
+)
 
 export const http: typeof ky = ky.create({
   prefixUrl: '/api',

@@ -1,9 +1,10 @@
 import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
-import { IOrgMembership, orgMemberships, orgs } from '../../db/index.js'
+import { IOrgMembership, OrgCapability, orgMemberships, orgs } from '../../db/index.js'
 import { defineRoutes, paramSchemaMerger, loadUUID } from '../common/index.js'
-import { orgAdminRoutes } from './admin.js'
+import { orgAdminRoutes } from './admin/index.js'
 import { SOrgProfile } from '../../schemas/index.js'
+import { CAP_NONE, hasCapability } from '../../index.js'
 
 const orgIdSchema = Type.Object({
   orgId: Type.String()
@@ -43,11 +44,7 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
         response: {
           200: Type.Object({
             profile: SOrgProfile,
-            membership: Type.Optional(
-              Type.Object({
-                capability: Type.String()
-              })
-            )
+            capability: Type.String()
           })
         }
       }
@@ -55,13 +52,25 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
     async (req) => {
       const org = await orgs.findOne({ _id: req._orgId })
       if (!org) throw s.httpErrors.badRequest()
+      if (
+        org.ownerId.equals(req.user.userId) &&
+        !hasCapability(req._orgMembership?.capability ?? CAP_NONE, OrgCapability.CAP_ADMIN)
+      ) {
+        await orgMemberships.updateOne(
+          { userId: req.user.userId, orgId: req._orgId },
+          {
+            $set: { capability: OrgCapability.CAP_ADMIN },
+            $setOnInsert: {
+              _id: new BSON.UUID(),
+              groups: []
+            }
+          },
+          { upsert: true }
+        )
+      }
       return {
         profile: org.profile,
-        membership: req._orgMembership
-          ? {
-              capability: req._orgMembership.capability.toString()
-            }
-          : undefined
+        capability: (req._orgMembership?.capability ?? CAP_NONE).toString()
       }
     }
   )
