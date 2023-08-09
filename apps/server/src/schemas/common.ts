@@ -38,3 +38,8 @@ export function TypeIntegerEnum<T extends Record<string, string | number>>(obj: 
 export function TypeAccessLevel() {
   return TypeIntegerEnum(AccessLevel)
 }
+
+export const SBaseProfile = StrictObject({
+  name: Type.String(),
+  email: Type.String()
+})

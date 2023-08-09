@@ -4,3 +4,8 @@ export interface IProfile {
   name: string
   email: string
 }
+
+export interface IAssociation {
+  principleId: string
+  capability: string
+}

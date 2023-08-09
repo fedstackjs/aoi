@@ -1,0 +1,38 @@
+<template>
+  <AsyncState :state="profile">
+    <template v-slot="{ value }">
+      <VAvatar>
+        <AppGravatar :email="value.email" />
+      </VAvatar>
+      <code class="u-pl-2">{{ value.name }}</code>
+    </template>
+  </AsyncState>
+</template>
+
+<script setup lang="ts">
+import AsyncState from './AsyncState.vue'
+import AppGravatar from '../app/AppGravatar.vue'
+import { http } from '@/utils/http'
+import { useAsyncState } from '@vueuse/core'
+
+const props = defineProps<{
+  principalId: string
+}>()
+
+const profile = useAsyncState(async () => {
+  let err
+  for (const kind of ['user', 'group']) {
+    try {
+      const resp = await http.get(`${kind}/${props.principalId}/profile`)
+      const data = await resp.json<{
+        name: string
+        email: string
+      }>()
+      return data
+    } catch (_err) {
+      err = _err
+    }
+  }
+  throw err
+}, null as never)
+</script>

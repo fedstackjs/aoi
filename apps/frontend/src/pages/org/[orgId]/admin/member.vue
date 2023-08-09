@@ -30,16 +30,32 @@
           <VAvatar>
             <AppGravatar :email="item.raw.user.profile.email" />
           </VAvatar>
-          <code class="u-pl-2">{{ item.raw.user.profile.username }}</code>
+          <code class="u-pl-2">{{ item.raw.user.profile.name }}</code>
         </RouterLink>
       </template>
       <template v-slot:[`item._cap`]="{ item }">
-        <MemberCapabilities :capability="item.raw.capability" />
+        <CapabilityChips :bits="orgBits" :capability="item.raw.capability" />
       </template>
       <template v-slot:[`item._actions`]="{ item }">
         <VBtn icon="mdi-delete" variant="text" @click="deleteMember(item.raw.user._id)" />
+        <VBtn
+          icon="mdi-pencil"
+          variant="text"
+          @click="openDialog(item.raw.user._id, item.raw.capability)"
+        />
       </template>
     </VDataTableServer>
+    <VDialog v-model="dialog" width="auto">
+      <VCard>
+        <VCardText>
+          <CapabilityInput v-model="dialogCapability" :bits="orgBits" />
+        </VCardText>
+        <VCardActions>
+          <VBtn color="primary" @click="updatePrincipal">{{ t('update') }}</VBtn>
+          <VBtn color="error" @click="dialog = false">{{ t('cancel') }}</VBtn>
+        </VCardActions>
+      </VCard>
+    </VDialog>
   </VCard>
 </template>
 
@@ -47,11 +63,13 @@
 import { VDataTableServer } from 'vuetify/labs/components'
 import { http } from '@/utils/http'
 import { withTitle } from '@/utils/title'
+import { orgBits } from '@/utils/capability'
 import { useAsyncState } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppGravatar from '@/components/app/AppGravatar.vue'
-import MemberCapabilities from '@/components/org/MemberCapabilities.vue'
+import CapabilityInput from '@/components/utils/CapabilityInput.vue'
+import CapabilityChips from '@/components/utils/CapabilityChips.vue'
 
 const props = defineProps<{
   orgId: string
@@ -101,5 +119,23 @@ async function addMember() {
   })
   groups.execute()
   newMember.value = ''
+}
+
+const dialog = ref(false)
+const dialogUserId = ref('')
+const dialogCapability = ref('')
+
+function openDialog(userId: string, capability: string) {
+  dialogUserId.value = userId
+  dialogCapability.value = capability
+  dialog.value = true
+}
+
+async function updatePrincipal() {
+  dialog.value = false
+  await http.patch(`org/${props.orgId}/admin/member/${dialogUserId.value}/capability`, {
+    json: { capability: dialogCapability.value }
+  })
+  groups.execute()
 }
 </script>

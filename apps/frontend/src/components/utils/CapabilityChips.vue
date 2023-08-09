@@ -13,18 +13,13 @@ import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   capability: string
+  bits: Record<string, number>
 }>()
 
 const { t } = useI18n()
 
-const OrgCapabilityBit = {
-  access: 0,
-  problem: 1,
-  admin: 2
-}
-
 const capabilities = computed(() =>
-  Object.entries(OrgCapabilityBit)
+  Object.entries(props.bits)
     .filter(([, v]) => hasCapability(props.capability, v))
     .map(([k]) => k)
 )

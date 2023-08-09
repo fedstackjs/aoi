@@ -28,7 +28,7 @@ export const authRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const user = await users.findOne({
-        'profile.username': req.body.username
+        'profile.name': req.body.username
       })
       if (!user?.authSources.password) {
         throw s.httpErrors.forbidden('Invalid username or password')

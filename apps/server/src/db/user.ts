@@ -14,4 +14,4 @@ export interface IUser {
 }
 
 export const users = db.collection<IUser>('users')
-await users.createIndex({ 'profile.username': 1 }, { unique: true })
+await users.createIndex({ 'profile.name': 1 }, { unique: true })

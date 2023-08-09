@@ -30,11 +30,11 @@
           <VAvatar>
             <AppGravatar :email="item.raw.user.profile.email" />
           </VAvatar>
-          <code class="u-pl-2">{{ item.raw.user.profile.username }}</code>
+          <code class="u-pl-2">{{ item.raw.user.profile.name }}</code>
         </RouterLink>
       </template>
       <template v-slot:[`item._cap`]="{ item }">
-        <MemberCapabilities :capability="item.raw.capability" />
+        <CapabilityChips :capability="item.raw.capability" :bits="orgBits" />
       </template>
       <template v-slot:[`item._actions`]="{ item }">
         <VBtn icon="mdi-delete" variant="text" @click="deleteMember(item.raw.user._id)" />
@@ -51,7 +51,8 @@ import { useAsyncState } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppGravatar from '@/components/app/AppGravatar.vue'
-import MemberCapabilities from '@/components/org/MemberCapabilities.vue'
+import CapabilityChips from '@/components/utils/CapabilityChips.vue'
+import { orgBits } from '@/utils/capability'
 
 const props = defineProps<{
   orgId: string

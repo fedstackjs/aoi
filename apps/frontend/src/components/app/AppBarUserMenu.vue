@@ -7,7 +7,7 @@
             <AppGravatar :email="userInfo.state.value?.email ?? ''" />
           </VAvatar>
         </template>
-        {{ userInfo.state.value?.username }}
+        {{ userInfo.state.value?.name }}
       </VBtn>
     </template>
     <VList>
@@ -32,7 +32,7 @@ const app = useAppState()
 const userInfo = useAsyncState(async () => {
   const resp = await http.get(`user/${app.userId}/profile`)
   const user = await resp.json<{
-    username: string
+    name: string
     realname: string
     email: string
   }>()

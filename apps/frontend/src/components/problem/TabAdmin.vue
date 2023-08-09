@@ -24,7 +24,7 @@
           <AdminSettings />
         </VWindowItem>
         <VWindowItem value="access">
-          <AdminAccess />
+          <AdminAccess :problem="problem" />
         </VWindowItem>
       </VWindow>
     </div>

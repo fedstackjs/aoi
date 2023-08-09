@@ -1,6 +1,6 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { BSON, Collection } from 'mongodb'
-import { IPrincipalControlable, TypeUUID } from '../../index.js'
+import { IPrincipalControlable, TypeUUID, groups, users } from '../../index.js'
 import { FastifyRequest } from 'fastify'
 
 const Params = Type.Object({
@@ -39,14 +39,20 @@ export const manageACL: FastifyPluginAsyncTypebox<{
   )
 
   s.post(
-    '/:principalId',
+    '/',
     {
       schema: {
-        params: Params
+        body: Type.Object({
+          principalId: Type.String()
+        })
       }
     },
     async (req, rep) => {
-      const principalId = new BSON.UUID(req.params.principalId)
+      const principalId = new BSON.UUID(req.body.principalId)
+      let exists = await users.countDocuments({ _id: principalId })
+      exists ||= await groups.countDocuments({ _id: principalId })
+      if (!exists) return rep.notFound()
+
       const _id = await resolve(req)
       const { modifiedCount } = await collection.updateOne(
         { _id, 'associations.principalId': { $ne: principalId } },

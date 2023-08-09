@@ -1,8 +1,5 @@
-import { Type, Static } from '@sinclair/typebox'
-import { StrictObject } from './common.js'
+import { Static } from '@sinclair/typebox'
+import { SBaseProfile } from './common.js'
 
-export const SGroupProfile = StrictObject({
-  name: Type.String(),
-  email: Type.String()
-})
+export const SGroupProfile = SBaseProfile
 export interface IGroupProfile extends Static<typeof SGroupProfile> {}
