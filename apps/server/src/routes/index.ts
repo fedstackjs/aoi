@@ -12,6 +12,7 @@ import { Type } from '@sinclair/typebox'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { loadEnv } from '../utils/config.js'
 import { groupRoutes } from './group/index.js'
+import { contestRoutes } from './contest/index.js'
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
@@ -62,6 +63,7 @@ export const apiRoutes = defineRoutes(async (s) => {
   s.register(groupRoutes, { prefix: '/group' })
   s.register(problemRoutes, { prefix: '/problem' })
   s.register(solutionRoutes, { prefix: '/solution' })
+  s.register(contestRoutes, { prefix: '/contest' })
   s.register(adminRoutes, { prefix: '/admin' })
   s.register(runnerRoutes, { prefix: '/runner' })
 })

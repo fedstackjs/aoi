@@ -3,12 +3,14 @@ import { db } from './client.js'
 import { IPrincipalControlable, IWithAccessLevel, IWithAttachment } from './common.js'
 import { capabilityMask } from '../utils/capability.js'
 import { ProblemConfig } from '@aoi/common'
+import { IProblemSettings } from '../schemas/problem.js'
 
 export const ProblemCapability = {
   CAP_ACCESS: capabilityMask(0), // Can access(view) this problem
-  CAP_CONTENT: capabilityMask(1), // Can edit problem content
-  CAP_DATA: capabilityMask(2), // Can manage problem data
-  CAP_ADMIN: capabilityMask(3) // Can manage problem ACL
+  CAP_SOLUTION: capabilityMask(1), // Can submit solution to this problem
+  CAP_CONTENT: capabilityMask(2), // Can edit problem content
+  CAP_DATA: capabilityMask(3), // Can manage problem data
+  CAP_ADMIN: capabilityMask(4) // Can manage problem ACL
 }
 
 export interface IProblemData {
@@ -33,6 +35,8 @@ export interface IProblem extends IPrincipalControlable, IWithAttachment, IWithA
    */
   data: IProblemData[]
   currentDataHash: string
+
+  settings: IProblemSettings
 
   createdAt: number
   updatedAt: number

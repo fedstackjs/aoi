@@ -16,7 +16,7 @@ import {
   loadUUID,
   paramSchemaMerger
 } from '../common/index.js'
-import { CAP_ALL, ensureCapability } from '../../utils/capability.js'
+import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/capability.js'
 import { getUploadUrl } from '../../oss/index.js'
 import { TypeUUID, StrictObject, TypeAccessLevel, TypeHash } from '../../schemas/index.js'
 import { loadOrgOssSettings } from '../common/files.js'
@@ -25,6 +25,7 @@ import { SAPIResponseVoid } from '../../schemas/api.js'
 import { manageACL } from '../common/acl.js'
 import { attachmentRoutes } from './attachment.js'
 import { dataRoutes } from './data.js'
+import { solutionRoutes } from './solution.js'
 
 const problemIdSchema = Type.Object({
   problemId: Type.String()
@@ -146,9 +147,10 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
   s.register(attachmentRoutes, { prefix: '/attachment' })
   s.register(dataRoutes, { prefix: '/data' })
   s.register(adminRoutes, { prefix: '/admin' })
+  s.register(solutionRoutes, { prefix: '/solution' })
 
   s.post(
-    '/submit',
+    '/solution',
     {
       schema: {
         description: 'Submit a solution',
@@ -165,6 +167,14 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const { allowPublicSubmit } = req._problem.settings
+      if (
+        !allowPublicSubmit &&
+        !hasCapability(req._problemCapability, ProblemCapability.CAP_SOLUTION)
+      ) {
+        return rep.preconditionFailed()
+      }
+
       const oss = await loadOrgOssSettings(req._problem.orgId)
       if (!oss) return rep.preconditionFailed('OSS not configured')
 

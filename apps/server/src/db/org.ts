@@ -6,7 +6,8 @@ import { IOrgProfile, IOrgSettings } from '../schemas/index.js'
 export const OrgCapability = {
   CAP_ACCESS: capabilityMask(0),
   CAP_PROBLEM: capabilityMask(1),
-  CAP_ADMIN: capabilityMask(2)
+  CAP_CONTEST: capabilityMask(2),
+  CAP_ADMIN: capabilityMask(3)
 }
 
 export interface IOrg {

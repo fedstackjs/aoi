@@ -1,11 +1,11 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadMembership, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { problemScopedRoutes } from './scoped.js'
-import { CAP_NONE, ensureCapability } from '../../utils/capability.js'
+import { CAP_NONE, ensureCapability, hasCapability } from '../../utils/capability.js'
 import { BSON } from 'mongodb'
 import { OrgCapability, problems } from '../../db/index.js'
 import { TypePaginationResult, findPaginated } from '../../utils/pagination.js'
-import { StrictObject, TypeAccessLevel, TypeUUID } from '../../schemas/index.js'
+import { AccessLevel, StrictObject, TypeAccessLevel, TypeUUID } from '../../schemas/index.js'
 
 export const problemRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('problem'))
@@ -48,6 +48,7 @@ export const problemRoutes = defineRoutes(async (s) => {
         attachments: [],
         data: [],
         currentDataHash: '',
+        settings: { allowPublicSubmit: false },
         associations: [],
         accessLevel: req.body.accessLevel,
         createdAt: Date.now(),
@@ -66,7 +67,7 @@ export const problemRoutes = defineRoutes(async (s) => {
         description: 'List problems',
         querystring: Type.Object({
           orgId: Type.String(),
-          page: Type.Integer({ minimum: 0, default: 0 }),
+          page: Type.Integer({ minimum: 1, default: 1 }),
           perPage: Type.Integer({ enum: [15, 30] }),
           count: Type.Boolean({ default: false })
         }),
@@ -85,9 +86,21 @@ export const problemRoutes = defineRoutes(async (s) => {
     },
     async (req) => {
       const orgId = loadUUID(req.query, 'orgId', s.httpErrors.badRequest())
-      // TODO: Access Control
+      const membership = await loadMembership(req.user.userId, orgId)
+      const basicAccessLevel = membership
+        ? hasCapability(membership.capability, OrgCapability.CAP_PROBLEM)
+          ? AccessLevel.PRIVATE
+          : AccessLevel.RESTRICED
+        : AccessLevel.PUBLIC
+      const principalIds = [req.user.userId, ...(membership?.groups ?? [])]
       const { page, perPage, count } = req.query
-      const result = await findPaginated(problems, page, perPage, count, { orgId })
+      const result = await findPaginated(problems, page, perPage, count, {
+        orgId,
+        $or: [
+          { accessLevel: { $lte: basicAccessLevel } },
+          { 'associations.principalId': { $in: principalIds } }
+        ]
+      })
       return result
     }
   )

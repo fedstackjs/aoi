@@ -41,6 +41,11 @@ export function loadUUID(obj: unknown, key: string, err: Error) {
   if (!BSON.UUID.isValid(uuid)) throw err
   return new BSON.UUID(uuid)
 }
+export function tryLoadUUID(obj: unknown, key: string) {
+  const uuid = (obj as Record<string, string>)[key]
+  if (!BSON.UUID.isValid(uuid)) return null
+  return new BSON.UUID(uuid)
+}
 
 export function loadMembership(userId: BSON.UUID, orgId: BSON.UUID) {
   return orgMemberships.findOne({ userId, orgId })

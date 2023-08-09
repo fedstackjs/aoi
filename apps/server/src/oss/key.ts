@@ -11,3 +11,7 @@ export function problemAttachmentKey(problemId: BSON.UUID, attachmentKey: string
 export function solutionDataKey(solutionId: BSON.UUID) {
   return `solution/${solutionId}/data`
 }
+
+export function contestAttachmentKey(contestId: BSON.UUID, attachmentKey: string) {
+  return `contest/${contestId}/attachment/${attachmentKey}`
+}
