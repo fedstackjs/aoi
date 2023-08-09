@@ -2,6 +2,7 @@
   <VContainer>
     <VRow>
       <VCol>
+        <!-- main column -->
         <AsyncState :state="problem">
           <template v-slot="{ value }">
             <VCard>
@@ -23,25 +24,46 @@
 
               <VTabs>
                 <VTab prepend-icon="mdi-book-outline" :to="rel('')">
-                  {{ t('description') }}
+                  {{ t('problem-description') }}
+                </VTab>
+                <VTab prepend-icon="mdi-upload-outline" :to="rel('submit')" v-if="value.config">
+                  {{ t('problem-submit') }}
                 </VTab>
                 <VTab prepend-icon="mdi-attachment" :to="rel('attachment')">
-                  {{ t('attachments') }}
+                  {{ t('problem-attachments') }}
                 </VTab>
-                <VTab prepend-icon="mdi-list-box" :to="rel('problem')">
-                  {{ t('problems') }}
-                </VTab>
-                <VTab prepend-icon="mdi-chevron-triple-up" :to="rel('ranklist')">
-                  {{ t('ranklist') }}
+                <VTab prepend-icon="mdi-database-outline" :to="rel('data')">
+                  {{ t('problem-data') }}
                 </VTab>
                 <VTab prepend-icon="mdi-cog-outline" :to="rel('admin')">
-                  {{ t('management') }}
+                  {{ t('problem-management') }}
                 </VTab>
               </VTabs>
-              <RouterView :contest="value" @updated="problem.execute()" />
+              <RouterView :problem="value" @updated="problem.execute()" />
             </VCard>
           </template>
         </AsyncState>
+      </VCol>
+      <VCol cols="3">
+        <!-- submission column -->
+        <VCard :title="t('submissions')">
+          <VTable>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>{{ t('status') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(sub, key) in subReq.state.value" :key="key">
+                <td class="text-blue">{{ sub._id }}</td>
+                <td>
+                  <VChip :color="stateColor(sub.state)">{{ sub.state }}</VChip>
+                </td>
+              </tr>
+            </tbody>
+          </VTable>
+        </VCard>
       </VCol>
     </VRow>
   </VContainer>
@@ -54,26 +76,50 @@ import { useI18n } from 'vue-i18n'
 import { useAsyncState } from '@vueuse/core'
 import { http } from '@/utils/http'
 import AsyncState from '@/components/utils/AsyncState.vue'
-import type { IContestDTO } from '@/components/contest/types'
 import AccessLevelChip from '@/components/utils/AccessLevelChip.vue'
+import type { IProblemDTO } from '@/components/problem/types'
 
-const { t } = useI18n()
+interface submission {
+  _id: string
+  state: string
+}
+
 const props = defineProps<{
   orgId: string
-  contestId: string
+  problemId: string
 }>()
 
-withTitle(computed(() => t('contests')))
+const { t } = useI18n()
+
+withTitle(computed(() => t('problems')))
+
+const subReq = useAsyncState(async () => {
+  // TODO : http
+  var subList: submission[] = []
+  for (var i = 0; i < 5; i++) {
+    subList.push({
+      _id: '' + i,
+      state: i < 4 ? 'WA' : 'AC'
+    })
+  }
+  return subList
+}, null as never)
+
+const stateColor = (sta: string) =>
+  ({
+    AC: 'green',
+    WA: 'red'
+  })[sta]
 
 const problem = useAsyncState(async () => {
-  const contestId = props.contestId
-  const resp = await http.get(`contest/${contestId}`)
-  const data = await resp.json<IContestDTO>()
-  if (data.orgId !== props.orgId) throw new Error('orgId not match')
+  const problemId = props.problemId
+  const resp = await http.get(`problem/${problemId}`)
+  const data = await resp.json<IProblemDTO>()
+  if (data.orgId !== props.orgId) throw new Error('Bad request')
   return data
 }, null as never)
 
-const rel = (to: string) => `/org/${props.orgId}/contest/${props.contestId}/${to}`
+const rel = (to: string) => `/org/${props.orgId}/problem/${props.problemId}/${to}`
 </script>
 
 <i18n global>

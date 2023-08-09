@@ -16,3 +16,10 @@ export const problemBits = {
   data: 3,
   admin: 4
 }
+
+export const contestBits = {
+  access: 0,
+  content: 1,
+  data: 2,
+  admin: 3
+}

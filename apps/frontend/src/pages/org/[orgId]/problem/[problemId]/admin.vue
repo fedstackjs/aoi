@@ -2,44 +2,33 @@
   <VCard flat>
     <div class="d-flex flex-row">
       <VTabs v-model="currentTab" direction="vertical" color="primary">
-        <VTab value="settings">
+        <VTab :to="rel('')" exact>
           <VIcon start> mdi-cog </VIcon>
           {{ t('settings') }}
         </VTab>
-        <VTab value="content">
+        <VTab :to="rel('content')">
           <VIcon start>mdi-text</VIcon>
           {{ t('content') }}
         </VTab>
-        <VTab value="access">
+        <VTab :to="rel('access')">
           <VIcon start> mdi-lock </VIcon>
           {{ t('access') }}
         </VTab>
       </VTabs>
       <VDivider vertical />
-      <VWindow v-model="currentTab" class="flex-grow-1">
-        <VWindowItem value="content">
-          <AdminContent :problem="problem" @updated="emit('updated')" />
-        </VWindowItem>
-        <VWindowItem value="settings">
-          <AdminSettings />
-        </VWindowItem>
-        <VWindowItem value="access">
-          <AdminAccess :problem="problem" />
-        </VWindowItem>
-      </VWindow>
+      <RouterView class="flex-grow-1" :problem="problem" @updated="emit('updated')" />
     </div>
   </VCard>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import AdminContent from './admin/AdminContent.vue'
-import AdminSettings from './admin/AdminSettings.vue'
-import AdminAccess from './admin/AdminAccess.vue'
 import { useI18n } from 'vue-i18n'
-import type { IProblemDTO } from './types'
+import type { IProblemDTO } from '@/components/problem/types'
 
-defineProps<{
+const props = defineProps<{
+  orgId: string
+  problemId: string
   problem: IProblemDTO
 }>()
 
@@ -50,6 +39,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const currentTab = ref('settings')
+const rel = (to: string) => `/org/${props.orgId}/problem/${props.problemId}/admin/${to}`
 </script>
 
 <i18n>

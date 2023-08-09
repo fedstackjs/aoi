@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox'
 import { ContestCapability, contests } from '../../index.js'
 import { ensureCapability } from '../../utils/index.js'
-import { manageACL } from '../common/acl.js'
+import { manageACL, manageAccessLevel } from '../common/access.js'
 import { defineRoutes } from '../common/index.js'
 import { SContestStage } from '../../schemas/contest.js'
 
@@ -15,6 +15,11 @@ export const adminRoutes = defineRoutes(async (s) => {
     resolve: async (req) => req._contestId,
     defaultCapability: ContestCapability.CAP_ACCESS,
     prefix: '/access'
+  })
+  s.register(manageAccessLevel, {
+    collection: contests,
+    resolve: async (req) => req._contestId,
+    prefix: '/accessLevel'
   })
 
   s.delete(

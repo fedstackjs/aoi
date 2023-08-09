@@ -1,12 +1,10 @@
 <template>
-  <VCard flat>
-    <MarkdownRenderer :md="problem.description" class="pa-4" />
-  </VCard>
+  <ProblemSubmit :problem="problem" />
 </template>
 
 <script setup lang="ts">
+import ProblemSubmit from '@/components/problem/ProblemSubmit.vue'
 import type { IProblemDTO } from '@/components/problem/types'
-import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
 
 defineProps<{
   orgId: string

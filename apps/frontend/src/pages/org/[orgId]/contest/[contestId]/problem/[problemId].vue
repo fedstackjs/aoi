@@ -32,10 +32,12 @@
         </VTabs>
         <VWindow v-model="currentTab">
           <VWindowItem value="desc">
-            <TabDescription :description="value.description" />
+            <VCard flat>
+              <MarkdownRenderer :md="value.description" class="pa-4" />
+            </VCard>
           </VWindowItem>
           <VWindowItem value="submit">
-            <TabSubmit :contest-id="contestId" :problem="value" />
+            <ProblemSubmit :contest-id="contestId" :problem="value" />
           </VWindowItem>
           <VWindowItem value="attachments">
             <ProblemTabAttachments :contest-id="contestId" :problem="value" />
@@ -51,8 +53,8 @@
 
 <script setup lang="ts">
 import AsyncState from '@/components/utils/AsyncState.vue'
-import TabDescription from '@/components/problem/TabDescription.vue'
-import TabSubmit from '@/components/problem/TabSubmit.vue'
+import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
+import ProblemSubmit from '@/components/problem/ProblemSubmit.vue'
 import type {
   IContestDTO,
   IContestProblemDTO,

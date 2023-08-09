@@ -23,7 +23,7 @@
       @update:options="({ page, itemsPerPage }) => groups.execute(0, page, itemsPerPage)"
     >
       <template v-slot:[`item._id`]="{ item }">
-        <code>{{ item.raw._id }}</code>
+        <code>{{ item.raw.user._id }}</code>
       </template>
       <template v-slot:[`item.profile`]="{ item }">
         <RouterLink :to="`/user/${item.raw.user._id}`">

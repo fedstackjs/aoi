@@ -22,10 +22,10 @@ import { TypeUUID, StrictObject, TypeAccessLevel, TypeHash } from '../../schemas
 import { loadOrgOssSettings } from '../common/files.js'
 import { solutionDataKey } from '../../oss/index.js'
 import { SAPIResponseVoid } from '../../schemas/api.js'
-import { manageACL } from '../common/acl.js'
 import { attachmentRoutes } from './attachment.js'
 import { dataRoutes } from './data.js'
 import { solutionRoutes } from './solution.js'
+import { adminRoutes } from './admin.js'
 
 const problemIdSchema = Type.Object({
   problemId: Type.String()
@@ -38,33 +38,6 @@ declare module 'fastify' {
     _problem: IProblem
   }
 }
-
-const adminRoutes = defineRoutes(async (s) => {
-  s.addHook('onRequest', async (req) => {
-    ensureCapability(req._problemCapability, ProblemCapability.CAP_ADMIN, s.httpErrors.forbidden())
-  })
-
-  s.register(manageACL, {
-    collection: problems,
-    resolve: async (req) => req._problemId,
-    defaultCapability: ProblemCapability.CAP_ACCESS,
-    prefix: '/access'
-  })
-
-  s.delete(
-    '/',
-    {
-      schema: {
-        description: 'Delete problem'
-      }
-    },
-    async (req) => {
-      // TODO: handle dependencies
-      await problems.deleteOne({ _id: req._problemId })
-      return {}
-    }
-  )
-})
 
 export const problemScopedRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', paramSchemaMerger(problemIdSchema))

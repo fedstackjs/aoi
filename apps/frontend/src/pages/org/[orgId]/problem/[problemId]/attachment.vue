@@ -63,7 +63,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { http } from '@/utils/http'
 import { reactive } from 'vue'
-import type { IProblemDTO } from './types'
+import type { IProblemDTO } from '@/components/problem/types'
 import { computed } from 'vue'
 import { hasCapability } from '@/utils/capability'
 import { useAsyncState } from '@vueuse/core'
@@ -72,6 +72,8 @@ import AsyncState from '@/components/utils/AsyncState.vue'
 const { t } = useI18n()
 
 const props = defineProps<{
+  orgId: string
+  problemId: string
   problem: IProblemDTO
 }>()
 

@@ -25,11 +25,13 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { IProblemDTO } from '../types'
+import type { IProblemDTO } from '@/components/problem/types'
 import { http } from '@/utils/http'
 import MonacoEditor from '@/components/utils/MonacoEditor.vue'
 
 const props = defineProps<{
+  orgId: string
+  problemId: string
   problem: IProblemDTO
 }>()
 

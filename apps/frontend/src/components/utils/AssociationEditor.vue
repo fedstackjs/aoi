@@ -6,7 +6,7 @@
         <VTextField
           v-model="newPrincipalId"
           density="compact"
-          label="UserId"
+          label="PrincipalId"
           append-icon="mdi-plus"
           @click:append="addPrinciple"
         />
