@@ -1,0 +1,43 @@
+<template>
+  <div class="d-flex flex-row">
+    <VTabs direction="vertical" color="primary">
+      <VTab prepend-icon="mdi-cog" :to="rel('')" exact>
+        {{ t('settings') }}
+      </VTab>
+      <VTab prepend-icon="mdi-text" :to="rel('content')">
+        {{ t('content') }}
+      </VTab>
+      <VTab prepend-icon="mdi-table-clock" :to="rel('stage')">
+        {{ t('stages') }}
+      </VTab>
+      <VTab prepend-icon="mdi-lock" :to="rel('access')">
+        {{ t('access') }}
+      </VTab>
+    </VTabs>
+    <VDivider vertical />
+    <RouterView class="flex-grow-1" :contest="contest" @updated="emit('updated')" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import type { IContestDTO } from '@/components/contest/types'
+import { withTitle } from '@/utils/title'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const props = defineProps<{
+  orgId: string
+  contestId: string
+  contest: IContestDTO
+}>()
+
+const emit = defineEmits<{
+  (ev: 'updated'): void
+}>()
+
+const { t } = useI18n()
+
+withTitle(computed(() => t('contests')))
+
+const rel = (to: string) => `/org/${props.orgId}/contest/${props.contestId}/admin/${to}`
+</script>

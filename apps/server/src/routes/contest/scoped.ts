@@ -17,7 +17,7 @@ import {
   contests
 } from '../../db/index.js'
 import { CAP_ALL, ensureCapability } from '../../utils/index.js'
-import { TypeAccessLevel, TypeUUID } from '../../schemas/index.js'
+import { StrictObject, TypeAccessLevel, TypeUUID } from '../../schemas/index.js'
 import { attachmentRoutes } from './attachment.js'
 import { adminRoutes } from './admin.js'
 import { contestProblemRoutes } from './problem/index.js'
@@ -82,6 +82,7 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
         response: {
           200: Type.Object({
             _id: TypeUUID(),
+            orgId: TypeUUID(),
             accessLevel: TypeAccessLevel(),
             slug: Type.String(),
             title: Type.String(),
@@ -100,6 +101,30 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
         capability: req._contestCapability.toString(),
         currentStage: req._contestStage
       }
+    }
+  )
+
+  s.patch(
+    '/content',
+    {
+      schema: {
+        description: 'Update problem content',
+        body: StrictObject({
+          title: Type.String(),
+          slug: Type.String(),
+          description: Type.String(),
+          tags: Type.Array(Type.String())
+        })
+      }
+    },
+    async (req) => {
+      ensureCapability(
+        req._contestCapability,
+        ContestCapability.CAP_CONTENT,
+        s.httpErrors.forbidden()
+      )
+      await contests.updateOne({ _id: req._contestId }, { $set: req.body })
+      return {}
     }
   )
 

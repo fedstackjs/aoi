@@ -61,7 +61,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
       return list.map((problem) => ({
         ...problem,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        settings: config.find(({ problemId }) => problemId === problem._id)!.settings
+        settings: config.find(({ problemId }) => problemId.equals(problem._id))!.settings
       }))
     }
   )

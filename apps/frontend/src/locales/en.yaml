@@ -13,3 +13,6 @@ danger-zone: Danger Zone
 delete: Delete
 save: Save
 reset: Reset
+description: Description
+attachments: Attachments
+management: Management

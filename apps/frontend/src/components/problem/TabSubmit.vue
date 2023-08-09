@@ -44,9 +44,11 @@ import SubmitDir from './submit/SubmitDir.vue'
 import { computeSHA256 } from '@/utils/files'
 import { http } from '@/utils/http'
 import { useToast } from 'vue-toastification'
+import type { IContestProblemDTO } from '../contest/types'
 
 const props = defineProps<{
-  problem: IProblemDTO
+  contestId?: string
+  problem: IProblemDTO | IContestProblemDTO
 }>()
 
 const { t } = useI18n()

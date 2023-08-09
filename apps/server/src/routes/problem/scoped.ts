@@ -96,6 +96,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
         response: {
           200: Type.Object({
             _id: TypeUUID(),
+            orgId: TypeUUID(),
             accessLevel: TypeAccessLevel(),
             slug: Type.String(),
             title: Type.String(),
