@@ -1,12 +1,33 @@
 <template>
-  <VCard flat :title="t('contest-stages')">
+  <VCard flat :title="t('term.contest-stage')">
     <AsyncState :state="stages">
       <template v-slot="{ value }">
         <VExpansionPanels>
-          <VExpansionPanel v-for="(item, i) of value" :key="i" :title="item.name" :elevation="0">
+          <VExpansionPanel v-for="(item, i) of value" :key="i" :elevation="0">
+            <VExpansionPanelTitle>
+              <div class="d-flex justify-space-between flex-grow-1 align-center">
+                <div>
+                  {{ item.name }}
+                </div>
+                <div>
+                  <template v-if="item.start">
+                    {{ t('common.from') }}
+                    <VChip color="blue" :text="new Date(item.start).toLocaleString()" />
+                  </template>
+                  <template v-if="value[i + 1]">
+                    {{ t('common.to') }}
+                    <VChip color="red" :text="new Date(value[i + 1].start).toLocaleString()" />
+                  </template>
+                  <template v-if="item.start && value[i + 1]">
+                    {{ t('common.lasts') }}
+                    <VChip color="green" :text="ms(value[i + 1].start - item.start)" />
+                  </template>
+                </div>
+              </div>
+            </VExpansionPanelTitle>
             <VExpansionPanelText>
-              <VTextField v-model="item.name" />
-              <DateTimeInput v-model="item.start" />
+              <VTextField label="name" v-model="item.name" />
+              <DateTimeInput label="start" v-model="item.start" :disabled="!i" />
               <ContestStageSettings v-model="item.settings" />
             </VExpansionPanelText>
           </VExpansionPanel>
@@ -15,10 +36,10 @@
     </AsyncState>
     <VCardActions>
       <VBtn color="error" @click="stages.execute()">
-        {{ t('reload') }}
+        {{ t('action.reload') }}
       </VBtn>
-      <VBtn @click="create">{{ t('new') }}</VBtn>
-      <VBtn color="primary" @click="save">{{ t('save') }}</VBtn>
+      <VBtn @click="create">{{ t('action.new') }}</VBtn>
+      <VBtn color="primary" @click="save">{{ t('action.save') }}</VBtn>
     </VCardActions>
   </VCard>
 </template>
@@ -33,6 +54,7 @@ import AsyncState from '@/components/utils/AsyncState.vue'
 import DateTimeInput from '@/components/utils/DateTimeInput.vue'
 import ContestStageSettings from '@/components/contest/ContestStageSettings.vue'
 import { useToast } from 'vue-toastification'
+import ms from 'ms'
 
 const props = defineProps<{
   orgId: string

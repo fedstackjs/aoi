@@ -4,10 +4,10 @@
 
 <script setup lang="ts">
 import MonacoEditor from '@/components/utils/MonacoEditor.vue'
-import type { Static, problemConfigSubmitFormEditorSchema } from '@aoi/common'
+import type { ProblemConfigSubmitFormEditor } from '@aoi/common'
 
 defineProps<{
-  options: Partial<Static<typeof problemConfigSubmitFormEditorSchema>>
+  options: Partial<ProblemConfigSubmitFormEditor>
 }>()
 const model = defineModel<string>({ required: true })
 </script>

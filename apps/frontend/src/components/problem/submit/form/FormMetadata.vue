@@ -19,12 +19,12 @@
 </template>
 
 <script setup lang="ts">
-import type { Static, problemConfigSubmitFormMetadataSchema } from '@aoi/common'
+import type { ProblemConfigSubmitFormMetadata } from '@aoi/common'
 import { watch } from 'vue'
 import { reactive } from 'vue'
 
 defineProps<{
-  options: Partial<Static<typeof problemConfigSubmitFormMetadataSchema>>
+  options: Partial<ProblemConfigSubmitFormMetadata>
 }>()
 const model = defineModel<string>({ required: true })
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

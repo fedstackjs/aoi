@@ -1,7 +1,7 @@
 <template>
   <VCard flat>
     <VCardTitle class="d-flex justify-space-between align-center">
-      <div>{{ t('associations') }}</div>
+      <div>{{ t('term.association') }}</div>
       <div class="flex-grow-1 u-max-w-64">
         <VTextField
           v-model="newPrincipalId"

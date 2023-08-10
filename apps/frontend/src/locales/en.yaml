@@ -16,3 +16,25 @@ reset: Reset
 description: Description
 attachments: Attachments
 management: Management
+
+common:
+  from: From
+  to: To
+  lasts: Lasts
+  settings: Settings
+  content: Content
+  access: Access
+
+action:
+  reload: Reload
+  reset: Reset
+  save: Save
+  delete: Delete
+  cancel: Cancel
+  submit: Submit
+  new: New
+
+term:
+  contest: Contest
+  contest-stage: Contest Stage
+  association: Association

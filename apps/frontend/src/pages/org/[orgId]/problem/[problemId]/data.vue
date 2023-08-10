@@ -15,10 +15,17 @@
             <tr v-for="version in value" :key="version.hash">
               <td>
                 <VIcon
-                  icon="mdi-file-outline"
+                  icon="mdi-source-commit"
                   :color="version.hash === problem.currentDataHash ? 'blue' : undefined"
                 />
-                <code>{{ version.hash.substring(0, 7) }}</code>
+                <code class="px-2">{{ version.hash.substring(0, 7) }}</code>
+                <VChip
+                  v-if="version.hash === problem.currentDataHash"
+                  color="blue"
+                  label
+                  :text="t('current')"
+                  small
+                />
               </td>
               <td>{{ version.description }}</td>
               <td>{{ new Date(version.createdAt).toLocaleString() }}</td>
@@ -68,7 +75,7 @@ const versions = useAsyncState(async () => {
       config: unknown
     }[]
   >()
-  return data
+  return data.sort((a, b) => b.createdAt - a.createdAt)
 }, null as never)
 
 const snackbarRunning = ref(false)

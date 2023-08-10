@@ -9,9 +9,13 @@ export const problemConfigSolutionSchema = Type.Partial(
   )
 )
 
+export type ProblemConfigSolution = Static<typeof problemConfigSolutionSchema>
+
 export const problemConfigJudgeSchema = Type.Record(Type.String(), Type.Any(), {
   description: 'Judge configuration'
 })
+
+export type ProblemConfigJudge = Static<typeof problemConfigJudgeSchema>
 
 export const problemConfigSubmitFormEditorSchema = Type.Object(
   {
@@ -19,6 +23,8 @@ export const problemConfigSubmitFormEditorSchema = Type.Object(
   },
   { description: 'Editor configuration' }
 )
+
+export type ProblemConfigSubmitFormEditor = Static<typeof problemConfigSubmitFormEditorSchema>
 
 export const problemConfigSubmitFormMetadataSchema = Type.Object(
   {
@@ -41,6 +47,8 @@ export const problemConfigSubmitFormMetadataSchema = Type.Object(
   { description: 'Metadata form configuration' }
 )
 
+export type ProblemConfigSubmitFormMetadata = Static<typeof problemConfigSubmitFormMetadataSchema>
+
 export const problemConfigSubmitFormFileSchema = Type.Object({
   path: Type.String(),
   label: Type.Optional(Type.String()),
@@ -52,6 +60,8 @@ export const problemConfigSubmitFormFileSchema = Type.Object({
     })
   )
 })
+
+export type ProblemConfigSubmitFormFile = Static<typeof problemConfigSubmitFormFileSchema>
 
 export const problemConfigSubmitSchema = Type.Partial(
   Type.Object({
@@ -69,6 +79,8 @@ export const problemConfigSubmitSchema = Type.Partial(
     )
   })
 )
+
+export type ProblemConfigSubmit = Static<typeof problemConfigSubmitSchema>
 
 export const problemConfigSchema = Type.Object({
   label: Type.String(),

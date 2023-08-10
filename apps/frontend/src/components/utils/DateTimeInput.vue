@@ -1,5 +1,11 @@
 <template>
-  <VTextField :error="error" v-model="value" :label="label" />
+  <VTextField
+    :error="error"
+    v-model="value"
+    :label="label"
+    :disabled="disabled"
+    type="datetime-local"
+  />
 </template>
 
 <script setup lang="ts">
@@ -9,6 +15,7 @@ import { computed } from 'vue'
 const model = defineModel<number>({ required: true })
 defineProps<{
   label?: string
+  disabled?: boolean
 }>()
 
 function toDateTimeLocalString(date: Date) {

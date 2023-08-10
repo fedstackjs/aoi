@@ -3,11 +3,14 @@
     <VCardText>
       <VTextField v-model="model.title" label="Title" />
       <VTextField v-model="model.slug" label="slug" />
-      <VCardSubtitle>
-        Content
-        <VIcon>mdi-language-markdown-outline</VIcon>
-      </VCardSubtitle>
-      <MonacoEditor v-model="model.description" language="markdown" />
+      <MarkdownEditor v-model="model.description">
+        <template #title>
+          <VCardSubtitle>
+            Content
+            <VIcon>mdi-language-markdown-outline</VIcon>
+          </VCardSubtitle>
+        </template>
+      </MarkdownEditor>
       <VCombobox v-model="model.tags" label="Tags" multiple chips />
     </VCardText>
     <VDivider />
@@ -26,8 +29,8 @@
 import { reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { http } from '@/utils/http'
-import MonacoEditor from '@/components/utils/MonacoEditor.vue'
 import type { IContestDTO } from '@/components/contest/types'
+import MarkdownEditor from '@/components/utils/MarkdownEditor.vue'
 
 const props = defineProps<{
   orgId: string

@@ -2,16 +2,16 @@
   <div class="d-flex flex-row">
     <VTabs direction="vertical" color="primary">
       <VTab prepend-icon="mdi-cog" :to="rel('')" exact>
-        {{ t('settings') }}
+        {{ t('common.settings') }}
       </VTab>
       <VTab prepend-icon="mdi-text" :to="rel('content')">
-        {{ t('content') }}
+        {{ t('common.content') }}
       </VTab>
       <VTab prepend-icon="mdi-table-clock" :to="rel('stage')">
-        {{ t('stages') }}
+        {{ t('term.contest-stage') }}
       </VTab>
       <VTab prepend-icon="mdi-lock" :to="rel('access')">
-        {{ t('access') }}
+        {{ t('common.access') }}
       </VTab>
     </VTabs>
     <VDivider vertical />

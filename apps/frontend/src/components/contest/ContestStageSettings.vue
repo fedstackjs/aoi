@@ -1,13 +1,12 @@
 <template>
   <div class="u-grid u-grid-cols-3">
-    <VCheckbox v-model="model.registrationEnabled" label="Registration Enabled" />
-    <VCheckbox v-model="model.registrationAllowPublic" label="Registration Allow Public" />
-    <VCheckbox v-model="model.problemEnabled" label="Problem Enabled" />
-    <VCheckbox v-model="model.problemShowTags" label="Problem Show Tags" />
-    <VCheckbox v-model="model.submitEnabled" label="Submit Enabled" />
-    <VCheckbox v-model="model.solutionAllowOther" label="Solution Allow Other" />
-    <VCheckbox v-model="model.solutionAllowOtherDetails" label="Solution Allow Other Details" />
-    <VCheckbox v-model="model.solutionAllowOtherDownload" label="Solution Allow Other Download" />
+    <VCheckbox
+      density="compact"
+      v-for="[key, label] of entries"
+      :key="key"
+      v-model="model[key]"
+      :label="label"
+    />
   </div>
 </template>
 
@@ -15,4 +14,19 @@
 import type { IContestStage } from '@/types'
 
 const model = defineModel<IContestStage['settings']>({ required: true })
+
+const keys: {
+  [key in keyof IContestStage['settings']]: string
+} = {
+  registrationEnabled: 'Registration Enabled',
+  registrationAllowPublic: 'Registration Allow Public',
+  problemEnabled: 'Problem Enabled',
+  problemShowTags: 'Problem Show Tags',
+  submitEnabled: 'Submit Enabled',
+  solutionAllowOther: 'Solution Allow Other',
+  solutionAllowOtherDetails: 'Solution Allow Other Details',
+  solutionAllowOtherDownload: 'Solution Allow Other Download'
+}
+
+const entries = Object.entries(keys) as [keyof IContestStage['settings'], string][]
 </script>
