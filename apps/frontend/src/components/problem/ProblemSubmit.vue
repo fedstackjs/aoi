@@ -58,7 +58,7 @@ const currentTab = ref()
 async function submit(file: File) {
   const hash = await computeSHA256(file)
   const size = file.size
-  const resp = await http.post(`problem/${props.problem._id}/submit`, {
+  const resp = await http.post(`problem/${props.problem._id}/solution`, {
     json: { hash, size }
   })
   const { solutionId, uploadUrl } = await resp.json<{

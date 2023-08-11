@@ -45,3 +45,16 @@ export interface IProblem extends IPrincipalControlable, IWithAttachment, IWithA
 export const problems = db.collection<IProblem>('problems')
 await problems.createIndex({ slug: 1 }, { unique: true })
 await problems.createIndex({ [`associations.principalId`]: 1 })
+
+export interface IProblemStatus {
+  _id: BSON.UUID
+  problemId: BSON.UUID
+  userId: BSON.UUID
+  solutionCount: number
+  lastSolutionId: BSON.UUID
+  lastSolutionScore: number
+  lastSolutionStatus: string
+}
+
+export const problemStatuses = db.collection<IProblemStatus>('problemStatuses')
+await problemStatuses.createIndex({ problemId: 1, userId: 1 }, { unique: true })

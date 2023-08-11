@@ -2,7 +2,7 @@
   <VContainer>
     <VRow>
       <VCol>
-        <AsyncState :state="problem">
+        <AsyncState :state="contest">
           <template v-slot="{ value }">
             <VCard>
               <VCardTitle class="d-flex justify-space-between">
@@ -38,7 +38,7 @@
                   {{ t('management') }}
                 </VTab>
               </VTabs>
-              <RouterView :contest="value" @updated="problem.execute()" />
+              <RouterView :contest="value" @updated="contest.execute()" />
             </VCard>
           </template>
         </AsyncState>
@@ -65,7 +65,7 @@ const props = defineProps<{
 
 withTitle(computed(() => t('contests')))
 
-const problem = useAsyncState(async () => {
+const contest = useAsyncState(async () => {
   const contestId = props.contestId
   const resp = await http.get(`contest/${contestId}`)
   const data = await resp.json<IContestDTO>()
