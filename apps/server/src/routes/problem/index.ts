@@ -4,7 +4,7 @@ import { problemScopedRoutes } from './scoped.js'
 import { CAP_NONE, ensureCapability, hasCapability } from '../../utils/capability.js'
 import { BSON } from 'mongodb'
 import { OrgCapability, problems } from '../../db/index.js'
-import { TypePaginationResult, findPaginated } from '../../utils/pagination.js'
+import { TypePaginationResult, paginationSkip } from '../../utils/pagination.js'
 import { AccessLevel, StrictObject, TypeAccessLevel, TypeUUID } from '../../schemas/index.js'
 
 export const problemRoutes = defineRoutes(async (s) => {
@@ -51,8 +51,7 @@ export const problemRoutes = defineRoutes(async (s) => {
         settings: { allowPublicSubmit: false },
         associations: [],
         accessLevel: req.body.accessLevel,
-        createdAt: Date.now(),
-        updatedAt: Date.now()
+        createdAt: Date.now()
       })
       return {
         problemId: insertedId
@@ -78,7 +77,17 @@ export const problemRoutes = defineRoutes(async (s) => {
               orgId: TypeUUID(),
               slug: Type.String(),
               title: Type.String(),
-              tags: Type.Array(Type.String())
+              tags: Type.Array(Type.String()),
+              accessLevel: TypeAccessLevel(),
+              createdAt: Type.Integer(),
+              status: Type.Optional(
+                Type.Object({
+                  solutionCount: Type.Integer(),
+                  lastSolutionId: TypeUUID(),
+                  lastSolutionScore: Type.Number(),
+                  lastSolutionStatus: Type.String()
+                })
+              )
             })
           )
         }
@@ -94,14 +103,47 @@ export const problemRoutes = defineRoutes(async (s) => {
         : AccessLevel.PUBLIC
       const principalIds = [req.user.userId, ...(membership?.groups ?? [])]
       const { page, perPage, count } = req.query
-      const result = await findPaginated(problems, page, perPage, count, {
+      const filter = {
         orgId,
         $or: [
           { accessLevel: { $lte: basicAccessLevel } },
           { 'associations.principalId': { $in: principalIds } }
         ]
-      })
-      return result
+      }
+      let total = 0
+      if (count) {
+        total = await problems.countDocuments(filter)
+      }
+      const skip = paginationSkip(page, perPage)
+      const items = await problems
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .aggregate<any>([
+          { $match: filter },
+          { $skip: skip },
+          { $limit: perPage },
+          {
+            $lookup: {
+              from: 'problemStatuses',
+              let: { problemId: '$_id' },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ['$problemId', '$$problemId'] },
+                        { $eq: ['$userId', req.user.userId] }
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'status'
+            }
+          },
+          { $unwind: { path: '$status', preserveNullAndEmptyArrays: true } }
+        ])
+        .toArray()
+      return { total, items }
     }
   )
 })

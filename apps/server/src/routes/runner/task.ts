@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { ISolution, SolutionState, solutions } from '../../db/index.js'
+import { ISolution, SolutionState, problemStatuses, solutions } from '../../db/index.js'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { StrictObject } from '../../index.js'
 
@@ -53,6 +53,23 @@ export const runnerTaskRoutes = defineRoutes(async (s) => {
         { $set: { state: SolutionState.RUNNING, ...req.body } }
       )
       if (matchedCount === 0) return rep.conflict()
+      if (!req._solution.contestId) {
+        // update problem status
+        await problemStatuses.updateOne(
+          {
+            userId: req._solution.userId,
+            problemId: req._solution.problemId,
+            lastSolutionId: req._solution._id
+          },
+          {
+            $set: {
+              lastSolutionScore: req.body.score,
+              lastSolutionStatus: req.body.status
+            }
+          },
+          { ignoreUndefined: true }
+        )
+      }
       return {}
     }
   )

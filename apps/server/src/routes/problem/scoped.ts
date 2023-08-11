@@ -7,7 +7,8 @@ import {
   problems,
   OrgCapability,
   SolutionState,
-  solutions
+  solutions,
+  problemStatuses
 } from '../../db/index.js'
 import {
   defineRoutes,
@@ -141,7 +142,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const { allowPublicSubmit } = req._problem.settings
+      const { allowPublicSubmit, maxSolutionCount } = req._problem.settings
       if (
         !allowPublicSubmit &&
         !hasCapability(req._problemCapability, ProblemCapability.CAP_SOLUTION)
@@ -160,6 +161,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       const maxSize = config.solution?.maxSize ?? 1024 * 1024 * 10 // 10MiB
       if (req.body.size > maxSize) return rep.badRequest('Solution too large')
 
+      const idOnUpsert = new BSON.UUID()
       const { value } = await solutions.findOneAndUpdate(
         { problemId: req._problemId, userId: req.user.userId, state: SolutionState.CREATED },
         {
@@ -169,7 +171,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
             solutionDataHash: req.body.hash
           },
           $setOnInsert: {
-            _id: new BSON.UUID(),
+            _id: idOnUpsert,
             orgId: req._problem.orgId,
             score: 0,
             metrics: {},
@@ -183,6 +185,22 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       )
 
       if (!value) throw s.httpErrors.conflict()
+
+      const upserted = value._id.equals(idOnUpsert)
+      await problemStatuses.updateOne(
+        {
+          userId: req.user.userId,
+          problemId: req._problemId,
+          solutionCount: upserted && maxSolutionCount ? { $lt: maxSolutionCount } : undefined
+        },
+        {
+          $inc: upserted ? { solutionCount: 1 } : undefined,
+          $set: { lastSolutionId: value._id, lastSolutionScore: 0, lastSolutionStatus: '' },
+          $setOnInsert: { _id: new BSON.UUID() }
+        },
+        { upsert: true, ignoreUndefined: true }
+      )
+
       const uploadUrl = await getUploadUrl(oss, solutionDataKey(value._id), {
         expiresIn: 300,
         size: req.body.size

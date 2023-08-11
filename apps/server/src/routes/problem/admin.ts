@@ -2,6 +2,7 @@ import { ProblemCapability, problems } from '../../db/index.js'
 import { defineRoutes } from '../common/index.js'
 import { ensureCapability } from '../../utils/capability.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
+import { SProblemSettings } from '../../index.js'
 
 export const adminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req) => {
@@ -19,6 +20,20 @@ export const adminRoutes = defineRoutes(async (s) => {
     resolve: async (req) => req._problemId,
     prefix: '/accessLevel'
   })
+
+  s.patch(
+    '/settings',
+    {
+      schema: {
+        description: 'Update problem settings',
+        body: SProblemSettings
+      }
+    },
+    async (req) => {
+      await problems.updateOne({ _id: req._problemId }, { $set: { settings: req.body } })
+      return {}
+    }
+  )
 
   s.delete(
     '/',

@@ -39,7 +39,6 @@ export interface IProblem extends IPrincipalControlable, IWithAttachment, IWithA
   settings: IProblemSettings
 
   createdAt: number
-  updatedAt: number
 }
 
 export const problems = db.collection<IProblem>('problems')
