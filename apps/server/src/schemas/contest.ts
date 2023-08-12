@@ -10,10 +10,11 @@ export const SContestStage = StrictObject({
       registrationAllowPublic: Type.Boolean(),
       problemEnabled: Type.Boolean(),
       problemShowTags: Type.Boolean(),
-      submitEnabled: Type.Boolean(),
-      solutionAllowOther: Type.Boolean(),
-      solutionAllowOtherDetails: Type.Boolean(),
-      solutionAllowOtherDownload: Type.Boolean()
+      solutionEnabled: Type.Boolean(),
+      solutionAllowSubmit: Type.Boolean(),
+      solutionShowOther: Type.Boolean(),
+      solutionShowOtherDetails: Type.Boolean(),
+      solutionShowOtherData: Type.Boolean()
     })
   )
 })

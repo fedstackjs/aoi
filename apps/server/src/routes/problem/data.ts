@@ -45,7 +45,7 @@ const dataScopedRoutes = defineRoutes(async (s) => {
   )
 })
 
-export const dataRoutes = defineRoutes(async (s) => {
+export const problemDataRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req) => {
     ensureCapability(req._problemCapability, ProblemCapability.CAP_DATA, s.httpErrors.forbidden())
   })

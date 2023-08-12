@@ -232,7 +232,6 @@ const problemViewRoutes = defineRoutes(async (s) => {
         metrics: {},
         status: '',
         message: '',
-        details: '',
         createdAt: req._now
       })
       const uploadUrl = await getUploadUrl(oss, solutionDataKey(insertedId), {

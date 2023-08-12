@@ -4,7 +4,7 @@ import { ensureCapability } from '../../utils/capability.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
 import { SProblemSettings } from '../../index.js'
 
-export const adminRoutes = defineRoutes(async (s) => {
+export const problemAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req) => {
     ensureCapability(req._problemCapability, ProblemCapability.CAP_ADMIN, s.httpErrors.forbidden())
   })

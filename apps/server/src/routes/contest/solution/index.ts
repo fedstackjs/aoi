@@ -1,20 +1,35 @@
 import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
-import { TypeUUID } from '../../schemas/index.js'
-import { TypePaginationResult, findPaginated } from '../../utils/index.js'
-import { ISolution, solutions } from '../../db/index.js'
-import { BSON, Document } from 'mongodb'
-import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
-import { solutionDataKey, solutionDetailsKey } from '../../index.js'
+import { defineRoutes, loadUUID, paramSchemaMerger } from '../../common/index.js'
+import { TypeUUID } from '../../../schemas/index.js'
+import { TypePaginationResult, findPaginated, hasCapability } from '../../../utils/index.js'
+import { ContestCapability, ISolution, solutions } from '../../../db/index.js'
+import { BSON } from 'mongodb'
+import { getFileUrl, loadOrgOssSettings } from '../../common/files.js'
+import { solutionDataKey, solutionDetailsKey } from '../../../index.js'
+import { FastifyRequest } from 'fastify'
 
-export const problemSolutionRoutes = defineRoutes(async (s) => {
+function checkUser(
+  req: FastifyRequest,
+  userId: string | BSON.UUID | undefined,
+  bypass: boolean | undefined,
+  bypassCap: BSON.Long = ContestCapability.CAP_ADMIN
+) {
+  return (
+    bypass ||
+    hasCapability(req._contestCapability, bypassCap) ||
+    req.user.userId.equals(userId ?? '')
+  )
+}
+
+export const contestSolutionRoutes = defineRoutes(async (s) => {
   s.get(
     '/',
     {
       schema: {
-        description: 'Get problem solutions',
+        description: 'Get contest solutions',
         querystring: Type.Object({
           userId: Type.Optional(Type.String()),
+          problemId: Type.Optional(Type.String()),
           page: Type.Integer({ minimum: 1, default: 1 }),
           perPage: Type.Integer({ enum: [15, 30] }),
           count: Type.Boolean({ default: false })
@@ -34,7 +49,11 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
         }
       }
     },
-    async (req) => {
+    async (req, rep) => {
+      const { solutionShowOther } = req._contestStage.settings
+      if (!checkUser(req, req.query.userId, solutionShowOther)) {
+        return rep.forbidden()
+      }
       return await findPaginated<ISolution & { submittedAt: number }>(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         solutions as any,
@@ -42,8 +61,8 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
         req.query.perPage,
         req.query.count,
         {
-          problemId: req._problemId,
-          contestId: { $exists: false },
+          contestId: req._contest,
+          problemId: req.query.problemId ? new BSON.UUID(req.query.problemId) : undefined,
           userId: req.query.userId ? new BSON.UUID(req.query.userId) : undefined,
           state: { $ne: 0 }
         },
@@ -77,11 +96,14 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
           const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
           const solution = await solutions.findOne({
             _id: solutionId,
-            contestId: { $exists: false },
-            problemId: req._problemId
+            contestId: req._contestId
           })
           if (!solution) throw s.httpErrors.notFound()
-          return [await loadOrgOssSettings(req._problem.orgId), solutionDataKey(solution._id)]
+          const { solutionShowOtherDetails } = req._contestStage.settings
+          if (!checkUser(req, solution.userId, solutionShowOtherDetails)) {
+            throw s.httpErrors.forbidden()
+          }
+          return [await loadOrgOssSettings(req._contest.orgId), solutionDataKey(solution._id)]
         },
         allowedTypes: ['download']
       })
@@ -91,11 +113,14 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
           const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
           const solution = await solutions.findOne({
             _id: solutionId,
-            contestId: { $exists: false },
-            problemId: req._problemId
+            contestId: req._contestId
           })
           if (!solution) throw s.httpErrors.notFound()
-          return [await loadOrgOssSettings(req._problem.orgId), solutionDetailsKey(solution._id)]
+          const { solutionShowOtherData } = req._contestStage.settings
+          if (!checkUser(req, solution.userId, solutionShowOtherData)) {
+            throw s.httpErrors.forbidden()
+          }
+          return [await loadOrgOssSettings(req._contest.orgId), solutionDetailsKey(solution._id)]
         },
         allowedTypes: ['download']
       })

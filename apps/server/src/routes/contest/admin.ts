@@ -5,7 +5,7 @@ import { manageACL, manageAccessLevel } from '../common/access.js'
 import { defineRoutes } from '../common/index.js'
 import { SContestStage } from '../../schemas/contest.js'
 
-export const adminRoutes = defineRoutes(async (s) => {
+export const contestAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req) => {
     ensureCapability(req._contestCapability, ContestCapability.CAP_ADMIN, s.httpErrors.forbidden())
   })

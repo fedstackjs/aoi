@@ -52,7 +52,7 @@ const attachmentScopedRoutes = defineRoutes(async (s) => {
   )
 })
 
-export const attachmentRoutes = defineRoutes(async (s) => {
+export const contestAttachmentRoutes = defineRoutes(async (s) => {
   s.get(
     '/',
     {

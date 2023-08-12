@@ -52,7 +52,7 @@ const attachmentScopedRoutes = defineRoutes(async (s) => {
   )
 })
 
-export const attachmentRoutes = defineRoutes(async (s) => {
+export const problemAttachmentRoutes = defineRoutes(async (s) => {
   s.get(
     '/',
     {

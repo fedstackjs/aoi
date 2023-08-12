@@ -1,7 +1,8 @@
 import { Type } from '@sinclair/typebox'
 import { ISolution, SolutionState, problemStatuses, solutions } from '../../db/index.js'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
-import { StrictObject } from '../../index.js'
+import { StrictObject, solutionDetailsKey } from '../../index.js'
+import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -38,8 +39,7 @@ export const runnerTaskRoutes = defineRoutes(async (s) => {
             status: Type.String(),
             score: Type.Number({ minimum: 0, maximum: 100 }),
             metrics: Type.Record(Type.String(), Type.Number()),
-            message: Type.String(),
-            details: Type.String()
+            message: Type.String()
           })
         ),
         response: {
@@ -73,6 +73,15 @@ export const runnerTaskRoutes = defineRoutes(async (s) => {
       return {}
     }
   )
+
+  s.register(getFileUrl, {
+    prefix: '/details',
+    resolve: async (type, query, req) => [
+      await loadOrgOssSettings(req._solution.orgId),
+      solutionDetailsKey(req._solution._id)
+    ],
+    allowedTypes: ['download']
+  })
 
   s.post(
     '/complete',

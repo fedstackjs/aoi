@@ -18,9 +18,10 @@ import {
 } from '../../db/index.js'
 import { CAP_ALL, ensureCapability } from '../../utils/index.js'
 import { StrictObject, TypeAccessLevel, TypeUUID } from '../../schemas/index.js'
-import { attachmentRoutes } from './attachment.js'
-import { adminRoutes } from './admin.js'
+import { contestAttachmentRoutes } from './attachment.js'
+import { contestAdminRoutes } from './admin.js'
 import { contestProblemRoutes } from './problem/index.js'
+import { contestSolutionRoutes } from './solution/index.js'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -128,7 +129,8 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
     }
   )
 
-  s.register(adminRoutes, { prefix: '/admin' })
-  s.register(attachmentRoutes, { prefix: '/attachment' })
+  s.register(contestAdminRoutes, { prefix: '/admin' })
+  s.register(contestAttachmentRoutes, { prefix: '/attachment' })
   s.register(contestProblemRoutes, { prefix: '/problem' })
+  s.register(contestSolutionRoutes, { prefix: '/solution' })
 })

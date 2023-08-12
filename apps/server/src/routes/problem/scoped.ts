@@ -23,10 +23,10 @@ import { TypeUUID, StrictObject, TypeAccessLevel, TypeHash } from '../../schemas
 import { loadOrgOssSettings } from '../common/files.js'
 import { solutionDataKey } from '../../oss/index.js'
 import { SAPIResponseVoid } from '../../schemas/api.js'
-import { attachmentRoutes } from './attachment.js'
-import { dataRoutes } from './data.js'
-import { solutionRoutes } from './solution.js'
-import { adminRoutes } from './admin.js'
+import { problemAttachmentRoutes } from './attachment.js'
+import { problemDataRoutes } from './data.js'
+import { problemSolutionRoutes } from './solution.js'
+import { problemAdminRoutes } from './admin.js'
 
 const problemIdSchema = Type.Object({
   problemId: Type.String()
@@ -119,11 +119,6 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
     }
   )
 
-  s.register(attachmentRoutes, { prefix: '/attachment' })
-  s.register(dataRoutes, { prefix: '/data' })
-  s.register(adminRoutes, { prefix: '/admin' })
-  s.register(solutionRoutes, { prefix: '/solution' })
-
   s.post(
     '/solution',
     {
@@ -177,7 +172,6 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
             metrics: {},
             status: '',
             message: '',
-            details: '',
             createdAt: Date.now()
           }
         },
@@ -208,4 +202,9 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       return { solutionId: value._id, uploadUrl }
     }
   )
+
+  s.register(problemAttachmentRoutes, { prefix: '/attachment' })
+  s.register(problemDataRoutes, { prefix: '/data' })
+  s.register(problemAdminRoutes, { prefix: '/admin' })
+  s.register(problemSolutionRoutes, { prefix: '/solution' })
 })

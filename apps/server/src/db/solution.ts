@@ -25,7 +25,6 @@ export interface ISolution {
   metrics: Record<string, number>
   status: string
   message: string
-  details: string
   runnerId?: BSON.UUID
   taskId?: BSON.UUID
 

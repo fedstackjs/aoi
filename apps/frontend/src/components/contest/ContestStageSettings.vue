@@ -22,10 +22,11 @@ const keys: {
   registrationAllowPublic: 'Registration Allow Public',
   problemEnabled: 'Problem Enabled',
   problemShowTags: 'Problem Show Tags',
-  submitEnabled: 'Submit Enabled',
-  solutionAllowOther: 'Solution Allow Other',
-  solutionAllowOtherDetails: 'Solution Allow Other Details',
-  solutionAllowOtherDownload: 'Solution Allow Other Download'
+  solutionEnabled: 'Solution Enabled',
+  solutionAllowSubmit: 'Solution Allow Submit',
+  solutionShowOther: 'Solution Allow Other',
+  solutionShowOtherDetails: 'Solution Allow Other Details',
+  solutionShowOtherData: 'Solution Allow Other Download'
 }
 
 const entries = Object.entries(keys) as [keyof IContestStage['settings'], string][]
