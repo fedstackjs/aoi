@@ -7,7 +7,7 @@ import {
   findPaginated,
   hasCapability
 } from '../../utils/index.js'
-import { AccessLevel, TypeAccessLevel, TypeUUID } from '../../schemas/index.js'
+import { AccessLevel } from '../../schemas/index.js'
 import { OrgCapability, contests } from '../../db/index.js'
 import { SContestStage } from '../../schemas/contest.js'
 import { BSON } from 'mongodb'
@@ -27,13 +27,13 @@ export const contestRoutes = defineRoutes(async (s) => {
           orgId: Type.String(),
           slug: Type.String(),
           title: Type.String(),
-          accessLevel: TypeAccessLevel(),
+          accessLevel: Type.AccessLevel(),
           start: Type.Integer(),
           duration: Type.Integer()
         }),
         response: {
           200: Type.Object({
-            contestId: TypeUUID()
+            contestId: Type.UUID()
           })
         }
       }
@@ -83,7 +83,7 @@ export const contestRoutes = defineRoutes(async (s) => {
         response: {
           200: TypePaginationResult(
             Type.Object({
-              _id: TypeUUID(),
+              _id: Type.UUID(),
               slug: Type.String(),
               title: Type.String(),
               tags: Type.Array(Type.String()),

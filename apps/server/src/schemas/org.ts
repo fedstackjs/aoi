@@ -1,13 +1,10 @@
 import { Static, Type } from '@sinclair/typebox'
-import { StrictObject } from './common.js'
+import { SBaseProfile } from './common.js'
 
-export const SOrgProfile = StrictObject({
-  name: Type.String(),
-  email: Type.String({ format: 'email' })
-})
+export const SOrgProfile = Type.NoAdditionalProperties(SBaseProfile)
 export interface IOrgProfile extends Static<typeof SOrgProfile> {}
 
-export const SOrgOssSettings = StrictObject({
+export const SOrgOssSettings = Type.StrictObject({
   bucket: Type.String(),
   accessKey: Type.String(),
   secretKey: Type.String(),
@@ -17,7 +14,7 @@ export const SOrgOssSettings = StrictObject({
 })
 export interface IOrgOssSettings extends Static<typeof SOrgOssSettings> {}
 
-export const SOrgSettings = StrictObject({
+export const SOrgSettings = Type.StrictObject({
   oss: Type.Optional(SOrgOssSettings)
 })
 export interface IOrgSettings extends Static<typeof SOrgSettings> {}

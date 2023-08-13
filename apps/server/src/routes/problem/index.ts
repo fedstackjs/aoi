@@ -5,7 +5,7 @@ import { CAP_NONE, ensureCapability, hasCapability } from '../../utils/capabilit
 import { BSON } from 'mongodb'
 import { OrgCapability, problems } from '../../db/index.js'
 import { TypePaginationResult, paginationSkip } from '../../utils/pagination.js'
-import { AccessLevel, StrictObject, TypeAccessLevel, TypeUUID } from '../../schemas/index.js'
+import { AccessLevel } from '../../schemas/index.js'
 
 export const problemRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('problem'))
@@ -17,15 +17,15 @@ export const problemRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create a new problem',
-        body: StrictObject({
+        body: Type.Object({
           orgId: Type.String(),
           slug: Type.String(),
           title: Type.String(),
-          accessLevel: TypeAccessLevel()
+          accessLevel: Type.AccessLevel()
         }),
         response: {
           200: Type.Object({
-            problemId: TypeUUID()
+            problemId: Type.UUID()
           })
         }
       }
@@ -73,17 +73,17 @@ export const problemRoutes = defineRoutes(async (s) => {
         response: {
           200: TypePaginationResult(
             Type.Object({
-              _id: TypeUUID(),
-              orgId: TypeUUID(),
+              _id: Type.UUID(),
+              orgId: Type.UUID(),
               slug: Type.String(),
               title: Type.String(),
               tags: Type.Array(Type.String()),
-              accessLevel: TypeAccessLevel(),
+              accessLevel: Type.AccessLevel(),
               createdAt: Type.Integer(),
               status: Type.Optional(
                 Type.Object({
                   solutionCount: Type.Integer(),
-                  lastSolutionId: TypeUUID(),
+                  lastSolutionId: Type.UUID(),
                   lastSolutionScore: Type.Number(),
                   lastSolutionStatus: Type.String()
                 })

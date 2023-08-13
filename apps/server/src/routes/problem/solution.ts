@@ -1,9 +1,8 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
-import { TypeUUID } from '../../schemas/index.js'
 import { TypePaginationResult, findPaginated } from '../../utils/index.js'
 import { ISolution, solutions } from '../../db/index.js'
-import { BSON, Document } from 'mongodb'
+import { BSON } from 'mongodb'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import { solutionDataKey, solutionDetailsKey } from '../../index.js'
 
@@ -22,7 +21,7 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
         response: {
           200: TypePaginationResult(
             Type.Object({
-              _id: TypeUUID(),
+              _id: Type.UUID(),
               state: Type.Integer(),
               score: Type.Number(),
               metrics: Type.Record(Type.String(), Type.Number()),

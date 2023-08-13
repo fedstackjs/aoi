@@ -3,7 +3,6 @@ import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import { defineRoutes, paramSchemaMerger } from '../common/index.js'
 import { ensureCapability } from '../../utils/index.js'
 import { contestAttachmentKey } from '../../oss/index.js'
-import { StrictObject } from '../../schemas/index.js'
 import { ContestCapability, contests } from '../../index.js'
 
 const attachmentScopedRoutes = defineRoutes(async (s) => {
@@ -79,7 +78,7 @@ export const contestAttachmentRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create contest attachment',
-        body: StrictObject({
+        body: Type.Object({
           key: Type.String(),
           name: Type.String(),
           description: Type.String()

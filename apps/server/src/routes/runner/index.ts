@@ -6,7 +6,6 @@ import { randomBytes } from 'node:crypto'
 import { BSON } from 'mongodb'
 import { runnerTaskRoutes } from './task.js'
 import { problemConfigSchema } from '@aoi/common'
-import { TypeUUID } from '../../schemas/index.js'
 import { getDownloadUrl } from '../../oss/index.js'
 import { problemDataKey, solutionDataKey } from '../../oss/index.js'
 import { loadOrgOssSettings } from '../common/files.js'
@@ -56,7 +55,7 @@ export const runnerRoutes = defineRoutes(async (s) => {
         }),
         response: {
           200: Type.Object({
-            runnerId: TypeUUID(),
+            runnerId: Type.UUID(),
             runnerKey: Type.String()
           })
         }
@@ -89,8 +88,8 @@ export const runnerRoutes = defineRoutes(async (s) => {
         response: {
           200: Type.Partial(
             Type.Object({
-              taskId: TypeUUID(),
-              solutionId: TypeUUID(),
+              taskId: Type.UUID(),
+              solutionId: Type.UUID(),
               problemConfig: problemConfigSchema,
               problemDataUrl: Type.String(),
               problemDataHash: Type.String(),

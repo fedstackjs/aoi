@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 import { users } from '../../db/index.js'
 import { BSON } from 'mongodb'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
-import { SUserProfile, StrictObject } from '../../schemas/index.js'
+import { SUserProfile } from '../../schemas/index.js'
 
 export const authRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', (route) => {
@@ -46,7 +46,7 @@ export const authRoutes = defineRoutes(async (s) => {
     '/signup',
     {
       schema: {
-        body: StrictObject({
+        body: Type.Object({
           profile: SUserProfile,
           password: Type.String()
         })

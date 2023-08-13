@@ -1,13 +1,6 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { BSON, Collection } from 'mongodb'
-import {
-  IPrincipalControlable,
-  IWithAccessLevel,
-  TypeAccessLevel,
-  TypeUUID,
-  groups,
-  users
-} from '../../index.js'
+import { IPrincipalControlable, IWithAccessLevel, groups, users } from '../../index.js'
 import { FastifyRequest } from 'fastify'
 
 const Params = Type.Object({
@@ -30,7 +23,7 @@ export const manageACL: FastifyPluginAsyncTypebox<{
         response: {
           200: Type.Array(
             Type.Object({
-              principalId: TypeUUID(),
+              principalId: Type.UUID(),
               capability: Type.String()
             })
           )
@@ -128,7 +121,7 @@ export const manageAccessLevel: FastifyPluginAsyncTypebox<{
     {
       schema: {
         body: Type.Object({
-          accessLevel: TypeAccessLevel()
+          accessLevel: Type.AccessLevel()
         })
       }
     },

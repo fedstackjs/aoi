@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox'
 import { ISolution, SolutionState, problemStatuses, solutions } from '../../db/index.js'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
-import { StrictObject, solutionDetailsKey } from '../../index.js'
+import { solutionDetailsKey } from '../../index.js'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 
 declare module 'fastify' {
@@ -35,12 +35,15 @@ export const runnerTaskRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Update solution result',
         body: Type.Partial(
-          StrictObject({
-            status: Type.String(),
-            score: Type.Number({ minimum: 0, maximum: 100 }),
-            metrics: Type.Record(Type.String(), Type.Number()),
-            message: Type.String()
-          })
+          Type.Object(
+            {
+              status: Type.String(),
+              score: Type.Number({ minimum: 0, maximum: 100 }),
+              metrics: Type.Record(Type.String(), Type.Number()),
+              message: Type.String()
+            },
+            { additionalProperties: false }
+          )
         ),
         response: {
           200: Type.Object({})

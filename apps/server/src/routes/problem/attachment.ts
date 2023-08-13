@@ -4,7 +4,6 @@ import { defineRoutes, paramSchemaMerger } from '../common/index.js'
 import { ensureCapability } from '../../utils/index.js'
 import { ProblemCapability, problems } from '../../db/index.js'
 import { problemAttachmentKey } from '../../oss/index.js'
-import { StrictObject } from '../../schemas/index.js'
 
 const attachmentScopedRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', paramSchemaMerger(Type.Object({ key: Type.String() })))
@@ -79,7 +78,7 @@ export const problemAttachmentRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create problem attachment',
-        body: StrictObject({
+        body: Type.Object({
           key: Type.String(),
           name: Type.String(),
           description: Type.String()

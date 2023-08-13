@@ -5,7 +5,6 @@ import {
   OrgCapability,
   SGroupProfile,
   TypePaginationResult,
-  TypeUUID,
   ensureCapability,
   groups,
   orgMemberships,
@@ -40,8 +39,8 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
         description: 'Get group details',
         response: {
           200: Type.Object({
-            _id: TypeUUID(),
-            orgId: TypeUUID(),
+            _id: Type.UUID(),
+            orgId: Type.UUID(),
             profile: SGroupProfile
           })
         }
@@ -207,7 +206,7 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Remove member from group',
         params: Type.Object({
-          userId: TypeUUID()
+          userId: Type.UUID()
         })
       }
     },

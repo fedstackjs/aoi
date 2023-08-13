@@ -19,7 +19,6 @@ import {
 } from '../common/index.js'
 import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/capability.js'
 import { getUploadUrl } from '../../oss/index.js'
-import { TypeUUID, StrictObject, TypeAccessLevel, TypeHash } from '../../schemas/index.js'
 import { loadOrgOssSettings } from '../common/files.js'
 import { solutionDataKey } from '../../oss/index.js'
 import { SAPIResponseVoid } from '../../schemas/api.js'
@@ -69,9 +68,9 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
         description: 'Get problem details',
         response: {
           200: Type.Object({
-            _id: TypeUUID(),
-            orgId: TypeUUID(),
-            accessLevel: TypeAccessLevel(),
+            _id: Type.UUID(),
+            orgId: Type.UUID(),
+            accessLevel: Type.AccessLevel(),
             slug: Type.String(),
             title: Type.String(),
             description: Type.String(),
@@ -97,12 +96,17 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Update problem content',
-        body: StrictObject({
-          title: Type.String(),
-          slug: Type.String(),
-          description: Type.String(),
-          tags: Type.Array(Type.String())
-        }),
+        body: Type.Partial(
+          Type.Object(
+            {
+              title: Type.String(),
+              slug: Type.String(),
+              description: Type.String(),
+              tags: Type.Array(Type.String())
+            },
+            { additionalProperties: false }
+          )
+        ),
         response: {
           200: SAPIResponseVoid
         }
@@ -125,12 +129,12 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Submit a solution',
         body: Type.Object({
-          hash: TypeHash(),
+          hash: Type.Hash(),
           size: Type.Integer()
         }),
         response: {
           200: Type.Object({
-            solutionId: TypeUUID(),
+            solutionId: Type.UUID(),
             uploadUrl: Type.String()
           })
         }

@@ -4,7 +4,7 @@ import { UserCapability, orgMemberships, orgs, users } from '../../db/index.js'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { orgScopedRoutes } from './scoped.js'
 import { CAP_ALL, CAP_NONE, hasCapability } from '../../utils/capability.js'
-import { StrictObject, TypeUUID, SOrgProfile } from '../../schemas/index.js'
+import { SOrgProfile } from '../../schemas/index.js'
 
 export const orgRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('organization'))
@@ -14,7 +14,7 @@ export const orgRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create a new organization',
-        body: StrictObject({
+        body: Type.Object({
           profile: SOrgProfile
         }),
         response: {
@@ -55,7 +55,7 @@ export const orgRoutes = defineRoutes(async (s) => {
         response: {
           200: Type.Array(
             Type.Object({
-              _id: TypeUUID(),
+              _id: Type.UUID(),
               profile: SOrgProfile
             })
           )

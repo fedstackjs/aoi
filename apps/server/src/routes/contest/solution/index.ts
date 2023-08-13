@@ -1,6 +1,5 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../../common/index.js'
-import { TypeUUID } from '../../../schemas/index.js'
 import { TypePaginationResult, findPaginated, hasCapability } from '../../../utils/index.js'
 import { ContestCapability, ISolution, solutions } from '../../../db/index.js'
 import { BSON } from 'mongodb'
@@ -37,7 +36,7 @@ export const contestSolutionRoutes = defineRoutes(async (s) => {
         response: {
           200: TypePaginationResult(
             Type.Object({
-              _id: TypeUUID(),
+              _id: Type.UUID(),
               state: Type.Integer(),
               score: Type.Number(),
               metrics: Type.Record(Type.String(), Type.Number()),

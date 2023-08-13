@@ -1,6 +1,6 @@
 import { FastifyPluginAsyncTypebox, Static, Type } from '@fastify/type-provider-typebox'
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { StringEnum, IOrgOssSettings } from '../../schemas/index.js'
+import { IOrgOssSettings } from '../../schemas/index.js'
 import {
   IUrlOptions,
   getDeleteUrl,
@@ -40,7 +40,7 @@ export const getFileUrl: FastifyPluginAsyncTypebox<{
     {
       schema: {
         params: Type.Object({
-          type: StringEnum(allowedTypes)
+          type: Type.StringEnum(allowedTypes)
         }),
         querystring: SGetUrlOptions,
         response: {

@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadMembership, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { groupScopedRoutes } from './scoped.js'
 import { TypePaginationResult, ensureCapability, findPaginated } from '../../utils/index.js'
-import { OrgCapability, SGroupProfile, TypeUUID, groups } from '../../index.js'
+import { OrgCapability, SGroupProfile, groups } from '../../index.js'
 import { BSON } from 'mongodb'
 
 export const groupRoutes = defineRoutes(async (s) => {
@@ -24,8 +24,8 @@ export const groupRoutes = defineRoutes(async (s) => {
         response: {
           200: TypePaginationResult(
             Type.Object({
-              _id: TypeUUID(),
-              orgId: TypeUUID(),
+              _id: Type.UUID(),
+              orgId: Type.UUID(),
               profile: SGroupProfile
             })
           )
@@ -51,7 +51,7 @@ export const groupRoutes = defineRoutes(async (s) => {
         }),
         response: {
           200: Type.Object({
-            groupId: TypeUUID()
+            groupId: Type.UUID()
           })
         }
       }

@@ -1,14 +1,13 @@
 import { problemConfigSchema } from '@aoi/common'
 import { ProblemCapability, problems } from '../../db/index.js'
 import { problemDataKey } from '../../oss/index.js'
-import { StrictObject, TypeHash } from '../../schemas/index.js'
 import { ensureCapability } from '../../utils/index.js'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import { defineRoutes, paramSchemaMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
 
 const dataScopedRoutes = defineRoutes(async (s) => {
-  s.addHook('onRoute', paramSchemaMerger(Type.Object({ hash: TypeHash() })))
+  s.addHook('onRoute', paramSchemaMerger(Type.Object({ hash: Type.Hash() })))
   s.register(getFileUrl, {
     prefix: '/url',
     resolve: async (_type, query, req) => {
@@ -58,7 +57,7 @@ export const problemDataRoutes = defineRoutes(async (s) => {
         response: {
           200: Type.Array(
             Type.Object({
-              hash: TypeHash(),
+              hash: Type.Hash(),
               createdAt: Type.Number(),
               config: problemConfigSchema,
               description: Type.String()
@@ -77,8 +76,8 @@ export const problemDataRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create problem data',
-        body: StrictObject({
-          hash: TypeHash(),
+        body: Type.Object({
+          hash: Type.Hash(),
           config: problemConfigSchema,
           description: Type.String()
         })
@@ -100,8 +99,8 @@ export const problemDataRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Set problem data hash',
-        body: StrictObject({
-          hash: TypeHash()
+        body: Type.Object({
+          hash: Type.Hash()
         })
       }
     },

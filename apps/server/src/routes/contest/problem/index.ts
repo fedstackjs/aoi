@@ -11,7 +11,6 @@ import {
   problems,
   solutions
 } from '../../../db/index.js'
-import { TypeHash, TypeUUID } from '../../../schemas/index.js'
 import { getUploadUrl, problemAttachmentKey, solutionDataKey } from '../../../oss/index.js'
 import { hasCapability } from '../../../utils/index.js'
 import { problemAdminRoutes } from './admin.js'
@@ -39,7 +38,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
         response: {
           200: Type.Array(
             Type.Object({
-              _id: TypeUUID(),
+              _id: Type.UUID(),
               title: Type.String(),
               tags: Type.Optional(Type.Array(Type.String())),
               settings: Type.Pick(SContestProblemSettings, ['score', 'slug'] as const)
@@ -75,7 +74,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
         }),
         response: {
           200: Type.Object({
-            _id: TypeUUID(),
+            _id: Type.UUID(),
             title: Type.String(),
             description: Type.String(),
             tags: Type.Optional(Type.Array(Type.String())),
@@ -147,12 +146,12 @@ const problemViewRoutes = defineRoutes(async (s) => {
           problemId: Type.String()
         }),
         body: Type.Object({
-          hash: TypeHash(),
+          hash: Type.Hash(),
           size: Type.Integer()
         }),
         response: {
           200: Type.Object({
-            solutionId: TypeUUID(),
+            solutionId: Type.UUID(),
             uploadUrl: Type.String()
           })
         }

@@ -2,7 +2,6 @@ import { Type } from '@sinclair/typebox'
 import { OrgCapability, orgMemberships, users } from '../../../db/index.js'
 import { TypePaginationResult, paginationSkip } from '../../../utils/index.js'
 import { defineRoutes, loadUUID } from '../../common/index.js'
-import { TypeUUID } from '../../../index.js'
 import { BSON } from 'mongodb'
 
 export const orgAdminMemberRoutes = defineRoutes(async (s) => {
@@ -94,7 +93,7 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
         }),
         response: {
           200: Type.Object({
-            membershipId: TypeUUID()
+            membershipId: Type.UUID()
           })
         }
       }

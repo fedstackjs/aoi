@@ -17,7 +17,6 @@ import {
   contests
 } from '../../db/index.js'
 import { CAP_ALL, ensureCapability } from '../../utils/index.js'
-import { StrictObject, TypeAccessLevel, TypeUUID } from '../../schemas/index.js'
 import { contestAttachmentRoutes } from './attachment.js'
 import { contestAdminRoutes } from './admin.js'
 import { contestProblemRoutes } from './problem/index.js'
@@ -82,9 +81,9 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
         description: 'Get contest details',
         response: {
           200: Type.Object({
-            _id: TypeUUID(),
-            orgId: TypeUUID(),
-            accessLevel: TypeAccessLevel(),
+            _id: Type.UUID(),
+            orgId: Type.UUID(),
+            accessLevel: Type.AccessLevel(),
             slug: Type.String(),
             title: Type.String(),
             description: Type.String(),
@@ -110,7 +109,7 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Update problem content',
-        body: StrictObject({
+        body: Type.StrictObject({
           title: Type.String(),
           slug: Type.String(),
           description: Type.String(),
