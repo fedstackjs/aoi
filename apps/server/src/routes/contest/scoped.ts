@@ -21,6 +21,7 @@ import { contestAttachmentRoutes } from './attachment.js'
 import { contestAdminRoutes } from './admin.js'
 import { contestProblemRoutes } from './problem/index.js'
 import { contestSolutionRoutes } from './solution/index.js'
+import { contestRanklistRoutes } from './ranklist/index.js'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -130,6 +131,7 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
 
   s.register(contestAdminRoutes, { prefix: '/admin' })
   s.register(contestAttachmentRoutes, { prefix: '/attachment' })
+  s.register(contestRanklistRoutes, { prefix: '/ranklist' })
   s.register(contestProblemRoutes, { prefix: '/problem' })
   s.register(contestSolutionRoutes, { prefix: '/solution' })
 })

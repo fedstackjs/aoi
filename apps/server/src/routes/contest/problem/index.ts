@@ -48,10 +48,11 @@ const problemViewRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      const config = req._contest.problems
-      const $in = config
-        .filter(({ settings }) => (settings.showAfter ?? 0) <= req._now)
-        .map(({ problemId }) => problemId)
+      let config = req._contest.problems
+      if (!hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)) {
+        config = config.filter(({ settings }) => (settings.showAfter ?? 0) <= req._now)
+      }
+      const $in = config.map(({ problemId }) => problemId)
       const projection: Document = { title: 1 }
       if (req._contestStage.settings.problemShowTags) {
         projection.tags = 1
@@ -94,7 +95,13 @@ const problemViewRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const [problemId, settings] = loadProblemSettings(req)
       if (!settings) return rep.notFound()
-      if (settings.showAfter && settings.showAfter > req._now) return rep.notFound()
+      if (
+        !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN) &&
+        settings.showAfter &&
+        settings.showAfter > req._now
+      )
+        return rep.notFound()
+
       const projection: Document = {
         title: 1,
         description: 1,
@@ -125,7 +132,12 @@ const problemViewRoutes = defineRoutes(async (s) => {
         resolve: async (type, query, req) => {
           const [problemId, settings] = loadProblemSettings(req)
           if (!settings) throw s.httpErrors.notFound()
-          if (settings.showAfter && settings.showAfter > req._now) throw s.httpErrors.notFound()
+          if (
+            !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN) &&
+            settings.showAfter &&
+            settings.showAfter > req._now
+          )
+            throw s.httpErrors.notFound()
 
           const oss = await loadOrgOssSettings(req._contest.orgId)
           const key = (req.params as { key: string }).key
@@ -165,7 +177,12 @@ const problemViewRoutes = defineRoutes(async (s) => {
 
       const [problemId, settings] = loadProblemSettings(req)
       if (!settings) return rep.notFound()
-      if (settings.showAfter && settings.showAfter > req._now) return rep.notFound()
+      if (
+        !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN) &&
+        settings.showAfter &&
+        settings.showAfter > req._now
+      )
+        return rep.notFound()
 
       const problem = await problems.findOne(
         { _id: problemId },

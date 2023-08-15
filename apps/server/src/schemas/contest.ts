@@ -13,7 +13,8 @@ export const SContestStage = Type.StrictObject({
       solutionAllowSubmit: Type.Boolean(),
       solutionShowOther: Type.Boolean(),
       solutionShowOtherDetails: Type.Boolean(),
-      solutionShowOtherData: Type.Boolean()
+      solutionShowOtherData: Type.Boolean(),
+      ranklistEnabled: Type.Boolean()
     })
   )
 })
@@ -28,3 +29,10 @@ export const SContestProblemSettings = Type.StrictObject({
 })
 
 export interface IContestProblemSettings extends Static<typeof SContestProblemSettings> {}
+
+export const SContestRanklistSettings = Type.StrictObject({
+  showAfter: Type.Optional(Type.Integer()),
+  showBefore: Type.Optional(Type.Integer())
+})
+
+export interface IContestRanklistSettings extends Static<typeof SContestRanklistSettings> {}

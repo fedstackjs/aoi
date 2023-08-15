@@ -19,3 +19,7 @@ export function solutionDetailsKey(solutionId: BSON.UUID) {
 export function contestAttachmentKey(contestId: BSON.UUID, attachmentKey: string) {
   return `contest/${contestId}/attachment/${attachmentKey}`
 }
+
+export function contestRanklistKey(contestId: BSON.UUID, ranklistKey: string) {
+  return `contest/${contestId}/ranklist/${ranklistKey}.json`
+}

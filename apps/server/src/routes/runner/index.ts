@@ -1,15 +1,11 @@
 import { Type } from '@sinclair/typebox'
-import { IRunner, runners, SolutionState, solutions, problems } from '../../db/index.js'
+import { IRunner, runners } from '../../db/index.js'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { randomBytes } from 'node:crypto'
-import { BSON } from 'mongodb'
-import { runnerTaskRoutes } from './task.js'
-import { problemConfigSchema } from '@aoi/common'
-import { getDownloadUrl } from '../../oss/index.js'
-import { problemDataKey, solutionDataKey } from '../../oss/index.js'
-import { loadOrgOssSettings } from '../common/files.js'
+import { runnerSolutionRoutes } from './task.js'
 import { packageJson } from '../../utils/package.js'
+import { runnerRanklistRoutes } from './ranklist.js'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -80,64 +76,6 @@ export const runnerRoutes = defineRoutes(async (s) => {
     }
   )
 
-  s.post(
-    '/poll',
-    {
-      schema: {
-        description: 'Poll for a new solution',
-        response: {
-          200: Type.Partial(
-            Type.Object({
-              taskId: Type.UUID(),
-              solutionId: Type.UUID(),
-              problemConfig: problemConfigSchema,
-              problemDataUrl: Type.String(),
-              problemDataHash: Type.String(),
-              solutionDataUrl: Type.String(),
-              solutionDataHash: Type.String(),
-              errMsg: Type.String()
-            })
-          )
-        }
-      }
-    },
-    async (req) => {
-      const taskId = new BSON.UUID()
-      const { value: solution } = await solutions.findOneAndUpdate(
-        {
-          orgId: req._runner.orgId,
-          state: SolutionState.PENDING,
-          label: { $in: req._runner.labels }
-        },
-        { $set: { state: SolutionState.QUEUED, runnerId: req._runner._id, taskId } }
-      )
-      if (!solution) return {}
-
-      const info = { taskId, solutionId: solution._id }
-
-      const oss = await loadOrgOssSettings(req._runner.orgId)
-      if (!oss) return { ...info, errMsg: 'OSS not enabled' }
-      const problem = await problems.findOne({ _id: solution.problemId })
-      if (!problem) return { ...info, errMsg: 'Problem not found' }
-      const currentData = problem.data.find(({ hash }) => hash === problem.currentDataHash)
-      if (!currentData) return { ...info, errMsg: 'Problem data not found' }
-
-      const problemDataUrl = await getDownloadUrl(
-        oss,
-        problemDataKey(problem._id, problem.currentDataHash)
-      )
-      const solutionDataUrl = await getDownloadUrl(oss, solutionDataKey(solution._id))
-
-      return {
-        ...info,
-        problemConfig: currentData.config,
-        problemDataUrl,
-        problemDataHash: problem.currentDataHash,
-        solutionDataUrl,
-        solutionDataHash: solution.solutionDataHash
-      }
-    }
-  )
-
-  s.register(runnerTaskRoutes, { prefix: '/task/:solutionId/:taskId' })
+  s.register(runnerRanklistRoutes, { prefix: '/ranklist' })
+  s.register(runnerSolutionRoutes, { prefix: '/solution' })
 })
