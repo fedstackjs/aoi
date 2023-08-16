@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox'
 import { OrgCapability, orgMemberships, users } from '../../../db/index.js'
-import { TypePaginationResult, paginationSkip } from '../../../utils/index.js'
+import { paginationSkip } from '../../../utils/index.js'
 import { defineRoutes, loadUUID } from '../../common/index.js'
 import { BSON } from 'mongodb'
 
@@ -16,7 +16,7 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
           count: Type.Boolean({ default: false })
         }),
         response: {
-          200: TypePaginationResult(Type.Any())
+          200: Type.PaginationResult(Type.Any())
         }
       }
     },

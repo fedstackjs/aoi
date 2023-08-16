@@ -1,6 +1,6 @@
 import { BSON } from 'mongodb'
 import { capabilityMask } from '../utils/capability.js'
-import { IPrincipalControlable, IWithAccessLevel, IWithAttachment } from './common.js'
+import { IPrincipalControlable, IWithAccessLevel, IWithAttachment, IWithContent } from './common.js'
 import { db } from './client.js'
 import {
   IContestProblemSettings,
@@ -10,9 +10,9 @@ import {
 
 export const ContestCapability = {
   CAP_ACCESS: capabilityMask(0),
-  CAP_CONTENT: capabilityMask(1),
-  CAP_DATA: capabilityMask(2),
-  CAP_ADMIN: capabilityMask(3)
+  CAP_ADMIN: capabilityMask(1),
+  CAP_CONTENT: capabilityMask(2),
+  CAP_REGISTRATION: capabilityMask(3)
 }
 
 export interface IContestParticipantResult {
@@ -46,14 +46,13 @@ export interface IContestRanklist {
   settings: IContestRanklistSettings
 }
 
-export interface IContest extends IPrincipalControlable, IWithAttachment, IWithAccessLevel {
+export interface IContest
+  extends IPrincipalControlable,
+    IWithAttachment,
+    IWithAccessLevel,
+    IWithContent {
   _id: BSON.UUID
   orgId: BSON.UUID
-
-  slug: string
-  title: string
-  description: string
-  tags: string[]
 
   problems: IContestProblem[]
   stages: IContestStage[]

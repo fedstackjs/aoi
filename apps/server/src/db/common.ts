@@ -48,3 +48,10 @@ export interface IWithAttachment {
 export interface IWithAccessLevel {
   accessLevel: AccessLevel
 }
+
+export interface IWithContent {
+  slug: string
+  title: string
+  description: string
+  tags: string[]
+}

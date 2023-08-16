@@ -3,6 +3,7 @@ import { defineRoutes } from '../common/index.js'
 import { ensureCapability } from '../../utils/capability.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
 import { SProblemSettings } from '../../index.js'
+import { manageSettings } from '../common/settings.js'
 
 export const problemAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req) => {
@@ -11,29 +12,22 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
 
   s.register(manageACL, {
     collection: problems,
-    resolve: async (req) => req._problemId,
+    resolve: async (req) => req._problem._id,
     defaultCapability: ProblemCapability.CAP_ACCESS,
     prefix: '/access'
   })
   s.register(manageAccessLevel, {
     collection: problems,
-    resolve: async (req) => req._problemId,
+    resolve: async (req) => req._problem._id,
     prefix: '/accessLevel'
   })
 
-  s.patch(
-    '/settings',
-    {
-      schema: {
-        description: 'Update problem settings',
-        body: SProblemSettings
-      }
-    },
-    async (req) => {
-      await problems.updateOne({ _id: req._problemId }, { $set: { settings: req.body } })
-      return {}
-    }
-  )
+  s.register(manageSettings, {
+    collection: problems,
+    resolve: async (req) => req._problem._id,
+    schema: SProblemSettings,
+    prefix: '/settings'
+  })
 
   s.delete(
     '/',
@@ -44,7 +38,7 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
     },
     async (req) => {
       // TODO: handle dependencies
-      await problems.deleteOne({ _id: req._problemId })
+      await problems.deleteOne({ _id: req._problem._id })
       return {}
     }
   )

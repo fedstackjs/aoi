@@ -21,11 +21,11 @@ import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/capability
 import { getUploadUrl } from '../../oss/index.js'
 import { loadOrgOssSettings } from '../common/files.js'
 import { solutionDataKey } from '../../oss/index.js'
-import { SAPIResponseVoid } from '../../schemas/api.js'
 import { problemAttachmentRoutes } from './attachment.js'
 import { problemDataRoutes } from './data.js'
 import { problemSolutionRoutes } from './solution.js'
 import { problemAdminRoutes } from './admin.js'
+import { manageContent } from '../common/content.js'
 
 const problemIdSchema = Type.Object({
   problemId: Type.String()
@@ -88,38 +88,6 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
         capability: req._problemCapability.toString(),
         config: req._problem.data.find(({ hash }) => hash === req._problem.currentDataHash)?.config
       }
-    }
-  )
-
-  s.patch(
-    '/content',
-    {
-      schema: {
-        description: 'Update problem content',
-        body: Type.Partial(
-          Type.Object(
-            {
-              title: Type.String(),
-              slug: Type.String(),
-              description: Type.String(),
-              tags: Type.Array(Type.String())
-            },
-            { additionalProperties: false }
-          )
-        ),
-        response: {
-          200: SAPIResponseVoid
-        }
-      }
-    },
-    async (req) => {
-      ensureCapability(
-        req._problemCapability,
-        ProblemCapability.CAP_CONTENT,
-        s.httpErrors.forbidden()
-      )
-      await problems.updateOne({ _id: req._problemId }, { $set: req.body })
-      return {}
     }
   )
 
@@ -206,6 +174,15 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       return { solutionId: value._id, uploadUrl }
     }
   )
+
+  s.register(manageContent, {
+    collection: problems,
+    resolve: async (req) => {
+      if (!hasCapability(req._problemCapability, ProblemCapability.CAP_CONTENT)) return null
+      return req._problemId
+    },
+    prefix: '/content'
+  })
 
   s.register(problemAttachmentRoutes, { prefix: '/attachment' })
   s.register(problemDataRoutes, { prefix: '/data' })

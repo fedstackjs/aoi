@@ -1,65 +1,50 @@
 import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadMembership, loadUUID, swaggerTagMerger } from '../common/index.js'
-import { CAP_NONE, ensureCapability, findPaginated, hasCapability } from '../../utils/index.js'
-import { AccessLevel } from '../../schemas/index.js'
-import { ContestRanklistState, OrgCapability, contests } from '../../db/index.js'
-import { SContestStage } from '../../schemas/contest.js'
+import { defineRoutes, loadMembership, swaggerTagMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
-import { contestScopedRoutes } from './scoped.js'
+import { CAP_NONE, findPaginated, hasCapability } from '../../utils/index.js'
+import { plans } from '../../db/plan.js'
+import { OrgCapability } from '../../db/index.js'
+import { AccessLevel } from '../../schemas/index.js'
 
-export const contestRoutes = defineRoutes(async (s) => {
-  s.addHook('onRoute', swaggerTagMerger('contest'))
-
-  s.register(contestScopedRoutes, { prefix: '/:contestId' })
+export const planRoutes = defineRoutes(async (s) => {
+  s.addHook('onRoute', swaggerTagMerger('plan'))
 
   s.post(
     '/',
     {
       schema: {
-        description: 'Create a new contest',
+        description: 'Create a new plan',
         body: Type.Object({
           orgId: Type.String(),
           slug: Type.String(),
           title: Type.String(),
-          accessLevel: Type.AccessLevel(),
-          start: Type.Integer(),
-          duration: Type.Integer()
+          accessLevel: Type.AccessLevel()
         }),
         response: {
           200: Type.Object({
-            contestId: Type.UUID()
+            planId: Type.UUID()
           })
         }
       }
     },
-    async (req) => {
-      const orgId = loadUUID(req.body, 'orgId', s.httpErrors.badRequest())
+    async (req, rep) => {
+      const orgId = new BSON.UUID(req.body.orgId)
       const membership = await loadMembership(req.user.userId, orgId)
-      ensureCapability(
-        membership?.capability ?? CAP_NONE,
-        OrgCapability.CAP_CONTEST,
-        s.httpErrors.forbidden()
-      )
-      const { insertedId } = await contests.insertOne({
+      if (!hasCapability(membership?.capability ?? CAP_NONE, OrgCapability.CAP_PLAN))
+        return rep.forbidden()
+
+      const { insertedId } = await plans.insertOne({
         _id: new BSON.UUID(),
         orgId,
         slug: req.body.slug,
         title: req.body.title,
         description: '',
         tags: [],
-        problems: [],
-        stages: [
-          { name: 'upcoming', start: 0, settings: {} },
-          { name: 'running', start: req.body.start, settings: {} },
-          { name: 'end', start: req.body.start + req.body.duration, settings: {} }
-        ],
-        attachments: [],
-        associations: [],
-        ranklists: [],
-        ranklistState: ContestRanklistState.VALID,
-        accessLevel: req.body.accessLevel
+        contests: [],
+        accessLevel: req.body.accessLevel,
+        associations: []
       })
-      return { contestId: insertedId }
+      return { planId: insertedId }
     }
   )
 
@@ -67,7 +52,7 @@ export const contestRoutes = defineRoutes(async (s) => {
     '/',
     {
       schema: {
-        description: 'List contests',
+        description: 'List plans',
         querystring: Type.Object({
           orgId: Type.String(),
           page: Type.Integer({ minimum: 1, default: 1 }),
@@ -80,15 +65,14 @@ export const contestRoutes = defineRoutes(async (s) => {
               _id: Type.UUID(),
               slug: Type.String(),
               title: Type.String(),
-              tags: Type.Array(Type.String()),
-              stages: Type.Array(Type.Pick(SContestStage, ['name', 'start'] as const))
+              tags: Type.Array(Type.String())
             })
           )
         }
       }
     },
     async (req) => {
-      const orgId = loadUUID(req.query, 'orgId', s.httpErrors.badRequest())
+      const orgId = new BSON.UUID(req.query.orgId)
       const membership = await loadMembership(req.user.userId, orgId)
       const basicAccessLevel = membership
         ? hasCapability(membership.capability, OrgCapability.CAP_CONTEST)
@@ -98,7 +82,7 @@ export const contestRoutes = defineRoutes(async (s) => {
       const principalIds = [req.user.userId, ...(membership?.groups ?? [])]
       const { page, perPage, count } = req.query
       const result = await findPaginated(
-        contests,
+        plans,
         page,
         perPage,
         count,
@@ -114,11 +98,7 @@ export const contestRoutes = defineRoutes(async (s) => {
             _id: 1,
             slug: 1,
             title: 1,
-            tags: 1,
-            stages: {
-              name: 1,
-              start: 1
-            }
+            tags: 1
           }
         }
       )

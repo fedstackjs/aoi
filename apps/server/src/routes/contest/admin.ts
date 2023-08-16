@@ -57,8 +57,14 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
         body: Type.Array(SContestStage)
       }
     },
-    async (req) => {
-      await contests.updateOne({ _id: req._contestId }, { $set: { stages: req.body } })
+    async (req, rep) => {
+      const stages = req.body
+      if (stages.length < 3) return rep.badRequest('At least 3 stages are required')
+      if (stages[0].start !== 0) return rep.badRequest('First stage must start at 0')
+      if (stages.some((stage, i) => i && stages[i - 1].start >= stage.start))
+        return rep.badRequest('Stages must be in ascending order')
+
+      await contests.updateOne({ _id: req._contestId }, { $set: { stages } })
       return {}
     }
   )

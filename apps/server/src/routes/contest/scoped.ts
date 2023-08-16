@@ -14,14 +14,16 @@ import {
   IContestParticipant,
   OrgCapability,
   contestParticipants,
-  contests
+  contests,
+  problems
 } from '../../db/index.js'
-import { CAP_ALL, ensureCapability } from '../../utils/index.js'
+import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/index.js'
 import { contestAttachmentRoutes } from './attachment.js'
 import { contestAdminRoutes } from './admin.js'
 import { contestProblemRoutes } from './problem/index.js'
 import { contestSolutionRoutes } from './solution/index.js'
 import { contestRanklistRoutes } from './ranklist/index.js'
+import { manageContent } from '../common/content.js'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -105,29 +107,49 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
     }
   )
 
-  s.patch(
-    '/content',
+  s.post(
+    '/register',
     {
       schema: {
-        description: 'Update problem content',
-        body: Type.StrictObject({
-          title: Type.String(),
-          slug: Type.String(),
-          description: Type.String(),
-          tags: Type.Array(Type.String())
-        })
+        description: 'Register for a contest',
+        response: {
+          200: Type.Object({})
+        }
       }
     },
-    async (req) => {
-      ensureCapability(
-        req._contestCapability,
-        ContestCapability.CAP_CONTENT,
-        s.httpErrors.forbidden()
-      )
-      await contests.updateOne({ _id: req._contestId }, { $set: req.body })
+    async (req, rep) => {
+      const { registrationEnabled, registrationAllowPublic } = req._contestStage.settings
+      if (
+        !registrationEnabled &&
+        !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)
+      ) {
+        return rep.forbidden()
+      }
+      if (
+        !registrationAllowPublic &&
+        !hasCapability(req._contestCapability, ContestCapability.CAP_REGISTRATION)
+      ) {
+        return rep.forbidden()
+      }
+
+      await contestParticipants.insertOne({
+        _id: new BSON.UUID(),
+        userId: req.user.userId,
+        contestId: req._contestId,
+        results: {}
+      })
       return {}
     }
   )
+
+  s.register(manageContent, {
+    collection: problems,
+    resolve: async (req) => {
+      if (!hasCapability(req._contestCapability, ContestCapability.CAP_CONTENT)) return null
+      return req._contestId
+    },
+    prefix: '/content'
+  })
 
   s.register(contestAdminRoutes, { prefix: '/admin' })
   s.register(contestAttachmentRoutes, { prefix: '/attachment' })

@@ -37,6 +37,26 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
       return {}
     }
   )
+
+  s.get(
+    '/:problemId/settings',
+    {
+      schema: {
+        params: Type.Object({
+          problemId: Type.String()
+        }),
+        response: { 200: SContestProblemSettings }
+      }
+    },
+    async (req, rep) => {
+      const problem = req._contest.problems.find(({ problemId }) =>
+        problemId.equals(req.params.problemId)
+      )
+      if (!problem) return rep.notFound()
+      return problem.settings
+    }
+  )
+
   s.patch(
     '/:problemId/settings',
     {
@@ -57,6 +77,7 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
       return {}
     }
   )
+
   s.delete(
     '/:problemId',
     {

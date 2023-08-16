@@ -17,6 +17,12 @@ declare module '@sinclair/typebox' {
     IntegerEnum<T extends Record<string, string | number>>(obj: T): TUnsafe<T[keyof T]>
     NoAdditionalProperties<S extends TSchema>(schema: S): S
     StrictObject<T extends TProperties>(properties: T, options?: ObjectOptions): TObject<T>
+    PaginationResult<T extends TSchema>(
+      itemType: T
+    ): TObject<{
+      items: TArray<T>
+      total: TOptional<TInteger>
+    }>
   }
 }
 
@@ -57,6 +63,13 @@ ExtendedTypeBuilder.prototype.StrictObject = function <T extends TProperties>(
   options?: ObjectOptions
 ) {
   return Type.Object(properties, { ...options, additionalProperties: false })
+}
+
+ExtendedTypeBuilder.prototype.PaginationResult = function <T extends TSchema>(itemType: T) {
+  return Type.Object({
+    items: Type.Array(itemType),
+    total: Type.Optional(Type.Integer())
+  })
 }
 
 export const SBaseProfile = Type.Object({

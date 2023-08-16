@@ -1,12 +1,4 @@
-import { TSchema, Type } from '@sinclair/typebox'
 import { Collection, Document, Filter, FindOptions, WithId } from 'mongodb'
-
-export function TypePaginationResult<T extends TSchema>(itemType: T) {
-  return Type.Object({
-    items: Type.Array(itemType),
-    total: Type.Optional(Type.Integer())
-  })
-}
 
 export function paginationSkip(page: number, perPage: number) {
   return (page - 1) * perPage

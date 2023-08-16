@@ -4,7 +4,6 @@ import { Type } from '@sinclair/typebox'
 import {
   OrgCapability,
   SGroupProfile,
-  TypePaginationResult,
   ensureCapability,
   groups,
   orgMemberships,
@@ -122,7 +121,7 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
           count: Type.Boolean({ default: false })
         }),
         response: {
-          200: TypePaginationResult(Type.Any())
+          200: Type.PaginationResult(Type.Any())
         }
       }
     },

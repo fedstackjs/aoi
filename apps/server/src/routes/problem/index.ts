@@ -4,7 +4,7 @@ import { problemScopedRoutes } from './scoped.js'
 import { CAP_NONE, ensureCapability, hasCapability } from '../../utils/capability.js'
 import { BSON } from 'mongodb'
 import { OrgCapability, problems } from '../../db/index.js'
-import { TypePaginationResult, paginationSkip } from '../../utils/pagination.js'
+import { paginationSkip } from '../../utils/pagination.js'
 import { AccessLevel } from '../../schemas/index.js'
 
 export const problemRoutes = defineRoutes(async (s) => {
@@ -71,7 +71,7 @@ export const problemRoutes = defineRoutes(async (s) => {
           count: Type.Boolean({ default: false })
         }),
         response: {
-          200: TypePaginationResult(
+          200: Type.PaginationResult(
             Type.Object({
               _id: Type.UUID(),
               orgId: Type.UUID(),
