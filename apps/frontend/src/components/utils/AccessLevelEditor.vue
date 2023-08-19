@@ -1,6 +1,6 @@
 <template>
   <VCardSubtitle>
-    {{ t('access-level') }}
+    {{ t('term.access-level') }}
   </VCardSubtitle>
   <VCardText class="d-flex justify-center">
     <AccessLevelInput v-model="value" />

@@ -8,6 +8,7 @@ users: 用户
 groups: 小组
 discussion: 讨论
 signin: 登录
+signup: 注册
 logout: 注销
 danger-zone: 危险设置
 delete: 删除
@@ -16,6 +17,8 @@ reset: 重置
 description: 描述
 attachments: 附件
 management: 管理
+forgot-passwd: 忘记密码
+admin: 管理
 
 common:
   from: 从
@@ -34,8 +37,42 @@ action:
   cancel: 取消
   submit: 提交
   new: 新建
+  create: 创建
+  upload: 上传
 
 term:
   contest: 比赛
   contest-stage: 比赛阶段
   association: 授权
+  problem-name: 题目名称
+  problem-content: 题目内容
+  contest-name: 比赛名称
+  content: 内容
+  title: 标题
+  slug: 编号
+  tags: 标签
+  status: 状态
+  score: 得分
+  key: Key
+  name: 名称
+  description: 描述
+  hash: 哈希值
+  config: 配置
+  username: 用户名
+  password: 密码
+  email: 邮箱
+  realname: 真实姓名
+  access-level: 权限等级
+  profile: 档案
+  capabilities: 权限
+  actions: 动作
+  principle-id: 用户或小组ID
+  settings: 设置
+  members: 成员
+  user-id: 用户ID
+
+cap:
+  access: 访问权限
+  problem: 题目控制
+  contest: 比赛控制
+  admin: 管理权限

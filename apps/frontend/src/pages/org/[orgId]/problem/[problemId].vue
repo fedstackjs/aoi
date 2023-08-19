@@ -29,6 +29,9 @@
                 <VTab prepend-icon="mdi-upload-outline" :to="rel('submit')" v-if="value.config">
                   {{ t('problem-submit') }}
                 </VTab>
+                <VTab prepend-icon="mdi-timer-sand" :to="rel('submission')">
+                  {{ t('problem-submissions') }}
+                </VTab>
                 <VTab prepend-icon="mdi-attachment" :to="rel('attachment')">
                   {{ t('problem-attachments') }}
                 </VTab>
@@ -129,6 +132,7 @@ en:
   problem-attachments: Attachments
   problem-data: Data
   problem-management: Management
+  problem-submissions: Submission
   submissions: Submissions
   status: Status
 zhHans:
@@ -137,6 +141,7 @@ zhHans:
   problem-attachments: 附件
   problem-data: 数据
   problem-management: 管理
+  problem-submissions: 提交记录
   submissions: 提交记录
   status: 状态
 </i18n>

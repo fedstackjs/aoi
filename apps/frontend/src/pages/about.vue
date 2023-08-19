@@ -2,7 +2,7 @@
   <VContainer>
     <VRow>
       <VCol>
-        <VCard title="关于我们">
+        <VCard :title="t('about-us')">
           <VCardText>
             <p>关于...</p>
           </VCardText>
@@ -21,3 +21,10 @@ const { t } = useI18n()
 
 withTitle(computed(() => t('about')))
 </script>
+
+<i18n>
+en:
+  about-us: About us
+zhHans:
+  about-us: 关于我们
+</i18n>

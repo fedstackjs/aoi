@@ -42,9 +42,11 @@ en:
   new-problem: New problem
   new-contest: New contest
   new-plan: New plan
+  new-group: New group
 zhHans:
   new-organization: 新建组织
   new-problem: 新建题目
   new-contest: 新建比赛
   new-plan: 新建计划
+  new-group: 新建小组
 </i18n>

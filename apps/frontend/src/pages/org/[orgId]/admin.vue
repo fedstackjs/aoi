@@ -8,15 +8,15 @@
             <VTabs direction="vertical" color="primary">
               <VTab value="profile" :to="rel('')" exact>
                 <VIcon start> mdi-account-box </VIcon>
-                {{ t('profile') }}
+                {{ t('term.profile') }}
               </VTab>
               <VTab value="settings" :to="rel('settings')">
                 <VIcon start> mdi-cog </VIcon>
-                {{ t('settings') }}
+                {{ t('term.settings') }}
               </VTab>
               <VTab value="members" :to="rel('member')">
                 <VIcon start> mdi-account </VIcon>
-                {{ t('members') }}
+                {{ t('term.members') }}
               </VTab>
             </VTabs>
             <VDivider vertical />

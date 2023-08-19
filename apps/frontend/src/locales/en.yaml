@@ -8,6 +8,7 @@ users: Users
 groups: Groups
 discussion: Discussion
 signin: Sign in
+signup: Sign up
 logout: Log out
 danger-zone: Danger Zone
 delete: Delete
@@ -16,6 +17,8 @@ reset: Reset
 description: Description
 attachments: Attachments
 management: Management
+forgot-passwd: Forgot Password
+admin: Admin
 
 common:
   from: From
@@ -34,8 +37,42 @@ action:
   cancel: Cancel
   submit: Submit
   new: New
+  create: Create
+  upload: Upload
 
 term:
   contest: Contest
   contest-stage: Contest Stage
   association: Association
+  problem-name: Problem Name
+  problem-content: Problem Content
+  contest-name: Contest Name
+  content: Content
+  title: Title
+  slug: Slug
+  tags: Tags
+  status: Status
+  score: Score
+  key: Key
+  name: Name
+  description: Description
+  hash: Hash
+  config: Config
+  username: Username
+  password: Password
+  email: Email
+  realname: Real Name
+  access-level: Access level
+  profile: Profile
+  capabilities: Capabilities
+  actions: Actions
+  principle-id: Principle ID
+  settings: Settings
+  members: Members
+  user-id: User ID
+
+cap:
+  access: 访问权限
+  problem: 题目控制
+  contest: 比赛控制
+  admin: 管理权限

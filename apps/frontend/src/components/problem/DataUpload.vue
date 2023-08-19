@@ -3,13 +3,13 @@
     <VCardText>
       <VFileInput v-model="uploadInfo.file" />
       <VTextField :model-value="uploadInfo.hash" readonly label="SHA256 Hash" />
-      <VTextField label="description" v-model="uploadInfo.description" />
-      <VCardSubtitle>{{ t('config') }}</VCardSubtitle>
+      <VTextField :label="t('term.description')" v-model="uploadInfo.description" />
+      <VCardSubtitle>{{ t('term.config') }}</VCardSubtitle>
       <MonacoEditor v-model="uploadInfo.configJson" language="json" />
     </VCardText>
     <VCardActions>
       <VBtn prepend-icon="mdi-upload" rounded="none" class="my-auto" @click="uploadFile()">
-        {{ t('upload') }}
+        {{ t('action.upload') }}
       </VBtn>
     </VCardActions>
   </VCard>
@@ -107,3 +107,9 @@ async function uploadFile() {
   }
 }
 </script>
+<i18n>
+en:
+  create-data-version: Create data version
+zhHans:
+  create-data-version: 创建数据版本
+</i18n>

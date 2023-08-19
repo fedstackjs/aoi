@@ -5,16 +5,20 @@
       <VTextField
         v-model="username"
         prepend-inner-icon="mdi-account-outline"
-        label="Username"
+        :label="t('term.username')"
         :rules="usernameRules"
       />
 
-      <VTextField v-model="realname" prepend-inner-icon="mdi-account-outline" label="Realname" />
+      <VTextField
+        v-model="realname"
+        prepend-inner-icon="mdi-account-outline"
+        :label="t('term.realname')"
+      />
 
       <VTextField
         v-model="email"
         prepend-inner-icon="mdi-email-outline"
-        label="Email"
+        :label="t('term.email')"
         :rules="emailRules"
       />
 
@@ -24,7 +28,7 @@
         :type="showPassword ? 'text' : 'password'"
         prepend-inner-icon="mdi-lock-outline"
         @click:append-inner="showPassword = !showPassword"
-        label="Password"
+        :label="t('term.password')"
         :rules="passwordRules"
       />
 
@@ -60,22 +64,30 @@ const email = ref('')
 const usernameRules = [
   (value: string) => {
     if (value.length >= 8) return true
-    return 'Username must be at least 8 characters.'
+    return t('hint.violate-username-rule')
   }
 ]
 
 const passwordRules = [
   (value: string) => {
     if (value.length >= 8) return true
-    return 'Password must be at least 8 characters.'
+    return t('hint.violate-password-rule')
   }
 ]
 
 const emailRules = [
   (value: string) => {
-    if (value.length >= 3) return true
-    // TODO: needs an regexp
-    return 'Email must be at least 3 characters.'
+    const emailRegex = /^\S+@\S+\.\S+$/
+    // simple regex from: https://stackoverflow.com/a/201447
+    if (value.length > 0 && emailRegex.test(value)) return true
+    return t('hint.violate-email-rule')
+  }
+]
+
+const realnameRules = [
+  (value: string) => {
+    if (value.length > 0) return true
+    return t('hint.violate-realname-rule')
   }
 ]
 
@@ -89,7 +101,8 @@ async function signup() {
       [
         [username, usernameRules],
         [password, passwordRules],
-        [email, emailRules]
+        [email, emailRules],
+        [realname, realnameRules]
       ] as const
     ).some(([value, rules]) => rules.some((rule) => rule(value.value) !== true))
   )
@@ -97,7 +110,7 @@ async function signup() {
   const resp = await http.post('auth/signup', {
     json: {
       profile: {
-        username: username.value,
+        name: username.value,
         realname: realname.value,
         email: email.value
       },
@@ -109,3 +122,17 @@ async function signup() {
   router.push('/signin')
 }
 </script>
+<i18n>
+en:
+  hint:
+    violate-username-rule: Username must be at least 8 characters.
+    violate-password-rule: Password must be at least 8 characters.
+    violate-email-rule: Invalid email.
+    violate-realname-rule: Realname must not be empty.
+zhHans:
+  hint:
+    violate-username-rule: 用户名至少需要8个字符
+    violate-password-rule: 密码至少需要8个字符
+    violate-email-rule: 非法邮箱
+    violate-realname-rule: 真实名不能为空
+  </i18n>

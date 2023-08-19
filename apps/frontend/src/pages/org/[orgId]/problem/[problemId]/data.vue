@@ -5,8 +5,8 @@
         <VTable>
           <thead>
             <tr>
-              <th>{{ t('hash') }}</th>
-              <th>{{ t('description') }}</th>
+              <th>{{ t('term.hash') }}</th>
+              <th>{{ t('term.description') }}</th>
               <th>{{ t('created-at') }}</th>
               <th>{{ t('actions') }}</th>
             </tr>
@@ -117,6 +117,7 @@ en:
   upload-file: Upload File
   upload: Upload
   close: Close
+  created-at: Create at
 zhHans:
   filename: 文件名
   description: 描述
@@ -125,4 +126,5 @@ zhHans:
   upload-file: 上传文件
   upload: 上传
   close: 关闭
+  created-at: 创建于
 </i18n>

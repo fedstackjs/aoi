@@ -1,12 +1,12 @@
 <template>
   <VCard variant="flat">
     <VCardTitle class="d-flex justify-space-between align-center">
-      <div>{{ t('members') }}</div>
+      <div>{{ t('term.members') }}</div>
       <div class="flex-grow-1 u-max-w-64">
         <VTextField
           v-model="newMember"
           density="compact"
-          label="UserId"
+          :label="t('term.user-id')"
           append-icon="mdi-plus"
           @click:append="addMember"
         />
@@ -80,10 +80,10 @@ const { t } = useI18n()
 withTitle(computed(() => t('members')))
 
 const headers = [
-  { title: 'Profile', key: 'profile', align: 'start', sortable: false },
-  { title: 'ID', key: '_id' },
-  { title: 'Capabilities', key: '_cap' },
-  { title: 'Actions', key: '_actions' }
+  { title: t('term.profile'), key: 'profile', align: 'start', sortable: false },
+  { title: t('ID'), key: '_id' },
+  { title: t('term.capabilities'), key: '_cap' },
+  { title: t('term.actions'), key: '_actions' }
 ] as const
 
 const groups = useAsyncState(

@@ -6,7 +6,7 @@
           <VCardText>
             <VTextField v-model="payload.title" :label="t('title')" />
             <VTextField v-model="payload.slug" :label="t('slug')" />
-            <VRadioGroup inline v-model="payload.accessLevel" :label="t('access-level')">
+            <VRadioGroup inline v-model="payload.accessLevel" :label="t('term.access-level')">
               <VRadio :value="0" label="PUBLIC"></VRadio>
               <VRadio :value="1" label="RESTRICTED"></VRadio>
               <VRadio :value="2" label="PRIVATE"></VRadio>

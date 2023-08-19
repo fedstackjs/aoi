@@ -1,7 +1,7 @@
 <template>
   <VChipGroup>
     <VChip v-for="capability in capabilities" :key="capability" color="primary">
-      {{ t(capability) }}
+      {{ t('cap.' + capability) }}
     </VChip>
   </VChipGroup>
 </template>

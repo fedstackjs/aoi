@@ -45,8 +45,8 @@ const { t } = useI18n()
 withTitle(computed(() => t('contests')))
 
 const headers = [
-  { title: 'Name', key: 'name', align: 'start', sortable: false },
-  { title: 'ID', key: '_id' }
+  { title: t('contest-name'), key: 'name', align: 'start', sortable: false },
+  { title: '#', key: '_id' }
 ] as const
 
 const contests = useAsyncState(

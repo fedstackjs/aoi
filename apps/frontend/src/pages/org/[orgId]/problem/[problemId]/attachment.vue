@@ -36,9 +36,9 @@
       <VCard :title="t('upload-file')" variant="flat">
         <VCardText>
           <VFileInput v-model="uploadInfo.file" />
-          <VTextField label="key" v-model="uploadInfo.key" />
-          <VTextField label="name" v-model="uploadInfo.name" />
-          <VTextField label="description" v-model="uploadInfo.description" />
+          <VTextField :label="t('term.key')" v-model="uploadInfo.key" />
+          <VTextField :label="t('term.name')" v-model="uploadInfo.name" />
+          <VTextField :label="t('term.description')" v-model="uploadInfo.description" />
         </VCardText>
         <VCardActions>
           <VBtn prepend-icon="mdi-upload" rounded="none" class="my-auto" @click="uploadFile()">

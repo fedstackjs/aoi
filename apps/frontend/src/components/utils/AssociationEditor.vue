@@ -6,7 +6,7 @@
         <VTextField
           v-model="newPrincipalId"
           density="compact"
-          label="PrincipalId"
+          :label="t('term.principle-id')"
           append-icon="mdi-plus"
           @click:append="addPrinciple"
         />
@@ -66,9 +66,9 @@ const props = defineProps<{
 const { t } = useI18n()
 
 const headers = [
-  { title: 'Profile', key: 'profile', align: 'start', sortable: false },
-  { title: 'Capabilities', key: '_cap' },
-  { title: 'Actions', key: '_actions' }
+  { title: t('term.profile'), key: 'profile', align: 'start', sortable: false },
+  { title: t('term.capabilities'), key: '_cap' },
+  { title: t('term.actions'), key: '_actions' }
 ] as const
 
 const associations = useAsyncState(async () => {

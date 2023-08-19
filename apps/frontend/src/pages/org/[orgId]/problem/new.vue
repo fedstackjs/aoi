@@ -4,7 +4,7 @@
       <VCol>
         <VCard :title="t('new-problem')">
           <VCardText>
-            <VRadioGroup inline v-model="probAccessLevel" :label="t('access-level')">
+            <VRadioGroup inline v-model="probAccessLevel" :label="t('term.access-level')">
               <VRadio :value="0" label="PUBLIC"></VRadio>
               <VRadio :value="1" label="RESTRICTED"></VRadio>
               <VRadio :value="2" label="PRIVATE"></VRadio>
@@ -13,7 +13,7 @@
             <VTextField v-model="probSlug" :label="t('prob-slug')" :rules="probSlugRules" />
           </VCardText>
           <VCardActions>
-            <VBtn color="primary" variant="elevated" @click="create">{{ t('create') }}</VBtn>
+            <VBtn color="primary" variant="elevated" @click="create">{{ t('action.create') }}</VBtn>
           </VCardActions>
         </VCard>
       </VCol>
@@ -42,14 +42,14 @@ const probSlug = ref<string>('')
 const probTitleRules = [
   (value: string) => {
     if (value.length >= 1) return true
-    return 'Title must not be empty.'
+    return t('hint.violate-title-rule')
   }
 ]
 
 const probSlugRules = [
   (value: string) => {
     if (value.length >= 1) return true
-    return 'Slug must not be empty.'
+    return t('hint.violate-slug-rule')
   }
 ]
 
@@ -73,11 +73,15 @@ async function create() {
 
 <i18n>
 en:
-  access-level: Access Level
   prob-title: Problem Title
   prob-slug: Problem Slug
+  hint:
+    violate-title-rule: Title must not be empty.
+    violate-slug-rule: Slug must not be empty.
 zhHans:
-  access-level: 权限等级
   prob-title: 题目标题
   prob-slug: 题目编号
+  hint:
+    violate-title-rule: 标题不能为空
+    violate-slug-rule: 编号不能为空
 </i18n>

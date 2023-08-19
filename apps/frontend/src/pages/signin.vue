@@ -5,7 +5,7 @@
       <VTextField
         v-model="username"
         prepend-inner-icon="mdi-account-outline"
-        label="Username"
+        :label="t('term.username')"
         :rules="usernameRules"
       >
       </VTextField>
@@ -16,18 +16,18 @@
         :type="showPassword ? 'text' : 'password'"
         prepend-inner-icon="mdi-lock-outline"
         @click:append-inner="showPassword = !showPassword"
-        label="Password"
+        :label="t('term.password')"
         :rules="passwordRules"
       >
       </VTextField>
 
       <VBtn type="submit" @click="signin()" color="primary" block size="large" class="mt-4">
-        Sign in
+        {{ t('signin') }}
       </VBtn>
 
       <VCardText class="d-flex justify-center">
-        <VBtn variant="text" to="/forgot"> Forgot password </VBtn>
-        <VBtn variant="text" to="/signup"> Sign up </VBtn>
+        <VBtn variant="text" to="/forgot"> {{ t('forgot-passwd') }} </VBtn>
+        <VBtn variant="text" to="/signup"> {{ t('signup') }} </VBtn>
       </VCardText>
     </VForm>
   </VCard>
@@ -53,14 +53,14 @@ const password = ref('')
 const usernameRules = [
   (value: string) => {
     if (value.length >= 8) return true
-    return 'Username must be at least 8 characters.'
+    return t('hint.violate-username-rule')
   }
 ]
 
 const passwordRules = [
   (value: string) => {
     if (value.length >= 8) return true
-    return 'Password must be at least 8 characters.'
+    return t('hint.violate-password-rule')
   }
 ]
 
@@ -79,3 +79,13 @@ async function signin() {
   router.replace('/')
 }
 </script>
+<i18n>
+en:
+  hint:
+    violate-username-rule: Username must be at least 8 characters.
+    violate-password-rule: Password must be at least 8 characters.
+zhHans:
+  hint:
+    violate-username-rule: 用户名至少需要8个字符
+    violate-password-rule: 密码至少需要8个字符
+</i18n>
