@@ -1,4 +1,10 @@
-export type { IOrgProfile, IProblem, IOrgSettings, IContestStage } from '@aoi/server'
+export type {
+  IOrgProfile,
+  IProblem,
+  IOrgSettings,
+  IContestStage,
+  IPlanContestSettings
+} from '@aoi/server'
 
 export interface IProfile {
   name: string

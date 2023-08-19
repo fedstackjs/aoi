@@ -24,6 +24,7 @@ common:
   settings: 设置
   content: 内容
   access: 访问
+  operation-success: 操作成功
 
 action:
   reload: 重载

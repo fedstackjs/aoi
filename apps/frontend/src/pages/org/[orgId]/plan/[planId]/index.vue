@@ -1,21 +1,19 @@
 <template>
-  <VContainer>
-    <VRow>
-      <VCol>
-        <VCard :title="t('plans')">
-          <VCardText>
-            <!--  -->
-          </VCardText>
-        </VCard>
-      </VCol>
-    </VRow>
-  </VContainer>
+  <MarkdownRenderer :md="plan.description" class="u-p-4" />
 </template>
 
 <script setup lang="ts">
+import type { IPlanDTO } from '@/components/plan/types'
+import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
 import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+defineProps<{
+  orgId: string
+  planId: string
+  plan: IPlanDTO
+}>()
 
 const { t } = useI18n()
 

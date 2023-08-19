@@ -5,6 +5,7 @@ import { CAP_NONE, findPaginated, hasCapability } from '../../utils/index.js'
 import { plans } from '../../db/plan.js'
 import { OrgCapability } from '../../db/index.js'
 import { AccessLevel } from '../../schemas/index.js'
+import { planScopedRoutes } from './scoped.js'
 
 export const planRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('plan'))
@@ -105,4 +106,6 @@ export const planRoutes = defineRoutes(async (s) => {
       return result
     }
   )
+
+  s.register(planScopedRoutes, { prefix: '/:planId' })
 })

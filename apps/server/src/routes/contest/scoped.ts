@@ -142,6 +142,29 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
     }
   )
 
+  s.get(
+    '/self',
+    {
+      schema: {
+        description: 'Get participant details of self',
+        response: {
+          200: Type.Object({
+            results: Type.Record(
+              Type.String(),
+              Type.Object({
+                solutionCount: Type.Number()
+              })
+            )
+          })
+        }
+      }
+    },
+    async (req, rep) => {
+      if (!req._contestParticipant) return rep.preconditionFailed()
+      return req._contestParticipant
+    }
+  )
+
   s.register(manageContent, {
     collection: problems,
     resolve: async (req) => {

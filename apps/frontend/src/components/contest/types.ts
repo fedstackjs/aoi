@@ -56,3 +56,12 @@ export interface IContestProblemDTO {
   currentDataHash: string
   config: ProblemConfig
 }
+
+export interface IContestParticipantDTO {
+  results: Record<
+    string,
+    {
+      solutionCount: number
+    }
+  >
+}

@@ -11,6 +11,7 @@ import { CAP_ALL, hasCapability } from '../../utils/index.js'
 import { BSON } from 'mongodb'
 import { manageContent } from '../common/content.js'
 import { planAdminRoutes } from './admin.js'
+import { planContestRoutes } from './contest/index.js'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -99,5 +100,6 @@ export const planScopedRoutes = defineRoutes(async (s) => {
     prefix: '/content'
   })
 
+  s.register(planContestRoutes, { prefix: '/contest' })
   s.register(planAdminRoutes, { prefix: '/admin' })
 })

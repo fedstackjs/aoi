@@ -24,6 +24,7 @@ common:
   settings: Settings
   content: Content
   access: Access
+  operation-success: Operation success
 
 action:
   reload: Reload
