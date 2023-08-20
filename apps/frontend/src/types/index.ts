@@ -15,3 +15,11 @@ export interface IAssociation {
   principleId: string
   capability: string
 }
+
+export interface IRunner {
+  _id: string
+  labels: string[]
+  name: string
+  createdAt: number
+  accessedAt: number
+}

@@ -6,17 +6,21 @@
           <VDivider />
           <div class="d-flex flex-row">
             <VTabs direction="vertical" color="primary">
-              <VTab value="profile" :to="rel('')" exact>
+              <VTab :to="rel('')" exact>
                 <VIcon start> mdi-account-box </VIcon>
                 {{ t('term.profile') }}
               </VTab>
-              <VTab value="settings" :to="rel('settings')">
+              <VTab :to="rel('settings')">
                 <VIcon start> mdi-cog </VIcon>
                 {{ t('term.settings') }}
               </VTab>
-              <VTab value="members" :to="rel('member')">
+              <VTab :to="rel('member')">
                 <VIcon start> mdi-account </VIcon>
                 {{ t('term.members') }}
+              </VTab>
+              <VTab :to="rel('runner')">
+                <VIcon start> mdi-account </VIcon>
+                {{ t('term.runners') }}
               </VTab>
             </VTabs>
             <VDivider vertical />

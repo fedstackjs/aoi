@@ -1,10 +1,10 @@
-import { BSON } from 'mongodb'
 import { CAP_NONE, ensureCapability } from '../../../utils/capability.js'
 import { defineRoutes } from '../../common/index.js'
 import { OrgCapability, orgs } from '../../../db/index.js'
 import { Type } from '@sinclair/typebox'
 import { IOrgOssSettings, SOrgSettings } from '../../../index.js'
 import { orgAdminMemberRoutes } from './member.js'
+import { orgAdminRunnerRoutes } from './runner.js'
 
 function ossSettingsToUpdate(oss: IOrgOssSettings) {
   const $set: Record<string, unknown> = oss
@@ -79,27 +79,5 @@ export const orgAdminRoutes = defineRoutes(async (s) => {
     }
   )
 
-  s.post(
-    '/runner/register',
-    {
-      schema: {
-        description: 'Register a new runner',
-        response: {
-          200: Type.Object({
-            registrationToken: Type.String()
-          })
-        }
-      }
-    },
-    async (req, rep) => {
-      const payload = {
-        orgId: req._orgId,
-        runnerId: new BSON.UUID()
-      }
-      const token = await rep.jwtSign(payload, { expiresIn: '5min' })
-      return { registrationToken: token }
-    }
-  )
-
-  s.get('/runner/list', {}, async (req, rep) => rep.notImplemented())
+  s.register(orgAdminRunnerRoutes, { prefix: '/runner' })
 })
