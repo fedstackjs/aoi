@@ -3,7 +3,7 @@ import { ContestRanklistState, SolutionState, contests, solutions } from '../../
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
 import { loadOrgOssSettings } from '../common/files.js'
-import { contestRanklistKey, getUploadUrl } from '../../index.js'
+import { SContestRanklistSettings, contestRanklistKey, getUploadUrl } from '../../index.js'
 
 const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
   s.addHook(
@@ -122,23 +122,49 @@ export const runnerRanklistRoutes = defineRoutes(async (s) => {
 
   s.register(runnerRanklistTaskRoutes, { prefix: '/task/:contestId/:taskId' })
 
-  s.post('/poll', {}, async (req, rep) => {
-    if (!req._runner.labels.includes('ranklist')) return rep.forbidden()
-    const { value } = await contests.findOneAndUpdate(
-      {
-        orgId: req._runner.orgId,
-        ranklistState: ContestRanklistState.INVALID,
-        $or: [{ ranklistRunnerId: req._runner._id }, { ranklistRunnerId: { $exists: false } }]
-      },
-      {
-        $set: {
-          ranklistState: ContestRanklistState.PENDING,
-          ranklistRunnerId: req._runner._id,
-          ranklistTaskId: new BSON.UUID()
+  s.post(
+    '/poll',
+    {
+      schema: {
+        response: {
+          200: Type.Partial(
+            Type.Object({
+              taskId: Type.UUID(),
+              contestId: Type.UUID(),
+              ranklists: Type.Array(
+                Type.Object({
+                  key: Type.String(),
+                  name: Type.String(),
+                  settings: SContestRanklistSettings
+                })
+              )
+            })
+          )
         }
       }
-    )
-    if (!value) return null
-    //
-  })
+    },
+    async (req) => {
+      const { value } = await contests.findOneAndUpdate(
+        {
+          orgId: req._runner.orgId,
+          ranklistState: ContestRanklistState.INVALID,
+          $or: [{ ranklistRunnerId: req._runner._id }, { ranklistRunnerId: { $exists: false } }]
+        },
+        {
+          $set: {
+            ranklistState: ContestRanklistState.PENDING,
+            ranklistRunnerId: req._runner._id,
+            ranklistTaskId: new BSON.UUID()
+          }
+        },
+        { returnDocument: 'after' }
+      )
+      if (!value) return {}
+      return {
+        taskId: value.ranklistTaskId,
+        contestId: value._id,
+        ranklists: value.ranklists
+      }
+    }
+  )
 })

@@ -109,7 +109,10 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
       if (value.contestId) {
         // update contest ranklist state
         await contests.updateOne(
-          { _id: value.contestId },
+          {
+            _id: value.contestId,
+            ranklists: { $exists: true, $ne: [] }
+          },
           {
             $set: {
               ranklistLastSolutionId: value._id,
