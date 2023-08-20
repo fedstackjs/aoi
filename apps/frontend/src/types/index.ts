@@ -3,7 +3,8 @@ export type {
   IProblem,
   IOrgSettings,
   IContestStage,
-  IPlanContestSettings
+  IPlanContestSettings,
+  IProblemSettings
 } from '@aoi/server'
 
 export interface IProfile {
