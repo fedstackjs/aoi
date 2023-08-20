@@ -9,7 +9,7 @@ import {
 } from '../../db/index.js'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { getDownloadUrl, problemDataKey, solutionDataKey, solutionDetailsKey } from '../../index.js'
-import { loadOrgOssSettings } from '../common/files.js'
+import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import { BSON } from 'mongodb'
 import { problemConfigSchema } from '@aoi/common'
 
@@ -71,30 +71,19 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
     }
   )
 
-  s.get(
-    '/resultUrl',
-    {
-      schema: {
-        description: 'Get solution result url',
-        response: {
-          200: Type.Object({
-            url: Type.String({ format: 'uri' })
-          })
-        }
-      }
-    },
-    async (req, rep) => {
+  s.register(getFileUrl, {
+    prefix: '/details',
+    resolve: async (type, query, req) => {
       const solution = await solutions.findOne(
         { _id: req._solutionId, taskId: req._taskId },
         { projection: { orgId: 1 } }
       )
-      if (!solution) return rep.notFound()
+      if (!solution) throw s.httpErrors.notFound()
       const oss = await loadOrgOssSettings(solution.orgId)
-      if (!oss) return rep.notFound()
-      const url = await getDownloadUrl(oss, solutionDetailsKey(req._solutionId))
-      return { url }
+      if (!oss) throw s.httpErrors.notFound()
+      return [await loadOrgOssSettings(solution.orgId), solutionDetailsKey(solution._id)]
     }
-  )
+  })
 
   s.post(
     '/complete',

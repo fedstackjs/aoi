@@ -45,6 +45,7 @@ import { computeSHA256 } from '@/utils/files'
 import { http } from '@/utils/http'
 import { useToast } from 'vue-toastification'
 import type { IContestProblemDTO } from '../contest/types'
+import { useRoute, useRouter } from 'vue-router'
 
 const props = defineProps<{
   contestId?: string
@@ -54,23 +55,36 @@ const props = defineProps<{
 const { t } = useI18n()
 const toast = useToast()
 const currentTab = ref()
+const route = useRoute()
+const router = useRouter()
 
 async function submit(file: File) {
   const hash = await computeSHA256(file)
   const size = file.size
-  const resp = await http.post(`problem/${props.problem._id}/solution`, {
-    json: { hash, size }
-  })
-  const { solutionId, uploadUrl } = await resp.json<{
-    solutionId: string
-    uploadUrl: string
-  }>()
+  let url = props.contestId
+    ? `contest/${props.contestId}/problem/${props.problem._id}/solution`
+    : `problem/${props.problem._id}/solution`
+  const { solutionId, uploadUrl } = await http
+    .post(url, {
+      json: { hash, size }
+    })
+    .json<{
+      solutionId: string
+      uploadUrl: string
+    }>()
   await fetch(uploadUrl, {
     method: 'PUT',
     body: file
   })
-  await http.post(`solution/${solutionId}/submit`)
+  url = props.contestId
+    ? `contest/${props.contestId}/solution/${solutionId}/submit`
+    : `problem/${props.problem._id}/solution/${solutionId}/submit`
+  await http.post(url)
   toast.success(t('submit-success'))
+  url = props.contestId
+    ? `/org/${route.params.orgId}/contest/${props.contestId}/solution/${solutionId}`
+    : `/org/${route.params.orgId}/problem/${props.problem._id}/solution/${solutionId}`
+  router.push(url)
 }
 </script>
 

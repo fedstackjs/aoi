@@ -3,7 +3,7 @@ import { IRunner, runners } from '../../db/index.js'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { randomBytes } from 'node:crypto'
-import { runnerSolutionRoutes } from './task.js'
+import { runnerSolutionRoutes } from './solution.js'
 import { packageJson } from '../../utils/package.js'
 import { runnerRanklistRoutes } from './ranklist.js'
 

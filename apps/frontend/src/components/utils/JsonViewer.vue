@@ -1,0 +1,56 @@
+<template>
+  <AsyncState :state="data">
+    <template v-slot="{ value }">
+      <VTabs v-model="currentTab">
+        <VTab prepend-icon="mdi-book-outline" value="visual" v-if="slots.default">
+          {{ t('visualized') }}
+        </VTab>
+        <VTab prepend-icon="mdi-upload-outline" value="raw">
+          {{ t('raw') }}
+        </VTab>
+      </VTabs>
+      <VWindow v-model="currentTab">
+        <VWindowItem value="visual" v-if="slots.default">
+          <slot :value="value"></slot>
+        </VWindowItem>
+        <VWindowItem value="raw">
+          <MonacoEditor readonly language="json" :model-value="JSON.stringify(value, null, 2)" />
+        </VWindowItem>
+      </VWindow>
+    </template>
+  </AsyncState>
+</template>
+
+<script setup lang="ts" generic="T">
+import { http } from '@/utils/http'
+import { useAsyncState } from '@vueuse/core'
+import { ref } from 'vue'
+import { useSlots } from 'vue'
+import { useI18n } from 'vue-i18n'
+import MonacoEditor from './MonacoEditor.vue'
+import AsyncState from './AsyncState.vue'
+import ky from 'ky'
+
+const props = defineProps<{
+  endpoint?: string
+  url?: string
+}>()
+const slots = useSlots()
+const { t } = useI18n()
+const currentTab = ref()
+
+async function resolveUrl() {
+  if (props.url) return props.url
+  if (props.endpoint) {
+    const { url } = await http.get(`${props.endpoint}/download`).json<{ url: string }>()
+    return url
+  }
+  throw new Error('No url or endpoint provided')
+}
+
+const data = useAsyncState(async () => {
+  const url = await resolveUrl()
+  const json = await ky.get(url).json<T>()
+  return json
+}, null)
+</script>

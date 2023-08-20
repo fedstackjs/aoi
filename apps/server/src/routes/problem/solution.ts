@@ -1,10 +1,110 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
-import { findPaginated } from '../../utils/index.js'
-import { ISolution, solutions } from '../../db/index.js'
+import { findPaginated, hasCapability } from '../../utils/index.js'
+import { ISolution, ProblemCapability, SolutionState, solutions } from '../../db/index.js'
 import { BSON } from 'mongodb'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import { solutionDataKey, solutionDetailsKey } from '../../index.js'
+
+const solutionScopedRoutes = defineRoutes(async (s) => {
+  s.addHook(
+    'onRoute',
+    paramSchemaMerger(
+      Type.Object({
+        solutionId: Type.String()
+      })
+    )
+  )
+
+  s.post('/submit', {}, async (req, rep) => {
+    const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
+    const admin = hasCapability(req._problemCapability, ProblemCapability.CAP_ADMIN)
+    const { modifiedCount } = await solutions.updateOne(
+      {
+        _id: solutionId,
+        contestId: { $exists: false },
+        problemId: req._problemId,
+        userId: admin ? undefined : req.user.userId,
+        state: admin ? undefined : SolutionState.CREATED
+      },
+      { $set: { state: SolutionState.PENDING } },
+      { ignoreUndefined: true }
+    )
+    if (modifiedCount === 0) return rep.notFound()
+    return {}
+  })
+
+  s.get(
+    '/',
+    {
+      schema: {
+        response: {
+          200: Type.Object({
+            _id: Type.UUID(),
+            state: Type.Integer(),
+            score: Type.Number(),
+            metrics: Type.Record(Type.String(), Type.Number()),
+            status: Type.String(),
+            message: Type.String(),
+            submittedAt: Type.Optional(Type.Number())
+          })
+        }
+      }
+    },
+    async (req, rep) => {
+      const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
+      const solution = await solutions.findOne(
+        {
+          _id: solutionId,
+          contestId: { $exists: false },
+          problemId: req._problemId
+        },
+        {
+          projection: {
+            state: 1,
+            score: 1,
+            metrics: 1,
+            status: 1,
+            message: 1,
+            submittedAt: 1
+          }
+        }
+      )
+      if (!solution) return rep.notFound()
+      return solution
+    }
+  )
+
+  s.register(getFileUrl, {
+    prefix: '/details',
+    resolve: async (type, query, req) => {
+      const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
+      const solution = await solutions.findOne({
+        _id: solutionId,
+        contestId: { $exists: false },
+        problemId: req._problemId
+      })
+      if (!solution) throw s.httpErrors.notFound()
+      return [await loadOrgOssSettings(req._problem.orgId), solutionDetailsKey(solution._id)]
+    },
+    allowedTypes: ['download']
+  })
+
+  s.register(getFileUrl, {
+    prefix: '/data',
+    resolve: async (type, query, req) => {
+      const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
+      const solution = await solutions.findOne({
+        _id: solutionId,
+        contestId: { $exists: false },
+        problemId: req._problemId
+      })
+      if (!solution) throw s.httpErrors.notFound()
+      return [await loadOrgOssSettings(req._problem.orgId), solutionDataKey(solution._id)]
+    },
+    allowedTypes: ['download']
+  })
+})
 
 export const problemSolutionRoutes = defineRoutes(async (s) => {
   s.get(
@@ -27,14 +127,14 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
               metrics: Type.Record(Type.String(), Type.Number()),
               status: Type.String(),
               message: Type.String(),
-              submittedAt: Type.Number()
+              submittedAt: Type.Optional(Type.Number())
             })
           )
         }
       }
     },
     async (req) => {
-      return await findPaginated<ISolution & { submittedAt: number }>(
+      return await findPaginated<ISolution>(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         solutions as any,
         req.query.page,
@@ -43,8 +143,7 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
         {
           problemId: req._problemId,
           contestId: { $exists: false },
-          userId: req.query.userId ? new BSON.UUID(req.query.userId) : undefined,
-          state: { $ne: 0 }
+          userId: req.query.userId ? new BSON.UUID(req.query.userId) : undefined
         },
         {
           projection: {
@@ -52,6 +151,7 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
             score: 1,
             metrics: 1,
             status: 1,
+            message: 1,
             submittedAt: 1
           },
           ignoreUndefined: true
@@ -60,45 +160,5 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
     }
   )
 
-  s.register(
-    defineRoutes(async (s) => {
-      s.addHook(
-        'onRoute',
-        paramSchemaMerger(
-          Type.Object({
-            solutionId: Type.String()
-          })
-        )
-      )
-      s.register(getFileUrl, {
-        prefix: '/details',
-        resolve: async (type, query, req) => {
-          const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
-          const solution = await solutions.findOne({
-            _id: solutionId,
-            contestId: { $exists: false },
-            problemId: req._problemId
-          })
-          if (!solution) throw s.httpErrors.notFound()
-          return [await loadOrgOssSettings(req._problem.orgId), solutionDataKey(solution._id)]
-        },
-        allowedTypes: ['download']
-      })
-      s.register(getFileUrl, {
-        prefix: '/data',
-        resolve: async (type, query, req) => {
-          const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
-          const solution = await solutions.findOne({
-            _id: solutionId,
-            contestId: { $exists: false },
-            problemId: req._problemId
-          })
-          if (!solution) throw s.httpErrors.notFound()
-          return [await loadOrgOssSettings(req._problem.orgId), solutionDetailsKey(solution._id)]
-        },
-        allowedTypes: ['download']
-      })
-    }),
-    { prefix: '/:solutionId' }
-  )
+  s.register(solutionScopedRoutes, { prefix: '/:solutionId' })
 })

@@ -16,6 +16,7 @@ const model = defineModel<string>({ required: true })
 const props = defineProps<{
   language?: string
   theme?: string
+  readonly?: boolean
 }>()
 
 onMounted(() => {
@@ -23,7 +24,8 @@ onMounted(() => {
     value: model.value,
     language: props.language,
     theme: props.theme,
-    automaticLayout: true
+    automaticLayout: true,
+    readOnly: props.readonly
   }))
   instance.onDidChangeModelContent(() => {
     model.value = instance.getValue() ?? ''
