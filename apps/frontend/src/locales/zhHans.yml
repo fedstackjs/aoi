@@ -19,6 +19,7 @@ attachments: 附件
 management: 管理
 forgot-passwd: 忘记密码
 admin: 管理
+plans: 计划
 
 common:
   from: 从
@@ -39,6 +40,8 @@ action:
   new: 新建
   create: 创建
   upload: 上传
+  rejudge: 重测
+  download: 下载
 
 term:
   contest: 比赛
@@ -51,7 +54,7 @@ term:
   title: 标题
   slug: 编号
   tags: 标签
-  status: 状态
+  status: 评测结果
   score: 得分
   key: Key
   name: 名称
@@ -70,9 +73,20 @@ term:
   settings: 设置
   members: 成员
   user-id: 用户ID
+  id: ID
+  state: 状态
+  current-hash: 当前哈希值
+  message: 消息
+  submitted-at: 提交时间
+  jobs: 任务
+  summary: 总结
 
 cap:
   access: 访问权限
   problem: 题目控制
   contest: 比赛控制
   admin: 管理权限
+
+metrics:
+  time: 运行时间
+  mem: 运行内存

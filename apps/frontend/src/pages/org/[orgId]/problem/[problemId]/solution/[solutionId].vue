@@ -3,7 +3,36 @@
   <AsyncState :state="solution">
     <template v-slot="{ value }">
       <VCardText>
-        {{ JSON.stringify(value) }}
+        <VTable>
+          <thead>
+            <th class="text-left">{{ t('term.id') }}</th>
+            <th class="text-left">{{ t('term.state') }}</th>
+            <th class="text-left">{{ t('term.score') }}</th>
+            <th class="text-left" v-for="(mval, mkey) in value.metrics" :key="mkey">
+              {{ t('metrics.' + mkey) }}
+            </th>
+            <th class="text-left">{{ t('term.status') }}</th>
+            <th class="text-left">{{ t('term.message') }}</th>
+            <th class="text-left" v-if="value.submittedAt">
+              {{ t('term.submitted-at') }}
+            </th>
+          </thead>
+          <tbody>
+            <tr>
+              <th>{{ value._id }}</th>
+              <th>
+                <SolutionStateChip :state="value.state" />
+              </th>
+              <th>{{ value.score }}</th>
+              <th v-for="(mval, mkey) in value.metrics" :key="mkey">
+                {{ mval }}
+              </th>
+              <th>{{ value.status }}</th>
+              <th>{{ value.message }}</th>
+              <th v-if="value.submittedAt">{{ value.submittedAt }}</th>
+            </tr>
+          </tbody>
+        </VTable>
       </VCardText>
     </template>
   </AsyncState>
@@ -12,7 +41,7 @@
   <VCardSubtitle>{{ t('solution.data') }}</VCardSubtitle>
   <VCardActions>
     <DownloadBtn :endpoint="`problem/${props.problemId}/solution/${props.solutionId}/data`" />
-    <VBtn :text="t('rejudge')" @click="submit.execute()" :loading="submit.isLoading.value" />
+    <VBtn :text="t('action.rejudge')" @click="submit.execute()" :loading="submit.isLoading.value" />
   </VCardActions>
 </template>
 
@@ -25,6 +54,7 @@ import AsyncState from '@/components/utils/AsyncState.vue'
 import DownloadBtn from '@/components/utils/DownloadBtn.vue'
 import { useAsyncTask } from '@/utils/async'
 import SolutionDetails from '@/components/solution/SolutionDetails.vue'
+import SolutionStateChip from '@/components/solution/SolutionStateChip.vue'
 
 const props = defineProps<{
   orgId: string
@@ -42,3 +72,15 @@ const submit = useAsyncTask(async () => {
   await http.post(`problem/${props.problemId}/solution/${props.solutionId}/submit`)
 })
 </script>
+<i18n>
+en:
+  solution:
+    info: Info
+    details: Details
+    data: Data
+zhHans:
+  solution:
+    info: 信息
+    details: 细节
+    data: 数据
+</i18n>

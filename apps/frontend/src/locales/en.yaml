@@ -19,6 +19,7 @@ attachments: Attachments
 management: Management
 forgot-passwd: Forgot Password
 admin: Admin
+plans: Plans
 
 common:
   from: From
@@ -39,6 +40,8 @@ action:
   new: New
   create: Create
   upload: Upload
+  rejudge: Rejudge
+  download: Download
 
 term:
   contest: Contest
@@ -70,9 +73,20 @@ term:
   settings: Settings
   members: Members
   user-id: User ID
+  id: ID
+  state: State
+  current-hash: Current Hash
+  message: Message
+  submitted-at: Submitted at
+  jobs: Jobs
+  summary: Summary
 
 cap:
   access: 访问权限
   problem: 题目控制
   contest: 比赛控制
   admin: 管理权限
+
+metrics:
+  time: 运行时间
+  mem: 运行内存

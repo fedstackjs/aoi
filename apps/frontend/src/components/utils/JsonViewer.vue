@@ -54,3 +54,11 @@ const data = useAsyncState(async () => {
   return json
 }, null)
 </script>
+<i18n>
+en:
+  visualized: Visualized
+  raw: Raw
+zhHans:
+  visualized: 可视化
+  raw: 原始数据
+</i18n>

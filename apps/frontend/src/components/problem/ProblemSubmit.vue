@@ -1,9 +1,9 @@
 <template>
   <VCard flat>
     <VCardTitle class="d-flex justify-space-between">
-      <div>{{ t('submit') }}</div>
+      <div>{{ t('action.submit') }}</div>
       <div>
-        {{ t('current-hash') }}
+        {{ t('term.current-hash') }}
         <VChip color="blue">
           <code>{{ problem.currentDataHash.substring(0, 7) }}</code>
         </VChip>
