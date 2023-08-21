@@ -11,9 +11,15 @@ export const problemConfigSolutionSchema = Type.Partial(
 
 export type ProblemConfigSolution = Static<typeof problemConfigSolutionSchema>
 
-export const problemConfigJudgeSchema = Type.Record(Type.String(), Type.Any(), {
-  description: 'Judge configuration'
-})
+export const problemConfigJudgeSchema = Type.Object(
+  {
+    adapter: Type.String(),
+    config: Type.Record(Type.String(), Type.Any())
+  },
+  {
+    description: 'Judge configuration'
+  }
+)
 
 export type ProblemConfigJudge = Static<typeof problemConfigJudgeSchema>
 
