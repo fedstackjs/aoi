@@ -13,6 +13,7 @@ export const solutionDetailsJobSchema = Type.Object({
   name: Type.String(),
   score: Type.Number(),
   scoreScale: Type.Number(),
+  status: Type.String(),
   tests: Type.Array(solutionDetailsTestSchema),
   summary: Type.String()
 })
