@@ -1,5 +1,10 @@
 <template>
   <VCard flat>
+    <SettingsEditor :endpoint="`contest/${contestId}/problem/${problem._id}/settings`">
+      <template v-slot="scoped">
+        <ContestProblemSettingsInput v-model="scoped.value" />
+      </template>
+    </SettingsEditor>
     <VCardActions>
       <VBtn color="error" variant="elevated" @click="deleteProblem()">
         {{ t('delete') }}
@@ -13,6 +18,8 @@ import { useI18n } from 'vue-i18n'
 import { http } from '@/utils/http'
 import type { IContestProblemDTO } from './types'
 import { useRoute, useRouter } from 'vue-router'
+import SettingsEditor from '@/components/utils/SettingsEditor.vue'
+import ContestProblemSettingsInput from './ContestProblemSettingsInput.vue'
 
 const { t } = useI18n()
 const router = useRouter()

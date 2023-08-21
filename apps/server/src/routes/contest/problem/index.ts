@@ -222,7 +222,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
 
       const { modifiedCount } = await contestParticipants.updateOne(
         {
-          _id: req._contestParticipant,
+          _id: req._contestParticipant._id,
           $or: [
             { [`results.${problemId}`]: { $exists: false } },
             { [`results.${problemId}.solutionCount`]: { $lt: settings.solutionCountLimit } }

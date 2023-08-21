@@ -32,6 +32,9 @@
                 <VTab prepend-icon="mdi-list-box" :to="rel('problem')">
                   {{ t('problems') }}
                 </VTab>
+                <VTab prepend-icon="mdi-timer-sand" :to="rel('solution')">
+                  {{ t('contest-solutions') }}
+                </VTab>
                 <VTab prepend-icon="mdi-chevron-triple-up" :to="rel('ranklist')">
                   {{ t('ranklist') }}
                 </VTab>

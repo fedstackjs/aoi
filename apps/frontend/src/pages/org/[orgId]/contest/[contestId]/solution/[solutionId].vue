@@ -1,5 +1,5 @@
 <template>
-  <SolutionView :org-id="orgId" :solution-id="solutionId" :problem-id="problemId" />
+  <SolutionView :org-id="orgId" :solution-id="solutionId" :contest-id="contestId" />
 </template>
 
 <script setup lang="ts">
@@ -7,7 +7,7 @@ import SolutionView from '@/components/solution/SolutionView.vue'
 
 defineProps<{
   orgId: string
-  problemId: string
+  contestId: string
   solutionId: string
 }>()
 </script>

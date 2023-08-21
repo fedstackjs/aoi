@@ -2,7 +2,7 @@
   <VCard variant="flat" :title="t('add-problem')">
     <VCardText>
       <VTextField label="problemId" v-model="payload.problemId" />
-      <ContestProblemSettings v-model="payload.settings" />
+      <ContestProblemSettingsInput v-model="payload.settings" />
     </VCardText>
     <VCardActions>
       <VBtn color="primary" variant="elevated" @click="addProblem()">
@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import ContestProblemSettings from '@/components/contest/ContestProblemSettings.vue'
+import ContestProblemSettingsInput from '@/components/contest/ContestProblemSettingsInput.vue'
 import type { IContestDTO, IContestProblemListDTO } from '@/components/contest/types'
 import { http } from '@/utils/http'
 import { reactive } from 'vue'

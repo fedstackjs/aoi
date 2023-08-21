@@ -34,6 +34,8 @@ import ky from 'ky'
 const props = defineProps<{
   endpoint?: string
   url?: string
+  rawData?: T
+  rawString?: string
 }>()
 const slots = useSlots()
 const { t } = useI18n()
@@ -49,6 +51,8 @@ async function resolveUrl() {
 }
 
 const data = useAsyncState(async () => {
+  if (props.rawData) return props.rawData
+  if (props.rawString) return JSON.parse(props.rawString)
   const url = await resolveUrl()
   const json = await ky.get(url).json<T>()
   return json

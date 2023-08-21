@@ -85,7 +85,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
             status: 1,
             message: 1,
             submittedAt: 1
-          }
+          },
+          ignoreUndefined: true
         }
       )
       if (!solution) return rep.notFound()
@@ -170,7 +171,7 @@ export const contestSolutionRoutes = defineRoutes(async (s) => {
         req.query.perPage,
         req.query.count,
         {
-          contestId: req._contest,
+          contestId: req._contest._id,
           problemId: req.query.problemId ? new BSON.UUID(req.query.problemId) : undefined,
           userId: req.query.userId ? new BSON.UUID(req.query.userId) : undefined
         },
