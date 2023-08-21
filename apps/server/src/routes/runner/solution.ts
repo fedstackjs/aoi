@@ -2,6 +2,7 @@ import { Type } from '@sinclair/typebox'
 import {
   ContestRanklistState,
   SolutionState,
+  contestParticipants,
   contests,
   problemStatuses,
   problems,
@@ -96,30 +97,51 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const now = Date.now()
       const { value } = await solutions.findOneAndUpdate(
         {
           _id: req._solutionId,
           taskId: req._taskId,
           state: { $in: [SolutionState.QUEUED, SolutionState.RUNNING] }
         },
-        { $set: { state: SolutionState.COMPLETED, completedAt: Date.now() } },
+        { $set: { state: SolutionState.COMPLETED, completedAt: now } },
         { projection: { userId: 1, problemId: 1, contestId: 1, score: 1, status: 1 } }
       )
       if (!value) return rep.conflict()
       if (value.contestId) {
-        // update contest ranklist state
-        await contests.updateOne(
+        const { modifiedCount } = await contestParticipants.updateOne(
           {
-            _id: value.contestId,
-            ranklists: { $exists: true, $ne: [] }
+            userId: value.userId,
+            contestId: value.contestId,
+            [`results.${value.problemId}.lastSolutionId`]: value._id
           },
           {
             $set: {
-              ranklistLastSolutionId: value._id,
-              ranklistState: ContestRanklistState.INVALID
+              [`results.${value.problemId}.lastSolution`]: {
+                _id: value._id,
+                score: value.score,
+                status: value.status,
+                completedAt: now
+              },
+              updatedAt: now
             }
           }
         )
+        if (modifiedCount) {
+          // update contest ranklist state
+          await contests.updateOne(
+            {
+              _id: value.contestId,
+              ranklists: { $exists: true, $ne: [] }
+            },
+            {
+              $set: {
+                ranklistUpdatedAt: now,
+                ranklistState: ContestRanklistState.INVALID
+              }
+            }
+          )
+        }
       } else {
         // update problem status
         await problemStatuses.updateOne(

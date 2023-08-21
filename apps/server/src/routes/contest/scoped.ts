@@ -136,7 +136,8 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
         _id: new BSON.UUID(),
         userId: req.user.userId,
         contestId: req._contestId,
-        results: {}
+        results: {},
+        updatedAt: Date.now()
       })
       return {}
     }

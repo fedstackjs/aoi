@@ -7,6 +7,7 @@ import {
   IContestRanklistSettings,
   IContestStage
 } from '../schemas/contest.js'
+import { ISolution } from './solution.js'
 
 export const ContestCapability = {
   CAP_ACCESS: capabilityMask(0),
@@ -17,6 +18,8 @@ export const ContestCapability = {
 
 export interface IContestParticipantResult {
   solutionCount: number
+  lastSolutionId: BSON.UUID
+  lastSolution: Pick<ISolution, 'score' | 'status'> & { completedAt: number }
 }
 
 export interface IContestParticipant {
@@ -24,6 +27,7 @@ export interface IContestParticipant {
   userId: BSON.UUID
   contestId: BSON.UUID
   results: Record<string, IContestParticipantResult>
+  updatedAt: number
 }
 
 export const contestParticipants = db.collection<IContestParticipant>('contestParticipants')
@@ -58,8 +62,8 @@ export interface IContest
   stages: IContestStage[]
 
   ranklists: IContestRanklist[]
-  ranklistLastSolutionId?: BSON.UUID
   ranklistState: ContestRanklistState
+  ranklistUpdatedAt: number
   ranklistRunnerId?: BSON.UUID
   ranklistTaskId?: BSON.UUID
 }

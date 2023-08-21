@@ -57,6 +57,7 @@ export const contestRoutes = defineRoutes(async (s) => {
         associations: [],
         ranklists: [],
         ranklistState: ContestRanklistState.VALID,
+        ranklistUpdatedAt: 0,
         accessLevel: req.body.accessLevel
       })
       return { contestId: insertedId }

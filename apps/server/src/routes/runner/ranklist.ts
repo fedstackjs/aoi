@@ -1,5 +1,11 @@
 import { BSON } from 'mongodb'
-import { ContestRanklistState, SolutionState, contests, solutions } from '../../db/index.js'
+import {
+  ContestRanklistState,
+  SolutionState,
+  contestParticipants,
+  contests,
+  solutions
+} from '../../db/index.js'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
 import { loadOrgOssSettings } from '../common/files.js'
@@ -27,7 +33,7 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Mark task as completed',
         body: Type.Object({
-          ranklistLastSolutionId: Type.String({ format: 'uuid' })
+          ranklistUpdatedAt: Type.Integer()
         })
       }
     },
@@ -39,7 +45,7 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
             ranklistState: {
               $cond: {
                 if: {
-                  $eq: ['$ranklistLastSolutionId', new BSON.UUID(req.body.ranklistLastSolutionId)]
+                  $eq: ['$ranklistUpdatedAt', req.body.ranklistUpdatedAt]
                 },
                 then: ContestRanklistState.VALID,
                 else: ContestRanklistState.INVALID
@@ -50,6 +56,57 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       )
       if (modifiedCount === 0) return rep.notFound()
       return {}
+    }
+  )
+
+  s.get(
+    '/participants',
+    {
+      schema: {
+        description: 'Get participants for contest',
+        querystring: Type.Object({
+          since: Type.Number()
+        }),
+        response: {
+          200: Type.Array(
+            Type.Object({
+              _id: Type.UUID(),
+              userId: Type.UUID(),
+              contestId: Type.UUID(),
+              results: Type.Record(
+                Type.String(),
+                Type.Object({
+                  solutionCount: Type.Integer(),
+                  lastSolutionId: Type.UUID(),
+                  lastSolution: Type.Object({
+                    score: Type.Number(),
+                    status: Type.String(),
+                    completedAt: Type.Integer()
+                  })
+                })
+              ),
+              updatedAt: Type.Integer()
+            })
+          )
+        }
+      }
+    },
+    async (req, rep) => {
+      const contest = await contests.findOne(
+        { _id: req._contestId, ranklistTaskId: req._taskId },
+        { projection: { ranklists: 1 } }
+      )
+      if (!contest) return rep.notFound()
+      const list = await contestParticipants
+        .find(
+          {
+            contestId: req._contestId,
+            updatedAt: { $gt: req.query.since }
+          },
+          { limit: 50, sort: { updatedAt: 1 } }
+        )
+        .toArray()
+      return list
     }
   )
 

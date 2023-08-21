@@ -220,6 +220,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
         return { solutionId: value._id, uploadUrl }
       }
 
+      const newSolutionId = new BSON.UUID()
       const { modifiedCount } = await contestParticipants.updateOne(
         {
           _id: req._contestParticipant._id,
@@ -229,13 +230,21 @@ const problemViewRoutes = defineRoutes(async (s) => {
           ]
         },
         {
-          $inc: { [`results.${problemId}.solutionCount`]: 1 }
+          $inc: { [`results.${problemId}.solutionCount`]: 1 },
+          $set: {
+            [`results.${problemId}.lastSolutionId`]: newSolutionId,
+            [`results.${problemId}.lastSolution`]: {
+              score: 0,
+              status: '',
+              completedAt: 0
+            }
+          }
         }
       )
       if (!modifiedCount) return rep.preconditionFailed('Solution limit reached')
 
       const { insertedId } = await solutions.insertOne({
-        _id: new BSON.UUID(),
+        _id: newSolutionId,
         orgId: req._contest.orgId,
         problemId,
         contestId: req._contestId,
