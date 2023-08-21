@@ -1,7 +1,0 @@
-{
-  "compilerOptions": {
-    "resolveJsonModule": true,
-    "composite": true
-  },
-  "include": ["package.json"]
-}

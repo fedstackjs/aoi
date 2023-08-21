@@ -4,12 +4,18 @@ import {
   SolutionState,
   contestParticipants,
   contests,
+  problems,
   solutions
 } from '../../db/index.js'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
 import { loadOrgOssSettings } from '../common/files.js'
-import { SContestRanklistSettings, contestRanklistKey, getUploadUrl } from '../../index.js'
+import {
+  SContestProblemSettings,
+  SContestRanklistSettings,
+  contestRanklistKey,
+  getUploadUrl
+} from '../../index.js'
 
 const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
   s.addHook(
@@ -56,6 +62,41 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       )
       if (modifiedCount === 0) return rep.notFound()
       return {}
+    }
+  )
+
+  s.get(
+    '/problems',
+    {
+      schema: {
+        response: {
+          200: Type.Array(
+            Type.Object({
+              _id: Type.UUID(),
+              title: Type.String(),
+              tags: Type.Array(Type.String()),
+              settings: SContestProblemSettings
+            })
+          )
+        }
+      }
+    },
+    async (req, rep) => {
+      const contest = await contests.findOne(
+        { _id: req._contestId, ranklistTaskId: req._taskId },
+        { projection: { problems: 1 } }
+      )
+      if (!contest) return rep.notFound()
+      const config = contest.problems
+      const $in = config.map(({ problemId }) => problemId)
+      const list = await problems
+        .find({ _id: { $in } }, { projection: { title: 1, tags: 1 } })
+        .toArray()
+      return list.map((problem) => ({
+        ...problem,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        settings: config.find(({ problemId }) => problemId.equals(problem._id))!.settings
+      }))
     }
   )
 
