@@ -32,6 +32,25 @@ export const ranklistAdminRoutes = defineRoutes(async (s) => {
     }
   )
 
+  s.get(
+    '/:key/settings',
+    {
+      schema: {
+        params: Type.Object({
+          key: Type.String()
+        }),
+        response: {
+          200: SContestRanklistSettings
+        }
+      }
+    },
+    async (req, rep) => {
+      const ranklist = req._contest.ranklists.find(({ key }) => key === req.params.key)
+      if (!ranklist) return rep.notFound()
+      return ranklist.settings
+    }
+  )
+
   s.patch(
     '/:key/settings',
     {

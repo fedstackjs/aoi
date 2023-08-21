@@ -6,6 +6,7 @@ import { randomBytes } from 'node:crypto'
 import { runnerSolutionRoutes } from './solution.js'
 import { packageJson } from '../../utils/package.js'
 import { runnerRanklistRoutes } from './ranklist.js'
+import { logger } from '../../index.js'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -19,6 +20,17 @@ const registrationPayload = TypeCompiler.Compile(
     runnerId: Type.String({ format: 'uuid' })
   })
 )
+
+const RELATIME_DELAY = 60 * 1000 // 1 minute
+
+function updateAccessedAt(runner: IRunner) {
+  const now = Date.now()
+  if (runner.accessedAt < now - RELATIME_DELAY) {
+    runners.updateOne({ _id: runner._id }, { $set: { accessedAt: now } }).catch((err) => {
+      logger.error(err)
+    })
+  }
+}
 
 export const runnerRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('runner'))
@@ -36,6 +48,7 @@ export const runnerRoutes = defineRoutes(async (s) => {
     if (req.headers['x-aoi-runner-key'] !== runner.key) throw s.httpErrors.unauthorized()
     req._runner = runner
     rep.header('x-aoi-api-version', packageJson.version)
+    updateAccessedAt(runner)
   })
 
   s.post(
@@ -47,6 +60,7 @@ export const runnerRoutes = defineRoutes(async (s) => {
         body: Type.Object({
           name: Type.String(),
           labels: Type.Array(Type.String()),
+          version: Type.String(),
           registrationToken: Type.String()
         }),
         response: {
@@ -68,11 +82,29 @@ export const runnerRoutes = defineRoutes(async (s) => {
         orgId,
         name: req.body.name,
         labels: req.body.labels,
+        version: req.body.version,
         key: runnerKey,
         createdAt: Date.now(),
         accessedAt: Date.now()
       })
       return { runnerId, runnerKey }
+    }
+  )
+
+  s.post(
+    '/ping',
+    {
+      schema: {
+        body: Type.Object({
+          version: Type.String()
+        })
+      }
+    },
+    async (req) => {
+      if (req.body.version !== req._runner.version) {
+        await runners.updateOne({ _id: req._runner._id }, { $set: { version: req.body.version } })
+      }
+      return {}
     }
   )
 

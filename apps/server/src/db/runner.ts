@@ -7,6 +7,7 @@ export interface IRunner {
   labels: string[]
   name: string
   key: string
+  version: string
 
   createdAt: number
   accessedAt: number

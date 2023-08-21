@@ -76,7 +76,7 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
             state: SolutionState.COMPLETED,
             completedAt: { $gt: req.query.since }
           },
-          { limit: 50, projection: { taskId: 0 } }
+          { limit: 50, projection: { taskId: 0 }, sort: { completedAt: 1 } }
         )
         .toArray()
       return list
@@ -91,6 +91,7 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
         response: {
           200: Type.Array(
             Type.Object({
+              key: Type.String(),
               url: Type.String({ format: 'uri' })
             })
           )
@@ -105,8 +106,9 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       if (!contest) return rep.notFound()
       const oss = await loadOrgOssSettings(contest.orgId)
       if (!oss) return rep.preconditionFailed()
-      const urls = contest.ranklists.map(async (r) => ({
-        url: await getUploadUrl(oss, contestRanklistKey(req._contestId, r.key))
+      const urls = contest.ranklists.map(async ({ key }) => ({
+        key,
+        url: await getUploadUrl(oss, contestRanklistKey(req._contestId, key))
       }))
       return Promise.all(urls)
     }
