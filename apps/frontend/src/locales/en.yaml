@@ -20,6 +20,7 @@ management: Management
 forgot-passwd: Forgot Password
 admin: Admin
 plans: Plans
+ranklist: Ranklist
 
 common:
   from: From
@@ -80,6 +81,9 @@ term:
   submitted-at: Submitted at
   jobs: Jobs
   summary: Summary
+  tests: Tests
+  participant: Participant
+  rank: Rank
 
 cap:
   access: 访问权限

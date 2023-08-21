@@ -20,6 +20,7 @@ management: 管理
 forgot-passwd: 忘记密码
 admin: 管理
 plans: 计划
+ranklist: 排行榜
 
 common:
   from: 从
@@ -80,6 +81,9 @@ term:
   submitted-at: 提交时间
   jobs: 任务
   summary: 总结
+  tests: 子任务
+  participant: 选手
+  rank: 排名
 
 cap:
   access: 访问权限
