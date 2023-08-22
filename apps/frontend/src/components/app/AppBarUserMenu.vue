@@ -39,7 +39,11 @@ const userInfo = useAsyncState(async () => {
   return user
 }, null as never)
 
-const userMenu = computed(() => [{ prependIcon: 'mdi-logout', action: logout, title: t('logout') }])
+const userMenu = computed(() => [
+  { prependIcon: 'mdi-account', to: `/user/${app.userId}`, title: t('user-info'), exact: true },
+  { prependIcon: 'mdi-cog', to: `/user/${app.userId}/settings`, title: t('user-settings') },
+  { prependIcon: 'mdi-logout', action: logout, title: t('logout') }
+])
 
 function logout() {
   _logout()

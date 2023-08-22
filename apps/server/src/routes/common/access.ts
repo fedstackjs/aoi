@@ -139,6 +139,6 @@ export const manageAccessLevel: FastifyPluginAsyncTypebox<{
 }
 
 export async function loadUserCapability(req: FastifyRequest) {
-  const user = await users.findOne(req.user.userId, { projection: { capability: 1 } })
+  const user = await users.findOne({ _id: req.user.userId }, { projection: { capability: 1 } })
   return user?.capability ?? CAP_NONE
 }

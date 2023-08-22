@@ -33,11 +33,11 @@
       />
 
       <VBtn type="submit" @click="signup()" color="primary" block size="large" class="mt-4">
-        Sign up
+        {{ t('signup') }}
       </VBtn>
 
       <VCardText class="text-center">
-        <VBtn variant="text" prepend-icon="mdi-chevron-left" text="Sign In" to="/signin" />
+        <VBtn variant="text" prepend-icon="mdi-chevron-left" :text="t('signin')" to="/signin" />
       </VCardText>
     </VForm>
   </VCard>
