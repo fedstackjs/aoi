@@ -104,6 +104,7 @@ __metadata:
     "@aws-sdk/s3-request-presigner": ^3.385.0
     "@fastify/jwt": ^7.2.0
     "@fastify/sensible": ^5.2.0
+    "@fastify/static": ^6.10.2
     "@fastify/swagger": ^8.8.0
     "@fastify/swagger-ui": ^1.9.2
     "@fastify/type-provider-typebox": ^3.3.0
@@ -1140,7 +1141,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/static@npm:^6.0.0":
+"@fastify/static@npm:^6.0.0, @fastify/static@npm:^6.10.2":
   version: 6.10.2
   resolution: "@fastify/static@npm:6.10.2"
   dependencies:
