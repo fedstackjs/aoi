@@ -21,6 +21,8 @@
                 </div>
               </VCardTitle>
               <VDivider />
+              <ContestProgressBar :contest="value" @updated="contest.execute()" />
+              <VDivider />
 
               <VTabs>
                 <VTab prepend-icon="mdi-book-outline" :to="rel('')">
@@ -61,6 +63,7 @@ import AsyncState from '@/components/utils/AsyncState.vue'
 import type { IContestDTO } from '@/components/contest/types'
 import AccessLevelChip from '@/components/utils/AccessLevelChip.vue'
 import ContestRegisterBtn from '@/components/contest/ContestRegisterBtn.vue'
+import ContestProgressBar from '@/components/contest/ContestProgressBar.vue'
 
 const { t } = useI18n()
 const props = defineProps<{

@@ -72,7 +72,7 @@ ExtendedTypeBuilder.prototype.PaginationResult = function <T extends TSchema>(it
   })
 }
 
-export const SBaseProfile = Type.Object({
+export const SBaseProfile = Type.StrictObject({
   name: Type.String(),
   email: Type.String()
 })
