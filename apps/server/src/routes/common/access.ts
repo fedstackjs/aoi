@@ -1,6 +1,6 @@
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 import { BSON, Collection } from 'mongodb'
-import { IPrincipalControlable, IWithAccessLevel, groups, users } from '../../index.js'
+import { CAP_NONE, IPrincipalControlable, IWithAccessLevel, groups, users } from '../../index.js'
 import { FastifyRequest } from 'fastify'
 
 const Params = Type.Object({
@@ -136,4 +136,9 @@ export const manageAccessLevel: FastifyPluginAsyncTypebox<{
       return {}
     }
   )
+}
+
+export async function loadUserCapability(req: FastifyRequest) {
+  const user = await users.findOne(req.user.userId, { projection: { capability: 1 } })
+  return user?.capability ?? CAP_NONE
 }

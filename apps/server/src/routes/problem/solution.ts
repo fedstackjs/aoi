@@ -154,6 +154,9 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
             message: 1,
             submittedAt: 1
           },
+          sort: {
+            submittedAt: -1
+          },
           ignoreUndefined: true
         }
       )

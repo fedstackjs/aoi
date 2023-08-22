@@ -52,21 +52,6 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
     }
   )
 
-  s.get(
-    '/profile',
-    {
-      schema: {
-        description: 'Get group profile',
-        response: { 200: SGroupProfile }
-      }
-    },
-    async (req, rep) => {
-      const group = await groups.findOne({ _id: req._groupId }, { projection: { profile: 1 } })
-      if (!group) return rep.notFound()
-      return group.profile
-    }
-  )
-
   s.patch(
     '/profile',
     {

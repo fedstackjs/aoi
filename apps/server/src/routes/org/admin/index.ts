@@ -2,7 +2,7 @@ import { CAP_NONE, ensureCapability } from '../../../utils/capability.js'
 import { defineRoutes } from '../../common/index.js'
 import { OrgCapability, orgs } from '../../../db/index.js'
 import { Type } from '@sinclair/typebox'
-import { IOrgOssSettings, SOrgSettings } from '../../../index.js'
+import { IOrgOssSettings, SOrgProfile, SOrgSettings } from '../../../index.js'
 import { orgAdminMemberRoutes } from './member.js'
 import { orgAdminRunnerRoutes } from './runner.js'
 
@@ -64,6 +64,19 @@ export const orgAdminRoutes = defineRoutes(async (s) => {
         $set = { ...$set, ...ossSettingsToUpdate(oss) }
       }
       await orgs.updateOne({ _id: req._orgId }, { $set })
+      return {}
+    }
+  )
+
+  s.patch(
+    '/profile',
+    {
+      schema: {
+        body: SOrgProfile
+      }
+    },
+    async (req) => {
+      await orgs.updateOne({ _id: req._orgId }, { $set: { profile: req.body } })
       return {}
     }
   )
