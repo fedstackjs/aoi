@@ -1,4 +1,4 @@
-import { problemConfigSchema } from '@aoi/common'
+import { problemConfigSchema } from '@aoi-js/common'
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 
 const schemas = Object.fromEntries(

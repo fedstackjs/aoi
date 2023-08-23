@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ProblemConfig } from '@aoi/common'
+import type { ProblemConfig } from '@aoi-js/common'
 import { computed, reactive } from 'vue'
 import Zip from 'jszip'
 import FormEditor from './form/FormEditor.vue'

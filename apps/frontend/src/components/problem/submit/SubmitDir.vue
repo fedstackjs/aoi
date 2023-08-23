@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ProblemConfig } from '@aoi/common'
+import type { ProblemConfig } from '@aoi-js/common'
 import { ref } from 'vue'
 import Zip from 'jszip'
 

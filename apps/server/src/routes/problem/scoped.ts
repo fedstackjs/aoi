@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
-import { problemConfigSchema } from '@aoi/common'
+import { problemConfigSchema } from '@aoi-js/common'
 import {
   IProblem,
   ProblemCapability,

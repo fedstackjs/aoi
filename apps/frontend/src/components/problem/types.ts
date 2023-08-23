@@ -1,4 +1,4 @@
-import type { ProblemConfig } from '@aoi/common'
+import type { ProblemConfig } from '@aoi-js/common'
 
 export interface IProblemDTO {
   _id: string

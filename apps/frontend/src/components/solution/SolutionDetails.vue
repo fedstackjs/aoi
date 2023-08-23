@@ -59,7 +59,7 @@
 import { computed } from 'vue'
 import JsonViewer from '../utils/JsonViewer.vue'
 import { useI18n } from 'vue-i18n'
-import type { SolutionDetails } from '@aoi/common'
+import type { SolutionDetails } from '@aoi-js/common'
 import MarkdownRenderer from '../utils/MarkdownRenderer.vue'
 
 const { t } = useI18n()

@@ -1,4 +1,4 @@
-import { problemConfigSchema } from '@aoi/common'
+import { problemConfigSchema } from '@aoi-js/common'
 import { ProblemCapability, problems } from '../../db/index.js'
 import { problemDataKey } from '../../oss/index.js'
 import { ensureCapability } from '../../utils/index.js'

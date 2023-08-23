@@ -12,7 +12,7 @@ import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { getDownloadUrl, problemDataKey, solutionDataKey, solutionDetailsKey } from '../../index.js'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import { BSON } from 'mongodb'
-import { problemConfigSchema } from '@aoi/common'
+import { problemConfigSchema } from '@aoi-js/common'
 
 declare module 'fastify' {
   interface FastifyRequest {

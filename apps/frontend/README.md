@@ -1,1 +1,1 @@
-# `@aoi/ui`
+# `@aoi-js/ui`

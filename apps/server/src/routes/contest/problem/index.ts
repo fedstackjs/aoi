@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, paramSchemaMerger, tryLoadUUID } from '../../common/index.js'
 import { SContestProblemSettings } from '../../../schemas/contest.js'
 import { BSON, Document } from 'mongodb'
-import { problemConfigSchema } from '@aoi/common'
+import { problemConfigSchema } from '@aoi-js/common'
 import { getFileUrl, loadOrgOssSettings } from '../../common/files.js'
 import {
   ContestCapability,

@@ -1,7 +1,16 @@
 {
-  "name": "@aoi/frontend",
-  "version": "0.0.0",
+  "name": "@aoi-js/frontend",
+  "version": "0.0.1",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "AGPL-3.0-only",
+  "packageManager": "yarn@3.6.2",
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "prepack": "run build",
     "dev": "vite",
     "build": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
@@ -10,7 +19,7 @@
     "format": "run -T prettier --ignore-path .gitignore --check ."
   },
   "dependencies": {
-    "@aoi/common": "workspace:^",
+    "@aoi-js/common": "workspace:^",
     "@aws-crypto/sha256-browser": "^5.0.0",
     "@mdi/font": "7.0.96",
     "@sinclair/typebox": "^0.30.4",

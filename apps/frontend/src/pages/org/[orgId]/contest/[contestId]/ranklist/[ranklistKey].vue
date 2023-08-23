@@ -62,7 +62,7 @@
 import type { IContestDTO } from '@/components/contest/types'
 import { useI18n } from 'vue-i18n'
 import JsonViewer from '@/components/utils/JsonViewer.vue'
-import type { Ranklist } from '@aoi/common'
+import type { Ranklist } from '@aoi-js/common'
 import { renderMarkdown } from '@/utils/md'
 import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
 import RanklistSettings from '@/components/contest/RanklistSettings.vue'

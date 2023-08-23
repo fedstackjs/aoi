@@ -2,7 +2,7 @@ import { BSON } from 'mongodb'
 import { db } from './client.js'
 import { IPrincipalControlable, IWithAccessLevel, IWithAttachment, IWithContent } from './common.js'
 import { capabilityMask } from '../utils/capability.js'
-import { ProblemConfig } from '@aoi/common'
+import { ProblemConfig } from '@aoi-js/common'
 import { IProblemSettings } from '../schemas/problem.js'
 
 export const ProblemCapability = {

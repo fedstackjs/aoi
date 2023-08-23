@@ -24,7 +24,7 @@ import { watch } from 'vue'
 import { computeSHA256 } from '@/utils/files'
 import zip from 'jszip'
 import { useToast } from 'vue-toastification'
-import { problemConfigSchema } from '@aoi/common'
+import { problemConfigSchema } from '@aoi-js/common'
 import monaco from '@/utils/monaco'
 import MonacoEditor from '../utils/MonacoEditor.vue'
 

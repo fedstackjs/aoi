@@ -2,11 +2,12 @@ import fastify from 'fastify'
 import fastifySensible from '@fastify/sensible'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
+import fastifyStatic from '@fastify/static'
 import { apiRoutes } from '../routes/index.js'
 import { logger } from '../utils/logger.js'
 import { schemaRoutes } from './schemas.js'
 import { loadEnv } from '../index.js'
-import fastifyStatic from '@fastify/static'
+import { frontendPath } from '../utils/module.js'
 
 const server = fastify({ logger })
 
@@ -17,7 +18,7 @@ await server.register(schemaRoutes, { prefix: '/schemas' })
 await server.register(fastifySwagger, {
   openapi: {
     info: {
-      title: '@aoi/server',
+      title: '@aoi-js/server',
       description: 'API Server of the AOI Project',
       version: 'latest'
     },
@@ -53,7 +54,7 @@ await server.register(fastifySwaggerUi, {
 
 await server.register(apiRoutes, { prefix: '/api' })
 
-const staticRoot = loadEnv('STATIC_ROOT', String, '')
+const staticRoot = loadEnv('STATIC_ROOT', String, frontendPath)
 if (staticRoot) {
   await server.register(fastifyStatic, {
     root: staticRoot

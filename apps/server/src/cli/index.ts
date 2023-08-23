@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { client, logger, server } from '../index.js'
 
 await client.connect()
