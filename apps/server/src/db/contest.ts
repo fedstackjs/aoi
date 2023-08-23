@@ -69,3 +69,10 @@ export interface IContest
 }
 
 export const contests = db.collection<IContest>('contests')
+
+export function getCurrentContestStage(now: number, { stages }: IContest) {
+  for (let i = stages.length - 1; i >= 0; i--) {
+    if (stages[i].start <= now) return stages[i]
+  }
+  return stages[0]
+}

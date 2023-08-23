@@ -12,9 +12,14 @@
                 {{ tag }}
               </VChip>
             </VChipGroup>
-            <ContestRegisterBtn :contest-id="contestId" :plan-id="planId" />
+            <RegisterBtn
+              :endpoint="`plan/${planId}/contest/${contestId}/register`"
+              :participant="participant"
+            />
           </div>
         </VCardTitle>
+        <VDivider />
+        <ContestProgressBar :contest="value" @updated="contest.execute()" />
         <VDivider />
 
         <VTabs v-model="currentTab">
@@ -35,6 +40,7 @@
             <ContestTabAdmin
               :plan-id="planId"
               :contest="currentContest"
+              :contests="contests"
               @updated="$emit('updated')"
             />
           </VWindowItem>
@@ -53,9 +59,10 @@ import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import ContestTabAdmin from '@/components/plan/ContestTabAdmin.vue'
-import type { IContestDTO } from '@/components/contest/types'
+import type { IContestDTO, IContestParticipantDTO } from '@/components/contest/types'
 import { computed } from 'vue'
-import ContestRegisterBtn from '@/components/contest/ContestRegisterBtn.vue'
+import ContestProgressBar from '@/components/contest/ContestProgressBar.vue'
+import RegisterBtn from '@/components/utils/RegisterBtn.vue'
 
 const props = defineProps<{
   orgId: string
@@ -80,5 +87,10 @@ const currentContest = computed(
 const contest = useAsyncState(async () => {
   const resp = await http.get(`contest/${props.contestId}`)
   return resp.json<IContestDTO>()
+}, null)
+
+const participant = useAsyncState(async () => {
+  const resp = await http.get(`contest/${props.contestId}/self`).json<IContestParticipantDTO>()
+  return resp
 }, null)
 </script>

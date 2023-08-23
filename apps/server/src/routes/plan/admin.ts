@@ -1,6 +1,7 @@
-import { PlanCapacity, hasCapability, plans } from '../../index.js'
+import { PlanCapacity, SPlanSettings, hasCapability, plans } from '../../index.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
 import { defineRoutes } from '../common/index.js'
+import { manageSettings } from '../common/settings.js'
 
 export const planAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
@@ -17,6 +18,13 @@ export const planAdminRoutes = defineRoutes(async (s) => {
     collection: plans,
     resolve: async (req) => req._plan._id,
     prefix: '/accessLevel'
+  })
+
+  s.register(manageSettings, {
+    collection: plans,
+    resolve: async (req) => req._plan._id,
+    schema: SPlanSettings,
+    prefix: '/settings'
   })
 
   s.delete(

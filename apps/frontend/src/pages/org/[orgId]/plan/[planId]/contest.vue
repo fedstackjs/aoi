@@ -48,9 +48,7 @@ const { t } = useI18n()
 
 const contests = useAsyncState(async () => {
   const resp = await http.get(`plan/${props.planId}/contest`)
-  console.log(resp)
   const data = await resp.json<IPlanContestDTO[]>()
-  console.log(data)
   return data
 }, [])
 

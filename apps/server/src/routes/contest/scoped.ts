@@ -15,6 +15,7 @@ import {
   OrgCapability,
   contestParticipants,
   contests,
+  getCurrentContestStage,
   problems
 } from '../../db/index.js'
 import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/index.js'
@@ -34,13 +35,6 @@ declare module 'fastify' {
     _contestParticipant: IContestParticipant | null
     _now: number
   }
-}
-
-function getCurrentStage(now: number, { stages }: IContest) {
-  for (let i = stages.length - 1; i >= 0; i--) {
-    if (stages[i].start <= now) return stages[i]
-  }
-  return stages[0]
 }
 
 export const contestScopedRoutes = defineRoutes(async (s) => {
@@ -69,7 +63,7 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
     req._contestId = contestId
     req._contest = contest
     req._now = Date.now()
-    req._contestStage = getCurrentStage(req._now, contest)
+    req._contestStage = getCurrentContestStage(req._now, contest)
     req._contestCapability = capability
     req._contestParticipant = await contestParticipants.findOne({
       contestId: contestId,

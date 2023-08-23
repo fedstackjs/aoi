@@ -1,6 +1,12 @@
 <template>
   <VCard flat :title="t('problem-settings')">
     <VDivider />
+    <SettingsEditor :endpoint="`plan/${planId}/admin/settings`">
+      <template v-slot="scoped">
+        <PlanSettingsInput v-model="scoped.value" />
+      </template>
+    </SettingsEditor>
+    <VDivider />
     <AccessLevelEditor
       :access-level="plan.accessLevel"
       :prefix="`plan/${planId}/admin/accessLevel`"
@@ -19,8 +25,10 @@
 </template>
 
 <script setup lang="ts">
+import PlanSettingsInput from '@/components/plan/PlanSettingsInput.vue'
 import type { IPlanDTO } from '@/components/plan/types'
 import AccessLevelEditor from '@/components/utils/AccessLevelEditor.vue'
+import SettingsEditor from '@/components/utils/SettingsEditor.vue'
 import { useI18n } from 'vue-i18n'
 
 defineProps<{

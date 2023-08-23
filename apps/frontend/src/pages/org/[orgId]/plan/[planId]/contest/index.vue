@@ -3,6 +3,10 @@
     <VCardText v-if="!contests.length">
       <VAlert type="info">{{ t('no-contest') }}</VAlert>
     </VCardText>
+    <template v-else>
+      <VCardTitle>Contests of this Plan</VCardTitle>
+    </template>
+    <VCardText> There are total {{ contests.length }} contests! </VCardText>
   </VCard>
 </template>
 

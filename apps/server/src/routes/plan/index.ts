@@ -43,7 +43,8 @@ export const planRoutes = defineRoutes(async (s) => {
         tags: [],
         contests: [],
         accessLevel: req.body.accessLevel,
-        associations: []
+        associations: [],
+        settings: {}
       })
       return { planId: insertedId }
     }

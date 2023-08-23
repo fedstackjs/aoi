@@ -17,6 +17,7 @@
                     </VChip>
                     <AccessLevelChip :accessLevel="value.accessLevel" />
                   </VChipGroup>
+                  <RegisterBtn :endpoint="`plan/${planId}/register`" :participant="participant" />
                 </div>
               </VCardTitle>
               <VDivider />
@@ -50,6 +51,7 @@ import { http } from '@/utils/http'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import type { IPlanDTO } from '@/components/plan/types'
 import AccessLevelChip from '@/components/utils/AccessLevelChip.vue'
+import RegisterBtn from '@/components/utils/RegisterBtn.vue'
 
 const { t } = useI18n()
 const props = defineProps<{
@@ -66,6 +68,11 @@ const plan = useAsyncState(async () => {
   if (data.orgId !== props.orgId) throw new Error('orgId not match')
   return data
 }, null as never)
+
+const participant = useAsyncState(async () => {
+  const resp = await http.get(`plan/${props.planId}/self`).json<unknown>()
+  return resp
+}, null)
 
 const rel = (to: string) => `/org/${props.orgId}/plan/${props.planId}/${to}`
 </script>

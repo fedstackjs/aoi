@@ -17,7 +17,10 @@
                     </VChip>
                     <AccessLevelChip :accessLevel="value.accessLevel" />
                   </VChipGroup>
-                  <ContestRegisterBtn :contest-id="contestId" />
+                  <RegisterBtn
+                    :endpoint="`contest/${contestId}/register`"
+                    :participant="participant"
+                  />
                 </div>
               </VCardTitle>
               <VDivider />
@@ -60,10 +63,10 @@ import { useI18n } from 'vue-i18n'
 import { useAsyncState } from '@vueuse/core'
 import { http } from '@/utils/http'
 import AsyncState from '@/components/utils/AsyncState.vue'
-import type { IContestDTO } from '@/components/contest/types'
+import type { IContestDTO, IContestParticipantDTO } from '@/components/contest/types'
 import AccessLevelChip from '@/components/utils/AccessLevelChip.vue'
-import ContestRegisterBtn from '@/components/contest/ContestRegisterBtn.vue'
 import ContestProgressBar from '@/components/contest/ContestProgressBar.vue'
+import RegisterBtn from '@/components/utils/RegisterBtn.vue'
 
 const { t } = useI18n()
 const props = defineProps<{
@@ -80,6 +83,11 @@ const contest = useAsyncState(async () => {
   if (data.orgId !== props.orgId) throw new Error('orgId not match')
   return data
 }, null as never)
+
+const participant = useAsyncState(async () => {
+  const resp = await http.get(`contest/${props.contestId}/self`).json<IContestParticipantDTO>()
+  return resp
+}, null)
 
 const rel = (to: string) => `/org/${props.orgId}/contest/${props.contestId}/${to}`
 </script>

@@ -87,7 +87,41 @@ export const planScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      return rep.notImplemented()
+      const { registrationEnabled, registrationAllowPublic } = req._plan.settings
+      if (!registrationEnabled && !hasCapability(req._contestCapability, PlanCapacity.CAP_ADMIN)) {
+        return rep.forbidden()
+      }
+      if (
+        !registrationAllowPublic &&
+        !hasCapability(req._contestCapability, PlanCapacity.CAP_REGISTRATION)
+      ) {
+        return rep.forbidden()
+      }
+
+      await planParticipants.insertOne({
+        _id: new BSON.UUID(),
+        userId: req.user.userId,
+        planId: req._plan._id,
+        results: {},
+        updatedAt: Date.now()
+      })
+      return {}
+    }
+  )
+
+  s.get(
+    '/self',
+    {
+      schema: {
+        description: 'Get participant details of self',
+        response: {
+          200: Type.Object({})
+        }
+      }
+    },
+    async (req, rep) => {
+      if (!req._planParticipant) return rep.preconditionFailed()
+      return req._planParticipant
     }
   )
 
