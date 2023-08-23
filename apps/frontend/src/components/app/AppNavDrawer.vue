@@ -39,8 +39,14 @@ const orgItems = () => {
   }))
 }
 
+const debugItems = () => {
+  if (!appState.debug) return []
+  return [{ prependIcon: 'mdi-bug', to: '/debug', title: 'Debug Tools' }]
+}
+
 const links = computed(() => [
   ...orgItems(),
-  { prependIcon: 'mdi-help', to: '/about', title: t('about') }
+  { prependIcon: 'mdi-help', to: '/about', title: t('about') },
+  ...debugItems()
 ])
 </script>

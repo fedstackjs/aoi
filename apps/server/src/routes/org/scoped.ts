@@ -44,7 +44,9 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
         response: {
           200: Type.Object({
             profile: SOrgProfile,
-            capability: Type.String()
+            membership: Type.Object({
+              capability: Type.String()
+            })
           })
         }
       }
@@ -70,7 +72,9 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
       }
       return {
         profile: org.profile,
-        capability: (req._orgMembership?.capability ?? CAP_NONE).toString()
+        membership: {
+          capability: (req._orgMembership?.capability ?? CAP_NONE).toString()
+        }
       }
     }
   )

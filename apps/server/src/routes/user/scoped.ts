@@ -24,6 +24,28 @@ export const userScopedRoutes = defineRoutes(async (s) => {
   })
 
   s.get(
+    '/',
+    {
+      schema: {
+        response: {
+          200: Type.Object({
+            profile: SUserProfile,
+            capability: Type.Optional(Type.String())
+          })
+        }
+      }
+    },
+    async (req, rep) => {
+      const user = await users.findOne({ _id: req._userId }, { projection: { profile: 1 } })
+      if (!user) return rep.notFound()
+      return {
+        profile: user.profile,
+        capability: user.capability?.toString()
+      }
+    }
+  )
+
+  s.get(
     '/profile',
     {
       schema: {

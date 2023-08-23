@@ -1,12 +1,23 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { useAsyncState, useTitle, watchDebounced } from '@vueuse/core'
+import { useAsyncState, useLocalStorage, useTitle, watchDebounced } from '@vueuse/core'
 import { http, isLoggedIn, userId } from '@/utils/http'
 import { useRoute } from 'vue-router'
-import type { IOrgProfile } from '@/types'
+import type { IOrgProfile, IUserProfile } from '@/types'
 
 export const useAppState = defineStore('app_state', () => {
   const route = useRoute()
+
+  const user = useAsyncState(async () => {
+    const resp = await http.get(`user/${userId.value}`)
+    const user = await resp.json<{
+      profile: IUserProfile
+      capability: string
+    }>()
+    return user
+  }, null)
+  watchDebounced(userId, () => user.execute(), { immediate: true })
+
   const orgId = computed(() => '' + (route.params.orgId ?? ''))
   const orgProfile = useAsyncState(
     async () => {
@@ -22,12 +33,27 @@ export const useAppState = defineStore('app_state', () => {
   const navBar = ref<boolean>()
   const title = useTitle()
   const loggedIn = isLoggedIn
+
+  const debug = useLocalStorage('aoi-GENSHIN-START!', false, { writeDefaults: false })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const overrides = useLocalStorage('aoi-GENSHIN-OVERRIDES', {} as Record<string, any>, {
+    writeDefaults: false
+  })
+  const withOverride = <T>(key: string, fn: () => T) => computed(() => overrides.value[key] ?? fn())
   return {
     navBar,
     title,
     loggedIn,
     userId,
+    user: computed(() => user),
+    userCapability: withOverride('userCapability', () => user.state.value?.capability ?? '0'),
     orgId,
-    orgProfile: computed(() => orgProfile)
+    orgProfile: computed(() => orgProfile),
+    orgCapability: withOverride(
+      'orgCapability',
+      () => orgProfile.state.value?.membership?.capability ?? '0'
+    ),
+    debug,
+    overrides
   }
 })
