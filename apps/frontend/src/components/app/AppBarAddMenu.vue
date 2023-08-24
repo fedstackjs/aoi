@@ -10,61 +10,9 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
-import { useAppState } from '@/stores/app'
-import { useOrgCapability, useUserCapability } from '@/utils/capability'
+import { useAppAddMenu } from '@/utils/menus'
 
-const { t } = useI18n()
-const appState = useAppState()
-
-const orgAdmin = useOrgCapability('admin')
-const userCreateOrg = useUserCapability('createOrg')
-
-const orgMenu = () => {
-  if (!appState.orgId) return []
-  return [
-    {
-      prependIcon: 'mdi-account-multiple',
-      title: t('new-group'),
-      to: '/group/new',
-      show: orgAdmin.value
-    },
-    {
-      prependIcon: 'mdi-notebook',
-      title: t('new-problem'),
-      to: '/problem/new',
-      show: orgAdmin.value
-    },
-    {
-      prependIcon: 'mdi-trophy',
-      title: t('new-contest'),
-      to: '/contest/new',
-      show: orgAdmin.value
-    },
-    {
-      prependIcon: 'mdi-clipboard-clock',
-      title: t('new-plan'),
-      to: '/plan/new',
-      show: orgAdmin.value
-    }
-  ].map((item) => ({
-    ...item,
-    to: `/org/${appState.orgId}${item.to}`
-  }))
-}
-
-const userMenu = computed(() =>
-  [
-    {
-      prependIcon: 'mdi-account-group',
-      title: t('new-organization'),
-      to: '/org/new',
-      show: userCreateOrg.value
-    },
-    ...orgMenu()
-  ].filter((item) => item.show)
-)
+const userMenu = useAppAddMenu()
 </script>
 
 <i18n global>

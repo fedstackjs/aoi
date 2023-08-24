@@ -120,10 +120,10 @@ async function download(hash: string) {
 }
 
 async function remove(hash: string) {
+  await http.delete(`problem/${props.problem._id}/data/${hash}`)
   const resp = await http.get(`problem/${props.problem._id}/data/${hash}/url/delete`)
   const { url } = await resp.json<{ url: string }>()
   await fetch(url, { method: 'DELETE' })
-  await http.delete(`problem/${props.problem._id}/data/${hash}`)
   versions.execute()
 }
 </script>
