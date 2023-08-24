@@ -11,7 +11,7 @@ export function useAsyncTask(task: () => Promise<unknown>) {
     isLoading.value = true
     try {
       await task()
-      toast.success(t('common.operation-success'))
+      toast.success(t('msg.operation-success'))
     } catch (err) {
       toast.error(`${err}`)
     }

@@ -111,6 +111,7 @@ msg:
   no-problem: No Problem
   no-ranklist: No Ranklist
   no-contest: No Contest
+  operation-success: Operation Success
 
 tabs:
   description: Description

@@ -2,25 +2,35 @@
   <VContainer>
     <VRow>
       <VCol>
-        <VCard :title="t('pages.home')">
-          <VCardText>
-            <MonacoEditor language="json" :model-value="JSON.stringify(route, null, 2)" />
-          </VCardText>
+        <VCard>
+          <OrgInfoCard :org-id="props.orgId" />
         </VCard>
+      </VCol>
+    </VRow>
+    <VRow>
+      <VCol>
+        <RecentContestsCard :org-id="props.orgId" />
+      </VCol>
+      <VCol>
+        <RecentPlansCard :org-id="props.orgId" />
       </VCol>
     </VRow>
   </VContainer>
 </template>
 
 <script setup lang="ts">
-import MonacoEditor from '@/components/utils/MonacoEditor.vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
+import { withTitle } from '@/utils/title'
+import { computed } from 'vue'
+import OrgInfoCard from '@/components/homepage/OrgInfoCard.vue'
+import RecentContestsCard from '@/components/homepage/RecentContestsCard.vue'
+import RecentPlansCard from '@/components/homepage/RecentPlansCard.vue'
 
-defineProps<{
+const props = defineProps<{
   orgId: string
 }>()
 
-const route = useRoute()
 const { t } = useI18n()
+
+withTitle(computed(() => t('pages.home')))
 </script>

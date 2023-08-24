@@ -68,6 +68,22 @@ export const orgAdminRoutes = defineRoutes(async (s) => {
     }
   )
 
+  s.get(
+    '/profile',
+    {
+      schema: {
+        response: {
+          200: SOrgProfile
+        }
+      }
+    },
+    async (req) => {
+      const org = await orgs.findOne({ _id: req._orgId }, { projection: { profile: 1 } })
+      if (!org) throw s.httpErrors.badRequest()
+      return org.profile
+    }
+  )
+
   s.patch(
     '/profile',
     {

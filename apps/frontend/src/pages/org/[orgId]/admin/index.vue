@@ -1,18 +1,16 @@
 <template>
   <VCard variant="flat">
-    <VCardText>
-      <VTextField :label="t('term.name')" />
-      <VTextField :label="t('term.email')" type="email" />
-    </VCardText>
-    <VCardActions>
-      <VBtn color="primary">{{ t('action.save') }}</VBtn>
-      <VBtn color="error">{{ t('action.reset') }}</VBtn>
-    </VCardActions>
+    <SettingsEditor :endpoint="`org/${props.orgId}/admin/profile`">
+      <template v-slot="scoped">
+        <AdminSettingsInput v-model="scoped.value" />
+      </template>
+    </SettingsEditor>
   </VCard>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
+import AdminSettingsInput from '@/components/admin/AdminSettingsInput.vue'
+import SettingsEditor from '@/components/utils/SettingsEditor.vue'
 
-const { t } = useI18n()
+const props = defineProps<{ orgId: string }>()
 </script>

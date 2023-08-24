@@ -111,6 +111,7 @@ msg:
   no-problem: 还未添加问题
   no-ranklist: 还未创建排行榜
   no-contest: 还未添加比赛
+  operation-success: 操作成功
 
 tabs:
   description: 描述
