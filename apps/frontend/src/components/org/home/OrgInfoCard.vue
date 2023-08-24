@@ -22,8 +22,8 @@
 
 <script setup lang="ts">
 import { useAsyncState } from '@vueuse/core'
-import AppGravatar from '../app/AppGravatar.vue'
-import AsyncState from '../utils/AsyncState.vue'
+import AppGravatar from '@/components/app/AppGravatar.vue'
+import AsyncState from '@/components/utils/AsyncState.vue'
 import { http } from '@/utils/http'
 
 const props = defineProps<{ orgId: string }>()

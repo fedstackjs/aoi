@@ -22,9 +22,9 @@
 import { useI18n } from 'vue-i18n'
 import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
-import OrgInfoCard from '@/components/homepage/OrgInfoCard.vue'
-import RecentContestsCard from '@/components/homepage/RecentContestsCard.vue'
-import RecentPlansCard from '@/components/homepage/RecentPlansCard.vue'
+import OrgInfoCard from '@/components/org/home/OrgInfoCard.vue'
+import RecentContestsCard from '@/components/org/home/RecentContestsCard.vue'
+import RecentPlansCard from '@/components/org/home/RecentPlansCard.vue'
 
 const props = defineProps<{
   orgId: string
