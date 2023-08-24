@@ -1,32 +1,43 @@
 <template>
   <VCard variant="flat">
-    <VCardTitle>{{ file.name }}</VCardTitle>
-    <AsyncState :state="content">
-      <template v-slot="{ value }">
-        <MonacoEditor readonly v-model="value.text" :language="value.language" />
-      </template>
-    </AsyncState>
+    <VCardTitle class="d-flex align-center justify-space-between">
+      <div>{{ file.name }}</div>
+      <VAutocomplete
+        v-model="language"
+        class="u-max-w-48"
+        density="compact"
+        :items="languages"
+        label="Language"
+        dense
+        outlined
+        hide-details
+      />
+    </VCardTitle>
+    <VProgressLinear v-if="loading" indeterminate color="primary" />
+    <MonacoEditor readonly :model-value="content.state.value ?? ''" :language="language" />
   </VCard>
 </template>
 
 <script setup lang="ts">
-import { useAsyncState } from '@vueuse/core'
+import { debouncedRef, useAsyncState } from '@vueuse/core'
 import type JSZip from 'jszip'
 import { watch } from 'vue'
 import MonacoEditor from '../MonacoEditor.vue'
-import AsyncState from '../AsyncState.vue'
+import { ref } from 'vue'
+import { getSupportedLanguages } from '@/utils/monaco'
 
 const props = defineProps<{
   file: JSZip.JSZipObject
 }>()
 
+const language = ref('plaintext')
+const languages = getSupportedLanguages()
+
 const content = useAsyncState(async () => {
   const text = await props.file.async('string')
-  return {
-    text,
-    language: 'plaintext'
-  }
+  return text
 }, null as never)
+const loading = debouncedRef(content.isLoading)
 
 watch(
   () => props.file,
