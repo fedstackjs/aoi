@@ -36,6 +36,7 @@
     "@vue/eslint-config-typescript": "^11.0.0",
     "@vue/tsconfig": "^0.4.0",
     "@vueuse/core": "^10.2.1",
+    "@vueuse/router": "^10.3.0",
     "@wooorm/starry-night": "^2.1.1",
     "blueimp-md5": "^2.19.0",
     "dompurify": "^3.0.5",

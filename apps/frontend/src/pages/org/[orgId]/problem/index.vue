@@ -7,9 +7,10 @@
             :headers="headers"
             :items-length="problems.state.value.total"
             :items="problems.state.value.items"
-            :items-per-page="15"
             :items-per-page-options="[{ title: '15', value: 15 }]"
             :loading="problems.isLoading.value"
+            v-model:page="page"
+            v-model:items-per-page="itemsPerPage"
             item-value="_id"
             @update:options="({ page, itemsPerPage }) => problems.execute(0, page, itemsPerPage)"
           >
@@ -22,9 +23,11 @@
               </RouterLink>
             </template>
             <template v-slot:[`item.tags`]="{ item }">
-              <VChip v-for="tag in item.raw.tags" :key="tag" class="mx-1">
-                {{ tag }}
-              </VChip>
+              <VChipGroup>
+                <VChip v-for="tag in item.raw.tags" :key="tag">
+                  {{ tag }}
+                </VChip>
+              </VChipGroup>
             </template>
             <template v-slot:[`item._id`]="{ item }">
               <code>{{ item.raw._id }}</code>
@@ -40,9 +43,8 @@
 import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
-import { useAsyncState } from '@vueuse/core'
 import { VDataTableServer } from 'vuetify/labs/components'
+import { usePagination } from '@/utils/pagination'
 
 const props = defineProps<{
   orgId: string
@@ -53,29 +55,18 @@ const { t } = useI18n()
 withTitle(computed(() => t('pages.problems')))
 
 const headers = [
-  { title: t('term.slug'), key: 'slug', align: 'start' },
-  { title: t('term.name'), key: 'title' },
+  { title: t('term.slug'), key: 'slug', align: 'start', sortable: false },
+  { title: t('term.name'), key: 'title', sortable: false },
   { title: t('term.tags'), key: 'tags', sortable: false },
-  { title: '#', key: '_id' }
+  { title: '#', key: '_id', sortable: false }
 ] as const
 
-const problems = useAsyncState(
-  async (page = 1, itemsPerPage = 15) => {
-    const resp = await http.get(`problem`, {
-      searchParams: {
-        orgId: props.orgId,
-        page: page,
-        perPage: itemsPerPage,
-        count: true
-      }
-    })
-
-    return resp.json<{
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      items: any[]
-      total: number
-    }>()
-  },
-  { items: [], total: 0 }
+const {
+  page,
+  itemsPerPage,
+  result: problems
+} = usePagination(
+  `problem`,
+  computed(() => ({ orgId: props.orgId }))
 )
 </script>
