@@ -1,5 +1,5 @@
 <template>
-  <VCard class="mt-6 mx-auto pa-4" max-width="450" :title="t('signin')">
+  <VCard class="mt-6 mx-auto pa-4" max-width="450" :title="t('pages.signin')">
     <VCardTitle class=""></VCardTitle>
     <VForm fast-fail @submit.prevent>
       <VTextField
@@ -22,12 +22,12 @@
       </VTextField>
 
       <VBtn type="submit" @click="signin()" color="primary" block size="large" class="mt-4">
-        {{ t('signin') }}
+        {{ t('pages.signin') }}
       </VBtn>
 
       <VCardText class="d-flex justify-center">
-        <VBtn variant="text" to="/forgot"> {{ t('forgot-passwd') }} </VBtn>
-        <VBtn variant="text" to="/signup"> {{ t('signup') }} </VBtn>
+        <VBtn variant="text" to="/forgot"> {{ t('pages.forgot-passwd') }} </VBtn>
+        <VBtn variant="text" to="/signup"> {{ t('pages.signup') }} </VBtn>
       </VCardText>
     </VForm>
   </VCard>
@@ -66,7 +66,7 @@ const passwordRules = [
 
 const showPassword = ref<boolean>(false)
 
-withTitle(computed(() => t('signin')))
+withTitle(computed(() => t('pages.signin')))
 
 async function signin() {
   if (!usernameRules.every((rule) => rule(username.value) === true)) return

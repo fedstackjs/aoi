@@ -2,7 +2,7 @@
   <VContainer>
     <VRow>
       <VCol>
-        <VCard :title="t('problems')">
+        <VCard :title="t('pages.problems')">
           <VDataTableServer
             :headers="headers"
             :items-length="problems.state.value.total"
@@ -50,11 +50,11 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-withTitle(computed(() => t('problems')))
+withTitle(computed(() => t('pages.problems')))
 
 const headers = [
   { title: t('term.slug'), key: 'slug', align: 'start' },
-  { title: t('term.problem-name'), key: 'title' },
+  { title: t('term.name'), key: 'title' },
   { title: t('term.tags'), key: 'tags', sortable: false },
   { title: '#', key: '_id' }
 ] as const

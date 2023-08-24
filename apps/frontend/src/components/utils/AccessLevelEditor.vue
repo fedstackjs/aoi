@@ -1,16 +1,16 @@
 <template>
   <VCardSubtitle>
-    {{ t('term.access-level') }}
+    {{ t('auth.access-level') }}
   </VCardSubtitle>
   <VCardText class="d-flex justify-center">
     <AccessLevelInput v-model="value" />
   </VCardText>
   <VCardActions>
     <VBtn color="red" @click="reset">
-      {{ t('reset') }}
+      {{ t('action.reset') }}
     </VBtn>
     <VBtn color="primary" @click="save">
-      {{ t('save') }}
+      {{ t('action.save') }}
     </VBtn>
   </VCardActions>
 </template>

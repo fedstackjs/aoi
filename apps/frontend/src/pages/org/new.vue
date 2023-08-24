@@ -4,11 +4,11 @@
       <VCol>
         <VCard :title="t('new-organization')">
           <VCardText>
-            <VTextField v-model="profile.name" :label="t('name')" />
-            <VTextField v-model="profile.email" :label="t('email')" />
+            <VTextField v-model="profile.name" :label="t('term.name')" />
+            <VTextField v-model="profile.email" :label="t('term.email')" />
           </VCardText>
           <VCardActions>
-            <VBtn color="primary" variant="elevated" @click="create">{{ t('create') }}</VBtn>
+            <VBtn color="primary" variant="elevated" @click="create">{{ t('action.create') }}</VBtn>
           </VCardActions>
         </VCard>
       </VCol>

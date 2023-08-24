@@ -17,5 +17,5 @@ defineProps<{
 
 const { t } = useI18n()
 
-withTitle(computed(() => t('plans')))
+withTitle(computed(() => t('pages.plans')))
 </script>

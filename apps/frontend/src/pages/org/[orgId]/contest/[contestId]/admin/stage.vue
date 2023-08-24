@@ -26,8 +26,8 @@
               </div>
             </VExpansionPanelTitle>
             <VExpansionPanelText>
-              <VTextField label="name" v-model="item.name" />
-              <DateTimeInput label="start" v-model="item.start" :disabled="!i" />
+              <VTextField :label="t('term.name')" v-model="item.name" />
+              <DateTimeInput :label="t('term.start-time')" v-model="item.start" :disabled="!i" />
               <ContestStageSettings v-model="item.settings" />
             </VExpansionPanelText>
           </VExpansionPanel>

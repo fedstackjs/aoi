@@ -1,7 +1,7 @@
 <template>
   <VCard flat>
     <VCardSubtitle>
-      {{ t('schedule') }}
+      {{ t('term.schedule') }}
     </VCardSubtitle>
     <SettingsEditor :endpoint="`contest/${contestId}/ranklist/${props.ranklistKey}/settings`">
       <template v-slot="scoped">
@@ -9,7 +9,7 @@
       </template>
     </SettingsEditor>
     <VCardSubtitle>
-      {{ t('danger-zone') }}
+      {{ t('term.danger-zone') }}
     </VCardSubtitle>
     <VCardActions>
       <VBtn color="error" variant="elevated" @click="deleteRanklist()">

@@ -1,7 +1,7 @@
 <template>
   <VCard variant="flat">
     <VCardText v-if="!ranklists.length">
-      <VAlert type="info">{{ t('no-ranklist') }}</VAlert>
+      <VAlert type="info">{{ t('msg.no-ranklist') }}</VAlert>
     </VCardText>
   </VCard>
 </template>

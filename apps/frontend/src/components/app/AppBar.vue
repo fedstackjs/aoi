@@ -21,7 +21,7 @@
     </VToolbarItems>
     <VToolbarItems v-else>
       <VBtn color="blue-darken-1" to="/signin">
-        {{ t('signin') }}
+        {{ t('pages.signin') }}
       </VBtn>
     </VToolbarItems>
   </VAppBar>

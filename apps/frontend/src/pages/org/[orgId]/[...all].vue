@@ -3,7 +3,7 @@
     <VRow justify="center">
       <VCol>
         <VAlert type="error" :value="true">
-          {{ t('notFound') }}
+          {{ t('msg.not-found') }}
         </VAlert>
       </VCol>
     </VRow>

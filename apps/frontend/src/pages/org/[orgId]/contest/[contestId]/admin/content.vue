@@ -1,25 +1,25 @@
 <template>
-  <VCard flat :title="t('problem-content')">
+  <VCard flat :title="t('term.content')">
     <VCardText>
-      <VTextField v-model="model.title" label="Title" />
-      <VTextField v-model="model.slug" label="slug" />
+      <VTextField v-model="model.title" :label="t('term.title')" />
+      <VTextField v-model="model.slug" :label="t('term.slug')" />
       <MarkdownEditor v-model="model.description">
         <template #title>
           <VCardSubtitle>
-            Content
+            {{ t('term.content') }}
             <VIcon>mdi-language-markdown-outline</VIcon>
           </VCardSubtitle>
         </template>
       </MarkdownEditor>
-      <VCombobox v-model="model.tags" label="Tags" multiple chips />
+      <VCombobox v-model="model.tags" :label="t('term.tags')" multiple chips />
     </VCardText>
     <VDivider />
     <VCardActions>
       <VBtn color="error" variant="elevated" @click="reset">
-        {{ t('reset') }}
+        {{ t('action.reset') }}
       </VBtn>
       <VBtn color="primary" variant="elevated" @click="save">
-        {{ t('save') }}
+        {{ t('action.save') }}
       </VBtn>
     </VCardActions>
   </VCard>

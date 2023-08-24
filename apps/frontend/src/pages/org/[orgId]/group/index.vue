@@ -2,7 +2,7 @@
   <VContainer>
     <VRow>
       <VCol>
-        <VCard :title="t('groups')">
+        <VCard :title="t('pages.groups')">
           <VDataTableServer
             :headers="headers"
             :items-length="groups.state.value.total"
@@ -46,10 +46,10 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-withTitle(computed(() => t('groups')))
+withTitle(computed(() => t('pages.groups')))
 
 const headers = [
-  { title: 'Name', key: 'name', align: 'start', sortable: false },
+  { title: t('term.name'), key: 'name', align: 'start', sortable: false },
   { title: 'ID', key: '_id' }
 ] as const
 

@@ -1,35 +1,19 @@
 app-name: AOI
-home: Home
-about: About
-problems: Problems
-contests: Contests
-submissions: Submissions
-users: Users
-groups: Groups
-discussion: Discussion
-signin: Sign in
-signup: Sign up
-logout: Log out
-danger-zone: Danger Zone
-delete: Delete
-save: Save
-reset: Reset
-description: Description
-attachments: Attachments
-management: Management
-forgot-passwd: Forgot Password
-admin: Admin
-plans: Plans
-ranklist: Ranklist
 
-common:
-  from: From
-  to: To
-  lasts: Lasts
-  settings: Settings
-  content: Content
-  access: Access
-  operation-success: Operation success
+pages:
+  home: Home
+  about: About
+  problems: Problems
+  contests: Contests
+  groups: Group
+  signin: Sign in
+  signup: Sign up
+  admin: Admin
+  plans: Plans
+  user-info: User Info
+  user-settings: User Settings
+  forgot-passwd: Forgot Password
+  logout: Log out
 
 action:
   reload: Reload
@@ -43,54 +27,98 @@ action:
   upload: Upload
   rejudge: Rejudge
   download: Download
+  update: Update
+  register: Register
+  refresh: Refresh
+  copy: Copy
+  add: Add
 
 term:
-  contest: Contest
-  contest-stage: Contest Stage
-  association: Association
-  problem-name: Problem Name
-  problem-content: Problem Content
-  contest-name: Contest Name
   content: Content
   title: Title
   slug: Slug
   tags: Tags
+  state: State
   status: Status
   score: Score
   key: Key
+  id: ID
   name: Name
   description: Description
   hash: Hash
+  current-hash: Current Hash
+  message: Message
   config: Config
   username: Username
   password: Password
   email: Email
   realname: Real Name
-  access-level: Access level
+  actions: Actions
+  settings: Settings
+  access: Access
+  members: Members
+  runners: Runners
   profile: Profile
   capabilities: Capabilities
-  actions: Actions
+  labels: Labels
+  danger-zone: Danger Zone
   principle-id: Principle ID
-  settings: Settings
-  members: Members
-  user-id: User ID
-  id: ID
-  state: State
-  current-hash: Current Hash
-  message: Message
-  submitted-at: Submitted at
+  association: Association
+  start-time: Start Time
+  end-time: End Time
+  filename: Filename
+  overview: Overview
+  participant: Participant
+  rank: Rank
+  schedule: Schedule
   jobs: Jobs
   summary: Summary
   tests: Tests
-  participant: Participant
-  rank: Rank
+  contest-stage: Contest Stage
+  user-id: User ID
+  preconditions: Preconditions
+  contest: Contest
+  contest-id: Contest ID
+  problem: Problem
+  problem-id: Problem ID
+
+common:
+  created-at: Created at
+  accessed-at: Accessed at
+  submitted-at: Submitted at
+  show-before: Show before
+  show-after: Show after
+  from: from
+  to: to
+  lasts: lasts
+
+auth:
+  access-level: Access Level
+  public: Public
+  restricted: Restricted
+  private: Private
 
 cap:
-  access: 访问权限
-  problem: 题目控制
-  contest: 比赛控制
-  admin: 管理权限
+  access: Access
+  problem: Problem
+  contest: Contest
+  admin: Admin
+  plan: Plan
 
-metrics:
-  time: 运行时间
-  mem: 运行内存
+msg:
+  not-found: Not Found
+  no-problem: No Problem
+  no-ranklist: No Ranklist
+  no-contest: No Contest
+
+tabs:
+  description: Description
+  contests: Contests
+  management: Management
+  problems: Problems
+  submit: Submit
+  attachments: Attachments
+  data: Data
+  solutions: Solution
+  ranklist: Ranklist
+  problem-description: Description

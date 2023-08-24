@@ -19,7 +19,7 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-withTitle(computed(() => t('about')))
+withTitle(computed(() => t('pages.about')))
 </script>
 
 <i18n>

@@ -4,18 +4,22 @@
       <VCol>
         <VCard :title="t('new-contest')">
           <VCardText>
-            <VTextField v-model="payload.title" :label="t('title')" />
-            <VTextField v-model="payload.slug" :label="t('slug')" />
-            <VRadioGroup inline v-model="payload.accessLevel" :label="t('term.access-level')">
-              <VRadio :value="0" label="PUBLIC"></VRadio>
-              <VRadio :value="1" label="RESTRICTED"></VRadio>
-              <VRadio :value="2" label="PRIVATE"></VRadio>
+            <VTextField v-model="payload.title" :label="t('term.title')" />
+            <VTextField v-model="payload.slug" :label="t('term.slug')" />
+            <VRadioGroup inline v-model="payload.accessLevel" :label="t('auth.access-level')">
+              <VRadio :value="0" :label="t('auth.public')"></VRadio>
+              <VRadio :value="1" :label="t('auth.restricted')"></VRadio>
+              <VRadio :value="2" :label="t('auth.private')"></VRadio>
             </VRadioGroup>
-            <VTextField v-model="payload.start" :label="t('start')" type="datetime-local" />
-            <VTextField v-model="payload.end" :label="t('end')" type="datetime-local" />
+            <VTextField
+              v-model="payload.start"
+              :label="t('term.start-time')"
+              type="datetime-local"
+            />
+            <VTextField v-model="payload.end" :label="t('term.end-time')" type="datetime-local" />
           </VCardText>
           <VCardActions>
-            <VBtn color="primary" variant="elevated" @click="create">{{ t('create') }}</VBtn>
+            <VBtn color="primary" variant="elevated" @click="create">{{ t('action.create') }}</VBtn>
           </VCardActions>
         </VCard>
       </VCol>

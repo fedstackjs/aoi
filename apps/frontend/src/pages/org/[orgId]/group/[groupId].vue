@@ -11,15 +11,15 @@
               <VTabs color="primary">
                 <VTab value="profile" :to="rel('')" exact>
                   <VIcon start> mdi-account-box </VIcon>
-                  {{ t('profile') }}
+                  {{ t('term.profile') }}
                 </VTab>
                 <VTab value="members" :to="rel('member')" exact>
                   <VIcon start> mdi-account </VIcon>
-                  {{ t('members') }}
+                  {{ t('term.members') }}
                 </VTab>
                 <VTab value="settings" :to="rel('settings')">
                   <VIcon start> mdi-cog </VIcon>
-                  {{ t('settings') }}
+                  {{ t('term.settings') }}
                 </VTab>
               </VTabs>
               <VDivider />
@@ -48,7 +48,7 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-withTitle(computed(() => t('groups')))
+withTitle(computed(() => t('pages.groups')))
 
 const group = useAsyncState(async () => {
   const resp = await http.get(`group/${props.groupId}`)

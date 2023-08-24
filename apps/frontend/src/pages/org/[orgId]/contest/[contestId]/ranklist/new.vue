@@ -1,12 +1,12 @@
 <template>
   <VCard variant="flat" :title="t('add-ranklist')">
     <VCardText>
-      <VTextField label="Key" v-model="payload.key" />
-      <VTextField label="Name" v-model="payload.name" />
+      <VTextField :label="t('term.key')" v-model="payload.key" />
+      <VTextField :label="t('term.name')" v-model="payload.name" />
     </VCardText>
     <VCardActions>
       <VBtn color="primary" variant="elevated" @click="addRanklist()">
-        {{ t('add') }}
+        {{ t('action.add') }}
       </VBtn>
     </VCardActions>
   </VCard>
@@ -52,3 +52,9 @@ async function addRanklist() {
   }
 }
 </script>
+<i18n>
+en:
+  add-ranklist: Add ranklist
+zhHans:
+  add-ranklist: 创建排行榜
+</i18n>

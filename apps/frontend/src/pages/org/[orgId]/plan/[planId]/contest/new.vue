@@ -1,19 +1,19 @@
 <template>
   <VCard variant="flat" :title="t('add-contest')">
     <VCardText>
-      <VTextField label="contestId" v-model="payload.contestId" />
-      <PlanContestSettings v-model="payload.settings" />
+      <VTextField :label="t('term.contest-id')" v-model="payload.contestId" />
+      <PlanContestSettingsInput v-model="payload.settings" :contests="props.contests" />
     </VCardText>
     <VCardActions>
       <VBtn color="primary" variant="elevated" @click="addContest()">
-        {{ t('add') }}
+        {{ t('action.add') }}
       </VBtn>
     </VCardActions>
   </VCard>
 </template>
 
 <script setup lang="ts">
-import PlanContestSettings from '@/components/plan/PlanContestSettings.vue'
+import PlanContestSettingsInput from '@/components/plan/PlanContestSettingsInput.vue'
 import type { IPlanDTO, IPlanContestDTO } from '@/components/plan/types'
 import { http } from '@/utils/http'
 import { reactive } from 'vue'
@@ -53,3 +53,9 @@ async function addContest() {
   }
 }
 </script>
+<i18n>
+en:
+  add-contest: Add contest
+zhHans:
+  add-contest: 添加比赛
+</i18n>

@@ -29,22 +29,22 @@
 
               <VTabs>
                 <VTab prepend-icon="mdi-book-outline" :to="rel('')">
-                  {{ t('description') }}
+                  {{ t('tabs.description') }}
                 </VTab>
                 <VTab prepend-icon="mdi-attachment" :to="rel('attachment')">
-                  {{ t('attachments') }}
+                  {{ t('tabs.attachments') }}
                 </VTab>
                 <VTab prepend-icon="mdi-list-box" :to="rel('problem')">
-                  {{ t('problems') }}
+                  {{ t('tabs.problems') }}
                 </VTab>
                 <VTab prepend-icon="mdi-timer-sand" :to="rel('solution')">
-                  {{ t('contest-solutions') }}
+                  {{ t('tabs.solutions') }}
                 </VTab>
                 <VTab prepend-icon="mdi-chevron-triple-up" :to="rel('ranklist')">
-                  {{ t('ranklist') }}
+                  {{ t('tabs.ranklist') }}
                 </VTab>
                 <VTab prepend-icon="mdi-cog-outline" :to="rel('admin')">
-                  {{ t('management') }}
+                  {{ t('tabs.management') }}
                 </VTab>
               </VTabs>
               <RouterView :contest="value" @updated="contest.execute()" />
@@ -74,7 +74,7 @@ const props = defineProps<{
   contestId: string
 }>()
 
-withTitle(computed(() => t('contests')))
+withTitle(computed(() => t('pages.contests')))
 
 const contest = useAsyncState(async () => {
   const contestId = props.contestId
@@ -91,22 +91,3 @@ const participant = useAsyncState(async () => {
 
 const rel = (to: string) => `/org/${props.orgId}/contest/${props.contestId}/${to}`
 </script>
-
-<i18n global>
-en:
-  problem-description: Description
-  problem-submit: Submit
-  problem-attachments: Attachments
-  problem-data: Data
-  problem-management: Management
-  submissions: Submissions
-  status: Status
-zhHans:
-  problem-description: 题面
-  problem-submit: 提交
-  problem-attachments: 附件
-  problem-data: 数据
-  problem-management: 管理
-  submissions: 提交记录
-  status: 状态
-</i18n>

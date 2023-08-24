@@ -2,7 +2,7 @@
   <VContainer>
     <VRow>
       <VCol>
-        <VCard :title="t('home')">
+        <VCard :title="t('pages.home')">
           <VCardText>
             <p>欢迎来到AOI平台，请选择想进入的组织</p>
           </VCardText>
@@ -19,5 +19,5 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-withTitle(computed(() => t('home')))
+withTitle(computed(() => t('pages.home')))
 </script>

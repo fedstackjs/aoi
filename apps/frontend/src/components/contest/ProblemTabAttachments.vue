@@ -3,9 +3,9 @@
     <VTable>
       <thead>
         <tr>
-          <th>{{ t('filename') }}</th>
-          <th>{{ t('description') }}</th>
-          <th>{{ t('actions') }}</th>
+          <th>{{ t('term.filename') }}</th>
+          <th>{{ t('term.description') }}</th>
+          <th>{{ t('term.actions') }}</th>
         </tr>
       </thead>
       <tbody>

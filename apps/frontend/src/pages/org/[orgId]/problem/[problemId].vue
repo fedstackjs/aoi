@@ -24,22 +24,22 @@
 
               <VTabs>
                 <VTab prepend-icon="mdi-book-outline" :to="rel('')">
-                  {{ t('problem-description') }}
+                  {{ t('tabs.problem-description') }}
                 </VTab>
                 <VTab prepend-icon="mdi-upload-outline" :to="rel('submit')" v-if="value.config">
-                  {{ t('problem-submit') }}
+                  {{ t('tabs.submit') }}
                 </VTab>
                 <VTab prepend-icon="mdi-timer-sand" :to="rel('solution')">
-                  {{ t('problem-solutions') }}
+                  {{ t('tabs.solutions') }}
                 </VTab>
                 <VTab prepend-icon="mdi-attachment" :to="rel('attachment')">
-                  {{ t('problem-attachments') }}
+                  {{ t('tabs.attachments') }}
                 </VTab>
                 <VTab prepend-icon="mdi-database-outline" :to="rel('data')">
-                  {{ t('problem-data') }}
+                  {{ t('tabs.data') }}
                 </VTab>
                 <VTab prepend-icon="mdi-cog-outline" :to="rel('admin')">
-                  {{ t('problem-management') }}
+                  {{ t('tabs.management') }}
                 </VTab>
               </VTabs>
               <RouterView :problem="value" @updated="problem.execute()" />
@@ -68,7 +68,7 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-withTitle(computed(() => t('problems')))
+withTitle(computed(() => t('pages.problems')))
 
 const problem = useAsyncState(async () => {
   const problemId = props.problemId

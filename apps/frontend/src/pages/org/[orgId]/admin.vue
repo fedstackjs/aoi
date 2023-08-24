@@ -2,7 +2,7 @@
   <VContainer>
     <VRow>
       <VCol>
-        <VCard :title="t('admin')">
+        <VCard :title="t('pages.admin')">
           <VDivider />
           <div class="d-flex flex-row">
             <VTabs direction="vertical" color="primary">

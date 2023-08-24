@@ -67,6 +67,6 @@ en:
   enable-oss: Enable OSS
 zhHans:
   oss-settings: OSS 设置
-  warn-oss-disabled: OSS 被禁用了
+  warn-oss-disabled: OSS 未启用
   enable-oss: 启用 OSS
 </i18n>

@@ -2,7 +2,7 @@
   <VContainer>
     <VRow>
       <VCol>
-        <VCard :title="t('plans')">
+        <VCard :title="t('pages.plans')">
           <VDataTableServer
             :headers="headers"
             :items-length="plans.state.value.total"
@@ -42,11 +42,11 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-withTitle(computed(() => t('plans')))
+withTitle(computed(() => t('pages.plans')))
 
 const headers = [
-  { title: 'Name', key: 'name', align: 'start', sortable: false },
-  { title: 'ID', key: '_id' }
+  { title: t('term.name'), key: 'name', align: 'start', sortable: false },
+  { title: t('term.id'), key: '_id' }
 ] as const
 
 const plans = useAsyncState(

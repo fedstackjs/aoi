@@ -4,15 +4,15 @@
       <VTabs v-model="currentTab" direction="vertical" color="primary">
         <VTab :to="rel('')" exact>
           <VIcon start> mdi-cog </VIcon>
-          {{ t('settings') }}
+          {{ t('term.settings') }}
         </VTab>
         <VTab :to="rel('content')">
           <VIcon start>mdi-text</VIcon>
-          {{ t('content') }}
+          {{ t('term.content') }}
         </VTab>
         <VTab :to="rel('access')">
           <VIcon start> mdi-lock </VIcon>
-          {{ t('access') }}
+          {{ t('term.access') }}
         </VTab>
       </VTabs>
       <VDivider vertical />
@@ -41,14 +41,3 @@ const { t } = useI18n()
 const currentTab = ref('settings')
 const rel = (to: string) => `/org/${props.orgId}/problem/${props.problemId}/admin/${to}`
 </script>
-
-<i18n>
-zhHans:
-  settings: 设置
-  content: 内容
-  access: 访问
-en:
-  settings: Settings
-  content: Content
-  access: Access
-</i18n>

@@ -14,7 +14,6 @@
           <VWindowItem value="show">
             <component :is="JsonViewer<Ranklist>" :endpoint="endpoint">
               <template v-slot="{ value }">
-                <!-- {{ value }} -->
                 <VCard flat>
                   <!-- Topstar -->
                   <!-- TODO -->
@@ -85,3 +84,8 @@ const currentTab = ref()
 
 const endpoint = `contest/${props.contestId}/ranklist/${props.ranklistKey}/url`
 </script>
+<i18n>
+en:
+  ranklist-settings: 设置
+  ranklist-show: 排行榜
+</i18n>

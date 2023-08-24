@@ -1,7 +1,7 @@
 <template>
   <VCard variant="flat">
     <VCardText v-if="!contests.length">
-      <VAlert type="info">{{ t('no-contest') }}</VAlert>
+      <VAlert type="info">{{ t('msg.no-contest') }}</VAlert>
     </VCardText>
     <template v-else>
       <VCardTitle>Contests of this Plan</VCardTitle>

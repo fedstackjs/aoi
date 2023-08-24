@@ -19,3 +19,16 @@ import { useI18n } from 'vue-i18n'
 const model = defineModel<IProblemSettings>({ required: true })
 const { t } = useI18n()
 </script>
+
+<i18n>
+en:
+  problem:
+    settings:
+      allow-public-submit: Allow public submit
+      max-solution-count: Max solution count
+zhHans:
+  problem:
+    settings:
+      allow-public-submit: 允许公开提交
+      max-solution-count: 最大提交记录数量
+</i18n>

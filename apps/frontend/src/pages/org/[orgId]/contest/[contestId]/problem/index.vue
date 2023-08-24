@@ -1,7 +1,7 @@
 <template>
   <VCard variant="flat">
     <VCardText v-if="!problems.length">
-      <VAlert type="info">{{ t('no-problem') }}</VAlert>
+      <VAlert type="info">{{ t('msg.no-problem') }}</VAlert>
     </VCardText>
   </VCard>
 </template>

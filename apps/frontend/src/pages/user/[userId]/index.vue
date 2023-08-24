@@ -24,7 +24,7 @@ const props = defineProps<{
   userId: string
 }>()
 
-withTitle(computed(() => t('user-info')))
+withTitle(computed(() => t('pages.user-info')))
 
 const profile = useAsyncState(async () => {
   const resp = await http.get(`user/${props.userId}/profile`)

@@ -1,5 +1,5 @@
 <template>
-  <VCard flat :title="t('problem-settings')">
+  <VCard flat :title="t('term.settings')">
     <VDivider />
     <SettingsEditor :endpoint="`problem/${problemId}/admin/settings`">
       <template v-slot="scoped">
@@ -14,11 +14,11 @@
     />
     <VDivider />
     <VCardSubtitle>
-      {{ t('danger-zone') }}
+      {{ t('term.danger-zone') }}
     </VCardSubtitle>
     <VCardText>
       <VBtn color="red" variant="elevated">
-        {{ t('delete') }}
+        {{ t('action.delete') }}
       </VBtn>
     </VCardText>
   </VCard>
@@ -43,10 +43,3 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 </script>
-
-<i18n>
-zhHans:
-  problem-settings: 设置
-en:
-  problem-settings: Settings
-</i18n>

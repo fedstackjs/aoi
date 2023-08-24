@@ -86,8 +86,8 @@ const copyTask = useAsyncTask(async () => {
 const headers = [
   { title: t('ID'), key: '_id' },
   { title: t('term.name'), key: 'name' },
-  { title: t('common.createdAt'), key: 'createdAt' },
-  { title: t('common.accessedAt'), key: 'accessedAt' },
+  { title: t('common.created-at'), key: 'createdAt' },
+  { title: t('common.accessed-at'), key: 'accessedAt' },
   { title: t('term.labels'), key: '_labels' },
   { title: t('term.actions'), key: '_actions' }
 ] as const

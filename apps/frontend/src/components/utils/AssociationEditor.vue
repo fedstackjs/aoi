@@ -39,8 +39,8 @@
           <CapabilityInput v-model="dialogCapability" :bits="bits" />
         </VCardText>
         <VCardActions>
-          <VBtn color="primary" @click="updatePrincipal">{{ t('update') }}</VBtn>
-          <VBtn color="error" @click="dialog = false">{{ t('cancel') }}</VBtn>
+          <VBtn color="primary" @click="updatePrincipal">{{ t('action.update') }}</VBtn>
+          <VBtn color="error" @click="dialog = false">{{ t('action.cancel') }}</VBtn>
         </VCardActions>
       </VCard>
     </VDialog>

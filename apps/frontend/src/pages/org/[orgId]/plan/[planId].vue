@@ -24,13 +24,13 @@
 
               <VTabs>
                 <VTab prepend-icon="mdi-book-outline" :to="rel('')">
-                  {{ t('description') }}
+                  {{ t('tabs.description') }}
                 </VTab>
                 <VTab prepend-icon="mdi-attachment" :to="rel('contest')">
-                  {{ t('contests') }}
+                  {{ t('tabs.contests') }}
                 </VTab>
                 <VTab prepend-icon="mdi-cog-outline" :to="rel('admin')">
-                  {{ t('management') }}
+                  {{ t('tabs.management') }}
                 </VTab>
               </VTabs>
               <RouterView :plan="value" @updated="plan.execute()" />
@@ -59,7 +59,7 @@ const props = defineProps<{
   planId: string
 }>()
 
-withTitle(computed(() => t('plans')))
+withTitle(computed(() => t('pages.plans')))
 
 const plan = useAsyncState(async () => {
   const planId = props.planId

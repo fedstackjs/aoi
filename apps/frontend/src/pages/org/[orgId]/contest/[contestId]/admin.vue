@@ -2,16 +2,16 @@
   <div class="d-flex flex-row">
     <VTabs direction="vertical" color="primary">
       <VTab prepend-icon="mdi-cog" :to="rel('')" exact>
-        {{ t('common.settings') }}
+        {{ t('term.settings') }}
       </VTab>
       <VTab prepend-icon="mdi-text" :to="rel('content')">
-        {{ t('common.content') }}
+        {{ t('term.content') }}
       </VTab>
       <VTab prepend-icon="mdi-table-clock" :to="rel('stage')">
         {{ t('term.contest-stage') }}
       </VTab>
       <VTab prepend-icon="mdi-lock" :to="rel('access')">
-        {{ t('common.access') }}
+        {{ t('term.access') }}
       </VTab>
     </VTabs>
     <VDivider vertical />
@@ -37,7 +37,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-withTitle(computed(() => t('contests')))
+withTitle(computed(() => t('pages.contests')))
 
 const rel = (to: string) => `/org/${props.orgId}/contest/${props.contestId}/admin/${to}`
 </script>

@@ -6,12 +6,9 @@
       </template>
     </SettingsEditor>
     <VCardActions>
-      <VBtn
-        variant="text"
-        prepend-icon="mdi-chevron-left"
-        :to="`user/${props.userId}`"
-        :label="t('back-to-user-info')"
-      />
+      <VBtn variant="text" prepend-icon="mdi-chevron-left" :to="`/user/${props.userId}`">
+        {{ t('back-to-user-info') }}
+      </VBtn>
     </VCardActions>
   </VCard>
 </template>
@@ -25,7 +22,13 @@ import { computed } from 'vue'
 
 const { t } = useI18n()
 
-withTitle(computed(() => t('user-info')))
+withTitle(computed(() => t('pages.user-info')))
 
 const props = defineProps<{ userId: string }>()
 </script>
+<i18n>
+en:
+  back-to-user-info: Back to user info
+zhHans:
+  back-to-user-info: 返回用户界面
+</i18n>

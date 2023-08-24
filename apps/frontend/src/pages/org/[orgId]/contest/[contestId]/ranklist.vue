@@ -4,7 +4,7 @@
       <div class="d-flex flex-row">
         <VTabs direction="vertical" color="primary">
           <VTab prepend-icon="mdi-home" :to="rel('')" exact>
-            {{ t('overview') }}
+            {{ t('term.overview') }}
           </VTab>
           <VTab
             v-for="ranklist in value"
@@ -16,7 +16,7 @@
             {{ ranklist.name }}
           </VTab>
           <VTab prepend-icon="mdi-plus" :to="rel('new')" exact>
-            {{ t('new') }}
+            {{ t('action.new') }}
           </VTab>
         </VTabs>
         <VDivider vertical />

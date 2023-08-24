@@ -8,7 +8,7 @@
         <span>{{ t('ith-item', { i: i + 1 }) }}</span>
         <VSpacer />
         <VBtn color="error" variant="outlined" @click="() => model.splice(i, 1)">
-          {{ t('delete') }}
+          {{ t('action.delete') }}
         </VBtn>
       </VCardActions>
       <VDivider />

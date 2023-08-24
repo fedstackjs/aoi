@@ -1,5 +1,5 @@
 <template>
-  <VCard flat :title="t('problem-settings')">
+  <VCard flat :title="t('term.settings')">
     <VDivider />
     <AccessLevelEditor
       :access-level="contest.accessLevel"
@@ -8,11 +8,11 @@
     />
     <VDivider />
     <VCardSubtitle>
-      {{ t('danger-zone') }}
+      {{ t('term.danger-zone') }}
     </VCardSubtitle>
     <VCardActions>
       <VBtn color="red" variant="elevated">
-        {{ t('delete') }}
+        {{ t('action.delete') }}
       </VBtn>
     </VCardActions>
   </VCard>
@@ -35,10 +35,3 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 </script>
-
-<i18n>
-zhHans:
-  problem-settings: 设置
-en:
-  problem-settings: Settings
-</i18n>

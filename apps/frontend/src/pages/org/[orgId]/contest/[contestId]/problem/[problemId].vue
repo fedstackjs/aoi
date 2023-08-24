@@ -18,16 +18,16 @@
 
         <VTabs v-model="currentTab">
           <VTab prepend-icon="mdi-book-outline" value="desc">
-            {{ t('problem-description') }}
+            {{ t('tabs.problem-description') }}
           </VTab>
           <VTab prepend-icon="mdi-upload-outline" value="submit">
-            {{ t('problem-submit') }}
+            {{ t('tabs.submit') }}
           </VTab>
           <VTab prepend-icon="mdi-attachment" value="attachments">
-            {{ t('problem-attachments') }}
+            {{ t('tabs.attachments') }}
           </VTab>
           <VTab prepend-icon="mdi-cog-outline" value="management">
-            {{ t('problem-management') }}
+            {{ t('tabs.management') }}
           </VTab>
         </VTabs>
         <VWindow v-model="currentTab">
@@ -86,3 +86,24 @@ const problem = useAsyncState(async () => {
   return resp.json<IContestProblemDTO>()
 }, null)
 </script>
+
+<i18n global>
+  en:
+    problem-description: Description
+    problem-submit: Submit
+    problem-attachments: Attachments
+    problem-data: Data
+    problem-management: Management
+    problem-solutions: solution
+    solutions: solutions
+    status: Status
+  zhHans:
+    problem-description: 题面
+    problem-submit: 提交
+    problem-attachments: 附件
+    problem-data: 数据
+    problem-management: 管理
+    problem-solutions: 提交记录
+    solutions: 提交记录
+    status: 状态
+  </i18n>

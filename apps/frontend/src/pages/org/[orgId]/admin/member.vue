@@ -51,8 +51,8 @@
           <CapabilityInput v-model="dialogCapability" :bits="orgBits" />
         </VCardText>
         <VCardActions>
-          <VBtn color="primary" @click="updatePrincipal">{{ t('update') }}</VBtn>
-          <VBtn color="error" @click="dialog = false">{{ t('cancel') }}</VBtn>
+          <VBtn color="primary" @click="updatePrincipal">{{ t('action.update') }}</VBtn>
+          <VBtn color="error" @click="dialog = false">{{ t('action.cancel') }}</VBtn>
         </VCardActions>
       </VCard>
     </VDialog>
@@ -62,10 +62,9 @@
 <script setup lang="ts">
 import { VDataTableServer } from 'vuetify/labs/components'
 import { http } from '@/utils/http'
-import { withTitle } from '@/utils/title'
 import { orgBits } from '@/utils/capability'
 import { useAsyncState } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AppGravatar from '@/components/app/AppGravatar.vue'
 import CapabilityInput from '@/components/utils/CapabilityInput.vue'
@@ -77,11 +76,9 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-withTitle(computed(() => t('members')))
-
 const headers = [
   { title: t('term.profile'), key: 'profile', align: 'start', sortable: false },
-  { title: t('ID'), key: '_id' },
+  { title: t('term.id'), key: '_id' },
   { title: t('term.capabilities'), key: '_cap' },
   { title: t('term.actions'), key: '_actions' }
 ] as const

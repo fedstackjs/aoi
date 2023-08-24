@@ -22,7 +22,7 @@ const props = defineProps<{
 
 const { t } = useI18n()
 const text = computed(() =>
-  props.participant.state.value ? t('already-registered') : t('register')
+  props.participant.state.value ? t('already-registered') : t('action.register')
 )
 const register = useAsyncTask(async () => {
   await http.post(props.endpoint)

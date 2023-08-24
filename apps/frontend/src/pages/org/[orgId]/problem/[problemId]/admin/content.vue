@@ -1,5 +1,5 @@
 <template>
-  <VCard flat :title="t('term.problem-content')">
+  <VCard flat :title="t('term.content')">
     <VCardText>
       <VTextField v-model="model.title" :label="t('term.title')" />
       <VTextField v-model="model.slug" :label="t('term.slug')" />

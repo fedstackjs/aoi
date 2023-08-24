@@ -28,11 +28,11 @@ const appState = useAppState()
 const orgItems = () => {
   if (!appState.orgId) return []
   return [
-    { prependIcon: 'mdi-list-box', to: '/problem', title: t('problems') },
-    { prependIcon: 'mdi-balloon', to: '/contest', title: t('contests') },
-    { prependIcon: 'mdi-clipboard-text-outline', to: '/plan', title: t('plans') },
-    { prependIcon: 'mdi-account-multiple', to: '/group', title: t('groups') },
-    { prependIcon: 'mdi-cog', to: '/admin', title: t('admin') }
+    { prependIcon: 'mdi-list-box', to: '/problem', title: t('pages.problems') },
+    { prependIcon: 'mdi-balloon', to: '/contest', title: t('pages.contests') },
+    { prependIcon: 'mdi-clipboard-text-outline', to: '/plan', title: t('pages.plans') },
+    { prependIcon: 'mdi-account-multiple', to: '/group', title: t('pages.groups') },
+    { prependIcon: 'mdi-cog', to: '/admin', title: t('pages.admin') }
   ].map((item) => ({
     ...item,
     to: `/org/${appState.orgId}${item.to}`
@@ -46,7 +46,6 @@ const debugItems = () => {
 
 const links = computed(() => [
   ...orgItems(),
-  { prependIcon: 'mdi-help', to: '/about', title: t('about') },
-  ...debugItems()
+  { prependIcon: 'mdi-help', to: '/about', title: t('pages.about') }
 ])
 </script>

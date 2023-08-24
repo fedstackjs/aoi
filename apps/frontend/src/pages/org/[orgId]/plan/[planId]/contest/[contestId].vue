@@ -24,10 +24,10 @@
 
         <VTabs v-model="currentTab">
           <VTab prepend-icon="mdi-book-outline" value="desc">
-            {{ t('contest-description') }}
+            {{ t('tabs.description') }}
           </VTab>
           <VTab prepend-icon="mdi-cog-outline" value="management">
-            {{ t('contest-management') }}
+            {{ t('tabs.management') }}
           </VTab>
         </VTabs>
         <VWindow v-model="currentTab">

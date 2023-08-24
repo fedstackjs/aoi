@@ -4,10 +4,10 @@
       <VCol>
         <VCard :title="t('new-problem')">
           <VCardText>
-            <VRadioGroup inline v-model="probAccessLevel" :label="t('term.access-level')">
-              <VRadio :value="0" label="PUBLIC"></VRadio>
-              <VRadio :value="1" label="RESTRICTED"></VRadio>
-              <VRadio :value="2" label="PRIVATE"></VRadio>
+            <VRadioGroup inline v-model="probAccessLevel" :label="t('auth.access-level')">
+              <VRadio :value="0" :label="t('auth.public')"></VRadio>
+              <VRadio :value="1" :label="t('auth.restricted')"></VRadio>
+              <VRadio :value="2" :label="t('auth.private')"></VRadio>
             </VRadioGroup>
             <VTextField v-model="probTitle" :label="t('prob-title')" :rules="probTitleRules" />
             <VTextField v-model="probSlug" :label="t('prob-slug')" :rules="probSlugRules" />

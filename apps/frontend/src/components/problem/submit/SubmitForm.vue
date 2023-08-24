@@ -12,17 +12,20 @@
       <VCardText v-if="file.description">{{ file.description }}</VCardText>
     </div>
     <VCardActions>
-      <VBtn color="primary" @click="submit">Submit</VBtn>
+      <VBtn color="primary" @click="submit">{{ t('action.submit') }}</VBtn>
     </VCardActions>
   </VCard>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import type { ProblemConfig } from '@aoi-js/common'
 import { computed, reactive } from 'vue'
 import Zip from 'jszip'
 import FormEditor from './form/FormEditor.vue'
 import FormMetadata from './form/FormMetadata.vue'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   config: ProblemConfig

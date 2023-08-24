@@ -1,5 +1,5 @@
 <template>
-  <VCard class="mt-6 mx-auto pa-4" max-width="450" :title="t('signup')">
+  <VCard class="mt-6 mx-auto pa-4" max-width="450" :title="t('pages.signup')">
     <VCardTitle class=""></VCardTitle>
     <VForm fast-fail @submit.prevent>
       <VTextField
@@ -33,11 +33,16 @@
       />
 
       <VBtn type="submit" @click="signup()" color="primary" block size="large" class="mt-4">
-        {{ t('signup') }}
+        {{ t('pages.signup') }}
       </VBtn>
 
       <VCardText class="text-center">
-        <VBtn variant="text" prepend-icon="mdi-chevron-left" :text="t('signin')" to="/signin" />
+        <VBtn
+          variant="text"
+          prepend-icon="mdi-chevron-left"
+          :text="t('pages.signin')"
+          to="/signin"
+        />
       </VCardText>
     </VForm>
   </VCard>
@@ -93,7 +98,7 @@ const realnameRules = [
 
 const showPassword = ref<boolean>(false)
 
-withTitle(computed(() => t('signup')))
+withTitle(computed(() => t('pages.signup')))
 
 async function signup() {
   if (

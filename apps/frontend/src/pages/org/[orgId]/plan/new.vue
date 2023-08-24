@@ -4,12 +4,12 @@
       <VCol>
         <VCard :title="t('new-plan')">
           <VCardText>
-            <VTextField v-model="payload.title" :label="t('title')" />
-            <VTextField v-model="payload.slug" :label="t('slug')" />
+            <VTextField v-model="payload.title" :label="t('term.title')" />
+            <VTextField v-model="payload.slug" :label="t('term.slug')" />
             <AccessLevelInput v-model="payload.accessLevel" />
           </VCardText>
           <VCardActions>
-            <VBtn color="primary" variant="elevated" @click="create">{{ t('create') }}</VBtn>
+            <VBtn color="primary" variant="elevated" @click="create">{{ t('action.create') }}</VBtn>
           </VCardActions>
         </VCard>
       </VCol>

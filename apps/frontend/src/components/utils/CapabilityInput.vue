@@ -1,10 +1,19 @@
 <template>
-  <VCombobox v-model="chips" label="Tags" multiple chips :items="allCapabilities" />
+  <VCombobox
+    v-model="chips"
+    :label="t('term.capabilities')"
+    multiple
+    chips
+    :items="allCapabilities"
+  />
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { hasCapability } from '@/utils/capability'
 import { computed } from 'vue'
+
+const { t } = useI18n()
 
 const model = defineModel<string>({ required: true })
 

@@ -7,7 +7,7 @@
     </SettingsEditor>
     <VCardActions>
       <VBtn color="error" variant="elevated" @click="deleteProblem()">
-        {{ t('delete') }}
+        {{ t('action.delete') }}
       </VBtn>
     </VCardActions>
   </VCard>

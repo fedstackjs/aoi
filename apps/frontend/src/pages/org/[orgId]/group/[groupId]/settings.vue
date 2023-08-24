@@ -1,17 +1,17 @@
 <template>
-  <VCardSubtitle>Profile</VCardSubtitle>
+  <VCardSubtitle>{{ t('term.profile') }}</VCardSubtitle>
   <VCardText>
-    <VTextField v-model="profile.name" label="Name" />
-    <VTextField v-model="profile.email" label="Email" type="email" />
+    <VTextField v-model="profile.name" :label="t('term.name')" />
+    <VTextField v-model="profile.email" :label="t('term.email')" type="email" />
   </VCardText>
   <VCardActions>
-    <VBtn color="primary" @click="save">Save</VBtn>
-    <VBtn color="error" @click="reset">Reset</VBtn>
+    <VBtn color="primary" @click="save">{{ t('action.save') }}</VBtn>
+    <VBtn color="error" @click="reset">{{ t('action.reset') }}</VBtn>
   </VCardActions>
   <VDivider />
-  <VCardSubtitle>Danger Zone</VCardSubtitle>
+  <VCardSubtitle>{{ t('term.danger-zone') }}</VCardSubtitle>
   <VCardActions>
-    <VBtn color="error" @click="deleteGroup">Delete Group</VBtn>
+    <VBtn color="error" @click="deleteGroup">{{ t('delete-group') }}</VBtn>
   </VCardActions>
 </template>
 
@@ -20,6 +20,9 @@ import type { IGroupDTO } from '@/components/group/types'
 import { http } from '@/utils/http'
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   orgId: string
@@ -57,3 +60,9 @@ async function deleteGroup() {
   router.replace(`/org/${props.orgId}`)
 }
 </script>
+<i18n>
+en:
+  delete-group: Delete Group
+zhHans:
+  delete-group: 删除组织
+</i18n>

@@ -2,7 +2,7 @@
   <VContainer>
     <VRow>
       <VCol>
-        <VCard :title="t('home')">
+        <VCard :title="t('pages.home')">
           <VCardText>
             <MonacoEditor language="json" :model-value="JSON.stringify(route, null, 2)" />
           </VCardText>

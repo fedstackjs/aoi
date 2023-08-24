@@ -14,7 +14,7 @@
             <th class="text-left">{{ t('term.status') }}</th>
             <th class="text-left">{{ t('term.message') }}</th>
             <th class="text-left" v-if="value.submittedAt">
-              {{ t('term.submitted-at') }}
+              {{ t('common.submitted-at') }}
             </th>
           </thead>
           <tbody>

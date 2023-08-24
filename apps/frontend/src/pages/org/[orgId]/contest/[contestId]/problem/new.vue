@@ -1,12 +1,12 @@
 <template>
   <VCard variant="flat" :title="t('add-problem')">
     <VCardText>
-      <VTextField label="problemId" v-model="payload.problemId" />
+      <VTextField label="ID" v-model="payload.problemId" />
       <ContestProblemSettingsInput v-model="payload.settings" />
     </VCardText>
     <VCardActions>
       <VBtn color="primary" variant="elevated" @click="addProblem()">
-        {{ t('add') }}
+        {{ t('action.add') }}
       </VBtn>
     </VCardActions>
   </VCard>
@@ -58,3 +58,9 @@ async function addProblem() {
   }
 }
 </script>
+<i18n>
+en:
+  add-problem: Add problem
+zhHans:
+  add-problem: 添加题目
+</i18n>

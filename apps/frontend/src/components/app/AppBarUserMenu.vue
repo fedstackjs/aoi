@@ -30,9 +30,14 @@ const app = useAppState()
 const userInfo = app.user
 
 const userMenu = computed(() => [
-  { prependIcon: 'mdi-account', to: `/user/${app.userId}`, title: t('user-info'), exact: true },
-  { prependIcon: 'mdi-cog', to: `/user/${app.userId}/settings`, title: t('user-settings') },
-  { prependIcon: 'mdi-logout', action: logout, title: t('logout') }
+  {
+    prependIcon: 'mdi-account',
+    to: `/user/${app.userId}`,
+    title: t('pages.user-info'),
+    exact: true
+  },
+  { prependIcon: 'mdi-cog', to: `/user/${app.userId}/settings`, title: t('pages.user-settings') },
+  { prependIcon: 'mdi-logout', action: logout, title: t('pages.logout') }
 ])
 
 function logout() {
