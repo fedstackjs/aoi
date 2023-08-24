@@ -1,6 +1,6 @@
 {
   "name": "@aoi-js/server",
-  "version": "0.0.9",
+  "version": "0.0.11",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -10,7 +10,8 @@
   "main": "lib/index.js",
   "files": [
     "lib",
-    "!lib/**/*.map"
+    "!lib/**/*.map",
+    "!lib/**/*.d.ts"
   ],
   "bin": {
     "aoi-server": "lib/cli/index.js"
