@@ -36,6 +36,7 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
               _id: Type.UUID(),
               labels: Type.Array(Type.String()),
               name: Type.String(),
+              version: Type.String(),
               createdAt: Type.Number(),
               accessedAt: Type.Number()
             })
@@ -46,6 +47,26 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
     async (req) => {
       const list = await runners.find({ orgId: req._orgId }).toArray()
       return list
+    }
+  )
+
+  s.delete(
+    '/:runnerId',
+    {
+      schema: {
+        params: Type.Object({
+          runnerId: Type.UUID()
+        })
+      }
+    },
+    async (req, rep) => {
+      // TODO: handle side effects
+      const { deletedCount } = await runners.deleteOne({
+        _id: new BSON.UUID(req.params.runnerId),
+        orgId: req._orgId
+      })
+      if (!deletedCount) return rep.notFound()
+      return {}
     }
   )
 })

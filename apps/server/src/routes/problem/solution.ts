@@ -27,7 +27,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
         userId: admin ? undefined : req.user.userId,
         state: admin ? undefined : SolutionState.CREATED
       },
-      { $set: { state: SolutionState.PENDING } },
+      { $set: { state: SolutionState.PENDING, submittedAt: req._now } },
       { ignoreUndefined: true }
     )
     if (modifiedCount === 0) return rep.notFound()
@@ -46,7 +46,9 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
             metrics: Type.Record(Type.String(), Type.Number()),
             status: Type.String(),
             message: Type.String(),
-            submittedAt: Type.Optional(Type.Number())
+            createdAt: Type.Number(),
+            submittedAt: Type.Optional(Type.Number()),
+            completedAt: Type.Optional(Type.Number())
           })
         }
       }
@@ -66,7 +68,9 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
             metrics: 1,
             status: 1,
             message: 1,
-            submittedAt: 1
+            createdAt: 1,
+            submittedAt: 1,
+            completedAt: 1
           }
         }
       )
@@ -122,6 +126,7 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
           200: Type.PaginationResult(
             Type.Object({
               _id: Type.UUID(),
+              userId: Type.UUID(),
               state: Type.Integer(),
               score: Type.Number(),
               metrics: Type.Record(Type.String(), Type.Number()),
@@ -147,6 +152,7 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
         },
         {
           projection: {
+            userId: 1,
             state: 1,
             score: 1,
             metrics: 1,

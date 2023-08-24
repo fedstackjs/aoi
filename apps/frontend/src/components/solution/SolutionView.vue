@@ -1,48 +1,59 @@
 <template>
-  <VCardSubtitle>{{ t('solution.info') }}</VCardSubtitle>
   <AsyncState :state="solution">
     <template v-slot="{ value }">
       <VCardText>
         <VTable>
           <thead>
             <th class="text-left">{{ t('term.id') }}</th>
-            <th class="text-left">{{ t('term.state') }}</th>
-            <th class="text-left">{{ t('term.score') }}</th>
-            <th class="text-left" v-for="(mval, mkey) in value.metrics" :key="mkey">
+            <th class="text-center">{{ t('term.state') }}</th>
+            <th class="text-center">{{ t('term.score') }}</th>
+            <th class="text-center" v-for="(mval, mkey) in value.metrics" :key="mkey">
               {{ t('metrics.' + mkey) }}
             </th>
-            <th class="text-left">{{ t('term.status') }}</th>
-            <th class="text-left">{{ t('term.message') }}</th>
-            <th class="text-left" v-if="value.submittedAt">
+            <th class="text-center">{{ t('term.status') }}</th>
+            <th class="text-center" v-if="value.submittedAt">
               {{ t('common.submitted-at') }}
             </th>
+            <th class="text-right">{{ t('term.message') }}</th>
           </thead>
           <tbody>
             <tr>
-              <th>{{ value._id }}</th>
               <th>
+                <code>{{ value._id }}</code>
+              </th>
+              <th class="text-center">
                 <SolutionStateChip :state="value.state" />
               </th>
-              <th>{{ value.score }}</th>
-              <th v-for="(mval, mkey) in value.metrics" :key="mkey">
+              <th class="text-center">{{ value.score }}</th>
+              <th v-for="(mval, mkey) in value.metrics" :key="mkey" class="text-center">
                 {{ mval }}
               </th>
-              <th>{{ value.status }}</th>
-              <th>{{ value.message }}</th>
-              <th v-if="value.submittedAt">{{ value.submittedAt }}</th>
+              <th class="text-center">{{ value.status }}</th>
+              <th class="text-center" v-if="value.submittedAt">
+                {{ new Date(value.submittedAt).toLocaleString() }}
+              </th>
+              <th class="text-right">{{ value.message }}</th>
             </tr>
           </tbody>
         </VTable>
       </VCardText>
     </template>
   </AsyncState>
-  <VCardSubtitle>{{ t('solution.details') }}</VCardSubtitle>
-  <SolutionDetails :problem-id="problemId" :contest-id="contestId" :solution-id="solutionId" />
+  <VDivider />
+  <template v-if="solution.state.value?.state === 4">
+    <VCardSubtitle>{{ t('solution.details') }}</VCardSubtitle>
+    <SolutionDetails :problem-id="problemId" :contest-id="contestId" :solution-id="solutionId" />
+    <VDivider />
+  </template>
   <VCardSubtitle>{{ t('solution.data') }}</VCardSubtitle>
   <VCardActions>
     <DownloadBtn :endpoint="`problem/${props.problemId}/solution/${props.solutionId}/data`" />
     <VBtn :text="t('action.rejudge')" @click="submit.execute()" :loading="submit.isLoading.value" />
+    <VBtn :text="t('action.view')" @click="viewFile = true" />
   </VCardActions>
+  <VCardText v-if="viewFile">
+    <ZipAutoViewer :endpoint="`problem/${props.problemId}/solution/${props.solutionId}/data`" />
+  </VCardText>
 </template>
 
 <script setup lang="ts">
@@ -55,6 +66,8 @@ import DownloadBtn from '@/components/utils/DownloadBtn.vue'
 import { useAsyncTask } from '@/utils/async'
 import SolutionDetails from '@/components/solution/SolutionDetails.vue'
 import SolutionStateChip from '@/components/solution/SolutionStateChip.vue'
+import ZipAutoViewer from '../utils/zip/ZipAutoViewer.vue'
+import { ref } from 'vue'
 
 const props = defineProps<{
   orgId: string
@@ -64,6 +77,8 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+
+const viewFile = ref(false)
 
 const solution = useAsyncState(async () => {
   const url = props.contestId

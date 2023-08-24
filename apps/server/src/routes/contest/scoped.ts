@@ -33,7 +33,6 @@ declare module 'fastify' {
     _contestCapability: BSON.Long
     _contestStage: IContestStage
     _contestParticipant: IContestParticipant | null
-    _now: number
   }
 }
 
@@ -62,7 +61,6 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
     ensureCapability(capability, ContestCapability.CAP_ACCESS, s.httpErrors.forbidden())
     req._contestId = contestId
     req._contest = contest
-    req._now = Date.now()
     req._contestStage = getCurrentContestStage(req._now, contest)
     req._contestCapability = capability
     req._contestParticipant = await contestParticipants.findOne({

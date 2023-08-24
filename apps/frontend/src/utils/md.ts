@@ -3,6 +3,7 @@ import { toHtml } from 'hast-util-to-html'
 import markdownIt from 'markdown-it'
 import onigurumaUrl from 'vscode-oniguruma/release/onig.wasm?url'
 import markdownItKatex from './katex'
+import DOMPurify from 'dompurify'
 
 const starryNight = await createStarryNight(common, {
   getOnigurumaUrlFetch() {
@@ -11,6 +12,7 @@ const starryNight = await createStarryNight(common, {
 })
 
 const md = markdownIt({
+  html: true,
   highlight(value, lang) {
     const scope = starryNight.flagToScope(lang)
 
@@ -31,5 +33,5 @@ const md = markdownIt({
 md.use(markdownItKatex)
 
 export function renderMarkdown(source: string) {
-  return md.render(source)
+  return DOMPurify.sanitize(md.render(source))
 }

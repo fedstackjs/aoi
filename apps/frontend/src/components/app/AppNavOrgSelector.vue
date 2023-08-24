@@ -50,6 +50,7 @@ import { useAsyncState } from '@vueuse/core'
 import AppGravatar from '../app/AppGravatar.vue'
 import { useAppState } from '@/stores/app'
 import { useI18n } from 'vue-i18n'
+import { watch } from 'vue'
 
 const appState = useAppState()
 const { t } = useI18n()
@@ -66,6 +67,11 @@ const joinedOrgs = useAsyncState(async () => {
     }>
   >()
 }, [])
+
+watch(
+  () => appState.userId,
+  () => joinedOrgs.execute()
+)
 </script>
 
 <i18n global>

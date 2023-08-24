@@ -20,6 +20,7 @@ const props = defineProps<{
 }>()
 
 const profile = useAsyncState(async () => {
+  // TODO: implement caching
   let err
   for (const kind of ['user', 'group']) {
     try {

@@ -21,6 +21,12 @@ declare module '@fastify/jwt' {
   }
 }
 
+declare module 'fastify' {
+  interface FastifyRequest {
+    _now: number
+  }
+}
+
 const userPayload = TypeCompiler.Compile(
   Type.Object({
     userId: Type.String()
@@ -46,6 +52,7 @@ export const apiRoutes = defineRoutes(async (s) => {
     } catch (err) {
       rep.send(err)
     }
+    req._now = Date.now()
   })
 
   s.get(

@@ -2,10 +2,14 @@
   <VCard flat>
     <VCardTitle class="d-flex justify-space-between">
       <div>{{ t('action.submit') }}</div>
-      <div>
-        {{ t('term.current-hash') }}
-        <VChip color="blue">
-          <code>{{ problem.currentDataHash.substring(0, 7) }}</code>
+      <div class="u-flex u-gap-2">
+        <VChip color="blue" variant="outlined">
+          {{ t('term.current-hash') }}
+          <code class="pl-2">{{ problem.currentDataHash.substring(0, 7) }}</code>
+        </VChip>
+        <VChip color="success" variant="outlined">
+          {{ t('term.runner-label') }}
+          <code class="pl-2">{{ problem.config.label }}</code>
         </VChip>
       </div>
     </VCardTitle>
@@ -22,13 +26,17 @@
     </VTabs>
     <VWindow v-model="currentTab">
       <VWindowItem value="form">
-        <SubmitForm :config="problem.config" @upload="submit" />
+        <SubmitForm v-if="problem.config.submit.form" :config="problem.config" @upload="submit" />
       </VWindowItem>
       <VWindowItem value="upload-file">
-        <SubmitFile :config="problem.config" @upload="submit" />
+        <SubmitFile v-if="problem.config.submit.upload" :config="problem.config" @upload="submit" />
       </VWindowItem>
       <VWindowItem value="upload-dir">
-        <SubmitDir :config="problem.config" @upload="submit" />
+        <SubmitDir
+          v-if="problem.config.submit.zipFolder"
+          :config="problem.config"
+          @upload="submit"
+        />
       </VWindowItem>
     </VWindow>
   </VCard>

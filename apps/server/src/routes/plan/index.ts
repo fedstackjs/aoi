@@ -44,7 +44,8 @@ export const planRoutes = defineRoutes(async (s) => {
         contests: [],
         accessLevel: req.body.accessLevel,
         associations: [],
-        settings: {}
+        settings: {},
+        createdAt: req._now
       })
       return { planId: insertedId }
     }

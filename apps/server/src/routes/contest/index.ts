@@ -53,6 +53,8 @@ export const contestRoutes = defineRoutes(async (s) => {
           { name: 'running', start: req.body.start, settings: {} },
           { name: 'end', start: req.body.start + req.body.duration, settings: {} }
         ],
+        start: req.body.start,
+        end: req.body.start + req.body.duration,
         attachments: [],
         associations: [],
         ranklists: [],

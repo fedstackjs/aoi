@@ -14,6 +14,9 @@
         <code>{{ item.raw._id }}</code>
       </RouterLink>
     </template>
+    <template v-slot:[`item.userId`]="{ item }">
+      <PrincipalProfile :principal-id="item.raw.userId" />
+    </template>
     <template v-slot:[`item.state`]="{ item }">
       <SolutionStateChip :state="item.raw.state" />
     </template>
@@ -38,6 +41,7 @@ import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
 import { VDataTableServer } from 'vuetify/labs/components'
 import SolutionStateChip from '@/components/solution/SolutionStateChip.vue'
+import PrincipalProfile from '../utils/PrincipalProfile.vue'
 
 const { t } = useI18n()
 
@@ -49,6 +53,7 @@ const props = defineProps<{
 
 const headers = [
   { title: t('term.id'), key: '_id', align: 'start', sortable: false },
+  { title: t('term.user'), key: 'userId', align: 'start', sortable: false },
   { title: t('term.state'), key: 'state', align: 'start', sortable: false },
   { title: t('term.status'), key: 'status', align: 'start', sortable: false },
   { title: t('term.score'), key: 'score', sortable: false },

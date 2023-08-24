@@ -47,6 +47,7 @@ term:
   description: 描述
   hash: 哈希值
   current-hash: 当前哈希值
+  runner-label: 评测标签
   message: 消息
   config: 配置
   username: 用户名

@@ -47,6 +47,7 @@ term:
   description: Description
   hash: Hash
   current-hash: Current Hash
+  runner-label: Runner Label
   message: Message
   config: Config
   username: Username
@@ -122,3 +123,7 @@ tabs:
   solutions: Solution
   ranklist: Ranklist
   problem-description: Description
+
+metrics:
+  cpu: CPU
+  mem: Memory

@@ -60,6 +60,8 @@ export interface IContest
 
   problems: IContestProblem[]
   stages: IContestStage[]
+  start: number
+  end: number
 
   ranklists: IContestRanklist[]
   ranklistState: ContestRanklistState
@@ -69,6 +71,9 @@ export interface IContest
 }
 
 export const contests = db.collection<IContest>('contests')
+await contests.createIndex({ orgId: 1, slug: 1 }, { unique: true })
+await contests.createIndex({ orgId: 1, tags: 1 })
+await contests.createIndex({ [`associations.principalId`]: 1 })
 
 export function getCurrentContestStage(now: number, { stages }: IContest) {
   for (let i = stages.length - 1; i >= 0; i--) {

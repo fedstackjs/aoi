@@ -16,3 +16,4 @@ export interface IGroup {
 
 export const groups = db.collection<IGroup>('groups')
 await groups.createIndex({ orgId: 1 })
+await groups.createIndex({ orgId: 1, [`profile.name`]: 1 }, { unique: true })

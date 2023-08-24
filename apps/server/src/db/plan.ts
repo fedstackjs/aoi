@@ -36,6 +36,11 @@ export interface IPlan extends IPrincipalControlable, IWithAccessLevel, IWithCon
 
   contests: IPlanContest[]
   settings: IPlanSettings
+
+  createdAt: number
 }
 
 export const plans = db.collection<IPlan>('plan')
+await plans.createIndex({ orgId: 1, slug: 1 }, { unique: true })
+await plans.createIndex({ orgId: 1, tags: 1 })
+await plans.createIndex({ [`associations.principalId`]: 1 })

@@ -13,6 +13,19 @@ export const ProblemCapability = {
   CAP_DATA: capabilityMask(4) // Can manage problem data
 }
 
+export interface IProblemStatus {
+  _id: BSON.UUID
+  problemId: BSON.UUID
+  userId: BSON.UUID
+  solutionCount: number
+  lastSolutionId: BSON.UUID
+  lastSolutionScore: number
+  lastSolutionStatus: string
+}
+
+export const problemStatuses = db.collection<IProblemStatus>('problemStatuses')
+await problemStatuses.createIndex({ problemId: 1, userId: 1 }, { unique: true })
+
 export interface IProblemData {
   hash: string
   config: ProblemConfig
@@ -41,18 +54,6 @@ export interface IProblem
 }
 
 export const problems = db.collection<IProblem>('problems')
-await problems.createIndex({ slug: 1 }, { unique: true })
+await problems.createIndex({ orgId: 1, slug: 1 }, { unique: true })
+await problems.createIndex({ orgId: 1, tags: 1 })
 await problems.createIndex({ [`associations.principalId`]: 1 })
-
-export interface IProblemStatus {
-  _id: BSON.UUID
-  problemId: BSON.UUID
-  userId: BSON.UUID
-  solutionCount: number
-  lastSolutionId: BSON.UUID
-  lastSolutionScore: number
-  lastSolutionStatus: string
-}
-
-export const problemStatuses = db.collection<IProblemStatus>('problemStatuses')
-await problemStatuses.createIndex({ problemId: 1, userId: 1 }, { unique: true })
