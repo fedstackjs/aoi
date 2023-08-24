@@ -6,6 +6,7 @@ import { ContestRanklistState, OrgCapability, contests } from '../../db/index.js
 import { SContestStage } from '../../schemas/contest.js'
 import { BSON } from 'mongodb'
 import { contestScopedRoutes } from './scoped.js'
+import { searchToFilter } from '../../utils/search.js'
 
 export const contestRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('contest'))
@@ -75,7 +76,9 @@ export const contestRoutes = defineRoutes(async (s) => {
           orgId: Type.String(),
           page: Type.Integer({ minimum: 1, default: 1 }),
           perPage: Type.Integer({ enum: [15, 30] }),
-          count: Type.Boolean({ default: false })
+          count: Type.Boolean({ default: false }),
+          search: Type.Optional(Type.String({ minLength: 1 })),
+          tag: Type.Optional(Type.String())
         }),
         response: {
           200: Type.PaginationResult(
@@ -90,8 +93,12 @@ export const contestRoutes = defineRoutes(async (s) => {
         }
       }
     },
-    async (req) => {
-      const orgId = loadUUID(req.query, 'orgId', s.httpErrors.badRequest())
+    async (req, rep) => {
+      const { orgId: rawOrgId, page, perPage, count, ...rest } = req.query
+      const orgId = new BSON.UUID(rawOrgId)
+      const searchFilter = searchToFilter(rest)
+      if (!searchFilter) return rep.badRequest('Bad search parameters')
+
       const membership = await loadMembership(req.user.userId, orgId)
       const basicAccessLevel = membership
         ? hasCapability(membership.capability, OrgCapability.CAP_CONTEST)
@@ -99,7 +106,6 @@ export const contestRoutes = defineRoutes(async (s) => {
           : AccessLevel.RESTRICED
         : AccessLevel.PUBLIC
       const principalIds = [req.user.userId, ...(membership?.groups ?? [])]
-      const { page, perPage, count } = req.query
       const result = await findPaginated(
         contests,
         page,
@@ -107,6 +113,7 @@ export const contestRoutes = defineRoutes(async (s) => {
         count,
         {
           orgId,
+          ...searchFilter,
           $or: [
             { accessLevel: { $lte: basicAccessLevel } },
             { 'associations.principalId': { $in: principalIds } }

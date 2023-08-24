@@ -6,6 +6,7 @@ import { plans } from '../../db/plan.js'
 import { OrgCapability } from '../../db/index.js'
 import { AccessLevel } from '../../schemas/index.js'
 import { planScopedRoutes } from './scoped.js'
+import { searchToFilter } from '../../utils/search.js'
 
 export const planRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('plan'))
@@ -60,7 +61,9 @@ export const planRoutes = defineRoutes(async (s) => {
           orgId: Type.String(),
           page: Type.Integer({ minimum: 1, default: 1 }),
           perPage: Type.Integer({ enum: [15, 30] }),
-          count: Type.Boolean({ default: false })
+          count: Type.Boolean({ default: false }),
+          search: Type.Optional(Type.String({ minLength: 1 })),
+          tag: Type.Optional(Type.String())
         }),
         response: {
           200: Type.PaginationResult(
@@ -74,8 +77,12 @@ export const planRoutes = defineRoutes(async (s) => {
         }
       }
     },
-    async (req) => {
-      const orgId = new BSON.UUID(req.query.orgId)
+    async (req, rep) => {
+      const { orgId: rawOrgId, page, perPage, count, ...rest } = req.query
+      const orgId = new BSON.UUID(rawOrgId)
+      const searchFilter = searchToFilter(rest)
+      if (!searchFilter) return rep.badRequest('Bad search parameters')
+
       const membership = await loadMembership(req.user.userId, orgId)
       const basicAccessLevel = membership
         ? hasCapability(membership.capability, OrgCapability.CAP_CONTEST)
@@ -83,7 +90,6 @@ export const planRoutes = defineRoutes(async (s) => {
           : AccessLevel.RESTRICED
         : AccessLevel.PUBLIC
       const principalIds = [req.user.userId, ...(membership?.groups ?? [])]
-      const { page, perPage, count } = req.query
       const result = await findPaginated(
         plans,
         page,
@@ -91,6 +97,7 @@ export const planRoutes = defineRoutes(async (s) => {
         count,
         {
           orgId,
+          ...searchFilter,
           $or: [
             { accessLevel: { $lte: basicAccessLevel } },
             { 'associations.principalId': { $in: principalIds } }

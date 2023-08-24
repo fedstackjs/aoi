@@ -49,9 +49,7 @@ const { t } = useI18n()
 
 const problems = useAsyncState(async () => {
   const resp = await http.get(`contest/${props.contestId}/problem`)
-  console.log(resp)
   const data = await resp.json<IContestProblemListDTO[]>()
-  console.log(data)
   return data
 }, [])
 

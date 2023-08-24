@@ -6,6 +6,7 @@ import { BSON } from 'mongodb'
 import { OrgCapability, problems } from '../../db/index.js'
 import { paginationSkip } from '../../utils/pagination.js'
 import { AccessLevel } from '../../schemas/index.js'
+import { searchToFilter } from '../../utils/search.js'
 
 export const problemRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('problem'))
@@ -68,7 +69,9 @@ export const problemRoutes = defineRoutes(async (s) => {
           orgId: Type.String(),
           page: Type.Integer({ minimum: 1, default: 1 }),
           perPage: Type.Integer({ enum: [15, 30] }),
-          count: Type.Boolean({ default: false })
+          count: Type.Boolean({ default: false }),
+          search: Type.Optional(Type.String({ minLength: 1 })),
+          tag: Type.Optional(Type.String())
         }),
         response: {
           200: Type.PaginationResult(
@@ -93,8 +96,12 @@ export const problemRoutes = defineRoutes(async (s) => {
         }
       }
     },
-    async (req) => {
-      const orgId = loadUUID(req.query, 'orgId', s.httpErrors.badRequest())
+    async (req, rep) => {
+      const { orgId: rawOrgId, page, perPage, count, ...rest } = req.query
+      const orgId = new BSON.UUID(rawOrgId)
+      const searchFilter = searchToFilter(rest)
+      if (!searchFilter) return rep.badRequest('Bad search parameters')
+
       const membership = await loadMembership(req.user.userId, orgId)
       const basicAccessLevel = membership
         ? hasCapability(membership.capability, OrgCapability.CAP_PROBLEM)
@@ -102,9 +109,10 @@ export const problemRoutes = defineRoutes(async (s) => {
           : AccessLevel.RESTRICED
         : AccessLevel.PUBLIC
       const principalIds = [req.user.userId, ...(membership?.groups ?? [])]
-      const { page, perPage, count } = req.query
+
       const filter = {
         orgId,
+        ...searchFilter,
         $or: [
           { accessLevel: { $lte: basicAccessLevel } },
           { 'associations.principalId': { $in: principalIds } }
