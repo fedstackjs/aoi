@@ -6,7 +6,16 @@
     </VList>
     <template #append>
       <VDivider />
-      <div class="u-flex">
+      <div class="u-flex u-items-center">
+        <VBtn variant="text" class="text-none px-2" color="text" rounded="sm">
+          <div>
+            <div class="u-text-sm">AoiUI v{{ appBuildInfo.version }}</div>
+            <div class="u-text-xs u-font-mono u-text-blue-900">
+              {{ appBuildInfo.hash }}@{{ appBuildInfo.branch }}
+            </div>
+          </div>
+        </VBtn>
+        <div class="px-2"></div>
         <div class="u-flex-1"></div>
         <LocaleSelectBtn />
       </div>
@@ -15,11 +24,12 @@
 </template>
 
 <script setup lang="ts">
-import { useAppState } from '@/stores/app'
 import type { VListItem } from 'vuetify/components'
 import { useI18n } from 'vue-i18n'
-import LocaleSelectBtn from '@/components/locale/LocaleSelectBtn.vue'
 import { computed } from 'vue'
+import { useAppState } from '@/stores/app'
+import LocaleSelectBtn from '@/components/locale/LocaleSelectBtn.vue'
+import { appBuildInfo } from '@/utils/build'
 import AppNavOrgSelector from './AppNavOrgSelector.vue'
 
 const { t } = useI18n()
@@ -46,6 +56,7 @@ const debugItems = () => {
 
 const links = computed(() => [
   ...orgItems(),
-  { prependIcon: 'mdi-help', to: '/about', title: t('pages.about') }
+  { prependIcon: 'mdi-help', to: '/about', title: t('pages.about') },
+  ...debugItems()
 ])
 </script>

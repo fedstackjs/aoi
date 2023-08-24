@@ -8,6 +8,7 @@ import uno from 'unocss/vite'
 import vueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 
 const gitHash = execSync('git rev-parse --short HEAD').toString().trim()
+const gitBranch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim()
 
 export default defineConfig({
   build: {
@@ -32,7 +33,9 @@ export default defineConfig({
   ],
   define: {
     'process.env': {},
-    __GIT_HASH__: JSON.stringify(gitHash)
+    __GIT_HASH__: JSON.stringify(gitHash),
+    __GIT_BRANCH__: JSON.stringify(gitBranch),
+    __BUILD_TIME__: JSON.stringify(new Date().toISOString())
   },
   resolve: {
     alias: {
