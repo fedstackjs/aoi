@@ -36,7 +36,10 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const user = await users.findOne({ _id: req._userId }, { projection: { profile: 1 } })
+      const user = await users.findOne(
+        { _id: req._userId },
+        { projection: { profile: 1, capability: 1 } }
+      )
       if (!user) return rep.notFound()
       return {
         profile: user.profile,
