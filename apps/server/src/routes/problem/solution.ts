@@ -27,7 +27,16 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
         userId: admin ? undefined : req.user.userId,
         state: admin ? undefined : SolutionState.CREATED
       },
-      { $set: { state: SolutionState.PENDING, submittedAt: req._now } },
+      {
+        $set: {
+          state: SolutionState.PENDING,
+          submittedAt: req._now,
+          score: 0,
+          status: '',
+          metrics: {},
+          message: ''
+        }
+      },
       { ignoreUndefined: true }
     )
     if (modifiedCount === 0) return rep.notFound()
