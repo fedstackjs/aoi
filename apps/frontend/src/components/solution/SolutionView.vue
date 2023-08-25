@@ -45,10 +45,16 @@
     <SolutionDetails :problem-id="problemId" :contest-id="contestId" :solution-id="solutionId" />
     <VDivider />
   </template>
-  <VCardSubtitle>{{ t('solution.data') }}</VCardSubtitle>
+  <VCardSubtitle>{{ t('term.actions') }}</VCardSubtitle>
   <VCardActions>
     <DownloadBtn :endpoint="`problem/${props.problemId}/solution/${props.solutionId}/data`" />
     <VBtn :text="t('action.rejudge')" @click="submit.execute()" :loading="submit.isLoading.value" />
+    <VBtn
+      :text="t('action.refresh')"
+      @click="solution.execute()"
+      :loading="solution.isLoading.value"
+      :disabled="autoRefresh.isActive.value"
+    />
     <VBtn :text="t('action.view')" @click="viewFile = true" />
   </VCardActions>
   <VCardText v-if="viewFile">
@@ -59,7 +65,7 @@
 <script setup lang="ts">
 import type { ISolutionDTO } from '@/components/solution/types'
 import { http } from '@/utils/http'
-import { useAsyncState } from '@vueuse/core'
+import { useAsyncState, useIntervalFn } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import DownloadBtn from '@/components/utils/DownloadBtn.vue'
@@ -92,6 +98,16 @@ const submit = useAsyncTask(async () => {
     ? `contest/${props.contestId}/solution/${props.solutionId}/submit`
     : `problem/${props.problemId}/solution/${props.solutionId}/submit`
   await http.post(url)
+  solution.execute()
+  autoRefresh.resume()
+})
+
+const autoRefresh = useIntervalFn(() => {
+  if (solution.state.value?.state !== 4) {
+    solution.execute()
+  } else {
+    autoRefresh.pause()
+  }
 })
 </script>
 <i18n>

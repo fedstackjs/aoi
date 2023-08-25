@@ -2,11 +2,14 @@
   <AsyncState :state="data">
     <template v-slot="{ value }">
       <VTabs v-model="currentTab">
-        <VTab prepend-icon="mdi-book-outline" value="visual" v-if="slots.default">
+        <VTab prepend-icon="mdi-form-textarea" value="visual" v-if="slots.default">
           {{ t('visualized') }}
         </VTab>
-        <VTab prepend-icon="mdi-upload-outline" value="raw">
+        <VTab prepend-icon="mdi-code-json" value="raw">
           {{ t('raw') }}
+        </VTab>
+        <VTab prepend-icon="mdi-refresh" @click="data.execute()">
+          {{ t('action.refresh') }}
         </VTab>
       </VTabs>
       <VWindow v-model="currentTab">

@@ -37,13 +37,13 @@
                       </VRow>
                     </VExpansionPanelTitle>
                     <VExpansionPanelText>
-                      <MarkdownRenderer :md="value.summary" />
+                      <MarkdownRenderer :md="test.summary" />
                     </VExpansionPanelText>
                   </VExpansionPanel>
                 </VExpansionPanels>
                 <VDivider />
                 <VCardSubtitle>{{ t('term.summary') }}</VCardSubtitle>
-                <MarkdownRenderer :md="value.summary" class="pa-4" />
+                <MarkdownRenderer :md="job.summary" class="pa-4" />
               </VExpansionPanelText>
             </VExpansionPanel>
           </VExpansionPanels>
