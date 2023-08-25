@@ -37,7 +37,7 @@ export const authRoutes = defineRoutes(async (s) => {
       if (!match) {
         throw s.httpErrors.forbidden('Invalid username or password')
       }
-      const token = await rep.jwtSign({ userId: user._id.toString() }, { expiresIn: '15d' })
+      const token = await rep.jwtSign({ userId: user._id.toString() }, { expiresIn: '7d' })
       return { token }
     }
   )
@@ -62,7 +62,7 @@ export const authRoutes = defineRoutes(async (s) => {
           password
         }
       })
-      const token = await rep.jwtSign({ userId: insertedId.toString() }, { expiresIn: '15d' })
+      const token = await rep.jwtSign({ userId: insertedId.toString() }, { expiresIn: '7d' })
       return { token }
     }
   )
