@@ -25,13 +25,14 @@ export const contestBits = {
   access: 0,
   admin: 1,
   content: 2,
-  data: 3
+  registration: 3
 }
 
 export const planBits = {
   access: 0,
   admin: 1,
-  content: 2
+  content: 2,
+  registration: 3
 }
 
 export const userBits = {

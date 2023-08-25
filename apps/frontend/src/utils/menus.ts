@@ -1,6 +1,6 @@
 import { useAppState } from '@/stores/app'
 import { computed } from 'vue'
-import { useOrgCapability, useUserCapability } from './capability'
+import { hasCapability, useOrgCapability, useUserCapability, userBits } from './capability'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { logout } from '@/utils/http'
@@ -104,9 +104,15 @@ export function useAppNavMenu() {
     return [{ prependIcon: 'mdi-bug', to: '/debug', title: 'Debug Tools' }]
   }
 
+  const adminItems = () => {
+    if (!hasCapability(appState.userCapability, userBits.admin)) return []
+    return [{ prependIcon: 'mdi-cog', to: '/admin', title: 'Global Admin' }]
+  }
+
   return computed(() => [
     ...orgItems(),
     { prependIcon: 'mdi-help', to: '/about', title: t('pages.about') },
+    ...adminItems(),
     ...debugItems()
   ])
 }

@@ -1,7 +1,22 @@
-import { defineRoutes } from '../common/index.js'
+import { UserCapability, hasCapability } from '../../index.js'
+import { packageJson } from '../../utils/package.js'
+import { loadUserCapability } from '../common/access.js'
+import { defineRoutes, swaggerTagMerger } from '../common/index.js'
+import { adminUserRoutes } from './user.js'
 
 export const adminRoutes = defineRoutes(async (s) => {
-  s.get('/', async () => {
-    return ''
+  s.addHook('onRoute', swaggerTagMerger('admin'))
+
+  s.addHook('onRequest', async (req, rep) => {
+    const capability = await loadUserCapability(req)
+    if (!hasCapability(capability, UserCapability.CAP_ADMIN)) return rep.forbidden()
   })
+
+  s.get('/', async () => {
+    return {
+      serverVersion: packageJson.version
+    }
+  })
+
+  s.register(adminUserRoutes, { prefix: '/user' })
 })

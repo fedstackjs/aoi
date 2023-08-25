@@ -14,13 +14,13 @@
     </VCardTitle>
     <VDataTableServer
       :headers="headers"
-      :items-length="groups.state.value.total"
-      :items="groups.state.value.items"
+      :items-length="members.state.value.total"
+      :items="members.state.value.items"
       :items-per-page="15"
       :items-per-page-options="[{ title: '15', value: 15 }]"
-      :loading="groups.isLoading.value"
+      :loading="members.isLoading.value"
       item-value="_id"
-      @update:options="({ page, itemsPerPage }) => groups.execute(0, page, itemsPerPage)"
+      @update:options="({ page, itemsPerPage }) => members.execute(0, page, itemsPerPage)"
     >
       <template v-slot:[`item._id`]="{ item }">
         <code>{{ item.raw.user._id }}</code>
@@ -83,7 +83,7 @@ const headers = [
   { title: t('term.actions'), key: '_actions' }
 ] as const
 
-const groups = useAsyncState(
+const members = useAsyncState(
   async (page = 1, itemsPerPage = 15) => {
     const resp = await http.get(`org/${props.orgId}/admin/member`, {
       searchParams: {
@@ -104,7 +104,7 @@ const groups = useAsyncState(
 
 async function deleteMember(userId: string) {
   await http.delete(`org/${props.orgId}/admin/member/${userId}`)
-  groups.execute()
+  members.execute()
 }
 
 const newMember = ref('')
@@ -114,7 +114,7 @@ async function addMember() {
       userId: newMember.value
     }
   })
-  groups.execute()
+  members.execute()
   newMember.value = ''
 }
 
@@ -133,6 +133,6 @@ async function updatePrincipal() {
   await http.patch(`org/${props.orgId}/admin/member/${dialogUserId.value}/capability`, {
     json: { capability: dialogCapability.value }
   })
-  groups.execute()
+  members.execute()
 }
 </script>
