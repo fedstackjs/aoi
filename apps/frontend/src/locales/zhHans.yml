@@ -32,6 +32,7 @@ action:
   refresh: 刷新
   copy: 复制
   add: 添加
+  view: 查看
 
 term:
   content: 内容
@@ -82,6 +83,7 @@ term:
   contest-id: 比赛 ID
   problem: 题目
   problem-id: 题目 ID
+  search: 搜索
 
 common:
   created-at: 创建于

@@ -159,7 +159,7 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
   )
 
   s.register(manageContent, {
-    collection: problems,
+    collection: contests,
     resolve: async (req) => {
       if (!hasCapability(req._contestCapability, ContestCapability.CAP_CONTENT)) return null
       return req._contestId
