@@ -21,10 +21,10 @@
       <SolutionStateChip :state="item.raw.state" />
     </template>
     <template v-slot:[`item.status`]="{ item }">
-      <code :color="palette(item.raw.score)">{{ item.raw.status }}</code>
+      <SolutionStatusChip :status="item.raw.status" />
     </template>
     <template v-slot:[`item.score`]="{ item }">
-      <code :color="palette(item.raw.score)">{{ item.raw.score }}</code>
+      <SolutionScoreDisplay :score="item.raw.score" />
     </template>
     <template v-slot:[`item.message`]="{ item }">
       <code>{{ item.raw.message }}</code>
@@ -42,6 +42,8 @@ import { useAsyncState } from '@vueuse/core'
 import { VDataTableServer } from 'vuetify/labs/components'
 import SolutionStateChip from '@/components/solution/SolutionStateChip.vue'
 import PrincipalProfile from '../utils/PrincipalProfile.vue'
+import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
+import SolutionStatusChip from './SolutionStatusChip.vue'
 
 const { t } = useI18n()
 
@@ -59,12 +61,6 @@ const headers = [
   { title: t('term.score'), key: 'score', sortable: false },
   { title: t('submission-message'), key: 'message', sortable: false }
 ] as const
-
-const palette = (score: number) => {
-  // interpolation between red and green
-  const t = score / 100
-  return '#' + Math.floor(t * 0x0000ff + (1 - t) * 0xff0000).toString(16)
-}
 
 const submissions = useAsyncState(
   async (page = 1, itemsPerPage = 15) => {

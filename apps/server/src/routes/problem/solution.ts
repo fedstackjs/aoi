@@ -50,6 +50,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
         response: {
           200: Type.Object({
             _id: Type.UUID(),
+            label: Type.String(),
+            problemDataHash: Type.String(),
             state: Type.Integer(),
             score: Type.Number(),
             metrics: Type.Record(Type.String(), Type.Number()),
@@ -72,6 +74,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
         },
         {
           projection: {
+            label: 1,
+            problemDataHash: 1,
             state: 1,
             score: 1,
             metrics: 1,

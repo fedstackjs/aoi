@@ -89,6 +89,7 @@ common:
   created-at: Created at
   accessed-at: Accessed at
   submitted-at: Submitted at
+  completed-at: Completed at
   show-before: Show before
   show-after: Show after
   from: from

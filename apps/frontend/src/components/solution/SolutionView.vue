@@ -6,32 +6,64 @@
           <thead>
             <th class="text-left">{{ t('term.id') }}</th>
             <th class="text-center">{{ t('term.state') }}</th>
+            <th class="text-center">{{ t('term.hash') }}</th>
+            <th class="text-center">{{ t('term.runner-label') }}</th>
+            <th class="text-center" v-text="t('common.created-at')" />
+            <th class="text-center" v-if="value.submittedAt" v-text="t('common.submitted-at')" />
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <code>{{ value._id }}</code>
+              </td>
+              <td class="text-center">
+                <SolutionStateChip :state="value.state" />
+              </td>
+              <td class="text-center">
+                <VChip color="blue" variant="outlined">
+                  <code>{{ value.problemDataHash.substring(0, 7) }}</code>
+                </VChip>
+              </td>
+              <td class="text-center">
+                <VChip color="success" variant="outlined">
+                  <code>{{ value.label }}</code>
+                </VChip>
+              </td>
+              <td class="text-center" v-text="new Date(value.createdAt).toLocaleString()" />
+              <td
+                class="text-center"
+                v-if="value.submittedAt"
+                v-text="new Date(value.submittedAt).toLocaleString()"
+              />
+            </tr>
+          </tbody>
+        </VTable>
+        <VTable>
+          <thead>
+            <th class="text-left">{{ t('term.status') }}</th>
             <th class="text-center">{{ t('term.score') }}</th>
-            <th class="text-center" v-for="(mval, mkey) in value.metrics" :key="mkey">
+            <th class="text-center" v-for="(_, mkey) in value.metrics" :key="mkey">
               {{ t('metrics.' + mkey) }}
             </th>
-            <th class="text-center">{{ t('term.status') }}</th>
-            <th class="text-center" v-if="value.submittedAt">
-              {{ t('common.submitted-at') }}
-            </th>
+            <th class="text-center" v-if="value.completedAt" v-text="t('common.completed-at')" />
             <th class="text-right">{{ t('term.message') }}</th>
           </thead>
           <tbody>
             <tr>
-              <th>
-                <code>{{ value._id }}</code>
+              <th class="text-left">
+                <SolutionStatusChip :status="value.status" />
               </th>
               <th class="text-center">
-                <SolutionStateChip :state="value.state" />
+                <SolutionScoreDisplay :score="value.score" />
               </th>
-              <th class="text-center">{{ value.score }}</th>
               <th v-for="(mval, mkey) in value.metrics" :key="mkey" class="text-center">
                 {{ mval }}
               </th>
-              <th class="text-center">{{ value.status }}</th>
-              <th class="text-center" v-if="value.submittedAt">
-                {{ new Date(value.submittedAt).toLocaleString() }}
-              </th>
+              <td
+                class="text-center"
+                v-if="value.completedAt"
+                v-text="new Date(value.completedAt).toLocaleString()"
+              />
               <th class="text-right">{{ value.message }}</th>
             </tr>
           </tbody>
@@ -74,6 +106,8 @@ import SolutionDetails from '@/components/solution/SolutionDetails.vue'
 import SolutionStateChip from '@/components/solution/SolutionStateChip.vue'
 import ZipAutoViewer from '../utils/zip/ZipAutoViewer.vue'
 import { ref } from 'vue'
+import SolutionStatusChip from './SolutionStatusChip.vue'
+import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
 
 const props = defineProps<{
   orgId: string

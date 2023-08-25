@@ -89,6 +89,7 @@ common:
   created-at: 创建于
   accessed-at: 访问于
   submitted-at: 提交于
+  completed-at: 完成于
   show-before: 在...时之前显示
   show-after: 在...时之后显示
   from: 从
