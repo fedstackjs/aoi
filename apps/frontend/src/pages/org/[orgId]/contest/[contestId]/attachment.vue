@@ -153,7 +153,7 @@ en:
   upload-file: Upload File
   upload: Upload
   close: Close
-zhHans:
+zh-Hans:
   filename: 文件名
   description: 描述
   actions: 操作

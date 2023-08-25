@@ -54,6 +54,6 @@ const { uploadFileTask, uploadInfo } = useDataUpload(props.problem._id, () => em
 <i18n>
 en:
   create-data-version: Create data version
-zhHans:
+zh-Hans:
   create-data-version: 创建数据版本
 </i18n>

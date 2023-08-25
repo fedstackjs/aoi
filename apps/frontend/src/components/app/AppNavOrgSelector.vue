@@ -77,6 +77,6 @@ watch(
 <i18n global>
 en:
   select-organization: Select organization
-zhHans:
+zh-Hans:
   select-organization: 选择组织
 </i18n>

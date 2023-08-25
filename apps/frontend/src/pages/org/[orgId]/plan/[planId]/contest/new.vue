@@ -56,6 +56,6 @@ async function addContest() {
 <i18n>
 en:
   add-contest: Add contest
-zhHans:
+zh-Hans:
   add-contest: 添加比赛
 </i18n>

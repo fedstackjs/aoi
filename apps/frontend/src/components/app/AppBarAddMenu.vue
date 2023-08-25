@@ -22,7 +22,7 @@ en:
   new-contest: New contest
   new-plan: New plan
   new-group: New group
-zhHans:
+zh-Hans:
   new-organization: 新建组织
   new-problem: 新建题目
   new-contest: 新建比赛

@@ -26,7 +26,7 @@ en:
     settings:
       allow-public-submit: Allow public submit
       max-solution-count: Max solution count
-zhHans:
+zh-Hans:
   problem:
     settings:
       allow-public-submit: 允许公开提交

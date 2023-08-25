@@ -97,7 +97,7 @@ const problem = useAsyncState(async () => {
     problem-solutions: solution
     solutions: solutions
     status: Status
-  zhHans:
+  zh-Hans:
     problem-description: 题面
     problem-submit: 提交
     problem-attachments: 附件

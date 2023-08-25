@@ -71,7 +71,7 @@ en:
   common-settings: Common Settings
   min-total-score: Minimal Total Score
   min-score: Minimal Score
-zhHans:
+zh-Hans:
   common-settings: 总设置
   min-total-score: 最小总分数
   min-score: 最小分数

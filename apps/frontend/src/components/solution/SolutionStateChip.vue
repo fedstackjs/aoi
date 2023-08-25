@@ -31,7 +31,7 @@ en:
       queued: Queued
       running: Running
       completed: Completed
-zhHans:
+zh-Hans:
   solution:
     state:
       created: 已创建

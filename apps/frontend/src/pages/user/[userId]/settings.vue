@@ -29,6 +29,6 @@ const props = defineProps<{ userId: string }>()
 <i18n>
 en:
   back-to-user-info: Back to user info
-zhHans:
+zh-Hans:
   back-to-user-info: 返回用户界面
 </i18n>

@@ -36,7 +36,7 @@ function onAppendClick() {
 en:
   is-not-set: "{field} is not set"
   this-field: "This field"
-zhHans:
+zh-Hans:
   is-not-set: "{field}未设置"
   this-field: "该字段"
 </i18n>

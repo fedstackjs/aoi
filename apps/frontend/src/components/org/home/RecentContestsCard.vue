@@ -67,6 +67,6 @@ const contests = useAsyncState(
 <i18n>
 en:
   recent-contests: Recent contests
-zhHans:
+zh-Hans:
   recent-contests: 近期比赛
 </i18n>

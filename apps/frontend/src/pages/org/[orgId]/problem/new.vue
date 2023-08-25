@@ -78,7 +78,7 @@ en:
   hint:
     violate-title-rule: Title must not be empty.
     violate-slug-rule: Slug must not be empty.
-zhHans:
+zh-Hans:
   prob-title: 题目标题
   prob-slug: 题目编号
   hint:

@@ -33,6 +33,6 @@ const register = useAsyncTask(async () => {
 <i18n>
 en:
   already-registered: Already Registered
-zhHans:
+zh-Hans:
   already-registered: 已报名
 </i18n>

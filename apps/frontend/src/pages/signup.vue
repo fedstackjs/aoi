@@ -134,7 +134,7 @@ en:
     violate-password-rule: Password must be at least 8 characters.
     violate-email-rule: Invalid email.
     violate-realname-rule: Realname must not be empty.
-zhHans:
+zh-Hans:
   hint:
     violate-username-rule: 用户名至少需要8个字符
     violate-password-rule: 密码至少需要8个字符

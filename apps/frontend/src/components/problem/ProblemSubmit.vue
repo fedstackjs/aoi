@@ -106,7 +106,7 @@ en:
   submit-upload-file: Upload File
   submit-upload-dir: Upload Directory
   submit-success: Submitted successfully
-zhHans:
+zh-Hans:
   submit-form: 可视化提交
   submit-upload-file: 上传文件
   submit-upload-dir: 上传目录

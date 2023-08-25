@@ -97,6 +97,6 @@ const rel = (to: string) =>
 <i18n>
 en:
   submission-message: Message
-zhHans:
+zh-Hans:
   submission-message: 评测消息
 </i18n>

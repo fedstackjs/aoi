@@ -65,7 +65,7 @@ en:
   oss-settings: OSS Settings
   warn-oss-disabled: OSS is disabled
   enable-oss: Enable OSS
-zhHans:
+zh-Hans:
   oss-settings: OSS 设置
   warn-oss-disabled: OSS 未启用
   enable-oss: 启用 OSS

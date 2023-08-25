@@ -62,7 +62,7 @@ const data = useAsyncState(async () => {
 en:
   visualized: Visualized
   raw: Raw
-zhHans:
+zh-Hans:
   visualized: 可视化
   raw: 原始数据
 </i18n>

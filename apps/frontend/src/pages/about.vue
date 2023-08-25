@@ -25,6 +25,6 @@ withTitle(computed(() => t('pages.about')))
 <i18n>
 en:
   about-us: About us
-zhHans:
+zh-Hans:
   about-us: 关于我们
 </i18n>

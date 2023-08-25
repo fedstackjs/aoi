@@ -50,7 +50,7 @@ en:
     solution-show-other: Solution Allow Other
     solution-show-other-details: Solution Allow Other Details
     solution-show-other-data: Solution Allow Other Data
-zhHans:
+zh-Hans:
   contest-stage-settings:
     registration-enabled: 启用注册
     registration-allow-public: 允许公开注册

@@ -61,6 +61,6 @@ async function addProblem() {
 <i18n>
 en:
   add-problem: Add problem
-zhHans:
+zh-Hans:
   add-problem: 添加题目
 </i18n>

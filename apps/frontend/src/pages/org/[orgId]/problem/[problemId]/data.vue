@@ -138,7 +138,7 @@ en:
   upload: Upload
   close: Close
   created-at: Create at
-zhHans:
+zh-Hans:
   filename: 文件名
   description: 描述
   actions: 操作

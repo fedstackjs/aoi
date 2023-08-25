@@ -67,6 +67,6 @@ const plans = useAsyncState(
 <i18n>
 en:
   recent-plans: Recent plans
-zhHans:
+zh-Hans:
   recent-plans: 近期计划
 </i18n>

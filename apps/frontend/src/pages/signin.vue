@@ -84,7 +84,7 @@ en:
   hint:
     violate-username-rule: Username must be at least 8 characters.
     violate-password-rule: Password must be at least 8 characters.
-zhHans:
+zh-Hans:
   hint:
     violate-username-rule: 用户名至少需要8个字符
     violate-password-rule: 密码至少需要8个字符

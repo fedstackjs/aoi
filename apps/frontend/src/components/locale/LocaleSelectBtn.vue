@@ -5,10 +5,10 @@
     </template>
     <VList density="comfortable">
       <VListItem
-        v-for="(item, i) of availableLocales"
+        v-for="([code, name], i) of supportedLocales"
         :key="i"
-        :title="'' + item"
-        @click="locale = item"
+        :title="name"
+        @click="locale = code"
       />
     </VList>
   </VMenu>
@@ -16,8 +16,13 @@
 
 <script setup lang="ts">
 import { attachToLocalStorage } from '@/utils/persist'
+import { syncRef } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
+import { useLocale } from 'vuetify'
+import { supportedLocales } from '@/plugins/i18n'
 
-const { availableLocales, locale } = useI18n({ useScope: 'global' })
+const { locale } = useI18n({ useScope: 'global' })
+const { current } = useLocale()
+syncRef(locale, current)
 attachToLocalStorage('locale', locale)
 </script>

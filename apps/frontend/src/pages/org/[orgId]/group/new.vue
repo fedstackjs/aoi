@@ -53,6 +53,6 @@ async function create() {
 <i18n global>
 en:
   new-group: New group
-zhHans:
+zh-Hans:
   new-group: 新建小组
 </i18n>

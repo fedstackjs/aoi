@@ -63,6 +63,6 @@ async function deleteGroup() {
 <i18n>
 en:
   delete-group: Delete Group
-zhHans:
+zh-Hans:
   delete-group: 删除组织
 </i18n>

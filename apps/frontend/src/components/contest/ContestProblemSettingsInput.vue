@@ -19,6 +19,6 @@ const model = defineModel<{
 <i18n>
 en:
   solution-count-limit: Solution Count Limit
-zhHans:
+zh-Hans:
   solution-count-limit: 提交记录数量限制
 </i18n>

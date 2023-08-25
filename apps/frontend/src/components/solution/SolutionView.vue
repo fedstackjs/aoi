@@ -100,7 +100,7 @@ en:
     info: Info
     details: Details
     data: Data
-zhHans:
+zh-Hans:
   solution:
     info: 信息
     details: 细节

@@ -45,7 +45,7 @@ en:
   total-items: "{num} items in total"
   add: "Add"
 
-zhHans:
+zh-Hans:
   ith-item: "第{i}项"
   total-items: "共{num}项"
   add: "添加"

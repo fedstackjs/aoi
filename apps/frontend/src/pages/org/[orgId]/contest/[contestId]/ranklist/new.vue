@@ -55,6 +55,6 @@ async function addRanklist() {
 <i18n>
 en:
   add-ranklist: Add ranklist
-zhHans:
+zh-Hans:
   add-ranklist: 创建排行榜
 </i18n>
