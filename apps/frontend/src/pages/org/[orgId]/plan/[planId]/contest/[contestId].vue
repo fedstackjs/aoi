@@ -1,6 +1,6 @@
 <template>
   <VCard variant="flat">
-    <AsyncState :state="contest">
+    <AsyncState :state="contest" hide-when-loading>
       <template v-slot="{ value }">
         <VCardTitle class="d-flex justify-space-between">
           <div>
@@ -26,7 +26,7 @@
           <VTab prepend-icon="mdi-book-outline" value="desc">
             {{ t('tabs.description') }}
           </VTab>
-          <VTab prepend-icon="mdi-cog-outline" value="management">
+          <VTab v-if="admin" prepend-icon="mdi-cog-outline" value="management">
             {{ t('tabs.management') }}
           </VTab>
         </VTabs>
@@ -63,6 +63,8 @@ import type { IContestDTO, IContestParticipantDTO } from '@/components/contest/t
 import { computed } from 'vue'
 import ContestProgressBar from '@/components/contest/ContestProgressBar.vue'
 import RegisterBtn from '@/components/utils/RegisterBtn.vue'
+import { watch } from 'vue'
+import { usePlanCapability } from '@/utils/plan/inject'
 
 const props = defineProps<{
   orgId: string
@@ -77,6 +79,7 @@ defineEmits<{
 }>()
 
 const { t } = useI18n()
+const admin = usePlanCapability('admin')
 const currentTab = ref()
 const currentContest = computed(
   () =>
@@ -93,4 +96,12 @@ const participant = useAsyncState(async () => {
   const resp = await http.get(`contest/${props.contestId}/self`).json<IContestParticipantDTO>()
   return resp
 }, null)
+
+watch(
+  () => props.contestId,
+  () => {
+    contest.execute()
+    participant.execute()
+  }
+)
 </script>

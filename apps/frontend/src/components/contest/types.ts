@@ -19,10 +19,12 @@ export interface IContestDTO {
       registrationAllowPublic: boolean
       problemEnabled: boolean
       problemShowTags: boolean
-      submitEnabled: boolean
-      solutionAllowOther: boolean
-      solutionAllowOtherDetails: boolean
-      solutionAllowOtherDownload: boolean
+      solutionEnabled: boolean
+      solutionAllowSubmit: boolean
+      solutionShowOther: boolean
+      solutionShowOtherDetails: boolean
+      solutionShowOtherData: boolean
+      ranklistEnabled: boolean
     }
   }
 }

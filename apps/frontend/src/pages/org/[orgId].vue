@@ -1,5 +1,5 @@
 <template>
-  <AsyncState :state="app.orgProfile">
+  <AsyncState :state="app.orgProfile" hide-when-loading>
     <RouterView />
     <template #loading>
       <VContainer>

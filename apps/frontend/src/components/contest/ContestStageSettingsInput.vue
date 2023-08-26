@@ -29,7 +29,8 @@ const keys: {
   solutionAllowSubmit: 'solution-allow-submit',
   solutionShowOther: 'solution-show-other',
   solutionShowOtherDetails: 'solution-show-other-details',
-  solutionShowOtherData: 'solution-show-other-data'
+  solutionShowOtherData: 'solution-show-other-data',
+  ranklistEnabled: 'ranklist-enabled'
 }
 
 const entries = Object.entries(keys).map(([k, v]) => [k, t('contest-stage-settings.' + v)]) as [
@@ -50,6 +51,7 @@ en:
     solution-show-other: Solution Allow Other
     solution-show-other-details: Solution Allow Other Details
     solution-show-other-data: Solution Allow Other Data
+    ranklist-enabled: Ranklist Enabled
 zh-Hans:
   contest-stage-settings:
     registration-enabled: 启用注册
@@ -61,4 +63,5 @@ zh-Hans:
     solution-show-other: 允许展示他人提交记录
     solution-show-other-details: 允许展示他人提交记录细节
     solution-show-other-data: 允许展示他人提交记录数据
+    ranklist-enabled: 启用排名
 </i18n>

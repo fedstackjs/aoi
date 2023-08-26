@@ -2,7 +2,7 @@
   <VBtn
     color="blue"
     :loading="participant.isLoading.value || register.isLoading.value"
-    :disabled="!!participant.state.value"
+    :disabled="disabled || !!participant.state.value"
     :text="text"
     @click="register.execute"
   />
@@ -18,6 +18,7 @@ import { useAsyncTask } from '@/utils/async'
 const props = defineProps<{
   endpoint: string
   participant: UseAsyncStateReturn<Data, [], Shallow>
+  disabled?: boolean
 }>()
 
 const { t } = useI18n()

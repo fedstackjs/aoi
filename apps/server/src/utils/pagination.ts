@@ -17,6 +17,6 @@ export async function findPaginated<T extends Document>(
 }> {
   const skip = paginationSkip(page, perPage)
   const items = await collection.find(filter, options).skip(skip).limit(perPage).toArray()
-  const total = count ? await collection.countDocuments(filter) : undefined
+  const total = count ? await collection.countDocuments(filter, options) : undefined
   return { items, total }
 }

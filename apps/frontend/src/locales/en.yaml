@@ -95,6 +95,8 @@ common:
   from: from
   to: to
   lasts: lasts
+  all: All
+  self: Self
 
 auth:
   access-level: Access Level

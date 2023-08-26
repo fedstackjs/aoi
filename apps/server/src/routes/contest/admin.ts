@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { ContestCapability, contests } from '../../index.js'
+import { ContestCapability, SolutionState, contests, solutions } from '../../index.js'
 import { ensureCapability } from '../../utils/index.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
 import { defineRoutes } from '../common/index.js'
@@ -33,6 +33,40 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
       // TODO: handle dependencies
       await contests.deleteOne({ _id: req._contestId })
       return {}
+    }
+  )
+
+  s.post(
+    '/submit-all',
+    {
+      schema: {
+        description: 'Submit all solutions',
+        response: {
+          200: Type.Object({
+            modifiedCount: Type.Number()
+          })
+        }
+      }
+    },
+    async (req) => {
+      const { modifiedCount } = await solutions.updateOne(
+        {
+          contestId: req._contestId,
+          state: SolutionState.CREATED
+        },
+        {
+          $set: {
+            state: SolutionState.PENDING,
+            submittedAt: req._now,
+            score: 0,
+            status: '',
+            metrics: {},
+            message: ''
+          }
+        },
+        { ignoreUndefined: true }
+      )
+      return { modifiedCount }
     }
   )
 

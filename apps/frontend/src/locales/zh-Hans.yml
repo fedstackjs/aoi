@@ -95,6 +95,8 @@ common:
   from: 从
   to: 至
   lasts: 持续
+  all: 全部
+  self: 自己
 
 auth:
   access-level: 权限等级

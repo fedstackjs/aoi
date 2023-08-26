@@ -58,6 +58,7 @@ import { useRoute, useRouter } from 'vue-router'
 const props = defineProps<{
   contestId?: string
   problem: IProblemDTO | IContestProblemDTO
+  manualSubmit?: boolean
 }>()
 
 const { t } = useI18n()
@@ -85,10 +86,12 @@ async function submit(file: File) {
       method: 'PUT',
       body: file
     })
-    url = props.contestId
-      ? `contest/${props.contestId}/solution/${solutionId}/submit`
-      : `problem/${props.problem._id}/solution/${solutionId}/submit`
-    await http.post(url)
+    if (!props.manualSubmit) {
+      url = props.contestId
+        ? `contest/${props.contestId}/solution/${solutionId}/submit`
+        : `problem/${props.problem._id}/solution/${solutionId}/submit`
+      await http.post(url)
+    }
     toast.success(t('submit-success'))
     url = props.contestId
       ? `/org/${route.params.orgId}/contest/${props.contestId}/solution/${solutionId}`

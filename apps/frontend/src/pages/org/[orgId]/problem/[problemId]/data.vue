@@ -1,6 +1,6 @@
 <template>
   <VCard flat>
-    <AsyncState :state="versions">
+    <AsyncState :state="versions" hide-when-loading>
       <template v-slot="{ value }">
         <VTable>
           <thead>

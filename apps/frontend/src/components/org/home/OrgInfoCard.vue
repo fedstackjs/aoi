@@ -1,6 +1,6 @@
 <template>
   <VCard color="grey-lighten-4">
-    <AsyncState :state="profile">
+    <AsyncState :state="profile" hide-when-loading>
       <template v-slot="{ value }">
         <VListItem class="ma-4">
           <template v-slot:prepend>

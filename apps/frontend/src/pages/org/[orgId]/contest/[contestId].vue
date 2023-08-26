@@ -2,7 +2,7 @@
   <VContainer>
     <VRow>
       <VCol>
-        <AsyncState :state="contest">
+        <AsyncState :state="contest" hide-when-loading>
           <template v-slot="{ value }">
             <VCard>
               <VCardTitle class="d-flex justify-space-between">
@@ -20,6 +20,7 @@
                   <RegisterBtn
                     :endpoint="`contest/${contestId}/register`"
                     :participant="participant"
+                    :disabled="!showRegistration"
                   />
                 </div>
               </VCardTitle>
@@ -28,24 +29,36 @@
               <VDivider />
 
               <VTabs>
-                <VTab prepend-icon="mdi-book-outline" :to="rel('')">
-                  {{ t('tabs.description') }}
-                </VTab>
-                <VTab prepend-icon="mdi-attachment" :to="rel('attachment')">
-                  {{ t('tabs.attachments') }}
-                </VTab>
-                <VTab prepend-icon="mdi-list-box" :to="rel('problem')">
-                  {{ t('tabs.problems') }}
-                </VTab>
-                <VTab prepend-icon="mdi-timer-sand" :to="rel('solution')">
-                  {{ t('tabs.solutions') }}
-                </VTab>
-                <VTab prepend-icon="mdi-chevron-triple-up" :to="rel('ranklist')">
-                  {{ t('tabs.ranklist') }}
-                </VTab>
-                <VTab prepend-icon="mdi-cog-outline" :to="rel('admin')">
-                  {{ t('tabs.management') }}
-                </VTab>
+                <VTab prepend-icon="mdi-book-outline" :to="rel('')" :text="t('tabs.description')" />
+                <VTab
+                  prepend-icon="mdi-attachment"
+                  :to="rel('attachment')"
+                  :text="t('tabs.attachments')"
+                />
+                <VTab
+                  v-if="showAdminTab || value.currentStage.settings.problemEnabled"
+                  prepend-icon="mdi-list-box"
+                  :to="rel('problem')"
+                  :text="t('tabs.problems')"
+                />
+                <VTab
+                  v-if="showAdminTab || value.currentStage.settings.solutionEnabled"
+                  prepend-icon="mdi-timer-sand"
+                  :to="rel('solution?userId=' + app.userId)"
+                  :text="t('tabs.solutions')"
+                />
+                <VTab
+                  v-if="showAdminTab || value.currentStage.settings.ranklistEnabled"
+                  prepend-icon="mdi-chevron-triple-up"
+                  :to="rel('ranklist')"
+                  :text="t('tabs.ranklist')"
+                />
+                <VTab
+                  prepend-icon="mdi-cog-outline"
+                  :to="rel('admin')"
+                  v-if="showAdminTab"
+                  :text="t('tabs.management')"
+                />
               </VTabs>
               <RouterView :contest="value" @updated="contest.execute()" />
             </VCard>
@@ -58,17 +71,20 @@
 
 <script setup lang="ts">
 import { withTitle } from '@/utils/title'
-import { computed } from 'vue'
+import { computed, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAsyncState } from '@vueuse/core'
 import { http } from '@/utils/http'
 import AsyncState from '@/components/utils/AsyncState.vue'
-import type { IContestDTO, IContestParticipantDTO } from '@/components/contest/types'
+import type { IContestParticipantDTO } from '@/components/contest/types'
 import AccessLevelChip from '@/components/utils/AccessLevelChip.vue'
 import ContestProgressBar from '@/components/contest/ContestProgressBar.vue'
 import RegisterBtn from '@/components/utils/RegisterBtn.vue'
+import { useContest } from '@/utils/contest/inject'
+import { useAppState } from '@/stores/app'
 
 const { t } = useI18n()
+const app = useAppState()
 const props = defineProps<{
   orgId: string
   contestId: string
@@ -76,13 +92,10 @@ const props = defineProps<{
 
 withTitle(computed(() => t('pages.contests')))
 
-const contest = useAsyncState(async () => {
-  const contestId = props.contestId
-  const resp = await http.get(`contest/${contestId}`)
-  const data = await resp.json<IContestDTO>()
-  if (data.orgId !== props.orgId) throw new Error('orgId not match')
-  return data
-}, null as never)
+const { contest, showRegistration, showAdminTab } = useContest(
+  toRef(props, 'orgId'),
+  toRef(props, 'contestId')
+)
 
 const participant = useAsyncState(async () => {
   const resp = await http.get(`contest/${props.contestId}/self`).json<IContestParticipantDTO>()

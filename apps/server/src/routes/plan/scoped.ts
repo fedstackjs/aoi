@@ -66,13 +66,17 @@ export const planScopedRoutes = defineRoutes(async (s) => {
             slug: Type.String(),
             title: Type.String(),
             description: Type.String(),
-            tags: Type.Array(Type.String())
+            tags: Type.Array(Type.String()),
+            capability: Type.String()
           })
         }
       }
     },
     async (req) => {
-      return req._plan
+      return {
+        ...req._plan,
+        capability: req._planCapability.toString()
+      }
     }
   )
 

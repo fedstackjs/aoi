@@ -1,11 +1,18 @@
 <template>
+  <VToolbar>
+    <VToolbarTitle>{{ t('tabs.solutions') }}</VToolbarTitle>
+    <VSpacer />
+    <VBtn v-if="!selfOnly" :text="t('common.all')" @click="userId = ''" />
+    <VBtn :text="t('common.self')" @click="userId = app.userId" />
+  </VToolbar>
   <VDataTableServer
     :headers="headers"
     :items-length="submissions.state.value.total"
     :items="submissions.state.value.items"
-    :items-per-page="15"
     :items-per-page-options="[{ title: '15', value: 15 }]"
     :loading="submissions.isLoading.value"
+    v-model:page="page"
+    v-model:items-per-page="itemsPerPage"
     item-value="_id"
     @update:options="({ page, itemsPerPage }) => submissions.execute(0, page, itemsPerPage)"
   >
@@ -37,20 +44,24 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
-import { useAsyncState } from '@vueuse/core'
 import { VDataTableServer } from 'vuetify/labs/components'
 import SolutionStateChip from '@/components/solution/SolutionStateChip.vue'
 import PrincipalProfile from '../utils/PrincipalProfile.vue'
 import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
 import SolutionStatusChip from './SolutionStatusChip.vue'
+import { usePagination } from '@/utils/pagination'
+import { useRouteQuery } from '@vueuse/router'
+import { computed } from 'vue'
+import { useAppState } from '@/stores/app'
 
 const { t } = useI18n()
+const app = useAppState()
 
 const props = defineProps<{
   orgId: string
   problemId?: string
   contestId?: string
+  selfOnly?: boolean
 }>()
 
 const headers = [
@@ -62,27 +73,15 @@ const headers = [
   { title: t('submission-message'), key: 'message', sortable: false }
 ] as const
 
-const submissions = useAsyncState(
-  async (page = 1, itemsPerPage = 15) => {
-    const url = props.contestId
-      ? `contest/${props.contestId}/solution`
-      : `problem/${props.problemId}/solution`
-    const resp = await http.get(url, {
-      searchParams: {
-        orgId: props.orgId,
-        page: page,
-        perPage: itemsPerPage,
-        count: true
-      }
-    })
+const userId = useRouteQuery('userId')
 
-    return resp.json<{
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      items: any[]
-      total: number
-    }>()
-  },
-  { items: [], total: 0 }
+const {
+  page,
+  itemsPerPage,
+  result: submissions
+} = usePagination(
+  props.contestId ? `contest/${props.contestId}/solution` : `problem/${props.problemId}/solution`,
+  computed(() => (userId.value ? { userId: userId.value } : {}))
 )
 
 const rel = (to: string) =>

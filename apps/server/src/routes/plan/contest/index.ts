@@ -3,12 +3,10 @@ import { defineRoutes, tryLoadUUID } from '../../common/index.js'
 import {
   IContestParticipant,
   IPlanContestPrecondition,
-  PlanCapacity,
   SPlanContestSettings,
   contestParticipants,
   contests,
-  getCurrentContestStage,
-  hasCapability
+  getCurrentContestStage
 } from '../../../index.js'
 import { contestAdminRoutes } from './admin.js'
 import { BSON } from 'mongodb'
@@ -34,12 +32,6 @@ export async function testPrecondition(
 }
 
 const planContestViewRoutes = defineRoutes(async (s) => {
-  s.addHook('onRequest', async (req, rep) => {
-    if (hasCapability(req._planCapability, PlanCapacity.CAP_ADMIN)) return
-    if (req._planParticipant) return
-    return rep.forbidden()
-  })
-
   s.get(
     '/',
     {
@@ -109,7 +101,7 @@ const planContestViewRoutes = defineRoutes(async (s) => {
         results: {},
         updatedAt: Date.now()
       })
-      return rep.notImplemented()
+      return {}
     }
   )
 })

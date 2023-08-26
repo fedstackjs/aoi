@@ -38,7 +38,7 @@
             </tr>
           </tbody>
         </VTable>
-        <VTable>
+        <VTable v-if="value.state > 2">
           <thead>
             <th class="text-left">{{ t('term.status') }}</th>
             <th class="text-center">{{ t('term.score') }}</th>
@@ -79,8 +79,13 @@
   </template>
   <VCardSubtitle>{{ t('term.actions') }}</VCardSubtitle>
   <VCardActions>
-    <DownloadBtn :endpoint="`problem/${props.problemId}/solution/${props.solutionId}/data`" />
-    <VBtn :text="t('action.rejudge')" @click="submit.execute()" :loading="submit.isLoading.value" />
+    <DownloadBtn :endpoint="downloadEndpoint" />
+    <VBtn
+      v-if="admin"
+      :text="t('action.rejudge')"
+      @click="submit.execute()"
+      :loading="submit.isLoading.value"
+    />
     <VBtn
       :text="t('action.refresh')"
       @click="solution.execute()"
@@ -90,7 +95,7 @@
     <VBtn :text="t('action.view')" @click="viewFile = true" />
   </VCardActions>
   <VCardText v-if="viewFile">
-    <ZipAutoViewer :endpoint="`problem/${props.problemId}/solution/${props.solutionId}/data`" />
+    <ZipAutoViewer :endpoint="downloadEndpoint" />
   </VCardText>
 </template>
 
@@ -108,15 +113,23 @@ import ZipAutoViewer from '../utils/zip/ZipAutoViewer.vue'
 import { ref } from 'vue'
 import SolutionStatusChip from './SolutionStatusChip.vue'
 import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
+import { computed } from 'vue'
 
 const props = defineProps<{
   orgId: string
   problemId?: string
   contestId?: string
   solutionId: string
+  admin?: boolean
 }>()
 
 const { t } = useI18n()
+
+const downloadEndpoint = computed(() =>
+  props.contestId
+    ? `contest/${props.contestId}/solution/${props.solutionId}/data`
+    : `problem/${props.problemId}/solution/${props.solutionId}/data`
+)
 
 const viewFile = ref(false)
 
@@ -141,7 +154,7 @@ const submit = useAsyncTask(async () => {
 })
 
 const autoRefresh = useIntervalFn(() => {
-  if (solution.state.value?.state !== 4) {
+  if (solution.state.value?.state !== 4 && solution.state.value?.state !== 0) {
     solution.execute()
   } else {
     autoRefresh.pause()

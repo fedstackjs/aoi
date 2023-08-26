@@ -1,5 +1,5 @@
 <template>
-  <AsyncState :state="problems">
+  <AsyncState :state="problems" hide-when-loading>
     <template v-slot="{ value }">
       <div class="d-flex flex-row">
         <VTabs direction="vertical" color="primary">
@@ -16,7 +16,7 @@
             {{ problem.settings.slug }}.
             {{ problem.title }}
           </VTab>
-          <VTab prepend-icon="mdi-plus" :to="rel('new')">
+          <VTab prepend-icon="mdi-plus" :to="rel('new')" v-if="admin">
             {{ t('action.new') }}
           </VTab>
         </VTabs>
@@ -38,6 +38,7 @@ import type { IContestDTO, IContestProblemListDTO } from '@/components/contest/t
 import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
+import { useContestCapability } from '@/utils/contest/inject'
 
 const props = defineProps<{
   orgId: string
@@ -46,6 +47,7 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const admin = useContestCapability('admin')
 
 const problems = useAsyncState(async () => {
   const resp = await http.get(`contest/${props.contestId}/problem`)

@@ -15,7 +15,7 @@
           </tr>
         </thead>
         <tbody>
-          <AsyncState :state="plans">
+          <AsyncState :state="plans" hide-when-loading>
             <template v-slot="{ value }">
               <tr v-for="(item, i) in value.items" :key="i">
                 <td class="text-body-1">{{ item.slug }}</td>

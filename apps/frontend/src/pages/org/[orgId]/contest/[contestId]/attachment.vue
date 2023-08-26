@@ -1,6 +1,6 @@
 <template>
   <VCard flat>
-    <AsyncState :state="attachments">
+    <AsyncState :state="attachments" hide-when-loading>
       <template v-slot="{ value }">
         <VTable>
           <thead>

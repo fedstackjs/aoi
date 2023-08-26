@@ -5,7 +5,12 @@
       <VChip color="blue" :text="new Date(section.begin).toLocaleString()" />
       <VChip v-if="section.tPlus" :text="'T+' + section.tPlus" />
       <div class="u-flex-1">
-        <VProgressLinear height="10" striped color="light-green" :model-value="section.progress" />
+        <VProgressLinear
+          height="10"
+          :striped="!section.stopped"
+          color="light-green"
+          :model-value="section.progress"
+        />
       </div>
       <VChip v-if="section.tMinus" :text="'T-' + section.tMinus" />
       <VChip color="red" :text="new Date(section.end).toLocaleString()" />
@@ -43,7 +48,8 @@ const section = computed(() => {
     return {
       begin: stages[1].start,
       end: stages[stages.length - 1].start,
-      progress: i <= 0 ? 0 : 100
+      progress: i <= 0 ? 0 : 100,
+      stopped: i >= stages.length - 1
     }
   }
   const begin = stages[i].start

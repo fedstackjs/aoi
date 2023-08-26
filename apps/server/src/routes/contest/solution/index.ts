@@ -32,7 +32,12 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
 
   s.post('/submit', {}, async (req, rep) => {
     const { solutionAllowSubmit } = req._contestStage.settings
-    if (!solutionAllowSubmit) return rep.forbidden()
+    if (
+      !solutionAllowSubmit &&
+      !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)
+    ) {
+      return rep.forbidden()
+    }
 
     const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
     const admin = hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)
@@ -149,6 +154,13 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
 })
 
 export const contestSolutionRoutes = defineRoutes(async (s) => {
+  s.addHook('onRequest', async (req, rep) => {
+    const { solutionEnabled } = req._contestStage.settings
+    if (!solutionEnabled && !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)) {
+      return rep.forbidden()
+    }
+  })
+
   s.get(
     '/',
     {

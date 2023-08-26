@@ -1,5 +1,5 @@
 <template>
-  <AsyncState :state="contests">
+  <AsyncState :state="contests" hide-when-loading>
     <template v-slot="{ value }">
       <div class="d-flex flex-row">
         <VTabs direction="vertical" color="primary">

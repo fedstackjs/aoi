@@ -2,7 +2,7 @@
   <VContainer>
     <VRow>
       <VCol>
-        <AsyncState :state="plan">
+        <AsyncState :state="plan" hide-when-loading>
           <template v-slot="{ value }">
             <VCard>
               <VCardTitle class="d-flex justify-space-between">
@@ -29,7 +29,7 @@
                 <VTab prepend-icon="mdi-attachment" :to="rel('contest')">
                   {{ t('tabs.contests') }}
                 </VTab>
-                <VTab prepend-icon="mdi-cog-outline" :to="rel('admin')">
+                <VTab prepend-icon="mdi-cog-outline" :to="rel('admin')" v-if="showAdminTab">
                   {{ t('tabs.management') }}
                 </VTab>
               </VTabs>
@@ -49,9 +49,10 @@ import { useI18n } from 'vue-i18n'
 import { useAsyncState } from '@vueuse/core'
 import { http } from '@/utils/http'
 import AsyncState from '@/components/utils/AsyncState.vue'
-import type { IPlanDTO } from '@/components/plan/types'
 import AccessLevelChip from '@/components/utils/AccessLevelChip.vue'
 import RegisterBtn from '@/components/utils/RegisterBtn.vue'
+import { usePlan } from '@/utils/plan/inject'
+import { toRef } from 'vue'
 
 const { t } = useI18n()
 const props = defineProps<{
@@ -61,13 +62,7 @@ const props = defineProps<{
 
 withTitle(computed(() => t('pages.plans')))
 
-const plan = useAsyncState(async () => {
-  const planId = props.planId
-  const resp = await http.get(`plan/${planId}`)
-  const data = await resp.json<IPlanDTO>()
-  if (data.orgId !== props.orgId) throw new Error('orgId not match')
-  return data
-}, null as never)
+const { plan, showAdminTab } = usePlan(toRef(props, 'orgId'), toRef(props, 'planId'))
 
 const participant = useAsyncState(async () => {
   const resp = await http.get(`plan/${props.planId}/self`).json<unknown>()

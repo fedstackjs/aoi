@@ -28,7 +28,7 @@
             <VExpansionPanelText>
               <VTextField :label="t('term.name')" v-model="item.name" />
               <DateTimeInput :label="t('term.start-time')" v-model="item.start" :disabled="!i" />
-              <ContestStageSettings v-model="item.settings" />
+              <ContestStageSettingsInput v-model="item.settings" />
             </VExpansionPanelText>
           </VExpansionPanel>
         </VExpansionPanels>
@@ -52,7 +52,7 @@ import type { IContestDTO } from '@/components/contest/types'
 import type { IContestStage } from '@/types'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import DateTimeInput from '@/components/utils/DateTimeInput.vue'
-import ContestStageSettings from '@/components/contest/ContestStageSettings.vue'
+import ContestStageSettingsInput from '@/components/contest/ContestStageSettingsInput.vue'
 import { useToast } from 'vue-toastification'
 import ms from 'ms'
 

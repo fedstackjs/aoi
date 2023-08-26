@@ -171,6 +171,10 @@ const problemViewRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       if (!req._contestParticipant) return rep.forbidden()
+      const { solutionEnabled } = req._contestStage.settings
+      if (!solutionEnabled && !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)) {
+        return rep.forbidden()
+      }
 
       const oss = await loadOrgOssSettings(req._contest.orgId)
       if (!oss) return rep.preconditionFailed('OSS not configured')

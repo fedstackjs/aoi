@@ -15,8 +15,7 @@ import {
   OrgCapability,
   contestParticipants,
   contests,
-  getCurrentContestStage,
-  problems
+  getCurrentContestStage
 } from '../../db/index.js'
 import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/index.js'
 import { contestAttachmentRoutes } from './attachment.js'

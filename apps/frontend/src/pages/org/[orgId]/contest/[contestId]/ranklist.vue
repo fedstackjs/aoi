@@ -1,5 +1,5 @@
 <template>
-  <AsyncState :state="ranklists">
+  <AsyncState :state="ranklists" hide-when-loading>
     <template v-slot="{ value }">
       <div class="d-flex flex-row">
         <VTabs direction="vertical" color="primary">
@@ -15,7 +15,7 @@
           >
             {{ ranklist.name }}
           </VTab>
-          <VTab prepend-icon="mdi-plus" :to="rel('new')" exact>
+          <VTab prepend-icon="mdi-plus" :to="rel('new')" exact v-if="admin">
             {{ t('action.new') }}
           </VTab>
         </VTabs>
@@ -37,6 +37,7 @@ import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { http } from '@/utils/http'
 import type { IContestDTO } from '@/components/contest/types'
+import { useContestCapability } from '@/utils/contest/inject'
 
 const props = defineProps<{
   orgId: string
@@ -45,6 +46,7 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const admin = useContestCapability('admin')
 
 const ranklists = useAsyncState(async () => {
   const resp = await http.get(`contest/${props.contestId}/ranklist`)

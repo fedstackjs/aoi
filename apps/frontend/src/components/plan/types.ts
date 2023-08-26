@@ -6,6 +6,7 @@ export interface IPlanDTO {
   title: string
   description: string
   tags: string[]
+  capability: string
 }
 
 export interface IPlanContestDTO {

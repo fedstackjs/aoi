@@ -21,6 +21,9 @@
         </VWindowItem>
       </VWindow>
     </template>
+    <template #error="{ state, error }">
+      <slot name="error" :state="state" :error="error"></slot>
+    </template>
   </AsyncState>
 </template>
 
