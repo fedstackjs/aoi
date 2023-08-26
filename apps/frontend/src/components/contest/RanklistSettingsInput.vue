@@ -1,6 +1,6 @@
 <template>
-  <VTextField v-model="model.showBefore" :label="t('common.show-before')" type="number" />
-  <VTextField v-model="model.showAfter" :label="t('common.show-after')" type="number" />
+  <VTextField v-model.number="model.showBefore" :label="t('common.show-before')" type="number" />
+  <VTextField v-model.number="model.showAfter" :label="t('common.show-after')" type="number" />
 </template>
 
 <script setup lang="ts">

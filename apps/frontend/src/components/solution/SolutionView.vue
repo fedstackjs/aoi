@@ -120,12 +120,16 @@ const { t } = useI18n()
 
 const viewFile = ref(false)
 
-const solution = useAsyncState(async () => {
-  const url = props.contestId
-    ? `contest/${props.contestId}/solution/${props.solutionId}`
-    : `problem/${props.problemId}/solution/${props.solutionId}`
-  return http.get(url).json<ISolutionDTO>()
-}, null)
+const solution = useAsyncState(
+  async () => {
+    const url = props.contestId
+      ? `contest/${props.contestId}/solution/${props.solutionId}`
+      : `problem/${props.problemId}/solution/${props.solutionId}`
+    return http.get(url).json<ISolutionDTO>()
+  },
+  null,
+  { resetOnExecute: false }
+)
 
 const submit = useAsyncTask(async () => {
   const url = props.contestId

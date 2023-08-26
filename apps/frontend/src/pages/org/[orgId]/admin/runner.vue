@@ -38,10 +38,10 @@
             <code>{{ item.raw._id }}</code>
           </template>
           <template v-slot:[`item.createdAt`]="{ item }">
-            <code>{{ new Date(item.raw.createdAt).toLocaleString() }}</code>
+            <VChip :text="new Date(item.raw.createdAt).toLocaleString()" />
           </template>
           <template v-slot:[`item.accessedAt`]="{ item }">
-            <code>{{ new Date(item.raw.accessedAt).toLocaleString() }}</code>
+            <VChip v-bind="runnerLastAccessAttrs(item.raw.accessedAt)" />
           </template>
           <template v-slot:[`item._labels`]="{ item }">
             <VChipGroup>
@@ -50,9 +50,31 @@
               </VChip>
             </VChipGroup>
           </template>
+          <template v-slot:[`item._actions`]="{ item }">
+            <VBtn
+              variant="text"
+              icon="mdi-pencil"
+              @click="(editRunnerId = item.raw._id), (editDialog = true)"
+            />
+          </template>
         </VDataTable>
       </template>
     </AsyncState>
+    <VDialog width="auto" v-model="editDialog">
+      <VCard :title="t('term.settings')">
+        <VCardText>
+          <VAlert type="warning" :text="t('runner-settings-warning')" />
+        </VCardText>
+        <SettingsEditor
+          :endpoint="`org/${orgId}/admin/runner/${editRunnerId}`"
+          @updated="(editDialog = false), runners.execute()"
+        >
+          <template v-slot="scoped">
+            <RunnerInfoInput v-model="scoped.value" />
+          </template>
+        </SettingsEditor>
+      </VCard>
+    </VDialog>
   </VCard>
 </template>
 
@@ -64,12 +86,18 @@ import { useI18n } from 'vue-i18n'
 import type { IRunner } from '@/types'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import { useAsyncTask } from '@/utils/async'
+import { ref } from 'vue'
+import SettingsEditor from '@/components/utils/SettingsEditor.vue'
+import RunnerInfoInput from '@/components/org/admin/RunnerInfoInput.vue'
+import { runnerLastAccessAttrs } from '@/utils/org/runner'
 
 const props = defineProps<{
   orgId: string
 }>()
 
 const { t } = useI18n()
+const editDialog = ref()
+const editRunnerId = ref('')
 const runners = useAsyncState(async () => {
   return http.get(`org/${props.orgId}/admin/runner`).json<IRunner[]>()
 }, [])
@@ -86,9 +114,18 @@ const copyTask = useAsyncTask(async () => {
 const headers = [
   { title: t('ID'), key: '_id' },
   { title: t('term.name'), key: 'name' },
+  { title: t('term.version'), key: 'version' },
+  { title: t('term.message'), key: 'message' },
   { title: t('common.created-at'), key: 'createdAt' },
   { title: t('common.accessed-at'), key: 'accessedAt' },
   { title: t('term.labels'), key: '_labels' },
   { title: t('term.actions'), key: '_actions' }
 ] as const
 </script>
+
+<i18n>
+en:
+  runner-settings-warning: Editing runner labels may cause unexpected behavior.
+zh-Hans:
+  runner-settings-warning: 编辑 Runner 标签可能导致意外的行为。
+</i18n>

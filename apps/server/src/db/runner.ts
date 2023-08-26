@@ -8,6 +8,7 @@ export interface IRunner {
   name: string
   key: string
   version: string
+  message: string
 
   createdAt: number
   accessedAt: number

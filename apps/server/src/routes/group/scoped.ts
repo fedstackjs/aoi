@@ -61,7 +61,7 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const group = await groups.findOne({ _id: req._groupId }, { projection: { orgId: 1 } })
+      const group = await groups.findOne({ _id: req._groupId }, { projection: { profile: 1 } })
       if (!group) return rep.notFound()
       return group.profile
     }

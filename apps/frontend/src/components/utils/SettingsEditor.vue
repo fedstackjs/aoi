@@ -22,10 +22,16 @@ import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import AsyncState from './AsyncState.vue'
+import { nextTick } from 'vue'
 
 const props = defineProps<{
   endpoint: string
 }>()
+
+const emit = defineEmits<{
+  (ev: 'updated'): void
+}>()
+
 const { t } = useI18n()
 
 const settings = useAsyncState(
@@ -39,6 +45,7 @@ const patchSettings = useAsyncTask(async () => {
   await http.patch(props.endpoint, {
     json: settings.state.value
   })
-  settings.execute()
+  emit('updated')
+  nextTick(() => settings.execute())
 })
 </script>

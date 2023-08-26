@@ -1,5 +1,5 @@
 <template>
-  <AsyncState :state="profile">
+  <AsyncState :state="profile" hide-when-loading>
     <template v-slot="{ value }">
       <VAvatar>
         <AppGravatar :email="value.email" />

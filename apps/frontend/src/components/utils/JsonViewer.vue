@@ -1,5 +1,5 @@
 <template>
-  <AsyncState :state="data">
+  <AsyncState :state="data" hide-when-loading>
     <template v-slot="{ value }">
       <VTabs v-model="currentTab">
         <VTab prepend-icon="mdi-form-textarea" value="visual" v-if="slots.default">

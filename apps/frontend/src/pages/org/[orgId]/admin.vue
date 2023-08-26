@@ -6,22 +6,14 @@
           <VDivider />
           <div class="d-flex flex-row">
             <VTabs direction="vertical" color="primary">
-              <VTab :to="rel('')" exact>
-                <VIcon start> mdi-account-box </VIcon>
-                {{ t('term.profile') }}
-              </VTab>
-              <VTab :to="rel('settings')">
-                <VIcon start> mdi-cog </VIcon>
-                {{ t('term.settings') }}
-              </VTab>
-              <VTab :to="rel('member')">
-                <VIcon start> mdi-account </VIcon>
-                {{ t('term.members') }}
-              </VTab>
-              <VTab :to="rel('runner')">
-                <VIcon start> mdi-account </VIcon>
-                {{ t('term.runners') }}
-              </VTab>
+              <VTab :to="rel('')" exact prepend-icon="mdi-account-box" :text="t('term.profile')" />
+              <VTab :to="rel('settings')" prepend-icon="mdi-cog" :text="t('term.settings')" />
+              <VTab :to="rel('member')" prepend-icon="mdi-account" :text="t('term.members')" />
+              <VTab
+                :to="rel('runner')"
+                prepend-icon="mdi-server-network"
+                :text="t('term.runners')"
+              />
             </VTabs>
             <VDivider vertical />
             <RouterView class="flex-grow-1" />

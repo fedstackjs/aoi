@@ -83,6 +83,7 @@ export const runnerRoutes = defineRoutes(async (s) => {
         name: req.body.name,
         labels: req.body.labels,
         version: req.body.version,
+        message: '',
         key: runnerKey,
         createdAt: Date.now(),
         accessedAt: Date.now()
@@ -95,15 +96,16 @@ export const runnerRoutes = defineRoutes(async (s) => {
     '/ping',
     {
       schema: {
-        body: Type.Object({
-          version: Type.String()
-        })
+        body: Type.Partial(
+          Type.StrictObject({
+            version: Type.String(),
+            message: Type.String()
+          })
+        )
       }
     },
     async (req) => {
-      if (req.body.version !== req._runner.version) {
-        await runners.updateOne({ _id: req._runner._id }, { $set: { version: req.body.version } })
-      }
+      await runners.updateOne({ _id: req._runner._id }, { $set: req.body })
       return {}
     }
   )
