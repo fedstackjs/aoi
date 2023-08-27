@@ -215,7 +215,7 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
 
 export const runnerRanklistRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
-    if (req._runner.labels.includes('ranklist')) {
+    if (!req._runner.labels.includes('ranker')) {
       return rep.forbidden()
     }
   })
