@@ -19,7 +19,7 @@
       >
         {{ t('action.submit-all') }}
       </VBtn>
-      <VBtn color="red" variant="elevated">
+      <VBtn color="red" variant="elevated" @click="deleteContest()">
         {{ t('action.delete') }}
       </VBtn>
     </VCardActions>
@@ -32,6 +32,7 @@ import AccessLevelEditor from '@/components/utils/AccessLevelEditor.vue'
 import { useAsyncTask } from '@/utils/async'
 import { http } from '@/utils/http'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 const props = defineProps<{
   orgId: string
@@ -44,10 +45,17 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const router = useRouter()
 
 const submitAllTask = useAsyncTask(async () => {
   http.post(`contest/${props.contestId}/admin/submit-all`)
 })
+
+async function deleteContest() {
+  await http.delete(`contest/${props.contestId}/admin`)
+  router.push(`/org/${props.orgId}/contest`)
+  emit('updated')
+}
 </script>
 
 <i18n>

@@ -17,7 +17,7 @@
       {{ t('term.danger-zone') }}
     </VCardSubtitle>
     <VCardActions>
-      <VBtn color="red" variant="elevated">
+      <VBtn color="red" variant="elevated" @click="deletePlan()">
         {{ t('action.delete') }}
       </VBtn>
     </VCardActions>
@@ -30,8 +30,10 @@ import type { IPlanDTO } from '@/components/plan/types'
 import AccessLevelEditor from '@/components/utils/AccessLevelEditor.vue'
 import SettingsEditor from '@/components/utils/SettingsEditor.vue'
 import { useI18n } from 'vue-i18n'
+import { http } from '@/utils/http'
+import { useRouter } from 'vue-router'
 
-defineProps<{
+const props = defineProps<{
   orgId: string
   planId: string
   plan: IPlanDTO
@@ -42,4 +44,11 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const router = useRouter()
+
+async function deletePlan() {
+  await http.delete(`plan/${props.planId}/admin`)
+  router.push(`/org/${props.orgId}/plan`)
+  emit('updated')
+}
 </script>
