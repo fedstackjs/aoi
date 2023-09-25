@@ -1,8 +1,10 @@
 import { Type } from '@sinclair/typebox'
-import { OrgCapability, orgMemberships, users } from '../../../db/index.js'
+import bcrypt from 'bcrypt'
+import { IUser, OrgCapability, orgMemberships, users } from '../../../db/index.js'
 import { paginationSkip } from '../../../utils/index.js'
 import { defineRoutes, loadUUID } from '../../common/index.js'
 import { BSON } from 'mongodb'
+import { SUserProfile } from '../../../index.js'
 
 export const orgAdminMemberRoutes = defineRoutes(async (s) => {
   s.get(
@@ -158,6 +160,65 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
       })
       if (!deletedCount) return rep.notFound()
       return {}
+    }
+  )
+
+  s.post(
+    '/batchImport',
+    {
+      schema: {
+        description: 'Batch import members',
+        body: Type.Object({
+          users: Type.Array(
+            Type.Object({
+              profile: SUserProfile,
+              password: Type.String(),
+              passwordResetDue: Type.Boolean({ default: false }),
+              orgCapability: Type.String({ default: OrgCapability.CAP_ACCESS.toString() }),
+              orgGroups: Type.Array(Type.UUID(), { default: [] })
+            })
+          ),
+          ignoreDuplicates: Type.Boolean({ default: false })
+        })
+      }
+    },
+    async (req) => {
+      const usersToInsert = await Promise.all(
+        req.body.users.map(
+          async (user) =>
+            ({
+              _id: new BSON.UUID(),
+              profile: user.profile,
+              authSources: {
+                password: await bcrypt.hash(user.password, 10),
+                passwordResetDue: user.passwordResetDue
+              }
+            }) satisfies IUser
+        )
+      )
+      const { insertedCount, insertedIds } = await users.insertMany(usersToInsert, {
+        ordered: !req.body.ignoreDuplicates
+      })
+      let successCount = 0
+      for (let i = 0; i < req.body.users.length; i++) {
+        try {
+          const id =
+            insertedIds[i] ??
+            (await users.findOne({ 'profile.name': req.body.users[i].profile.name }))?._id
+          if (!id) continue
+          const { insertedId } = await orgMemberships.insertOne({
+            _id: new BSON.UUID(),
+            userId: id,
+            orgId: req._orgId,
+            capability: new BSON.Long(req.body.users[i].orgCapability),
+            groups: req.body.users[i].orgGroups.map((g) => new BSON.UUID(g))
+          })
+          if (insertedId) successCount++
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      return { insertedCount, successCount }
     }
   )
 })

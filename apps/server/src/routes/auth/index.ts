@@ -21,7 +21,8 @@ export const authRoutes = defineRoutes(async (s) => {
         }),
         response: {
           200: Type.Object({
-            token: Type.String()
+            userId: Type.Optional(Type.String()),
+            token: Type.Optional(Type.String())
           })
         }
       }
@@ -37,8 +38,47 @@ export const authRoutes = defineRoutes(async (s) => {
       if (!match) {
         throw s.httpErrors.forbidden('Invalid username or password')
       }
+      if (user.authSources.passwordResetDue) {
+        return { userId: user._id.toString() }
+      }
       const token = await rep.jwtSign({ userId: user._id.toString() }, { expiresIn: '7d' })
       return { token }
+    }
+  )
+
+  s.post(
+    '/resetPassword',
+    {
+      schema: {
+        body: Type.Object({
+          userId: Type.String(),
+          oldPassword: Type.String(),
+          newPassword: Type.String()
+        })
+      }
+    },
+    async (req) => {
+      const user = await users.findOne({
+        _id: new BSON.UUID(req.body.userId)
+      })
+      if (!user?.authSources.password) {
+        throw s.httpErrors.forbidden('Invalid username or password')
+      }
+      const match = await bcrypt.compare(req.body.oldPassword, user.authSources.password)
+      if (!match) {
+        throw s.httpErrors.forbidden('Invalid username or password')
+      }
+      const password = await bcrypt.hash(req.body.newPassword, 10)
+      await users.updateOne(
+        { _id: new BSON.UUID(req.body.userId) },
+        {
+          $set: {
+            'authSources.password': password,
+            'authSources.passwordResetDue': false
+          }
+        }
+      )
+      return 0
     }
   )
 
