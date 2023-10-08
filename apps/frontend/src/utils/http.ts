@@ -1,6 +1,9 @@
 import { useLocalStorage } from '@vueuse/core'
-import ky from 'ky'
+import ky, { HTTPError } from 'ky'
 import { computed } from 'vue'
+import { useToast } from 'vue-toastification'
+
+const toast = useToast()
 
 const token = useLocalStorage('aoi-auth-token', '')
 export const isLoggedIn = computed(() => !!token.value)
@@ -14,6 +17,17 @@ export const http: typeof ky = ky.create({
     beforeRequest: [
       (req) => {
         token.value && req.headers.set('Authorization', `Bearer ${token.value}`)
+      }
+    ],
+    beforeError: [
+      (err: HTTPError) => {
+        if (err.response.status === 401) {
+          if (err.message === 'Authorization token expired' && token.value) {
+            toast.error('msg.session-expired')
+            logout()
+          }
+        }
+        return err
       }
     ]
   }

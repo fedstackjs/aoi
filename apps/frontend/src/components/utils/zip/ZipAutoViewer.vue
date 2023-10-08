@@ -1,5 +1,5 @@
 <template>
-  <ZipViewer v-if="zip" :zip="zip" />
+  <ZipViewer v-if="zip" :zip="zip" :default-file="props.defaultFile" />
 </template>
 
 <script setup lang="ts">
@@ -11,6 +11,7 @@ import ZipViewer from './ZipViewer.vue'
 
 const props = defineProps<{
   endpoint: string
+  defaultFile?: string
 }>()
 const zip = shallowRef<JSZip>()
 

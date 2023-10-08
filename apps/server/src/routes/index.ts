@@ -14,6 +14,8 @@ import { loadEnv } from '../utils/config.js'
 import { groupRoutes } from './group/index.js'
 import { contestRoutes } from './contest/index.js'
 import { planRoutes } from './plan/index.js'
+import { infoRoutes } from './info/index.js'
+import { announcementRoutes } from './announcement/index.js'
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
@@ -75,4 +77,6 @@ export const apiRoutes = defineRoutes(async (s) => {
   s.register(planRoutes, { prefix: '/plan' })
   s.register(adminRoutes, { prefix: '/admin' })
   s.register(runnerRoutes, { prefix: '/runner' })
+  s.register(infoRoutes, { prefix: '/info' })
+  s.register(announcementRoutes, { prefix: '/announcement' })
 })

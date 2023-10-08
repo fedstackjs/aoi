@@ -2,35 +2,55 @@
   <VContainer>
     <VRow>
       <VCol>
-        <VCard>
-          <OrgInfoCard :org-id="props.orgId" />
-        </VCard>
+        <PosterCarousel />
       </VCol>
     </VRow>
     <VRow>
       <VCol>
-        <RecentContestsCard :org-id="props.orgId" />
+        <VContainer class="pa-0">
+          <VRow>
+            <VCol>
+              <RecentContestsCard :org-id="appState.orgId" />
+            </VCol>
+          </VRow>
+          <VRow>
+            <VCol>
+              <PlanCardsWrapper :org-id="appState.orgId" />
+            </VCol>
+          </VRow>
+        </VContainer>
       </VCol>
       <VCol>
-        <RecentPlansCard :org-id="props.orgId" />
+        <VContainer class="pa-0">
+          <VRow>
+            <VCol>
+              <AnnouncementsCard />
+            </VCol>
+          </VRow>
+          <VRow>
+            <VCol>
+              <FriendLinksCard />
+            </VCol>
+          </VRow>
+        </VContainer>
       </VCol>
     </VRow>
   </VContainer>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
-import OrgInfoCard from '@/components/org/home/OrgInfoCard.vue'
-import RecentContestsCard from '@/components/org/home/RecentContestsCard.vue'
-import RecentPlansCard from '@/components/org/home/RecentPlansCard.vue'
-
-const props = defineProps<{
-  orgId: string
-}>()
+import { useI18n } from 'vue-i18n'
+import { useAppState } from '@/stores/app'
+import PosterCarousel from '@/components/homepage/PosterCarousel.vue'
+import RecentContestsCard from '@/components/homepage/RecentContestsCard.vue'
+import PlanCardsWrapper from '@/components/homepage/PlanCardsWrapper.vue'
+import AnnouncementsCard from '@/components/homepage/AnnouncementsCard.vue'
+import FriendLinksCard from '@/components/homepage/FriendLinksCard.vue'
 
 const { t } = useI18n()
+const appState = useAppState()
 
 withTitle(computed(() => t('pages.home')))
 </script>

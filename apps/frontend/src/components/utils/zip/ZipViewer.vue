@@ -19,12 +19,22 @@
 
 <script setup lang="ts">
 import type JSZip from 'jszip'
-import { shallowRef } from 'vue'
+import { shallowRef, watch } from 'vue'
 import ZipFileViewer from './ZipFileViewer.vue'
 
 const props = defineProps<{
   zip: JSZip
+  defaultFile?: string
 }>()
 
 const currentFile = shallowRef<JSZip.JSZipObject>()
+
+watch(
+  () => props.zip,
+  (zip) => {
+    if (props.defaultFile) {
+      currentFile.value = zip.file(props.defaultFile) ?? undefined
+    }
+  }
+)
 </script>

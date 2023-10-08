@@ -30,7 +30,8 @@ export interface IPlanContestSettings extends Static<typeof SPlanContestSettings
 export const SPlanSettings = Type.Partial(
   Type.StrictObject({
     registrationEnabled: Type.Boolean(),
-    registrationAllowPublic: Type.Boolean()
+    registrationAllowPublic: Type.Boolean(),
+    promotion: Type.Optional(Type.Boolean())
   })
 )
 

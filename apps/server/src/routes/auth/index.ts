@@ -95,6 +95,8 @@ export const authRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const { profile, password: rawPassword } = req.body
       const password = await bcrypt.hash(rawPassword, 10)
+      if (await users.findOne({ 'profile.name': profile.name }))
+        return rep.conflict('Username already exists')
       const { insertedId } = await users.insertOne({
         _id: new BSON.UUID(),
         profile,

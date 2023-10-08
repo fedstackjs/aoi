@@ -10,13 +10,8 @@
                   <p class="text-h4">{{ value.title }}</p>
                   <p class="text-h6 ml-2">{{ value.slug }}</p>
                 </div>
-                <div>
-                  <VChipGroup class="justify-end">
-                    <VChip v-for="tag in value.tags" class="mx-2" :key="tag">
-                      {{ tag }}
-                    </VChip>
-                    <AccessLevelChip :accessLevel="value.accessLevel" />
-                  </VChipGroup>
+                <div class="justify-end">
+                  <ProblemTagGroup :tags="value.tags" :access-level="value.accessLevel" />
                 </div>
               </VCardTitle>
               <VDivider />
@@ -55,9 +50,9 @@ import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AsyncState from '@/components/utils/AsyncState.vue'
-import AccessLevelChip from '@/components/utils/AccessLevelChip.vue'
 import { useProblem } from '@/utils/problem/inject'
 import { toRef } from 'vue'
+import ProblemTagGroup from '@/components/problem/ProblemTagGroup.vue'
 
 const props = defineProps<{
   orgId: string

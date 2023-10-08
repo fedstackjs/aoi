@@ -112,6 +112,7 @@ export function useAppNavMenu() {
   return computed(() => [
     ...orgItems(),
     { prependIcon: 'mdi-help', to: '/about', title: t('pages.about') },
+    { prependIcon: 'mdi-rss', to: '/announcement', title: t('pages.announcements') },
     ...adminItems(),
     ...debugItems()
   ])

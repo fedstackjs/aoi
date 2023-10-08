@@ -1,0 +1,42 @@
+<template>
+  <VDataTableServer
+    :headers="headers"
+    :items-length="announcements.state.value.total"
+    :items="announcements.state.value.items"
+    :items-per-page-options="[{ title: '15', value: 15 }]"
+    :loading="announcements.isLoading.value"
+    v-model:page="page"
+    v-model:items-per-page="itemsPerPage"
+    item-value="_id"
+    @update:options="({ page, itemsPerPage }) => announcements.execute(0, page, itemsPerPage)"
+  >
+    <template v-slot:[`item.title`]="{ item }">
+      <RouterLink :to="`/announcement/${item.raw._id}`">
+        {{ item.raw.title }}
+      </RouterLink>
+    </template>
+    <template v-slot:[`item.date`]="{ item }">
+      <code>{{ fmtDate(item.raw.date) }}</code>
+    </template>
+  </VDataTableServer>
+</template>
+
+<script setup lang="ts">
+import { withTitle } from '@/utils/title'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { VDataTableServer } from 'vuetify/labs/components'
+import { usePagination } from '@/utils/pagination'
+import { fmtDate } from './fmtdate'
+
+const { t } = useI18n()
+
+withTitle(computed(() => t('pages.announcements')))
+
+const headers = [
+  { title: t('term.title'), key: 'title', sortable: false },
+  { title: t('term.date'), key: 'date', sortable: false }
+] as const
+
+const { page, itemsPerPage, result: announcements } = usePagination(`announcement`, {})
+</script>

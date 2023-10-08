@@ -26,5 +26,8 @@
     "all:check-type": "yarn workspaces foreach run type-check",
     "all:check": "concurrently -m 1 \"yarn:all:check-*\"",
     "git:precommit": "run all:check"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
   }
 }

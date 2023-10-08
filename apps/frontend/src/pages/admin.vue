@@ -7,6 +7,7 @@
         <VSpacer />
         <VBtn to="/admin/" text="Dashboard" variant="text" exact />
         <VBtn to="/admin/user" text="Users" variant="text" />
+        <VBtn to="/admin/misc" text="Misc" variant="text" />
       </VToolbar>
       <RouterView />
     </VCard>

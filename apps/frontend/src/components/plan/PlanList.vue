@@ -29,9 +29,6 @@
         </VChip>
       </VChipGroup>
     </template>
-    <template v-slot:[`item._id`]="{ item }">
-      <code>{{ item.raw._id }}</code>
-    </template>
   </VDataTableServer>
 </template>
 
@@ -56,8 +53,7 @@ withTitle(computed(() => t('pages.plans')))
 const headers = [
   { title: t('term.slug'), key: 'slug', align: 'start', sortable: false },
   { title: t('term.name'), key: 'title', sortable: false },
-  { title: t('term.tags'), key: 'tags', sortable: false },
-  { title: '#', key: '_id', sortable: false }
+  { title: t('term.tags'), key: 'tags', sortable: false }
 ] as const
 
 const {

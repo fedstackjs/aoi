@@ -24,7 +24,7 @@
 
       <VTextField
         v-model="password"
-        :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+        :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
         :type="showPassword ? 'text' : 'password'"
         prepend-inner-icon="mdi-lock-outline"
         @click:append-inner="showPassword = !showPassword"
@@ -55,10 +55,12 @@ import { useI18n } from 'vue-i18n'
 import { useAppState } from '@/stores/app'
 import { useRouter } from 'vue-router'
 import { http, login } from '@/utils/http'
+import { useToast } from 'vue-toastification'
 
 const { t } = useI18n()
 const router = useRouter()
 const appState = useAppState()
+const toast = useToast()
 if (appState.loggedIn) router.replace('/')
 
 const username = ref('')
@@ -68,7 +70,7 @@ const email = ref('')
 
 const usernameRules = [
   (value: string) => {
-    if (value.length >= 8) return true
+    if (value.length > 0) return true
     return t('hint.violate-username-rule')
   }
 ]
@@ -112,32 +114,42 @@ async function signup() {
     ).some(([value, rules]) => rules.some((rule) => rule(value.value) !== true))
   )
     return
-  const resp = await http.post('auth/signup', {
-    json: {
-      profile: {
-        name: username.value,
-        realname: realname.value,
-        email: email.value
-      },
-      password: password.value
-    }
-  })
-  const { token } = await resp.json<{ token: string }>()
-  login(token)
-  router.push('/signin')
+  try {
+    const resp = await http.post('auth/signup', {
+      json: {
+        profile: {
+          name: username.value,
+          realname: realname.value,
+          email: email.value
+        },
+        password: password.value
+      }
+    })
+    const { token } = await resp.json<{ token: string }>()
+    login(token)
+    toast.success(t('hint.signup-success'))
+    router.push('/signin')
+  } catch (error) {
+    toast.error(t('hint.signup-username-exists'))
+    return
+  }
 }
 </script>
 <i18n>
 en:
   hint:
-    violate-username-rule: Username must be at least 8 characters.
+    violate-username-rule: Username must not be empty.
     violate-password-rule: Password must be at least 8 characters.
     violate-email-rule: Invalid email.
     violate-realname-rule: Realname must not be empty.
+    signup-username-exists: Username already exists.
+    signup-success: Sign up successfully.
 zh-Hans:
   hint:
-    violate-username-rule: 用户名至少需要8个字符
+    violate-username-rule: 用户名不能为空
     violate-password-rule: 密码至少需要8个字符
-    violate-email-rule: 非法邮箱
+    violate-email-rule: 邮箱格式不合法
     violate-realname-rule: 真实名不能为空
+    signup-username-exists: 用户名已存在
+    signup-success: 注册成功
   </i18n>

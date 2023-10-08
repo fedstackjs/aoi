@@ -116,5 +116,54 @@ export const planRoutes = defineRoutes(async (s) => {
     }
   )
 
+  s.get(
+    '/demo',
+    {
+      schema: {
+        description: 'List plans to be demonstrated on the homepage',
+        querystring: Type.Object({
+          orgId: Type.String()
+        }),
+        response: {
+          200: Type.Array(
+            Type.Object({
+              _id: Type.UUID()
+            })
+          )
+        }
+      }
+    },
+    async (req) => {
+      const { orgId: rawOrgId } = req.query
+      const orgId = new BSON.UUID(rawOrgId)
+      const searchFilter = { 'settings.promotion': true }
+      const membership = await loadMembership(req.user.userId, orgId)
+      const basicAccessLevel = membership
+        ? hasCapability(membership.capability, OrgCapability.CAP_CONTEST)
+          ? AccessLevel.PRIVATE
+          : AccessLevel.RESTRICED
+        : AccessLevel.PUBLIC
+      const principalIds = [req.user.userId, ...(membership?.groups ?? [])]
+      const result = await plans
+        .find(
+          {
+            orgId,
+            ...searchFilter,
+            $or: [
+              { accessLevel: { $lte: basicAccessLevel } },
+              { 'associations.principalId': { $in: principalIds } }
+            ]
+          },
+          {
+            projection: {
+              _id: 1
+            }
+          }
+        )
+        .toArray()
+      return result
+    }
+  )
+
   s.register(planScopedRoutes, { prefix: '/:planId' })
 })

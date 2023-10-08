@@ -14,6 +14,8 @@ pages:
   user-settings: User Settings
   forgot-passwd: Forgot Password
   logout: Log out
+  modify-passwd: Modify Password
+  announcements: Announcements
 
 action:
   reload: Reload
@@ -84,6 +86,12 @@ term:
   problem: Problem
   problem-id: Problem ID
   search: Search
+  version: Version
+  batch-import: Batch Import
+  user: User
+  date: Date
+  stage: Stage
+  preview: Preview
 
 common:
   created-at: Created at
@@ -117,6 +125,7 @@ msg:
   no-ranklist: No Ranklist
   no-contest: No Contest
   operation-success: Operation Success
+  session-expired: Session Expired, Please Sign in Again.
 
 tabs:
   description: Description
@@ -133,3 +142,13 @@ tabs:
 metrics:
   cpu: CPU
   mem: Memory
+
+difficulty:
+  easy: Easy
+  medium: Medium
+  hard: Hard
+
+stages:
+  upcoming: Upcoming
+  running: Running
+  end: End

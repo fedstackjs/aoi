@@ -3,7 +3,7 @@
     <template v-slot="{ value }">
       <VRow>
         <VCol>
-          <UserInfoBoard :profile="value" :user-id="props.userId" :show-settings="true" />
+          <UserInfoBoard :profile="value" :user-id="props.userId" :show-settings="showSettings" />
         </VCol>
       </VRow>
     </template>
@@ -16,13 +16,19 @@ import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
 import { useAsyncState } from '@vueuse/core'
 import { http } from '@/utils/http'
+import { useAppState } from '@/stores/app'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import UserInfoBoard from '@/components/user/UserInfoBoard.vue'
 
 const { t } = useI18n()
+const appState = useAppState()
 const props = defineProps<{
   userId: string
 }>()
+
+const showSettings = computed(
+  () => appState.userCapability == -1 || appState.userId === props.userId
+)
 
 withTitle(computed(() => t('pages.user-info')))
 

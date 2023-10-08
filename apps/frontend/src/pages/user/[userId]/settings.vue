@@ -13,8 +13,8 @@
     </SettingsEditor>
     <VDivider />
     <VCardText>
-      <VTextField v-model="oldPassword" label="Old Password" type="password" />
-      <VTextField v-model="newPassword" label="New Password" type="password" />
+      <VTextField v-model="oldPassword" :label="t('old-password')" type="password" />
+      <VTextField v-model="newPassword" :label="t('new-password')" type="password" />
     </VCardText>
     <VCardActions>
       <VBtn variant="elevated" @click="updateTask.execute()" :loading="updateTask.isLoading.value">
@@ -44,6 +44,10 @@ const { oldPassword, newPassword, updateTask } = useChangePassword(toRef(props, 
 <i18n>
 en:
   back-to-user-info: Back to user info
+  old-password: Old Password
+  new-password: New Password
 zh-Hans:
   back-to-user-info: 返回用户界面
+  old-password: 旧密码
+  new-password: 新密码
 </i18n>

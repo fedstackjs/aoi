@@ -72,11 +72,6 @@
     </template>
   </AsyncState>
   <VDivider />
-  <template v-if="solution.state.value?.state === 4">
-    <VCardSubtitle>{{ t('solution.details') }}</VCardSubtitle>
-    <SolutionDetails :problem-id="problemId" :contest-id="contestId" :solution-id="solutionId" />
-    <VDivider />
-  </template>
   <VCardSubtitle>{{ t('term.actions') }}</VCardSubtitle>
   <VCardActions>
     <DownloadBtn :endpoint="downloadEndpoint" />
@@ -95,8 +90,13 @@
     <VBtn :text="t('action.view')" @click="viewFile = true" />
   </VCardActions>
   <VCardText v-if="viewFile">
-    <ZipAutoViewer :endpoint="downloadEndpoint" />
+    <ZipAutoViewer :endpoint="downloadEndpoint" default-file="answer.code" />
   </VCardText>
+  <template v-if="solution.state.value?.state === 4">
+    <VDivider />
+    <VCardSubtitle>{{ t('solution.details') }}</VCardSubtitle>
+    <SolutionDetails :problem-id="problemId" :contest-id="contestId" :solution-id="solutionId" />
+  </template>
 </template>
 
 <script setup lang="ts">
@@ -131,7 +131,7 @@ const downloadEndpoint = computed(() =>
     : `problem/${props.problemId}/solution/${props.solutionId}/data`
 )
 
-const viewFile = ref(false)
+const viewFile = ref(true)
 
 const solution = useAsyncState(
   async () => {

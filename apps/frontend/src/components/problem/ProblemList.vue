@@ -19,18 +19,7 @@
       </RouterLink>
     </template>
     <template v-slot:[`item.tags`]="{ item }">
-      <VChipGroup>
-        <VChip
-          v-for="tag in item.raw.tags"
-          :key="tag"
-          :to="`/org/${orgId}/problem/tag/${encodeURIComponent(tag)}`"
-        >
-          {{ tag }}
-        </VChip>
-      </VChipGroup>
-    </template>
-    <template v-slot:[`item._id`]="{ item }">
-      <code>{{ item.raw._id }}</code>
+      <ProblemTagGroup :tags="item.raw.tags" :url-prefix="`/org/${orgId}/problem/tag`" />
     </template>
   </VDataTableServer>
 </template>
@@ -42,6 +31,7 @@ import { useI18n } from 'vue-i18n'
 import { VDataTableServer } from 'vuetify/labs/components'
 import { usePagination } from '@/utils/pagination'
 import { watch } from 'vue'
+import ProblemTagGroup from './ProblemTagGroup.vue'
 
 const props = defineProps<{
   orgId: string
@@ -56,8 +46,7 @@ withTitle(computed(() => t('pages.problems')))
 const headers = [
   { title: t('term.slug'), key: 'slug', align: 'start', sortable: false },
   { title: t('term.name'), key: 'title', sortable: false },
-  { title: t('term.tags'), key: 'tags', sortable: false },
-  { title: '#', key: '_id', sortable: false }
+  { title: t('term.tags'), key: 'tags', sortable: false }
 ] as const
 
 const {

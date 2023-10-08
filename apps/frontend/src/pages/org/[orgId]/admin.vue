@@ -14,6 +14,11 @@
                 prepend-icon="mdi-server-network"
                 :text="t('term.runners')"
               />
+              <VTab
+                :to="rel('batch-import')"
+                prepend-icon="mdi-account-multiple-plus"
+                :text="t('term.batch-import')"
+              />
             </VTabs>
             <VDivider vertical />
             <RouterView class="flex-grow-1" />

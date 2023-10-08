@@ -12,9 +12,11 @@
       </VBtn>
     </VToolbarItems>
     <VAppBarTitle>{{ appState.title }}</VAppBarTitle>
+    <TimeLabel />
 
     <VSpacer></VSpacer>
 
+    <SearchBox v-if="appState.orgId" :org-id="appState.orgId" />
     <VToolbarItems v-if="appState.loggedIn">
       <AppBarAddMenu />
       <AppBarUserMenu />
@@ -33,6 +35,8 @@ import { useI18n } from 'vue-i18n'
 import AppBarUserMenu from './AppBarUserMenu.vue'
 import AppBarAddMenu from './AppBarAddMenu.vue'
 import AppLogo from './AppLogo.vue'
+import TimeLabel from '../homepage/TimeLabel.vue'
+import SearchBox from '../homepage/SearchBox.vue'
 
 const { t } = useI18n()
 const appState = useAppState()
