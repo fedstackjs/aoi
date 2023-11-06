@@ -141,6 +141,10 @@ tabs:
   ranklist: 排行榜
   problem-description: 题面
 
+metrics:
+  cpu: CPU
+  mem: Memory
+
 difficulty:
   easy: 简单
   medium: 中等

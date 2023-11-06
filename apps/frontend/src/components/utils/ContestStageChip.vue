@@ -34,7 +34,7 @@ const getTTLMsg = (rawTTL: number, nextName: string) => {
   const s = Math.floor((rest % 60000) / 1000)
   if (d > 0)
     return (
-      (d > 1 ? d + ' ' + t('unit.days') : t('unit.day')) + ' ' + t('left-until') + ' ' + nextName
+      d + ' ' + (d > 1 ? t('unit.days') : t('unit.day')) + ' ' + t('left-until') + ' ' + nextName
     )
   else
     return (

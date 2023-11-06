@@ -1,6 +1,6 @@
 import { useAppState } from '@/stores/app'
 import { computed } from 'vue'
-import { hasCapability, useOrgCapability, useUserCapability, userBits } from './capability'
+import { hasCapability, orgBits, useOrgCapability, useUserCapability, userBits } from './capability'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { logout } from '@/utils/http'
@@ -91,9 +91,16 @@ export function useAppNavMenu() {
       { prependIcon: 'mdi-list-box', to: '/problem', title: t('pages.problems') },
       { prependIcon: 'mdi-balloon', to: '/contest', title: t('pages.contests') },
       { prependIcon: 'mdi-clipboard-text-outline', to: '/plan', title: t('pages.plans') },
-      { prependIcon: 'mdi-account-multiple', to: '/group', title: t('pages.groups') },
-      { prependIcon: 'mdi-cog', to: '/admin', title: t('pages.admin') }
+      { prependIcon: 'mdi-account-multiple', to: '/group', title: t('pages.groups') }
     ].map((item) => ({
+      ...item,
+      to: `/org/${appState.orgId}${item.to}`
+    }))
+  }
+
+  const orgAdminItems = () => {
+    if (!appState.orgId || !hasCapability(appState.orgCapability, orgBits.admin)) return []
+    return [{ prependIcon: 'mdi-cog', to: '/admin', title: t('pages.admin') }].map((item) => ({
       ...item,
       to: `/org/${appState.orgId}${item.to}`
     }))
@@ -111,6 +118,7 @@ export function useAppNavMenu() {
 
   return computed(() => [
     ...orgItems(),
+    ...orgAdminItems(),
     { prependIcon: 'mdi-help', to: '/about', title: t('pages.about') },
     { prependIcon: 'mdi-rss', to: '/announcement', title: t('pages.announcements') },
     ...adminItems(),

@@ -23,7 +23,7 @@ const props = defineProps<{
 
 const { t } = useI18n()
 const text = computed(() =>
-  props.participant.state.value ? t('already-registered') : t('action.register')
+  props.participant.state.value ? t('already-registered') : t('contest-register')
 )
 const register = useAsyncTask(async () => {
   await http.post(props.endpoint)
@@ -33,7 +33,9 @@ const register = useAsyncTask(async () => {
 
 <i18n>
 en:
+  contest-register: Register
   already-registered: Already Registered
 zh-Hans:
+  contest-register: 报名
   already-registered: 已报名
 </i18n>

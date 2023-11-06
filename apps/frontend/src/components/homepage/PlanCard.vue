@@ -3,9 +3,9 @@
     <VToolbar dark color="grey-lighten-2">
       <VBtn icon="mdi-clipboard-text-outline" variant="plain" />
       <VToolbarTitle>
-        <a :href="`/org/${props.orgId}/plan/${props.planId}`">
+        <RouterLink :to="`/org/${props.orgId}/plan/${props.planId}`">
           {{ title }}
-        </a>
+        </RouterLink>
       </VToolbarTitle>
     </VToolbar>
     <VCardText>
@@ -20,9 +20,9 @@
             <template v-slot="{ value }">
               <tr v-for="(item, i) in value.contests" :key="i">
                 <td class="text-body-1">
-                  <a :href="`/org/${props.orgId}/plan/${props.planId}/contest/${item._id}`">
+                  <RouterLink :to="`/org/${props.orgId}/plan/${props.planId}/contest/${item._id}`">
                     {{ item.title }}
-                  </a>
+                  </RouterLink>
                 </td>
               </tr>
             </template>

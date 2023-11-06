@@ -7,24 +7,18 @@
     </VRow>
     <VRow>
       <VCol>
-        <VContainer class="pa-0">
-          <VRow>
-            <VCol>
-              <RecentContestsCard :org-id="appState.orgId" />
-            </VCol>
-          </VRow>
-          <VRow>
-            <VCol>
-              <PlanCardsWrapper :org-id="appState.orgId" />
-            </VCol>
-          </VRow>
-        </VContainer>
+        <RecentContestsCard :org-id="appState.orgId" />
+      </VCol>
+    </VRow>
+    <VRow>
+      <VCol>
+        <AnnouncementsCard />
       </VCol>
       <VCol>
         <VContainer class="pa-0">
           <VRow>
             <VCol>
-              <AnnouncementsCard />
+              <PlanCardsWrapper :org-id="appState.orgId" />
             </VCol>
           </VRow>
           <VRow>

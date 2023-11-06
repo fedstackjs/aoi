@@ -36,13 +36,19 @@
                   :text="t('tabs.attachments')"
                 />
                 <VTab
-                  v-if="showAdminTab || value.currentStage.settings.problemEnabled"
+                  v-if="
+                    showAdminTab ||
+                    (value.currentStage.settings.problemEnabled && participant.state.value)
+                  "
                   prepend-icon="mdi-list-box"
                   :to="rel('problem')"
                   :text="t('tabs.problems')"
                 />
                 <VTab
-                  v-if="showAdminTab || value.currentStage.settings.solutionEnabled"
+                  v-if="
+                    showAdminTab ||
+                    (value.currentStage.settings.solutionEnabled && participant.state.value)
+                  "
                   prepend-icon="mdi-timer-sand"
                   :to="rel('solution?userId=' + app.userId)"
                   :text="t('tabs.solutions')"
