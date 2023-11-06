@@ -98,7 +98,11 @@ async function submit(file: File) {
       : `/org/${route.params.orgId}/problem/${props.problem._id}/solution/${solutionId}`
     router.push(url)
   } catch (err) {
-    toast.error(t('failed', { msg: `${err}` }))
+    if (err === 'Solution limit reached') {
+      toast.error(t('failed.solution-limit-reached'))
+    } else {
+      toast.error(err as string)
+    }
   }
 }
 </script>
@@ -109,9 +113,13 @@ en:
   submit-upload-file: Upload File
   submit-upload-dir: Upload Directory
   submit-success: Submitted successfully
+  failed:
+    solution-limit-reached: Solution limit reached
 zh-Hans:
   submit-form: 可视化提交
   submit-upload-file: 上传文件
   submit-upload-dir: 上传目录
   submit-success: 提交成功
+  failed:
+    solution-limit-reached: 提交次数已达上限
 </i18n>

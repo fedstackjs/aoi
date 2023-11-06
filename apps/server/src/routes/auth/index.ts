@@ -4,6 +4,7 @@ import { users } from '../../db/index.js'
 import { BSON } from 'mongodb'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { SUserProfile } from '../../schemas/index.js'
+import { infos, orgMemberships, OrgCapability } from '../../db/index.js'
 
 export const authRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', (route) => {
@@ -104,6 +105,20 @@ export const authRoutes = defineRoutes(async (s) => {
           password
         }
       })
+
+      const info = await infos.findOne()
+      const defaultOrgId = info?.regDefaultOrg ?? ''
+      if (BSON.UUID.isValid(defaultOrgId)) {
+        const doUUID = new BSON.UUID(defaultOrgId)
+        await orgMemberships.insertOne({
+          _id: new BSON.UUID(),
+          userId: insertedId,
+          orgId: doUUID,
+          capability: OrgCapability.CAP_ACCESS,
+          groups: []
+        })
+      }
+
       const token = await rep.jwtSign({ userId: insertedId.toString() }, { expiresIn: '7d' })
       return { token }
     }

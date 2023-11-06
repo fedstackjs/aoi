@@ -51,13 +51,15 @@ import AppGravatar from '../app/AppGravatar.vue'
 import { useAppState } from '@/stores/app'
 import { useI18n } from 'vue-i18n'
 import { watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 const appState = useAppState()
 const { t } = useI18n()
+const router = useRouter()
 
 const joinedOrgs = useAsyncState(async () => {
   const orgs = await http.get('org')
-  return orgs.json<
+  const orgArr = await orgs.json<
     Array<{
       _id: string
       profile: {
@@ -66,6 +68,10 @@ const joinedOrgs = useAsyncState(async () => {
       }
     }>
   >()
+  if (orgArr.length > 0) {
+    router.replace(`/org/${orgArr[0]._id}`)
+  }
+  return orgArr
 }, [])
 
 watch(

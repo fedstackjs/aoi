@@ -47,12 +47,4 @@ const router = useRouter()
 const appState = useAppState()
 
 withTitle(computed(() => t('pages.home')))
-
-async function autoRedirect() {
-  if (!appState.userId) return
-  const resp = await http.get(`user/${appState.userId}/first`)
-  const { firstLogin } = await resp.json<{ firstLogin: boolean }>()
-  if (firstLogin) router.replace('/initial')
-}
-autoRedirect()
 </script>

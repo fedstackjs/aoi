@@ -77,10 +77,14 @@ async function signin() {
     const resp = await http.post('auth/login', {
       json: { username: username.value, password: password.value }
     })
-    const { token } = await resp.json<{ token: string }>()
-    login(token)
+    const { token, userId } = await resp.json<{ token?: string; userId?: string }>()
     toast.success(t('hint.signin-success'))
-    router.replace('/')
+    if (token) {
+      login(token)
+      router.replace('/')
+    } else {
+      router.replace(`/initial?uid=${userId}`)
+    }
   } catch (err) {
     toast.error(t('hint.signin-wrong-credentials'))
     return

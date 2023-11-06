@@ -143,4 +143,45 @@ export const infoRoutes = defineRoutes(async (s) => {
       return { ok: 1 }
     }
   )
+
+  s.get(
+    '/defaultOrg',
+    {
+      schema: {
+        description: 'List default org',
+        response: {
+          200: Type.Object({
+            defaultOrg: Type.String()
+          })
+        },
+        security: []
+      }
+    },
+    async (req, rep) => {
+      const info = await infos.findOne()
+      if (!info) return rep.notFound()
+      return { defaultOrg: info.regDefaultOrg ?? '' }
+    }
+  )
+
+  s.patch(
+    '/defaultOrg',
+    {
+      schema: {
+        description: 'Update default org',
+        body: Type.Object({
+          defaultOrg: Type.String()
+        })
+      }
+    },
+    async (req, rep) => {
+      const capability = await loadUserCapability(req)
+      if (!hasCapability(capability, UserCapability.CAP_ADMIN)) return rep.forbidden()
+      const defaultOrg = req.body.defaultOrg
+      const info = await infos.findOne()
+      if (!info) return rep.notFound()
+      await infos.updateOne({ _id: info._id }, { $set: { regDefaultOrg: defaultOrg } })
+      return { ok: 1 }
+    }
+  )
 })

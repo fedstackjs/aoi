@@ -1,4 +1,4 @@
-app-name: AOI
+app-name: ZMOI
 
 pages:
   home: Home
@@ -92,6 +92,8 @@ term:
   date: Date
   stage: Stage
   preview: Preview
+  participant-count: Participant Count
+  contest-time: Contest Time
 
 common:
   created-at: Created at

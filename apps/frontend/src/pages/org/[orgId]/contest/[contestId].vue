@@ -102,5 +102,13 @@ const participant = useAsyncState(async () => {
   return resp
 }, null)
 
+const participantCount = useAsyncState(
+  async () => {
+    const resp = await http.get(`contest/${props.contestId}/participant-count`)
+    return resp.json<{ count: number }>()
+  },
+  { count: 0 }
+)
+
 const rel = (to: string) => `/org/${props.orgId}/contest/${props.contestId}/${to}`
 </script>

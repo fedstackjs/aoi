@@ -18,6 +18,15 @@
         {{ item.raw.title }}
       </RouterLink>
     </template>
+    <template v-slot:[`item.count`]="{ item }">
+      <code>{{ item.raw.participantCount }}</code>
+    </template>
+    <template v-slot:[`item.time`]="{ item }">
+      <code>{{ getTimeRange(item.raw.stages) }}</code>
+    </template>
+    <template v-slot:[`item.stage`]="{ item }">
+      <ContestStageChip :stages="item.raw.stages" :now="now" />
+    </template>
     <template v-slot:[`item.tags`]="{ item }">
       <VChipGroup>
         <VChip
@@ -39,6 +48,7 @@ import { useI18n } from 'vue-i18n'
 import { VDataTableServer } from 'vuetify/labs/components'
 import { usePagination } from '@/utils/pagination'
 import { watch } from 'vue'
+import ContestStageChip from '@/components/utils/ContestStageChip.vue'
 
 const props = defineProps<{
   orgId: string
@@ -47,12 +57,16 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const now = +new Date()
 
 withTitle(computed(() => t('pages.contests')))
 
 const headers = [
   { title: t('term.slug'), key: 'slug', align: 'start', sortable: false },
   { title: t('term.name'), key: 'title', sortable: false },
+  { title: t('term.participant-count'), key: 'count', sortable: false },
+  { title: t('term.contest-time'), key: 'time', sortable: false },
+  { title: t('term.contest-stage'), key: 'stage', sortable: false },
   { title: t('term.tags'), key: 'tags', sortable: false }
 ] as const
 
@@ -64,6 +78,17 @@ const {
   `contest`,
   computed(() => JSON.parse(JSON.stringify(props)))
 )
+
+const getTimeRange = (
+  stages: {
+    name: string
+    start: number
+  }[]
+) => {
+  const b = stages[1].start
+  const e = stages[stages.length - 1].start
+  return `${new Date(b).toLocaleString()} - ${new Date(e).toLocaleString()}`
+}
 
 watch(
   () => props,

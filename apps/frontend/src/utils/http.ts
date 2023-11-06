@@ -20,10 +20,11 @@ export const http: typeof ky = ky.create({
       }
     ],
     beforeError: [
-      (err: HTTPError) => {
-        if (err.response.status === 401) {
-          if (err.message === 'Authorization token expired' && token.value) {
-            toast.error('msg.session-expired')
+      async (err: HTTPError) => {
+        if (err.response.status === 401 && token.value) {
+          const { code } = await err.response.json()
+          if (code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
+            toast.error('Session expired')
             logout()
           }
         }

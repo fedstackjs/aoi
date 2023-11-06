@@ -1,4 +1,4 @@
-app-name: AOI
+app-name: ZMOI
 
 pages:
   home: 首页
@@ -92,6 +92,8 @@ term:
   date: 日期
   stage: 阶段
   preview: 预览
+  participant-count: 参赛选手数
+  contest-time: 比赛时间
 
 common:
   created-at: 创建于

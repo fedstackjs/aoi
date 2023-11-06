@@ -130,7 +130,36 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
         results: {},
         updatedAt: Date.now()
       })
+
+      // TODO: add to the corresponding contest
+      await contests.updateOne(
+        { _id: req._contestId },
+        {
+          $inc: { participantCount: 1 }
+        }
+      )
+
       return {}
+    }
+  )
+
+  s.get(
+    '/participant-count',
+    {
+      schema: {
+        description: 'Get number of participants',
+        response: {
+          200: Type.Object({
+            count: Type.Number()
+          })
+        }
+      }
+    },
+    async (req) => {
+      console.log(req._contest.participantCount)
+      return {
+        count: req._contest.participantCount
+      }
     }
   )
 

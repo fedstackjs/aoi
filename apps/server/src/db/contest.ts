@@ -68,6 +68,8 @@ export interface IContest
   ranklistUpdatedAt: number
   ranklistRunnerId?: BSON.UUID
   ranklistTaskId?: BSON.UUID
+
+  participantCount: number
 }
 
 export const contests = db.collection<IContest>('contests')

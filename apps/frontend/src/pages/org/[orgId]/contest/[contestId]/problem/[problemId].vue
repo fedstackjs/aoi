@@ -23,7 +23,7 @@
           <VTab
             prepend-icon="mdi-upload-outline"
             value="submit"
-            v-if="settings.solutionEnabled || admin"
+            v-if="value.config && (settings.solutionEnabled || admin)"
           >
             {{ t('tabs.submit') }}
           </VTab>

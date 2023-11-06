@@ -5,17 +5,10 @@
 <script setup lang="ts">
 import type { IContestDTO } from '@/components/contest/types'
 import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
-import { withTitle } from '@/utils/title'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 defineProps<{
   orgId: string
   contestId: string
   contest: IContestDTO
 }>()
-
-const { t } = useI18n()
-
-withTitle(computed(() => t('contests')))
 </script>

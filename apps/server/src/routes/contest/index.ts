@@ -61,7 +61,8 @@ export const contestRoutes = defineRoutes(async (s) => {
         ranklists: [],
         ranklistState: ContestRanklistState.VALID,
         ranklistUpdatedAt: 0,
-        accessLevel: req.body.accessLevel
+        accessLevel: req.body.accessLevel,
+        participantCount: 0
       })
       return { contestId: insertedId }
     }
@@ -87,7 +88,8 @@ export const contestRoutes = defineRoutes(async (s) => {
               slug: Type.String(),
               title: Type.String(),
               tags: Type.Array(Type.String()),
-              stages: Type.Array(Type.Pick(SContestStage, ['name', 'start'] as const))
+              stages: Type.Array(Type.Pick(SContestStage, ['name', 'start'] as const)),
+              participantCount: Type.Integer()
             })
           )
         }
@@ -128,7 +130,8 @@ export const contestRoutes = defineRoutes(async (s) => {
             stages: {
               name: 1,
               start: 1
-            }
+            },
+            participantCount: 1
           }
         }
       )

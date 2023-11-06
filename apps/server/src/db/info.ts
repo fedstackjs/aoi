@@ -22,6 +22,8 @@ export interface IInfo {
   milestone: IInfoMilestone
   friends: IInfoFriend[]
   posters: IInfoPoster[]
+
+  regDefaultOrg?: string
 }
 
 export const infos = db.collection<IInfo>('info')
