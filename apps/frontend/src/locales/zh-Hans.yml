@@ -94,6 +94,9 @@ term:
   preview: 预览
   participant-count: 参赛选手数
   contest-time: 比赛时间
+  telephone: 电话
+  student-id: 学号
+  student-grade: 年级
 
 common:
   created-at: 创建于

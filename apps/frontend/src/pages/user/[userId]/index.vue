@@ -3,7 +3,7 @@
     <template v-slot="{ value }">
       <VRow>
         <VCol>
-          <UserInfoBoard :profile="value" :user-id="props.userId" :show-settings="showSettings" />
+          <UserInfoBoard :profile="value" :user-id="props.userId" :authed="authed" />
         </VCol>
       </VRow>
     </template>
@@ -19,6 +19,7 @@ import { http } from '@/utils/http'
 import { useAppState } from '@/stores/app'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import UserInfoBoard from '@/components/user/UserInfoBoard.vue'
+import type { userInfoProfile } from '@/components/user/types'
 
 const { t } = useI18n()
 const appState = useAppState()
@@ -26,18 +27,12 @@ const props = defineProps<{
   userId: string
 }>()
 
-const showSettings = computed(
-  () => appState.userCapability == -1 || appState.userId === props.userId
-)
+const authed = computed(() => appState.userCapability == -1 || appState.userId === props.userId)
 
 withTitle(computed(() => t('pages.user-info')))
 
 const profile = useAsyncState(async () => {
   const resp = await http.get(`user/${props.userId}/profile`)
-  return await resp.json<{
-    name: string
-    email: string
-    realname: string
-  }>()
+  return await resp.json<userInfoProfile>()
 }, null as never)
 </script>

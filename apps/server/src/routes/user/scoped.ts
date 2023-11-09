@@ -61,7 +61,16 @@ export const userScopedRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const user = await users.findOne({ _id: req._userId }, { projection: { profile: 1 } })
       if (!user) return rep.notFound()
-      return user.profile
+      const capability = await loadUserCapability(req)
+      const allowSensitive =
+        req.user.userId.equals(req._userId) || hasCapability(capability, UserCapability.CAP_ADMIN)
+      return allowSensitive
+        ? user.profile
+        : {
+            name: user.profile.name,
+            email: user.profile.email,
+            realname: user.profile.realname
+          }
     }
   )
 
@@ -79,6 +88,33 @@ export const userScopedRoutes = defineRoutes(async (s) => {
         !hasCapability(capability, UserCapability.CAP_ADMIN)
       )
         return rep.forbidden()
+
+      // check validation manually
+      const validation = () => {
+        if (
+          [req.body.telephone, req.body.studentId, req.body.studentGrade].some(
+            (v) => !v || typeof v !== 'string'
+          )
+        )
+          return false
+        if (
+          [
+            req.body.name,
+            req.body.realname,
+            req.body.email,
+            req.body.telephone,
+            req.body.studentId,
+            req.body.studentGrade
+          ].some((v) => v === '')
+        )
+          return false
+        const emailRegex = /^\S+@\S+\.\S+$/
+        const telRegex = /^1[3456789]\d{9}$/
+        if (!emailRegex.test(req.body.email)) return false
+        if (!telRegex.test(req.body.telephone as string)) return false
+        return true
+      }
+      if (!validation()) return rep.badRequest('Invalid profile update')
 
       await users.updateOne({ _id: req._userId }, { $set: { profile: req.body } })
       return {}

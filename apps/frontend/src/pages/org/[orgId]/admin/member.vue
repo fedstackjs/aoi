@@ -16,7 +16,8 @@
       :headers="headers"
       :items-length="members.state.value.total"
       :items="members.state.value.items"
-      :items-per-page="15"
+      v-model:page="page"
+      v-model:items-per-page="itemsPerPage"
       :items-per-page-options="[{ title: '15', value: 15 }]"
       :loading="members.isLoading.value"
       item-value="_id"
@@ -66,6 +67,7 @@ import { orgBits } from '@/utils/capability'
 import { useAsyncState } from '@vueuse/core'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { usePagination } from '@/utils/pagination'
 import AppGravatar from '@/components/app/AppGravatar.vue'
 import CapabilityInput from '@/components/utils/CapabilityInput.vue'
 import CapabilityChips from '@/components/utils/CapabilityChips.vue'
@@ -83,28 +85,11 @@ const headers = [
   { title: t('term.actions'), key: '_actions' }
 ] as const
 
-const members = useAsyncState(
-  async (page = 1, itemsPerPage = 15) => {
-    const resp = await http.get(`org/${props.orgId}/admin/member`, {
-      searchParams: {
-        page: page,
-        perPage: itemsPerPage,
-        count: true
-      }
-    })
-
-    return resp.json<{
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      items: any[]
-      total: number
-    }>()
-  },
-  { items: [], total: 0 }
-)
+const { page, itemsPerPage, result: members } = usePagination(`org/${props.orgId}/admin/member`, {})
 
 async function deleteMember(userId: string) {
   await http.delete(`org/${props.orgId}/admin/member/${userId}`)
-  members.execute()
+  members.execute(0, page.value, itemsPerPage.value)
 }
 
 const newMember = ref('')
@@ -114,7 +99,7 @@ async function addMember() {
       userId: newMember.value
     }
   })
-  members.execute()
+  members.execute(0, page.value, itemsPerPage.value)
   newMember.value = ''
 }
 
@@ -133,6 +118,6 @@ async function updatePrincipal() {
   await http.patch(`org/${props.orgId}/admin/member/${dialogUserId.value}/capability`, {
     json: { capability: dialogCapability.value }
   })
-  members.execute()
+  members.execute(0, page.value, itemsPerPage.value)
 }
 </script>

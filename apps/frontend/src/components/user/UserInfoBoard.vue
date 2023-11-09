@@ -11,10 +11,10 @@
       <VListItemTitle class="text-h6">
         {{ props.profile.name }}
       </VListItemTitle>
-      <VListItemSubtitle>
-        {{ props.profile.realname }} | {{ props.profile.email }}
+      <VListItemSubtitle class="py-1">
+        {{ subtitle }}
       </VListItemSubtitle>
-      <template v-slot:append v-if="props.showSettings">
+      <template v-slot:append v-if="props.authed">
         <VBtn
           :label="t('user-settings')"
           :to="`/user/${props.userId}/settings`"
@@ -29,16 +29,36 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import AppGravatar from '../app/AppGravatar.vue'
+import type { userInfoProfile } from './types'
+import { computed } from 'vue'
 
 const { t } = useI18n()
 
 const props = defineProps<{
-  profile: {
-    name: string
-    email: string
-    realname: string
-  }
+  profile: userInfoProfile
   userId: string
-  showSettings?: boolean
+  authed?: boolean
 }>()
+
+const subtitle = computed(() => {
+  const pfx = `${props.profile.realname} | ${props.profile.email}`
+  if (!props.authed) return pfx
+  return (
+    pfx +
+    ` | ${props.profile.telephone ?? t('ph-tel')}` +
+    ` | ${props.profile.studentId ?? t('ph-student-id')}` +
+    ` | ${props.profile.studentGrade ?? t('ph-student-grade')}`
+  )
+})
 </script>
+
+<i18n>
+en:
+  ph-tel: '[Telephone]'
+  ph-student-id: '[Student ID]'
+  ph-student-grade: '[Student Grade]'
+zh-Hans:
+  ph-tel: '[电话]'
+  ph-student-id: '[学号]'
+  ph-student-grade: '[年级]'
+</i18n>

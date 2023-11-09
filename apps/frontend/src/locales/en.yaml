@@ -94,6 +94,9 @@ term:
   preview: Preview
   participant-count: Participant Count
   contest-time: Contest Time
+  telephone: Telephone
+  student-id: Student ID
+  student-grade: Student Grade
 
 common:
   created-at: Created at
