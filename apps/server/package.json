@@ -1,6 +1,6 @@
 {
   "name": "@aoi-js/server",
-  "version": "0.0.24",
+  "version": "0.0.26",
   "type": "module",
   "publishConfig": {
     "access": "public"
