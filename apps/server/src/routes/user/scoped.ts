@@ -92,7 +92,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       // check validation manually
       const validation = () => {
         if (
-          [req.body.telephone, req.body.studentId, req.body.studentGrade].some(
+          [req.body.telephone, req.body.school, req.body.studentGrade].some(
             (v) => !v || typeof v !== 'string'
           )
         )
@@ -103,7 +103,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
             req.body.realname,
             req.body.email,
             req.body.telephone,
-            req.body.studentId,
+            req.body.school,
             req.body.studentGrade
           ].some((v) => v === '')
         )

@@ -40,10 +40,10 @@
       />
 
       <VTextField
-        v-model="studentId"
+        v-model="school"
         prepend-inner-icon="mdi-identifier"
-        :label="t('term.student-id')"
-        :rules="studentIdRules"
+        :label="t('term.school')"
+        :rules="schoolRules"
       />
 
       <VTextField
@@ -89,7 +89,7 @@ const realname = ref('')
 const password = ref('')
 const email = ref('')
 const telephone = ref('')
-const studentId = ref('')
+const school = ref('')
 const studentGrade = ref('')
 
 const usernameRules = [
@@ -130,10 +130,10 @@ const telephoneRules = [
   }
 ]
 
-const studentIdRules = [
+const schoolRules = [
   (value: string) => {
     if (value.length > 0) return true
-    return t('hint.violate-stuid-rule')
+    return t('hint.violate-school-rule')
   }
 ]
 
@@ -157,7 +157,7 @@ async function signup() {
         [email, emailRules],
         [realname, realnameRules],
         [telephone, telephoneRules],
-        [studentId, studentIdRules],
+        [school, schoolRules],
         [studentGrade, studentGradeRules]
       ] as const
     ).some(([value, rules]) => rules.some((rule) => rule(value.value) !== true))
@@ -171,7 +171,7 @@ async function signup() {
           realname: realname.value,
           email: email.value,
           telephone: telephone.value,
-          studentId: studentId.value,
+          school: school.value,
           studentGrade: studentGrade.value
         },
         password: password.value
@@ -195,7 +195,7 @@ en:
     violate-email-rule: Invalid email.
     violate-realname-rule: Realname must not be empty.
     violate-telephone-rule: Invalid telephone.
-    violate-stuid-rule: Student ID must not be empty.
+    violate-school-rule: Student ID must not be empty.
     violate-stugrade-rule: Student Grade must not be empty.
     signup-username-exists: Username already exists.
     signup-success: Sign up successfully.
@@ -206,7 +206,7 @@ zh-Hans:
     violate-email-rule: 邮箱格式不合法
     violate-realname-rule: 真实名不能为空
     violate-telephone-rule: 电话号码格式不合法
-    violate-stuid-rule: 学号不能为空
+    violate-school-rule: 学号不能为空
     violate-stugrade-rule: 年级不能为空
     signup-username-exists: 用户名已存在
     signup-success: 注册成功

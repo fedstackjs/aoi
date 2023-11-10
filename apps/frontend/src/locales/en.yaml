@@ -95,7 +95,7 @@ term:
   participant-count: Participant Count
   contest-time: Contest Time
   telephone: Telephone
-  student-id: Student ID
+  school: School
   student-grade: Student Grade
 
 common:

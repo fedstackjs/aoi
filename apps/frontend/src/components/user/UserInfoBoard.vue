@@ -46,7 +46,7 @@ const subtitle = computed(() => {
   return (
     pfx +
     ` | ${props.profile.telephone ?? t('ph-tel')}` +
-    ` | ${props.profile.studentId ?? t('ph-student-id')}` +
+    ` | ${props.profile.school ?? t('ph-school')}` +
     ` | ${props.profile.studentGrade ?? t('ph-student-grade')}`
   )
 })
@@ -55,10 +55,10 @@ const subtitle = computed(() => {
 <i18n>
 en:
   ph-tel: '[Telephone]'
-  ph-student-id: '[Student ID]'
+  ph-school: '[School]'
   ph-student-grade: '[Student Grade]'
 zh-Hans:
   ph-tel: '[电话]'
-  ph-student-id: '[学号]'
+  ph-school: '[学校]'
   ph-student-grade: '[年级]'
 </i18n>

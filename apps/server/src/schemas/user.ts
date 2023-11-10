@@ -5,7 +5,7 @@ export const SUserProfile = Type.StrictObject({
   email: Type.String(),
   realname: Type.String(),
   telephone: Type.Optional(Type.String()),
-  studentId: Type.Optional(Type.String()),
+  school: Type.Optional(Type.String()),
   studentGrade: Type.Optional(Type.String())
 })
 

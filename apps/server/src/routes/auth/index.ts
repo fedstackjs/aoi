@@ -96,7 +96,7 @@ export const authRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const { profile, password: rawPassword } = req.body
       if (!profile.telephone) return rep.badRequest('Telephone is required')
-      if (!profile.studentId) return rep.badRequest('Student ID is required')
+      if (!profile.school) return rep.badRequest('School is required')
       if (!profile.studentGrade) return rep.badRequest('Student grade is required')
       const password = await bcrypt.hash(rawPassword, 10)
       if (await users.findOne({ 'profile.name': profile.name }))

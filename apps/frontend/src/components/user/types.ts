@@ -3,6 +3,6 @@ export type userInfoProfile = {
   email: string
   realname: string
   telephone?: string
-  studentId?: string
+  school?: string
   studentGrade?: string
 }

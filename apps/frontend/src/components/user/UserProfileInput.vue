@@ -13,12 +13,7 @@
     type="string"
     :rules="telephoneRules"
   />
-  <VTextField
-    v-model="model.studentId"
-    :label="t('term.student-id')"
-    type="string"
-    :rules="studentIdRules"
-  />
+  <VTextField v-model="model.school" :label="t('term.school')" type="string" :rules="schoolRules" />
   <VTextField
     v-model="model.studentGrade"
     :label="t('term.student-grade')"
@@ -37,7 +32,7 @@ const model = defineModel<{
   email: string
   realname: string
   telephone: string
-  studentId: string
+  school: string
   studentGrade: string
 }>({ required: true })
 
@@ -66,17 +61,16 @@ const realnameRules = [
 
 const telephoneRules = [
   (value: string) => {
-    const telRegex = /\d{3}-\d{8}|\d{4}-\d{7}|^1(3[0-9]|4[57]|5[0-35-9]|7[0678]|8[0-9])\d{8}$/
-    // from https://blog.csdn.net/weixin_45099902/article/details/100561013
+    const telRegex = /^1[3456789]\d{9}$/
     if (value.length > 0 && telRegex.test(value)) return true
     return t('hint.violate-telephone-rule')
   }
 ]
 
-const studentIdRules = [
+const schoolRules = [
   (value: string) => {
     if (value.length > 0) return true
-    return t('hint.violate-stuid-rule')
+    return t('hint.violate-school-rule')
   }
 ]
 
@@ -95,7 +89,7 @@ en:
     violate-email-rule: Invalid email.
     violate-realname-rule: Realname must not be empty.
     violate-telephone-rule: Invalid telephone.
-    violate-stuid-rule: Student ID must not be empty.
+    violate-school-rule: School must not be empty.
     violate-stugrade-rule: Student Grade must not be empty.
     signup-username-exists: Username already exists.
     signup-success: Sign up successfully.
@@ -106,7 +100,7 @@ zh-Hans:
     violate-email-rule: 邮箱格式不合法
     violate-realname-rule: 真实名不能为空
     violate-telephone-rule: 电话号码格式不合法
-    violate-stuid-rule: 学号不能为空
+    violate-school-rule: 学校不能为空
     violate-stugrade-rule: 年级不能为空
     signup-username-exists: 用户名已存在
     signup-success: 注册成功

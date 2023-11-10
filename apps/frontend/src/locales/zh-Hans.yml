@@ -95,7 +95,7 @@ term:
   participant-count: 参赛选手数
   contest-time: 比赛时间
   telephone: 电话
-  student-id: 学号
+  school: 学校
   student-grade: 年级
 
 common:
