@@ -36,6 +36,8 @@ action:
   copy: Copy
   add: Add
   view: View
+  publish: Publish
+  cancel-publish: Cancel Publish
 
 term:
   content: Content
@@ -98,6 +100,8 @@ term:
   telephone: Telephone
   school: School
   student-grade: Student Grade
+  is-public: Is Public
+  is-visible: Is Visible
 
 common:
   created-at: Created at

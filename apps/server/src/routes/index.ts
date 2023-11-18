@@ -16,6 +16,7 @@ import { contestRoutes } from './contest/index.js'
 import { planRoutes } from './plan/index.js'
 import { infoRoutes } from './info/index.js'
 import { announcementRoutes } from './announcement/index.js'
+import { pubrkRoutes } from './pubrk/index.js'
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
@@ -79,4 +80,5 @@ export const apiRoutes = defineRoutes(async (s) => {
   s.register(runnerRoutes, { prefix: '/runner' })
   s.register(infoRoutes, { prefix: '/info' })
   s.register(announcementRoutes, { prefix: '/announcement' })
+  s.register(pubrkRoutes, { prefix: '/rk' })
 })

@@ -10,39 +10,7 @@
     </VTabs>
     <VWindow v-model="currentTab">
       <VWindowItem value="show">
-        <component :is="JsonViewer<Ranklist>" :endpoint="endpoint">
-          <template v-slot="{ value }">
-            <VCard flat>
-              <!-- Topstar -->
-              <!-- TODO -->
-            </VCard>
-            <VDivider />
-            <VCard flat>
-              <!-- participants -->
-              <VTable>
-                <thead>
-                  <th>{{ t('term.rank') }}</th>
-                  <th>{{ t('term.participant') }}</th>
-                  <th v-for="(header, i) in value.participant.columns" :key="i">
-                    {{ header.name }}
-                  </th>
-                </thead>
-                <tbody>
-                  <tr v-for="(man, i) in value.participant.list" :key="i">
-                    <td>{{ man.rank }}</td>
-                    <td><PrincipalProfile :principal-id="man.userId" /></td>
-                    <td v-for="(column, i) in man.columns" :key="i">
-                      <article v-html="renderMarkdown(column.content)"></article>
-                    </td>
-                  </tr>
-                </tbody>
-              </VTable>
-            </VCard>
-          </template>
-          <template #error="{}">
-            <VAlert type="info" :text="t('ranklist-waiting-in-progress')" />
-          </template>
-        </component>
+        <RanklistViewer :endpoint="endpoint" />
       </VWindowItem>
       <VWindowItem value="settings">
         <RanklistSettings
@@ -59,12 +27,9 @@
 <script setup lang="ts">
 import type { IContestDTO } from '@/components/contest/types'
 import { useI18n } from 'vue-i18n'
-import JsonViewer from '@/components/utils/JsonViewer.vue'
-import type { Ranklist } from '@aoi-js/common'
-import { renderMarkdown } from '@/utils/md'
-import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
 import RanklistSettings from '@/components/contest/RanklistSettings.vue'
 import { ref } from 'vue'
+import RanklistViewer from '@/components/utils/RanklistViewer.vue'
 import { useContestCapability } from '@/utils/contest/inject'
 
 const props = defineProps<{

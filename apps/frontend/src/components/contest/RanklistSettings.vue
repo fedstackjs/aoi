@@ -9,6 +9,14 @@
       </template>
     </SettingsEditor>
     <VCardSubtitle>
+      {{ t('term.is-public') }}
+    </VCardSubtitle>
+    <RanklistPublicSettings
+      :contestId="contestId"
+      :orgId="orgId"
+      :ranklistKey="props.ranklistKey"
+    />
+    <VCardSubtitle>
       {{ t('term.danger-zone') }}
     </VCardSubtitle>
     <VCardActions>
@@ -24,6 +32,7 @@ import { http } from '@/utils/http'
 import SettingsEditor from '@/components/utils/SettingsEditor.vue'
 import RanklistSettingsInput from './RanklistSettingsInput.vue'
 import { useRouter } from 'vue-router'
+import RanklistPublicSettings from './RanklistPublicSettings.vue'
 
 const router = useRouter()
 
@@ -45,3 +54,9 @@ async function deleteRanklist() {
   emit('updated')
 }
 </script>
+<i18n>
+en:
+  is-public: Is Public
+zh-Hans:
+  is-public: 是否公开
+</i18n>

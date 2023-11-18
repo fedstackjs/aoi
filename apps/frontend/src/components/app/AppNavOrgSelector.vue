@@ -68,7 +68,7 @@ const joinedOrgs = useAsyncState(async () => {
       }
     }>
   >()
-  if (orgArr.length > 0) {
+  if (orgArr.length > 0 && router.currentRoute.value.path === '/') {
     router.replace(`/org/${orgArr[0]._id}`)
   }
   return orgArr

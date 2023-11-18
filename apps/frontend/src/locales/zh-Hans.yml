@@ -36,6 +36,8 @@ action:
   copy: 复制
   add: 添加
   view: 查看
+  publish: 发布
+  cancel-publish: 取消发布
 
 term:
   content: 内容
@@ -98,6 +100,8 @@ term:
   telephone: 电话
   school: 学校
   student-grade: 年级
+  is-public: 是否公开
+  is-visible: 是否可见
 
 common:
   created-at: 创建于

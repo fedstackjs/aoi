@@ -5,7 +5,7 @@
         <VTab prepend-icon="mdi-form-textarea" value="visual" v-if="slots.default">
           {{ t('visualized') }}
         </VTab>
-        <VTab prepend-icon="mdi-code-json" value="raw">
+        <VTab prepend-icon="mdi-code-json" value="raw" v-if="!rawInvisible">
           {{ t('raw') }}
         </VTab>
         <VTab prepend-icon="mdi-refresh" @click="data.execute()">
@@ -42,6 +42,7 @@ const props = defineProps<{
   url?: string
   rawData?: T
   rawString?: string
+  rawInvisible?: boolean
 }>()
 const slots = useSlots()
 const { t } = useI18n()

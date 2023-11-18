@@ -47,8 +47,7 @@ import PrincipalProfile from '../utils/PrincipalProfile.vue'
 import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
 import SolutionStatusChip from './SolutionStatusChip.vue'
 import { usePagination } from '@/utils/pagination'
-import { useRouteQuery } from '@vueuse/router'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useAppState } from '@/stores/app'
 import { useContestProblemTitle } from '@/utils/contest/problem/inject'
 
@@ -79,7 +78,7 @@ const headersProblem = [
   { title: t('common.submitted-at'), key: 'submittedAt', align: 'start', sortable: false }
 ] as const
 
-const userId = useRouteQuery('userId')
+const userId = ref(app.userId as string)
 
 const {
   page,

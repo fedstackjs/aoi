@@ -151,7 +151,14 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
         }
       }
     },
-    async (req) => {
+    async (req, rep) => {
+      const userId = req.query.userId ? new BSON.UUID(req.query.userId) : undefined
+      // check auth
+      const isAdmin = hasCapability(req._problemCapability, ProblemCapability.CAP_ADMIN)
+      const isCurrentUser = userId !== undefined && userId.equals(req.user.userId)
+      if (!isAdmin && !isCurrentUser) {
+        return rep.forbidden()
+      }
       return await findPaginated<ISolution>(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         solutions as any,
