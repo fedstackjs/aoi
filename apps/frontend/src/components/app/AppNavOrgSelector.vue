@@ -68,6 +68,7 @@ const joinedOrgs = useAsyncState(async () => {
       }
     }>
   >()
+  await router.isReady() // wait for router to be ready, FINE
   if (orgArr.length > 0 && router.currentRoute.value.path === '/') {
     router.replace(`/org/${orgArr[0]._id}`)
   }

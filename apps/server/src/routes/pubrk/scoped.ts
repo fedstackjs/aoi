@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, paramSchemaMerger, loadCapability, loadMembership } from '../common/index.js'
 import { contestRanklistKey } from '../../index.js'
-import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
+import { getFileUrlNoSec, loadOrgOssSettings } from '../common/files.js'
 import {
   OrgCapability,
   ContestCapability,
@@ -43,7 +43,7 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
   })
 
   s.register(async (s) => {
-    s.register(getFileUrl, {
+    s.register(getFileUrlNoSec, {
       resolve: async (type, query, req) => {
         if (!req._pubranklist.visible) throw s.httpErrors.notFound()
         if (type !== 'download') throw s.httpErrors.badRequest()

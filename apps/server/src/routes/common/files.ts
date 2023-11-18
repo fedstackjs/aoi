@@ -60,6 +60,43 @@ export const getFileUrl: FastifyPluginAsyncTypebox<{
   )
 }
 
+// Shit code, forgive me
+export const getFileUrlNoSec: FastifyPluginAsyncTypebox<{
+  allowedTypes?: ('upload' | 'download' | 'head' | 'delete')[]
+  resolve: (
+    type: string,
+    options: Static<typeof SGetUrlOptions>,
+    req: FastifyRequest,
+    rep: FastifyReply
+  ) => Promise<[IOrgOssSettings | undefined, string, IUrlOptions?]>
+}> = async (s, options) => {
+  const allowedTypes = options.allowedTypes ?? ['upload', 'download', 'head', 'delete']
+  s.get(
+    '/:type',
+    {
+      schema: {
+        params: Type.Object({
+          type: Type.StringEnum(allowedTypes)
+        }),
+        querystring: SGetUrlOptions,
+        response: {
+          200: Type.Object({
+            url: Type.String()
+          })
+        },
+        security: []
+      }
+    },
+    async (req, rep) => {
+      const [settings, key, opt] = await options.resolve(req.params.type, req.query, req, rep)
+      if (!settings) return rep.preconditionFailed('OSS not configured')
+      return {
+        url: await types[req.params.type](settings, key, opt)
+      }
+    }
+  )
+}
+
 export async function loadOrgOssSettings(orgId: BSON.UUID) {
   const org = await orgs.findOne({ _id: orgId }, { projection: { settings: 1 } })
   return org?.settings.oss
