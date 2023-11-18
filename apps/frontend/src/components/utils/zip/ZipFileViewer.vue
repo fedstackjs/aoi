@@ -30,7 +30,7 @@ const props = defineProps<{
   file: JSZip.JSZipObject
 }>()
 
-const language = ref('plaintext')
+const language = ref('cpp')
 const languages = getSupportedLanguages()
 
 const content = useAsyncState(async () => {

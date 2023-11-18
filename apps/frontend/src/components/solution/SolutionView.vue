@@ -4,22 +4,24 @@
       <VCardText>
         <VTable>
           <thead>
-            <th class="text-left">{{ t('term.id') }}</th>
+            <!-- <th class="text-left">{{ t('term.id') }}</th> -->
             <th class="text-center">{{ t('term.state') }}</th>
-            <th class="text-center">{{ t('term.hash') }}</th>
-            <th class="text-center">{{ t('term.runner-label') }}</th>
+            <!-- <th class="text-center">{{ t('term.hash') }}</th>
+            <th class="text-center">{{ t('term.runner-label') }}</th> -->
+            <th class="text-center">{{ t('term.user') }}</th>
+            <th class="text-center">{{ t('term.title') }}</th>
             <th class="text-center" v-text="t('common.created-at')" />
             <th class="text-center" v-if="value.submittedAt" v-text="t('common.submitted-at')" />
           </thead>
           <tbody>
             <tr>
-              <td>
+              <!-- <td>
                 <code>{{ value._id }}</code>
-              </td>
+              </td> -->
               <td class="text-center">
                 <SolutionStateChip :state="value.state" />
               </td>
-              <td class="text-center">
+              <!-- <td class="text-center">
                 <VChip color="blue" variant="outlined">
                   <code>{{ value.problemDataHash.substring(0, 7) }}</code>
                 </VChip>
@@ -28,6 +30,12 @@
                 <VChip color="success" variant="outlined">
                   <code>{{ value.label }}</code>
                 </VChip>
+              </td> -->
+              <td class="text-center">
+                <PrincipalProfile :principal-id="value.userId" />
+              </td>
+              <td class="text-center">
+                <code>{{ useContestProblemTitle(value.problemId)?.value }}</code>
               </td>
               <td class="text-center" v-text="new Date(value.createdAt).toLocaleString()" />
               <td
@@ -50,21 +58,21 @@
           </thead>
           <tbody>
             <tr>
-              <th class="text-left">
+              <td class="text-left">
                 <SolutionStatusChip :status="value.status" />
-              </th>
-              <th class="text-center">
+              </td>
+              <td class="text-center">
                 <SolutionScoreDisplay :score="value.score" />
-              </th>
-              <th v-for="(mval, mkey) in value.metrics" :key="mkey" class="text-center">
+              </td>
+              <td v-for="(mval, mkey) in value.metrics" :key="mkey" class="text-center">
                 {{ mval }}
-              </th>
+              </td>
               <td
                 class="text-center"
                 v-if="value.completedAt"
                 v-text="new Date(value.completedAt).toLocaleString()"
               />
-              <th class="text-right">{{ value.message }}</th>
+              <td class="text-right">{{ value.message }}</td>
             </tr>
           </tbody>
         </VTable>
@@ -113,7 +121,9 @@ import ZipAutoViewer from '../utils/zip/ZipAutoViewer.vue'
 import { ref } from 'vue'
 import SolutionStatusChip from './SolutionStatusChip.vue'
 import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
+import PrincipalProfile from '../utils/PrincipalProfile.vue'
 import { computed } from 'vue'
+import { useContestProblemTitle } from '@/utils/contest/problem/inject'
 
 const props = defineProps<{
   orgId: string
@@ -138,7 +148,7 @@ const solution = useAsyncState(
     const url = props.contestId
       ? `contest/${props.contestId}/solution/${props.solutionId}`
       : `problem/${props.problemId}/solution/${props.solutionId}`
-    return http.get(url).json<ISolutionDTO>()
+    return await http.get(url).json<ISolutionDTO>()
   },
   null,
   { resetOnExecute: false }

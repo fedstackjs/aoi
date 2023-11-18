@@ -16,6 +16,7 @@ pages:
   logout: Log out
   modify-passwd: Modify Password
   announcements: Announcements
+  solutions: Solutions
 
 action:
   reload: Reload

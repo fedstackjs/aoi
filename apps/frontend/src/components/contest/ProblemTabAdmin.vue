@@ -10,6 +10,11 @@
         {{ t('action.delete') }}
       </VBtn>
     </VCardActions>
+    <VCardActions>
+      <VBtn color="primary" variant="elevated" @click="gotoProblemAdmin()">
+        {{ t('goto-problem-admin') }}
+      </VBtn>
+    </VCardActions>
   </VCard>
 </template>
 
@@ -38,4 +43,14 @@ async function deleteProblem() {
   router.push(`/org/${route.params.orgId}/contest/${props.contestId}/problem`)
   emit('updated')
 }
+
+function gotoProblemAdmin() {
+  router.push(`/org/${route.params.orgId}/problem/${props.problem._id}/admin`)
+}
 </script>
+<i18n>
+en:
+  goto-problem-admin: Go to problem admin
+zh-Hans:
+  goto-problem-admin: 跳转到题目管理页面
+</i18n>

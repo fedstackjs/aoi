@@ -26,6 +26,12 @@ export function useProblem(orgId: MaybeRef<string>, problemId: MaybeRef<string>)
   }
 }
 
+export function useProblemAdminCapability() {
+  const problem = inject(kProblem)
+  if (!problem) throw new Error('No problem provided')
+  return computed(() => hasCapability(problem?.value.capability, problemBits.admin))
+}
+
 export function useProblemCapability(type: keyof typeof problemBits) {
   const problem = inject(kProblem)
   if (!problem) throw new Error('No problem provided')

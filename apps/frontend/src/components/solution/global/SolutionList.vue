@@ -6,7 +6,7 @@
     <VBtn :text="t('common.self')" @click="userId = app.userId" />
   </VToolbar>
   <VDataTableServer
-    :headers="contestId ? headersContest : headersProblem"
+    :headers="headers"
     :items-length="submissions.state.value.total"
     :items="submissions.state.value.items"
     :items-per-page-options="[{ title: '15', value: 15 }]"
@@ -23,15 +23,15 @@
       <PrincipalProfile :principal-id="item.raw.userId" />
     </template>
     <template v-slot:[`item.title`]="{ item }">
-      <RouterLink :to="rel(item.raw._id)" style="color: primary">
-        {{ useContestProblemTitle(item.raw.problemId)?.value }}
+      <RouterLink :to="rel(item.raw)" style="color: primary">
+        {{ item.raw.problemTitle }}
       </RouterLink>
     </template>
     <template v-slot:[`item.status`]="{ item }">
-      <SolutionStatusChip :status="item.raw.status" :to="rel(item.raw._id)" />
+      <SolutionStatusChip :status="item.raw.status" :to="rel(item.raw)" />
     </template>
     <template v-slot:[`item.score`]="{ item }">
-      <SolutionScoreDisplay :score="item.raw.score" :to="rel(item.raw._id)" />
+      <SolutionScoreDisplay :score="item.raw.score" :to="rel(item.raw)" />
     </template>
     <template v-slot:[`item.submittedAt`]="{ item }">
       <code>{{ getDate(item.raw.submittedAt) }}</code>
@@ -43,26 +43,22 @@
 import { useI18n } from 'vue-i18n'
 import { VDataTableServer } from 'vuetify/labs/components'
 import SolutionStateChip from '@/components/solution/SolutionStateChip.vue'
-import PrincipalProfile from '../utils/PrincipalProfile.vue'
-import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
-import SolutionStatusChip from './SolutionStatusChip.vue'
+import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
+import SolutionScoreDisplay from '../SolutionScoreDisplay.vue'
+import SolutionStatusChip from '../SolutionStatusChip.vue'
 import { usePagination } from '@/utils/pagination'
-import { useRouteQuery } from '@vueuse/router'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useAppState } from '@/stores/app'
-import { useContestProblemTitle } from '@/utils/contest/problem/inject'
 
 const { t } = useI18n()
 const app = useAppState()
 
 const props = defineProps<{
   orgId: string
-  problemId?: string
-  contestId?: string
   selfOnly?: boolean
 }>()
 
-const headersContest = [
+const headers = [
   { title: t('term.state'), key: 'state', align: 'start', sortable: false },
   { title: t('term.user'), key: 'userId', align: 'start', sortable: false },
   { title: t('term.title'), key: 'title', align: 'start', sortable: false },
@@ -71,29 +67,32 @@ const headersContest = [
   { title: t('common.submitted-at'), key: 'submittedAt', align: 'start', sortable: false }
 ] as const
 
-const headersProblem = [
-  { title: t('term.state'), key: 'state', align: 'start', sortable: false },
-  { title: t('term.user'), key: 'userId', align: 'start', sortable: false },
-  { title: t('term.status'), key: 'status', align: 'start', sortable: false },
-  { title: t('term.score'), key: 'score', align: 'center', sortable: false },
-  { title: t('common.submitted-at'), key: 'submittedAt', align: 'start', sortable: false }
-] as const
-
-const userId = useRouteQuery('userId')
+const userId = ref(app.userId as string)
 
 const {
   page,
   itemsPerPage,
   result: submissions
 } = usePagination(
-  props.contestId ? `contest/${props.contestId}/solution` : `problem/${props.problemId}/solution`,
-  computed(() => (userId.value ? { userId: userId.value } : {}))
+  'solution',
+  computed(() => {
+    const query = {
+      orgId: props.orgId,
+      userId: userId.value
+    }
+    return query
+  })
 )
 
-const rel = (to: string) =>
-  props.contestId
-    ? `/org/${props.orgId}/contest/${props.contestId}/solution/${to}`
-    : `/org/${props.orgId}/problem/${props.problemId}/solution/${to}`
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const rel = (item: any) => {
+  const isContest = item.contestId ? true : false
+  const parentId = (isContest ? item.contestId : item.problemId) as string
+  const _id = item._id as string
+  return isContest
+    ? `/org/${props.orgId}/contest/${parentId}/solution/${_id}`
+    : `/org/${props.orgId}/problem/${parentId}/solution/${_id}`
+}
 
 const getDate = (d: number) => new Date(d).toLocaleString()
 </script>

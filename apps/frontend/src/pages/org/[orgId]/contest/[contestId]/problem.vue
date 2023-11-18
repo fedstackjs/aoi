@@ -35,25 +35,19 @@
 <script setup lang="ts">
 import AsyncState from '@/components/utils/AsyncState.vue'
 import type { IContestDTO, IContestProblemListDTO } from '@/components/contest/types'
-import { http } from '@/utils/http'
-import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { useContestCapability } from '@/utils/contest/inject'
+import type { UseAsyncStateReturn } from '@vueuse/core'
 
 const props = defineProps<{
   orgId: string
   contestId: string
   contest: IContestDTO
+  problems: UseAsyncStateReturn<IContestProblemListDTO[], [], true>
 }>()
 
 const { t } = useI18n()
 const admin = useContestCapability('admin')
-
-const problems = useAsyncState(async () => {
-  const resp = await http.get(`contest/${props.contestId}/problem`)
-  const data = await resp.json<IContestProblemListDTO[]>()
-  return data
-}, [])
 
 const rel = (to: string) => `/org/${props.orgId}/contest/${props.contestId}/problem/${to}`
 </script>

@@ -66,7 +66,7 @@
                   :text="t('tabs.management')"
                 />
               </VTabs>
-              <RouterView :contest="value" @updated="contest.execute()" />
+              <RouterView :contest="value" :problems="problems" @updated="contest.execute()" />
             </VCard>
           </template>
         </AsyncState>
@@ -87,6 +87,7 @@ import AccessLevelChip from '@/components/utils/AccessLevelChip.vue'
 import ContestProgressBar from '@/components/contest/ContestProgressBar.vue'
 import RegisterBtn from '@/components/utils/RegisterBtn.vue'
 import { useContest } from '@/utils/contest/inject'
+import { useContestProblemList } from '@/utils/contest/problem/inject'
 import { useAppState } from '@/stores/app'
 
 const { t } = useI18n()
@@ -103,12 +104,14 @@ const { contest, showRegistration, showAdminTab } = useContest(
   toRef(props, 'contestId')
 )
 
+const problems = useContestProblemList(toRef(props, 'contestId'))
+
 const participant = useAsyncState(async () => {
   const resp = await http.get(`contest/${props.contestId}/self`).json<IContestParticipantDTO>()
   return resp
 }, null)
 
-const participantCount = useAsyncState(
+useAsyncState(
   async () => {
     const resp = await http.get(`contest/${props.contestId}/participant-count`)
     return resp.json<{ count: number }>()

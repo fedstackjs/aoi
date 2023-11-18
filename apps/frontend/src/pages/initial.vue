@@ -59,7 +59,7 @@ async function submit() {
   if (!passwordRules.every((rule) => rule(payload.value.oldPassword) === true)) return
   if (!passwordRules.every((rule) => rule(payload.value.newPassword) === true)) return
   try {
-    const resp = await http.post('auth/resetPassword', {
+    await http.post('auth/resetPassword', {
       json: payload.value
     })
     toast.success(t('hint.success'))

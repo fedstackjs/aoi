@@ -16,6 +16,7 @@ pages:
   logout: 登出
   modify-passwd: 修改密码
   announcements: 公告
+  solutions: 提交记录
 
 action:
   reload: 重载

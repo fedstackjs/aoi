@@ -5,7 +5,8 @@ export function searchToFilter(query: { search?: string; tag?: string }): Docume
   const filter: Document = {}
   if (query.search) {
     const escapedRegex = query.search.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
-    filter.title = { $regex: escapedRegex }
+    // Should satisfy: title match Regex or slug match Regex
+    filter.$or = [{ title: { $regex: escapedRegex } }, { slug: { $regex: escapedRegex } }]
   }
   if (query.tag) {
     filter.tags = query.tag

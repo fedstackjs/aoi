@@ -1,5 +1,7 @@
 export interface ISolutionDTO {
   _id: string
+  problemId: string
+  userId: string
   problemDataHash: string
   label: string
   state: number

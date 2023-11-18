@@ -90,6 +90,7 @@ export function useAppNavMenu() {
     return [
       { prependIcon: 'mdi-list-box', to: '/problem', title: t('pages.problems') },
       { prependIcon: 'mdi-balloon', to: '/contest', title: t('pages.contests') },
+      { prependIcon: 'mdi-timer-sand', to: '/solution', title: t('pages.solutions') },
       { prependIcon: 'mdi-clipboard-text-outline', to: '/plan', title: t('pages.plans') },
       { prependIcon: 'mdi-account-multiple', to: '/group', title: t('pages.groups') }
     ].map((item) => ({

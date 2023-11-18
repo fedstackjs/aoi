@@ -87,6 +87,9 @@ const headers = [
   { title: t('term.email'), key: 'email' },
   { title: t('term.realname'), key: 'realname' },
   { title: t('term.password'), key: 'password' },
+  { title: t('term.telephone'), key: 'telephone' },
+  { title: t('term.school'), key: 'school' },
+  { title: t('term.student-grade'), key: 'studentGrade' },
   { title: t('term.actions'), key: 'actions' }
 ] as const
 
@@ -98,6 +101,9 @@ const userInfo = ref<
     email: string
     realname: string
     password: string
+    telephone: string
+    school: string
+    studentGrade: string
   }[]
 >([])
 
@@ -137,21 +143,28 @@ const upload = async () => {
       profile: {
         name: item.name,
         email: item.email,
-        realname: item.realname
+        realname: item.realname,
+        telephone: item.telephone,
+        school: item.school,
+        studentGrade: item.studentGrade
       },
       password: item.password,
       passwordResetDue: settings.value.passwordResetDue,
       orgCapability: settings.value.orgCapability,
       orgGroups: []
     }))
-    await http.post(`org/${props.orgId}/admin/member/batchImport`, {
+    const res = await http.post(`org/${props.orgId}/admin/member/batchImport`, {
       json: {
         users: usersPayload,
         ignoreDuplicates: settings.value.ignoreDuplicates
       }
     })
     xlsxFile.value = []
-    toast.success(t('submit-success'))
+    const { insertedCount, successCount } = await res.json<{
+      insertedCount: number
+      successCount: number
+    }>()
+    toast.success(`${t('submit-success')}, inserted ${insertedCount}, succeeded ${successCount}`)
   } catch (err) {
     pageState.value = 'neterr'
   }
