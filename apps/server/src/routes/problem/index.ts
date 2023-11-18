@@ -6,7 +6,7 @@ import { BSON } from 'mongodb'
 import { OrgCapability, problems } from '../../db/index.js'
 import { paginationSkip } from '../../utils/pagination.js'
 import { AccessLevel } from '../../schemas/index.js'
-import { searchToFilter } from '../../utils/search.js'
+import { searchToFilter, filterMerge } from '../../utils/search.js'
 
 export const problemRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('problem'))
@@ -109,15 +109,16 @@ export const problemRoutes = defineRoutes(async (s) => {
           : AccessLevel.RESTRICED
         : AccessLevel.PUBLIC
       const principalIds = [req.user.userId, ...(membership?.groups ?? [])]
-
-      const filter = {
-        orgId,
-        ...searchFilter,
-        $or: [
-          { accessLevel: { $lte: basicAccessLevel } },
-          { 'associations.principalId': { $in: principalIds } }
-        ]
-      }
+      const filter = filterMerge(
+        {
+          orgId,
+          $or: [
+            { accessLevel: { $lte: basicAccessLevel } },
+            { 'associations.principalId': { $in: principalIds } }
+          ]
+        },
+        searchFilter
+      )
       let total = 0
       if (count) {
         total = await problems.countDocuments(filter)

@@ -6,7 +6,7 @@ import { ContestRanklistState, OrgCapability, contests } from '../../db/index.js
 import { SContestStage } from '../../schemas/contest.js'
 import { BSON } from 'mongodb'
 import { contestScopedRoutes } from './scoped.js'
-import { searchToFilter } from '../../utils/search.js'
+import { searchToFilter, filterMerge } from '../../utils/search.js'
 
 export const contestRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('contest'))
@@ -108,33 +108,29 @@ export const contestRoutes = defineRoutes(async (s) => {
           : AccessLevel.RESTRICED
         : AccessLevel.PUBLIC
       const principalIds = [req.user.userId, ...(membership?.groups ?? [])]
-      const result = await findPaginated(
-        contests,
-        page,
-        perPage,
-        count,
+      const filter = filterMerge(
         {
           orgId,
-          ...searchFilter,
           $or: [
             { accessLevel: { $lte: basicAccessLevel } },
             { 'associations.principalId': { $in: principalIds } }
           ]
         },
-        {
-          projection: {
-            _id: 1,
-            slug: 1,
-            title: 1,
-            tags: 1,
-            stages: {
-              name: 1,
-              start: 1
-            },
-            participantCount: 1
-          }
-        }
+        searchFilter
       )
+      const result = await findPaginated(contests, page, perPage, count, filter, {
+        projection: {
+          _id: 1,
+          slug: 1,
+          title: 1,
+          tags: 1,
+          stages: {
+            name: 1,
+            start: 1
+          },
+          participantCount: 1
+        }
+      })
       return result
     }
   )

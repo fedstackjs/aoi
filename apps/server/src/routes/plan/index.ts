@@ -6,7 +6,7 @@ import { plans } from '../../db/plan.js'
 import { OrgCapability } from '../../db/index.js'
 import { AccessLevel } from '../../schemas/index.js'
 import { planScopedRoutes } from './scoped.js'
-import { searchToFilter } from '../../utils/search.js'
+import { searchToFilter, filterMerge } from '../../utils/search.js'
 
 export const planRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('plan'))
@@ -90,28 +90,24 @@ export const planRoutes = defineRoutes(async (s) => {
           : AccessLevel.RESTRICED
         : AccessLevel.PUBLIC
       const principalIds = [req.user.userId, ...(membership?.groups ?? [])]
-      const result = await findPaginated(
-        plans,
-        page,
-        perPage,
-        count,
+      const filter = filterMerge(
         {
           orgId,
-          ...searchFilter,
           $or: [
             { accessLevel: { $lte: basicAccessLevel } },
             { 'associations.principalId': { $in: principalIds } }
           ]
         },
-        {
-          projection: {
-            _id: 1,
-            slug: 1,
-            title: 1,
-            tags: 1
-          }
-        }
+        searchFilter
       )
+      const result = await findPaginated(plans, page, perPage, count, filter, {
+        projection: {
+          _id: 1,
+          slug: 1,
+          title: 1,
+          tags: 1
+        }
+      })
       return result
     }
   )
