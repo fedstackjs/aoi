@@ -76,11 +76,14 @@ const {
 } = usePagination(
   'solution',
   computed(() => {
-    const query = {
-      orgId: props.orgId,
-      userId: userId.value
-    }
-    return query
+    return userId.value
+      ? {
+          orgId: props.orgId,
+          userId: userId.value
+        }
+      : {
+          orgId: props.orgId
+        }
   })
 )
 
