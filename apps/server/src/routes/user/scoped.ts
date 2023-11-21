@@ -8,6 +8,7 @@ import { loadUserCapability } from '../common/access.js'
 declare module 'fastify' {
   interface FastifyRequest {
     _userId: BSON.UUID
+    _uid: BSON.UUID
   }
 }
 
@@ -22,6 +23,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
   )
   s.addHook('onRequest', async (req) => {
     req._userId = loadUUID(req.params, 'userId', s.httpErrors.notFound())
+    req._uid = req._userId
   })
 
   s.get(
@@ -71,6 +73,30 @@ export const userScopedRoutes = defineRoutes(async (s) => {
             email: user.profile.email,
             realname: user.profile.realname
           }
+    }
+  )
+
+  s.get(
+    '/profile_na',
+    {
+      schema: {
+        response: {
+          200: Type.Object({
+            name: Type.String(),
+            email: Type.String()
+          })
+        },
+        security: []
+      }
+    },
+    async (req, rep) => {
+      console.log('ID', req._uid)
+      const user = await users.findOne({ _id: req._uid }, { projection: { profile: 1 } })
+      if (!user) return rep.notFound()
+      return {
+        name: user.profile.name,
+        email: user.profile.email
+      }
     }
   )
 

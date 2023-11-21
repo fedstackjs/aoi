@@ -22,9 +22,12 @@ const props = defineProps<{
 const profile = useAsyncState(async () => {
   // TODO: implement caching
   let err
-  for (const kind of ['user', 'group']) {
+  for (const kind of [
+    ['user', 'profile_na'],
+    ['group', 'profile']
+  ]) {
     try {
-      const resp = await http.get(`${kind}/${props.principalId}/profile`)
+      const resp = await http.get(`${kind[0]}/${props.principalId}/${kind[1]}`)
       const data = await resp.json<{
         name: string
         email: string
