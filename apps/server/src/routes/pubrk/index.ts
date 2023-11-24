@@ -37,7 +37,7 @@ export const pubrkRoutes = defineRoutes(async (s) => {
       )
       // find an unused ranklistId, because ranklistId is unique and we created descending index on it
       // so lets find the ranklistId of the first one and add 1
-      const first = await pubrk.findOne({}, { projection: { ranklistId: 1 } })
+      const first = await pubrk.find({}).sort({ ranklistId: -1 }).limit(1).next()
       const ranklistId = first ? first.ranklistId + 1 : 1
       // now insert the ranklist
       await pubrk.insertOne({

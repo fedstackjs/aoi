@@ -40,6 +40,10 @@ const payload = reactive({
 })
 
 async function addRanklist() {
+  if (payload.key === '' || payload.name === '') {
+    toast.error('Key and name cannot be empty')
+    return
+  }
   try {
     const { orgId, contestId } = props
     await http.post(`contest/${contestId}/ranklist`, {
