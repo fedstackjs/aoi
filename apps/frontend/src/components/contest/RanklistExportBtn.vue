@@ -18,6 +18,7 @@ import { useToast } from 'vue-toastification'
 import * as xlsx from 'xlsx'
 import type { Ranklist } from '@aoi-js/common'
 import type { IUserProfile } from '@aoi-js/server'
+import ky from 'ky'
 
 const { t } = useI18n()
 const toast = useToast()
@@ -39,7 +40,7 @@ async function exportRanklist() {
   try {
     const endpoint = `contest/${props.contestId}/ranklist/${props.ranklistKey}/url/download`
     const { url } = await http.get(endpoint).json<{ url: string }>()
-    const jsondata = await http.get(url).json<Ranklist>()
+    const jsondata = await ky.get(url).json<Ranklist>()
     const workbook = xlsx.utils.book_new()
     var data = []
     const header = [
