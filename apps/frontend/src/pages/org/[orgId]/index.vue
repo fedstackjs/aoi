@@ -18,11 +18,6 @@
         <VContainer class="pa-0">
           <VRow>
             <VCol>
-              <PlanCardsWrapper :org-id="appState.orgId" />
-            </VCol>
-          </VRow>
-          <VRow>
-            <VCol>
               <FriendLinksCard />
             </VCol>
           </VRow>
@@ -39,7 +34,6 @@ import { useI18n } from 'vue-i18n'
 import { useAppState } from '@/stores/app'
 import PosterCarousel from '@/components/homepage/PosterCarousel.vue'
 import RecentContestsCard from '@/components/homepage/RecentContestsCard.vue'
-import PlanCardsWrapper from '@/components/homepage/PlanCardsWrapper.vue'
 import AnnouncementsCard from '@/components/homepage/AnnouncementsCard.vue'
 import FriendLinksCard from '@/components/homepage/FriendLinksCard.vue'
 

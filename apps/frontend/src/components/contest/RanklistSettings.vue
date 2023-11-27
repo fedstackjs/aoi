@@ -17,6 +17,12 @@
       :ranklistKey="props.ranklistKey"
     />
     <VCardSubtitle>
+      {{ t('action.export') }}
+    </VCardSubtitle>
+    <VCardActions>
+      <RanklistExportBtn :contestId="contestId" :ranklistKey="props.ranklistKey" />
+    </VCardActions>
+    <VCardSubtitle>
       {{ t('term.danger-zone') }}
     </VCardSubtitle>
     <VCardActions>
@@ -33,6 +39,7 @@ import SettingsEditor from '@/components/utils/SettingsEditor.vue'
 import RanklistSettingsInput from './RanklistSettingsInput.vue'
 import { useRouter } from 'vue-router'
 import RanklistPublicSettings from './RanklistPublicSettings.vue'
+import RanklistExportBtn from './RanklistExportBtn.vue'
 
 const router = useRouter()
 

@@ -38,6 +38,7 @@ action:
   view: 查看
   publish: 发布
   cancel-publish: 取消发布
+  export: 导出
 
 term:
   content: 内容

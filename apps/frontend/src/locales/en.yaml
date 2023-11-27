@@ -38,6 +38,7 @@ action:
   view: View
   publish: Publish
   cancel-publish: Cancel Publish
+  export: Export
 
 term:
   content: Content
