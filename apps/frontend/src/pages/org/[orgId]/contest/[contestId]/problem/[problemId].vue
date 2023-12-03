@@ -2,7 +2,7 @@
   <VCard variant="flat">
     <AsyncState :state="problem" hide-when-loading>
       <template v-slot="{ value }">
-        <VCardTitle class="d-flex justify-between">
+        <VCardTitle class="d-flex justify-space-between">
           <div>
             <p class="text-h4">{{ value.title }}</p>
           </div>
@@ -12,6 +12,7 @@
                 {{ tag }}
               </VChip>
             </VChipGroup>
+            <ProblemJumpBtn :problem-id="props.problemId" />
           </div>
         </VCardTitle>
         <VDivider />
@@ -74,6 +75,7 @@ import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import ProblemTabAttachments from '@/components/contest/ProblemTabAttachments.vue'
 import ProblemTabAdmin from '@/components/contest/ProblemTabAdmin.vue'
+import ProblemJumpBtn from '@/components/contest/ProblemJumpBtn.vue'
 import { useContestCapability, useContestSettings } from '@/utils/contest/inject'
 import { watch } from 'vue'
 
