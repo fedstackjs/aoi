@@ -152,6 +152,12 @@ export const problemRoutes = defineRoutes(async (s) => {
           { $unwind: { path: '$status', preserveNullAndEmptyArrays: true } }
         ])
         .toArray()
+      // add status.solutionCount=0 for problems with status
+      items.forEach((item) => {
+        if (item.status && !item.status.solutionCount) {
+          item.status = { ...item.status, solutionCount: 0 }
+        }
+      })
       return { total, items }
     }
   )
