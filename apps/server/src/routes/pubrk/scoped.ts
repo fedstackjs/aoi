@@ -29,9 +29,6 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
       })
     )
   )
-  s.addHook('onRoute', (route) => {
-    ;(route.schema ??= {}).security = []
-  })
 
   s.addHook('onRequest', async (req) => {
     const ranklistIdStr = (req.params as Record<string, string>).ranklistId
@@ -45,15 +42,20 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
     req._pubranklist = ranklist
   })
 
-  s.register(getFileUrl, {
-    resolve: async (type, query, req) => {
-      if (!req._pubranklist.visible) throw s.httpErrors.notFound()
-      if (type !== 'download') throw s.httpErrors.badRequest()
-      const oss = await loadOrgOssSettings(req._pubranklist.orgId)
-      const key = req._pubranklist.ranklistKey
-      return [oss, contestRanklistKey(req._pubranklist.contestId, key), query]
-    },
-    allowedTypes: ['download']
+  s.register(async (s) => {
+    // Only download url is public
+    s.addHook('onRoute', (route) => {
+      ;(route.schema ??= {}).security = []
+    })
+    s.register(getFileUrl, {
+      resolve: async (type, query, req) => {
+        if (!req._pubranklist.visible) throw s.httpErrors.notFound()
+        const oss = await loadOrgOssSettings(req._pubranklist.orgId)
+        const key = req._pubranklist.ranklistKey
+        return [oss, contestRanklistKey(req._pubranklist.contestId, key), query]
+      },
+      allowedTypes: ['download']
+    })
   })
 
   s.get(
@@ -87,7 +89,7 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const contest = await contests.findOne({ contestId: req._contestId })
+      const contest = await contests.findOne({ _id: req._contestId })
       if (!contest) throw s.httpErrors.notFound()
       const membership = await loadMembership(req.user.userId, contest.orgId)
       const capability = loadCapability(
@@ -97,6 +99,11 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
         ContestCapability.CAP_ACCESS,
         CAP_ALL
       )
+      console.log(req.user.userId)
+      console.log(contest)
+      console.log(contest.orgId)
+      console.log(membership)
+      console.log(capability.toString())
       if (!hasCapability(capability, ContestCapability.CAP_ADMIN)) {
         return rep.forbidden()
       }
@@ -120,7 +127,7 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const contest = await contests.findOne({ contestId: req._contestId })
+      const contest = await contests.findOne({ _id: req._contestId })
       if (!contest) throw s.httpErrors.notFound()
       const membership = await loadMembership(req.user.userId, contest.orgId)
       const capability = loadCapability(
