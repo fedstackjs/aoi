@@ -10,13 +10,11 @@ import {
   contests
 } from '../../db/index.js'
 import { CAP_ALL, hasCapability } from '../../utils/index.js'
-import { BSON } from 'mongodb'
 
 declare module 'fastify' {
   interface FastifyRequest {
     _ranklistId: number
     _pubranklist: IPublicRanklist
-    _contestId: BSON.UUID
   }
 }
 
@@ -89,7 +87,7 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const contest = await contests.findOne({ _id: req._contestId })
+      const contest = await contests.findOne({ _id: req._pubranklist.contestId })
       if (!contest) throw s.httpErrors.notFound()
       const membership = await loadMembership(req.user.userId, contest.orgId)
       const capability = loadCapability(
@@ -99,11 +97,6 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
         ContestCapability.CAP_ACCESS,
         CAP_ALL
       )
-      console.log(req.user.userId)
-      console.log(contest)
-      console.log(contest.orgId)
-      console.log(membership)
-      console.log(capability.toString())
       if (!hasCapability(capability, ContestCapability.CAP_ADMIN)) {
         return rep.forbidden()
       }
@@ -127,7 +120,7 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const contest = await contests.findOne({ _id: req._contestId })
+      const contest = await contests.findOne({ _id: req._pubranklist.contestId })
       if (!contest) throw s.httpErrors.notFound()
       const membership = await loadMembership(req.user.userId, contest.orgId)
       const capability = loadCapability(
