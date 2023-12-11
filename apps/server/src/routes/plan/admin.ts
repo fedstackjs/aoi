@@ -2,27 +2,29 @@ import { PlanCapacity, SPlanSettings, hasCapability, plans } from '../../index.j
 import { manageACL, manageAccessLevel } from '../common/access.js'
 import { defineRoutes } from '../common/index.js'
 import { manageSettings } from '../common/settings.js'
+import { kPlanContext } from './inject.js'
 
 export const planAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
-    if (!hasCapability(req._planCapability, PlanCapacity.CAP_ADMIN)) return rep.forbidden()
+    const ctx = req.inject(kPlanContext)
+    if (!hasCapability(ctx._planCapability, PlanCapacity.CAP_ADMIN)) return rep.forbidden()
   })
 
   s.register(manageACL, {
     collection: plans,
-    resolve: async (req) => req._plan._id,
+    resolve: async (req) => req.inject(kPlanContext)._plan._id,
     defaultCapability: PlanCapacity.CAP_ACCESS,
     prefix: '/access'
   })
   s.register(manageAccessLevel, {
     collection: plans,
-    resolve: async (req) => req._plan._id,
+    resolve: async (req) => req.inject(kPlanContext)._plan._id,
     prefix: '/accessLevel'
   })
 
   s.register(manageSettings, {
     collection: plans,
-    resolve: async (req) => req._plan._id,
+    resolve: async (req) => req.inject(kPlanContext)._plan._id,
     schema: SPlanSettings,
     prefix: '/settings'
   })
@@ -31,12 +33,12 @@ export const planAdminRoutes = defineRoutes(async (s) => {
     '/',
     {
       schema: {
-        description: 'Delete contest'
+        description: 'Delete plain'
       }
     },
     async (req) => {
       // TODO: handle dependencies
-      await plans.deleteOne({ _id: req._plan._id })
+      await plans.deleteOne({ _id: req.inject(kPlanContext)._plan._id })
       return {}
     }
   )

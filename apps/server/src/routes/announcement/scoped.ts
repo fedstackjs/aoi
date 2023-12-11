@@ -4,18 +4,17 @@ import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
 import { announcements, IAnnouncement } from '../../db/index.js'
 import { BSON } from 'mongodb'
+import { defineInjectionPoint } from '../../utils/inject.js'
 
 const articleIdSchema = Type.Object({
   articleId: Type.String()
 })
 
-declare module 'fastify' {
-  interface FastifyRequest {
-    _articleId: BSON.UUID
-    _article: IAnnouncement
-    _cap: boolean
-  }
-}
+const kAnnouncementCtx = defineInjectionPoint<{
+  _articleId: BSON.UUID
+  _article: IAnnouncement
+  _cap: boolean
+}>('announcement')
 
 export const announcementScopedRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', paramSchemaMerger(articleIdSchema))
@@ -24,14 +23,15 @@ export const announcementScopedRoutes = defineRoutes(async (s) => {
     const articleId = loadUUID(req.params, 'articleId', s.httpErrors.notFound())
     const article = await announcements.findOne({ _id: articleId })
     if (!article) throw s.httpErrors.notFound()
-    req._cap = await (async () => {
-      if (!req.user) return false
-      const capability = await loadUserCapability(req)
-      return hasCapability(capability, UserCapability.CAP_ADMIN)
-    })()
-    if (!article.public && !req._cap) return rep.forbidden()
-    req._articleId = articleId
-    req._article = article
+    const _cap = req.user
+      ? hasCapability(await loadUserCapability(req), UserCapability.CAP_ADMIN)
+      : false
+    if (!article.public && !_cap) return rep.forbidden()
+    req.provide(kAnnouncementCtx, {
+      _articleId: articleId,
+      _article: article,
+      _cap: _cap
+    })
   })
 
   s.get(
@@ -51,11 +51,12 @@ export const announcementScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
+      const ctx = req.inject(kAnnouncementCtx)
       return {
-        title: req._article.title,
-        description: req._article.description,
-        public: req._article.public,
-        date: req._article.date
+        title: ctx._article.title,
+        description: ctx._article.description,
+        public: ctx._article.public,
+        date: ctx._article.date
       }
     }
   )
@@ -74,10 +75,11 @@ export const announcementScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      if (!req._cap) return rep.forbidden()
+      const ctx = req.inject(kAnnouncementCtx)
+      if (!ctx._cap) return rep.forbidden()
       const { title, description, public: pub, date } = req.body
       await announcements.updateOne(
-        { _id: req._articleId },
+        { _id: ctx._articleId },
         { $set: { title, description, public: pub, date } }
       )
       return { ok: 1 }
@@ -92,8 +94,9 @@ export const announcementScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      if (!req._cap) return rep.forbidden()
-      await announcements.deleteOne({ _id: req._articleId })
+      const ctx = req.inject(kAnnouncementCtx)
+      if (!ctx._cap) return rep.forbidden()
+      await announcements.deleteOne({ _id: ctx._articleId })
       return {}
     }
   )

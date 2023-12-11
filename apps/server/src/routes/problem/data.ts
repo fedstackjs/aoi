@@ -5,15 +5,17 @@ import { ensureCapability } from '../../utils/index.js'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import { defineRoutes, paramSchemaMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
+import { kProblemContext } from './inject.js'
 
 const dataScopedRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', paramSchemaMerger(Type.Object({ hash: Type.Hash() })))
   s.register(getFileUrl, {
     prefix: '/url',
     resolve: async (_type, query, req) => {
-      const oss = await loadOrgOssSettings(req._problem.orgId)
+      const ctx = req.inject(kProblemContext)
+      const oss = await loadOrgOssSettings(ctx._problem.orgId)
       const hash = (req.params as { hash: string }).hash
-      return [oss, problemDataKey(req._problemId, hash), query]
+      return [oss, problemDataKey(ctx._problemId, hash), query]
     }
   })
 
@@ -28,14 +30,16 @@ const dataScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kProblemContext)
+
       ensureCapability(
-        req._problemCapability,
+        ctx._problemCapability,
         ProblemCapability.CAP_CONTENT,
         s.httpErrors.forbidden()
       )
       const hash = (req.params as { hash: string }).hash
       const { modifiedCount } = await problems.updateOne(
-        { _id: req._problemId, currentDataHash: { $ne: hash } },
+        { _id: ctx._problemId, currentDataHash: { $ne: hash } },
         { $pull: { data: { hash } } }
       )
       if (!modifiedCount) return rep.conflict()
@@ -46,7 +50,11 @@ const dataScopedRoutes = defineRoutes(async (s) => {
 
 export const problemDataRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req) => {
-    ensureCapability(req._problemCapability, ProblemCapability.CAP_DATA, s.httpErrors.forbidden())
+    ensureCapability(
+      req.inject(kProblemContext)._problemCapability,
+      ProblemCapability.CAP_DATA,
+      s.httpErrors.forbidden()
+    )
   })
 
   s.get(
@@ -67,7 +75,7 @@ export const problemDataRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      return req._problem.data
+      return req.inject(kProblemContext)._problem.data
     }
   )
 
@@ -86,7 +94,7 @@ export const problemDataRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const { hash, config, description } = req.body
       const { modifiedCount } = await problems.updateOne(
-        { _id: req._problemId, [`data.hash`]: { $ne: hash } },
+        { _id: req.inject(kProblemContext)._problemId, [`data.hash`]: { $ne: hash } },
         { $push: { data: { hash, createdAt: Date.now(), config, description } } }
       )
       if (!modifiedCount) return rep.conflict()
@@ -107,7 +115,7 @@ export const problemDataRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const { hash } = req.body
       const { modifiedCount } = await problems.updateOne(
-        { _id: req._problemId, [`data.hash`]: hash },
+        { _id: req.inject(kProblemContext)._problemId, [`data.hash`]: hash },
         { $set: { currentDataHash: hash } }
       )
       if (!modifiedCount) return rep.badRequest()

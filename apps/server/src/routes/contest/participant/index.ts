@@ -6,12 +6,14 @@ import {
   hasCapability
 } from '../../../index.js'
 import { defineRoutes } from '../../common/index.js'
+import { kContestContext } from '../inject.js'
 
 export const contestParticipantRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
-    const { participantEnabled } = req._contestStage.settings
+    const ctx = req.inject(kContestContext)
+    const { participantEnabled } = ctx._contestStage.settings
     if (participantEnabled) return
-    if (hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)) return
+    if (hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) return
     return rep.forbidden()
   })
 
@@ -31,13 +33,14 @@ export const contestParticipantRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
+      const ctx = req.inject(kContestContext)
       return findPaginated(
         contestParticipants,
         req.query.page,
         req.query.perPage,
         req.query.count,
         {
-          _contestId: req._contestId
+          _contestId: ctx._contestId
         },
         {
           projection: {

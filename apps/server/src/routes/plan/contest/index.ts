@@ -10,6 +10,7 @@ import {
 } from '../../../index.js'
 import { contestAdminRoutes } from './admin.js'
 import { BSON } from 'mongodb'
+import { kPlanContext } from '../inject.js'
 
 export async function testPrecondition(
   cond: IPlanContestPrecondition,
@@ -51,7 +52,9 @@ const planContestViewRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      const config = req._plan.contests
+      const ctx = req.inject(kPlanContext)
+
+      const config = ctx._plan.contests
       const $in = config.map((contest) => contest.contestId)
       const list = await contests
         .find({ _id: { $in } }, { projection: { title: 1, slug: 1, tags: 1 } })
@@ -75,11 +78,12 @@ const planContestViewRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      if (!req._planParticipant) return rep.preconditionFailed(`Not registered to plan`)
+      const ctx = req.inject(kPlanContext)
+      if (!ctx._planParticipant) return rep.preconditionFailed(`Not registered to plan`)
 
       const contestId = tryLoadUUID(req.params, 'contestId')
       if (!contestId) return rep.notFound()
-      const config = req._plan.contests.find(({ contestId: id }) => id.equals(contestId))
+      const config = ctx._plan.contests.find(({ contestId: id }) => id.equals(contestId))
       if (!config) return rep.notFound()
       for (const { contestId, conditions } of config.settings.preConditionContests ?? []) {
         const participant = await contestParticipants.findOne({

@@ -5,6 +5,7 @@ import { Type } from '@sinclair/typebox'
 import { IOrgOssSettings, SOrgProfile, SOrgSettings } from '../../../index.js'
 import { orgAdminMemberRoutes } from './member.js'
 import { orgAdminRunnerRoutes } from './runner.js'
+import { kOrgContext } from '../inject.js'
 
 function ossSettingsToUpdate(oss: IOrgOssSettings) {
   const $set: Record<string, unknown> = oss
@@ -14,7 +15,8 @@ function ossSettingsToUpdate(oss: IOrgOssSettings) {
 
 export const orgAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req) => {
-    const capability = req._orgMembership?.capability ?? CAP_NONE
+    const ctx = req.inject(kOrgContext)
+    const capability = ctx._orgMembership?.capability ?? CAP_NONE
     ensureCapability(capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
   })
 
@@ -41,7 +43,8 @@ export const orgAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const org = await orgs.findOne({ _id: req._orgId }, { projection: { settings: 1 } })
+      const ctx = req.inject(kOrgContext)
+      const org = await orgs.findOne({ _id: ctx._orgId }, { projection: { settings: 1 } })
       if (!org) return rep.notFound()
       if (org.settings.oss) {
         org.settings.oss.secretKey = ''
@@ -58,12 +61,13 @@ export const orgAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
+      const ctx = req.inject(kOrgContext)
       const { oss, ...rest } = req.body
       let $set = rest
       if (oss) {
         $set = { ...$set, ...ossSettingsToUpdate(oss) }
       }
-      await orgs.updateOne({ _id: req._orgId }, { $set })
+      await orgs.updateOne({ _id: ctx._orgId }, { $set })
       return {}
     }
   )
@@ -78,7 +82,8 @@ export const orgAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      const org = await orgs.findOne({ _id: req._orgId }, { projection: { profile: 1 } })
+      const ctx = req.inject(kOrgContext)
+      const org = await orgs.findOne({ _id: ctx._orgId }, { projection: { profile: 1 } })
       if (!org) throw s.httpErrors.badRequest()
       return org.profile
     }
@@ -92,7 +97,8 @@ export const orgAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      await orgs.updateOne({ _id: req._orgId }, { $set: { profile: req.body } })
+      const ctx = req.inject(kOrgContext)
+      await orgs.updateOne({ _id: ctx._orgId }, { $set: { profile: req.body } })
       return {}
     }
   )

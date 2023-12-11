@@ -2,7 +2,6 @@ import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
 import { problemConfigSchema } from '@aoi-js/common'
 import {
-  IProblem,
   ProblemCapability,
   problems,
   OrgCapability,
@@ -26,18 +25,11 @@ import { problemDataRoutes } from './data.js'
 import { problemSolutionRoutes } from './solution.js'
 import { problemAdminRoutes } from './admin.js'
 import { manageContent } from '../common/content.js'
+import { kProblemContext } from './inject.js'
 
 const problemIdSchema = Type.Object({
   problemId: Type.String()
 })
-
-declare module 'fastify' {
-  interface FastifyRequest {
-    _problemId: BSON.UUID
-    _problemCapability: BSON.Long
-    _problem: IProblem
-  }
-}
 
 export const problemScopedRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', paramSchemaMerger(problemIdSchema))
@@ -56,9 +48,11 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       CAP_ALL
     )
     ensureCapability(capability, ProblemCapability.CAP_ACCESS, s.httpErrors.forbidden())
-    req._problemId = problemId
-    req._problemCapability = capability
-    req._problem = problem
+    req.provide(kProblemContext, {
+      _problemId: problemId,
+      _problemCapability: capability,
+      _problem: problem
+    })
   })
 
   s.get(
@@ -83,10 +77,12 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
+      const ctx = req.inject(kProblemContext)
+
       return {
-        ...req._problem,
-        capability: req._problemCapability.toString(),
-        config: req._problem.data.find(({ hash }) => hash === req._problem.currentDataHash)?.config
+        ...ctx._problem,
+        capability: ctx._problemCapability.toString(),
+        config: ctx._problem.data.find(({ hash }) => hash === ctx._problem.currentDataHash)?.config
       }
     }
   )
@@ -109,18 +105,20 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const { allowPublicSubmit, maxSolutionCount } = req._problem.settings
+      const ctx = req.inject(kProblemContext)
+
+      const { allowPublicSubmit, maxSolutionCount } = ctx._problem.settings
       if (
         !allowPublicSubmit &&
-        !hasCapability(req._problemCapability, ProblemCapability.CAP_SOLUTION)
+        !hasCapability(ctx._problemCapability, ProblemCapability.CAP_SOLUTION)
       ) {
         return rep.preconditionFailed()
       }
 
-      const oss = await loadOrgOssSettings(req._problem.orgId)
+      const oss = await loadOrgOssSettings(ctx._problem.orgId)
       if (!oss) return rep.preconditionFailed('OSS not configured')
 
-      const { data, currentDataHash } = req._problem
+      const { data, currentDataHash } = ctx._problem
       const currentData = data.find(({ hash }) => hash === currentDataHash)
       if (!currentData) return rep.preconditionFailed('Current data not found')
       const { config } = currentData
@@ -130,7 +128,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
 
       const idOnUpsert = new BSON.UUID()
       const { value } = await solutions.findOneAndUpdate(
-        { problemId: req._problemId, userId: req.user.userId, state: SolutionState.CREATED },
+        { problemId: ctx._problemId, userId: req.user.userId, state: SolutionState.CREATED },
         {
           $set: {
             label: config.label,
@@ -139,7 +137,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
           },
           $setOnInsert: {
             _id: idOnUpsert,
-            orgId: req._problem.orgId,
+            orgId: ctx._problem.orgId,
             score: 0,
             metrics: {},
             status: '',
@@ -156,7 +154,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       await problemStatuses.updateOne(
         {
           userId: req.user.userId,
-          problemId: req._problemId,
+          problemId: ctx._problemId,
           solutionCount: upserted && maxSolutionCount ? { $lt: maxSolutionCount } : undefined
         },
         {
@@ -178,8 +176,10 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
   s.register(manageContent, {
     collection: problems,
     resolve: async (req) => {
-      if (!hasCapability(req._problemCapability, ProblemCapability.CAP_CONTENT)) return null
-      return req._problemId
+      const ctx = req.inject(kProblemContext)
+
+      if (!hasCapability(ctx._problemCapability, ProblemCapability.CAP_CONTENT)) return null
+      return ctx._problemId
     },
     prefix: '/content'
   })

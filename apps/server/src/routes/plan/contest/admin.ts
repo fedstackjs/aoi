@@ -8,10 +8,12 @@ import {
 } from '../../../index.js'
 import { defineRoutes } from '../../common/index.js'
 import { BSON } from 'mongodb'
+import { kPlanContext } from '../inject.js'
 
 export const contestAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
-    if (!hasCapability(req._planCapability, PlanCapacity.CAP_ADMIN)) {
+    const ctx = req.inject(kPlanContext)
+    if (!hasCapability(ctx._planCapability, PlanCapacity.CAP_ADMIN)) {
       return rep.forbidden()
     }
   })
@@ -27,14 +29,16 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kPlanContext)
+
       const contestId = new BSON.UUID(req.body.contestId)
       const exists = await contests.countDocuments({
         _id: contestId,
-        orgId: req._plan.orgId
+        orgId: ctx._plan.orgId
       })
       if (!exists) return rep.notFound()
       const { modifiedCount } = await plans.updateOne(
-        { _id: req._plan._id, 'contests.contestId': { $ne: contestId } },
+        { _id: ctx._plan._id, 'contests.contestId': { $ne: contestId } },
         { $push: { contests: { contestId, settings: req.body.settings } } }
       )
       if (!modifiedCount) return rep.conflict()
@@ -53,7 +57,9 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const contest = req._plan.contests.find(({ contestId }) =>
+      const ctx = req.inject(kPlanContext)
+
+      const contest = ctx._plan.contests.find(({ contestId }) =>
         contestId.equals(req.params.contestId)
       )
       if (!contest) return rep.notFound()
@@ -72,9 +78,11 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kPlanContext)
+
       const contestId = new BSON.UUID(req.params.contestId)
       const { modifiedCount } = await plans.updateOne(
-        { _id: req._plan._id, 'contests.contestId': contestId },
+        { _id: ctx._plan._id, 'contests.contestId': contestId },
         { $set: { 'contests.$.settings': req.body } }
       )
       if (!modifiedCount) return rep.notFound()
@@ -92,9 +100,11 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kPlanContext)
+
       const contestId = new BSON.UUID(req.params.contestId)
       const { modifiedCount } = await plans.updateOne(
-        { _id: req._plan._id },
+        { _id: ctx._plan._id },
         { $pull: { contests: { contestId } } }
       )
       if (!modifiedCount) return rep.notFound()

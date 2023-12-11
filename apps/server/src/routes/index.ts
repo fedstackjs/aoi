@@ -17,6 +17,14 @@ import { planRoutes } from './plan/index.js'
 import { infoRoutes } from './info/index.js'
 import { announcementRoutes } from './announcement/index.js'
 import { pubrkRoutes } from './pubrk/index.js'
+import {
+  IContainer,
+  InjectionPoint,
+  createInjectionContainer,
+  inject,
+  provide
+} from '../utils/inject.js'
+import type { FastifyRequest } from 'fastify'
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
@@ -27,6 +35,9 @@ declare module '@fastify/jwt' {
 declare module 'fastify' {
   interface FastifyRequest {
     _now: number
+    _container: IContainer
+    provide<T>(point: InjectionPoint<T>, value: T): void
+    inject<T>(point: InjectionPoint<T>): T
   }
 }
 
@@ -36,7 +47,19 @@ const userPayload = TypeCompiler.Compile(
   })
 )
 
+function decoratedProvide<T>(this: FastifyRequest, point: InjectionPoint<T>, value: T) {
+  return provide(this._container, point, value)
+}
+
+function decoratedInject<T>(this: FastifyRequest, point: InjectionPoint<T>): T {
+  return inject(this._container, point)
+}
+
 export const apiRoutes = defineRoutes(async (s) => {
+  s.decorateRequest('_container', null)
+  s.decorateRequest('provide', decoratedProvide)
+  s.decorateRequest('inject', decoratedInject)
+
   s.register(fastifyJwt, {
     secret: loadEnv('JWT_SECRET', String),
     formatUser(payload) {
@@ -56,6 +79,7 @@ export const apiRoutes = defineRoutes(async (s) => {
       rep.send(err)
     }
     req._now = Date.now()
+    req._container = createInjectionContainer()
   })
 
   s.get(

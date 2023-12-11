@@ -7,11 +7,9 @@ import {
   paramSchemaMerger
 } from '../common/index.js'
 import { BSON } from 'mongodb'
-import { IContestStage, SContestStage } from '../../schemas/contest.js'
+import { SContestStage } from '../../schemas/contest.js'
 import {
   ContestCapability,
-  IContest,
-  IContestParticipant,
   OrgCapability,
   contestParticipants,
   contests,
@@ -24,16 +22,7 @@ import { contestProblemRoutes } from './problem/index.js'
 import { contestSolutionRoutes } from './solution/index.js'
 import { contestRanklistRoutes } from './ranklist/index.js'
 import { manageContent } from '../common/content.js'
-
-declare module 'fastify' {
-  interface FastifyRequest {
-    _contestId: BSON.UUID
-    _contest: IContest
-    _contestCapability: BSON.Long
-    _contestStage: IContestStage
-    _contestParticipant: IContestParticipant | null
-  }
-}
+import { kContestContext } from './inject.js'
 
 export const contestScopedRoutes = defineRoutes(async (s) => {
   s.addHook(
@@ -58,13 +47,15 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
       CAP_ALL
     )
     ensureCapability(capability, ContestCapability.CAP_ACCESS, s.httpErrors.forbidden())
-    req._contestId = contestId
-    req._contest = contest
-    req._contestStage = getCurrentContestStage(req._now, contest)
-    req._contestCapability = capability
-    req._contestParticipant = await contestParticipants.findOne({
-      contestId: contestId,
-      userId: req.user.userId
+    req.provide(kContestContext, {
+      _contestId: contestId,
+      _contest: contest,
+      _contestStage: getCurrentContestStage(req._now, contest),
+      _contestCapability: capability,
+      _contestParticipant: await contestParticipants.findOne({
+        contestId: contestId,
+        userId: req.user.userId
+      })
     })
   })
 
@@ -90,10 +81,11 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
+      const ctx = req.inject(kContestContext)
       return {
-        ...req._contest,
-        capability: req._contestCapability.toString(),
-        currentStage: req._contestStage
+        ...ctx._contest,
+        capability: ctx._contestCapability.toString(),
+        currentStage: ctx._contestStage
       }
     }
   )
@@ -109,16 +101,17 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const { registrationEnabled, registrationAllowPublic } = req._contestStage.settings
+      const ctx = req.inject(kContestContext)
+      const { registrationEnabled, registrationAllowPublic } = ctx._contestStage.settings
       if (
         !registrationEnabled &&
-        !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)
+        !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)
       ) {
         return rep.forbidden()
       }
       if (
         !registrationAllowPublic &&
-        !hasCapability(req._contestCapability, ContestCapability.CAP_REGISTRATION)
+        !hasCapability(ctx._contestCapability, ContestCapability.CAP_REGISTRATION)
       ) {
         return rep.forbidden()
       }
@@ -126,14 +119,14 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
       await contestParticipants.insertOne({
         _id: new BSON.UUID(),
         userId: req.user.userId,
-        contestId: req._contestId,
+        contestId: ctx._contestId,
         results: {},
         updatedAt: Date.now()
       })
 
       // TODO: add to the corresponding contest
       await contests.updateOne(
-        { _id: req._contestId },
+        { _id: ctx._contestId },
         {
           $inc: { participantCount: 1 }
         }
@@ -156,9 +149,10 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      console.log(req._contest.participantCount)
+      const ctx = req.inject(kContestContext)
+      console.log(ctx._contest.participantCount)
       return {
-        count: req._contest.participantCount
+        count: ctx._contest.participantCount
       }
     }
   )
@@ -181,16 +175,18 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      if (!req._contestParticipant) return rep.preconditionFailed()
-      return req._contestParticipant
+      const ctx = req.inject(kContestContext)
+      if (!ctx._contestParticipant) return rep.preconditionFailed()
+      return ctx._contestParticipant
     }
   )
 
   s.register(manageContent, {
     collection: contests,
     resolve: async (req) => {
-      if (!hasCapability(req._contestCapability, ContestCapability.CAP_CONTENT)) return null
-      return req._contestId
+      const ctx = req.inject(kContestContext)
+      if (!hasCapability(ctx._contestCapability, ContestCapability.CAP_CONTENT)) return null
+      return ctx._contestId
     },
     prefix: '/content'
   })

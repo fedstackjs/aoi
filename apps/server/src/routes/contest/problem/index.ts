@@ -15,19 +15,22 @@ import { getUploadUrl, problemAttachmentKey, solutionDataKey } from '../../../os
 import { hasCapability } from '../../../utils/index.js'
 import { problemAdminRoutes } from './admin.js'
 import { FastifyRequest } from 'fastify'
+import { kContestContext } from '../inject.js'
 
 function loadProblemSettings(req: FastifyRequest) {
   const problemId = tryLoadUUID(req.params, 'problemId')
   if (!problemId) return [null, undefined] as const
-  const settings = req._contest.problems.find((problem) => problemId.equals(problem.problemId))
+  const ctx = req.inject(kContestContext)
+  const settings = ctx._contest.problems.find((problem) => problemId.equals(problem.problemId))
     ?.settings
   return [problemId, settings] as const
 }
 
 const problemViewRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
-    if (hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)) return
-    if (req._contestStage.settings.problemEnabled && req._contestParticipant) return
+    const ctx = req.inject(kContestContext)
+    if (hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) return
+    if (ctx._contestStage.settings.problemEnabled && ctx._contestParticipant) return
     return rep.forbidden()
   })
 
@@ -48,13 +51,14 @@ const problemViewRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      let config = req._contest.problems
-      if (!hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)) {
+      const ctx = req.inject(kContestContext)
+      let config = ctx._contest.problems
+      if (!hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) {
         config = config.filter(({ settings }) => (settings.showAfter ?? 0) <= req._now)
       }
       const $in = config.map(({ problemId }) => problemId)
       const projection: Document = { title: 1 }
-      if (req._contestStage.settings.problemShowTags) {
+      if (ctx._contestStage.settings.problemShowTags) {
         projection.tags = 1
       }
       const list = await problems.find({ _id: { $in } }, { projection }).toArray()
@@ -95,8 +99,9 @@ const problemViewRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const [problemId, settings] = loadProblemSettings(req)
       if (!settings) return rep.notFound()
+      const ctx = req.inject(kContestContext)
       if (
-        !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN) &&
+        !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN) &&
         settings.showAfter &&
         settings.showAfter > req._now
       )
@@ -109,7 +114,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
         currentDataHash: 1,
         data: 1
       }
-      if (req._contestStage.settings.problemShowTags) {
+      if (ctx._contestStage.settings.problemShowTags) {
         projection.tags = 1
       }
       const problem = await problems.findOne({ _id: problemId }, { projection })
@@ -130,16 +135,17 @@ const problemViewRoutes = defineRoutes(async (s) => {
       s.register(getFileUrl, {
         prefix: '/url',
         resolve: async (type, query, req) => {
+          const ctx = req.inject(kContestContext)
           const [problemId, settings] = loadProblemSettings(req)
           if (!settings) throw s.httpErrors.notFound()
           if (
-            !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN) &&
+            !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN) &&
             settings.showAfter &&
             settings.showAfter > req._now
           )
             throw s.httpErrors.notFound()
 
-          const oss = await loadOrgOssSettings(req._contest.orgId)
+          const oss = await loadOrgOssSettings(ctx._contest.orgId)
           const key = (req.params as { key: string }).key
           return [oss, problemAttachmentKey(problemId, key), query]
         },
@@ -170,19 +176,20 @@ const problemViewRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      if (!req._contestParticipant) return rep.forbidden()
-      const { solutionEnabled } = req._contestStage.settings
-      if (!solutionEnabled && !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)) {
+      const ctx = req.inject(kContestContext)
+      if (!ctx._contestParticipant) return rep.forbidden()
+      const { solutionEnabled } = ctx._contestStage.settings
+      if (!solutionEnabled && !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) {
         return rep.forbidden()
       }
 
-      const oss = await loadOrgOssSettings(req._contest.orgId)
+      const oss = await loadOrgOssSettings(ctx._contest.orgId)
       if (!oss) return rep.preconditionFailed('OSS not configured')
 
       const [problemId, settings] = loadProblemSettings(req)
       if (!settings) return rep.notFound()
       if (
-        !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN) &&
+        !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN) &&
         settings.showAfter &&
         settings.showAfter > req._now
       )
@@ -204,7 +211,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
       const { value } = await solutions.findOneAndUpdate(
         {
           problemId,
-          contestId: req._contestId,
+          contestId: ctx._contestId,
           userId: req.user.userId,
           state: SolutionState.CREATED
         },
@@ -227,7 +234,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
       const newSolutionId = new BSON.UUID()
       const { modifiedCount } = await contestParticipants.updateOne(
         {
-          _id: req._contestParticipant._id,
+          _id: ctx._contestParticipant._id,
           $or: [
             { [`results.${problemId}`]: { $exists: false } },
             { [`results.${problemId}.solutionCount`]: { $lt: settings.solutionCountLimit } }
@@ -249,9 +256,9 @@ const problemViewRoutes = defineRoutes(async (s) => {
 
       const { insertedId } = await solutions.insertOne({
         _id: newSolutionId,
-        orgId: req._contest.orgId,
+        orgId: ctx._contest.orgId,
         problemId,
-        contestId: req._contestId,
+        contestId: ctx._contestId,
         userId: req.user.userId,
         label: config.label,
         problemDataHash: problem.currentDataHash,

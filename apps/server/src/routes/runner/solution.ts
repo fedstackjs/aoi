@@ -13,13 +13,13 @@ import { getDownloadUrl, problemDataKey, solutionDataKey, solutionDetailsKey } f
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import { BSON } from 'mongodb'
 import { problemConfigSchema } from '@aoi-js/common'
+import { defineInjectionPoint } from '../../utils/inject.js'
+import { kRunnerContext } from './inject.js'
 
-declare module 'fastify' {
-  interface FastifyRequest {
-    _solutionId: BSON.UUID
-    _taskId: BSON.UUID
-  }
-}
+const kRunnerSolutionContext = defineInjectionPoint<{
+  _solutionId: BSON.UUID
+  _taskId: BSON.UUID
+}>('runnerSolution')
 
 const runnerTaskRoutes = defineRoutes(async (s) => {
   s.addHook(
@@ -33,8 +33,10 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
   )
 
   s.addHook('onRequest', async (req) => {
-    req._solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.notFound())
-    req._taskId = loadUUID(req.params, 'taskId', s.httpErrors.notFound())
+    req.provide(kRunnerSolutionContext, {
+      _solutionId: loadUUID(req.params, 'solutionId', s.httpErrors.notFound()),
+      _taskId: loadUUID(req.params, 'taskId', s.httpErrors.notFound())
+    })
   })
 
   s.patch(
@@ -59,10 +61,11 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kRunnerSolutionContext)
       const { matchedCount } = await solutions.updateOne(
         {
-          _id: req._solutionId,
-          taskId: req._taskId,
+          _id: ctx._solutionId,
+          taskId: ctx._taskId,
           state: { $in: [SolutionState.QUEUED, SolutionState.RUNNING] }
         },
         { $set: { state: SolutionState.RUNNING, ...req.body } }
@@ -75,8 +78,9 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
   s.register(getFileUrl, {
     prefix: '/details',
     resolve: async (type, query, req) => {
+      const ctx = req.inject(kRunnerSolutionContext)
       const solution = await solutions.findOne(
-        { _id: req._solutionId, taskId: req._taskId },
+        { _id: ctx._solutionId, taskId: ctx._taskId },
         { projection: { orgId: 1 } }
       )
       if (!solution) throw s.httpErrors.notFound()
@@ -97,11 +101,12 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const now = Date.now()
+      const now = req._now
+      const ctx = req.inject(kRunnerSolutionContext)
       const { value } = await solutions.findOneAndUpdate(
         {
-          _id: req._solutionId,
-          taskId: req._taskId,
+          _id: ctx._solutionId,
+          taskId: ctx._taskId,
           state: { $in: [SolutionState.QUEUED, SolutionState.RUNNING] }
         },
         { $set: { state: SolutionState.COMPLETED, completedAt: now } },
@@ -187,20 +192,21 @@ export const runnerSolutionRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
+      const runnerCtx = req.inject(kRunnerContext)
       const taskId = new BSON.UUID()
       const { value: solution } = await solutions.findOneAndUpdate(
         {
-          orgId: req._runner.orgId,
+          orgId: runnerCtx._runner.orgId,
           state: SolutionState.PENDING,
-          label: { $in: req._runner.labels }
+          label: { $in: runnerCtx._runner.labels }
         },
-        { $set: { state: SolutionState.QUEUED, runnerId: req._runner._id, taskId } }
+        { $set: { state: SolutionState.QUEUED, runnerId: runnerCtx._runner._id, taskId } }
       )
       if (!solution) return {}
 
       const info = { taskId, solutionId: solution._id }
 
-      const oss = await loadOrgOssSettings(req._runner.orgId)
+      const oss = await loadOrgOssSettings(runnerCtx._runner.orgId)
       if (!oss) return { ...info, errMsg: 'OSS not enabled' }
       const problem = await problems.findOne({ _id: solution.problemId })
       if (!problem) return { ...info, errMsg: 'Problem not found' }

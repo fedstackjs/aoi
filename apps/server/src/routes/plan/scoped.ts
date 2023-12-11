@@ -6,20 +6,13 @@ import {
   paramSchemaMerger,
   tryLoadUUID
 } from '../common/index.js'
-import { IPlan, IPlanParticipant, PlanCapacity, planParticipants, plans } from '../../db/index.js'
+import { PlanCapacity, planParticipants, plans } from '../../db/index.js'
 import { CAP_ALL, hasCapability } from '../../utils/index.js'
 import { BSON } from 'mongodb'
 import { manageContent } from '../common/content.js'
 import { planAdminRoutes } from './admin.js'
 import { planContestRoutes } from './contest/index.js'
-
-declare module 'fastify' {
-  interface FastifyRequest {
-    _plan: IPlan
-    _planCapability: BSON.Long
-    _planParticipant: IPlanParticipant | null
-  }
-}
+import { kPlanContext } from './inject.js'
 
 export const planScopedRoutes = defineRoutes(async (s) => {
   s.addHook(
@@ -45,11 +38,13 @@ export const planScopedRoutes = defineRoutes(async (s) => {
       CAP_ALL
     )
     if (!hasCapability(capability, PlanCapacity.CAP_ACCESS)) return rep.forbidden()
-    req._plan = plan
-    req._planCapability = capability
-    req._planParticipant = await planParticipants.findOne({
-      planId: plan._id,
-      userId: req.user.userId
+    req.provide(kPlanContext, {
+      _plan: plan,
+      _planCapability: capability,
+      _planParticipant: await planParticipants.findOne({
+        planId: plan._id,
+        userId: req.user.userId
+      })
     })
   })
 
@@ -73,9 +68,10 @@ export const planScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
+      const ctx = req.inject(kPlanContext)
       return {
-        ...req._plan,
-        capability: req._planCapability.toString()
+        ...ctx._plan,
+        capability: ctx._planCapability.toString()
       }
     }
   )
@@ -91,13 +87,15 @@ export const planScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const { registrationEnabled, registrationAllowPublic } = req._plan.settings
-      if (!registrationEnabled && !hasCapability(req._contestCapability, PlanCapacity.CAP_ADMIN)) {
+      const ctx = req.inject(kPlanContext)
+
+      const { registrationEnabled, registrationAllowPublic } = ctx._plan.settings
+      if (!registrationEnabled && !hasCapability(ctx._planCapability, PlanCapacity.CAP_ADMIN)) {
         return rep.forbidden()
       }
       if (
         !registrationAllowPublic &&
-        !hasCapability(req._contestCapability, PlanCapacity.CAP_REGISTRATION)
+        !hasCapability(ctx._planCapability, PlanCapacity.CAP_REGISTRATION)
       ) {
         return rep.forbidden()
       }
@@ -105,7 +103,7 @@ export const planScopedRoutes = defineRoutes(async (s) => {
       await planParticipants.insertOne({
         _id: new BSON.UUID(),
         userId: req.user.userId,
-        planId: req._plan._id,
+        planId: ctx._plan._id,
         results: {},
         updatedAt: Date.now()
       })
@@ -124,16 +122,20 @@ export const planScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      if (!req._planParticipant) return rep.preconditionFailed()
-      return req._planParticipant
+      const ctx = req.inject(kPlanContext)
+
+      if (!ctx._planParticipant) return rep.preconditionFailed()
+      return ctx._planParticipant
     }
   )
 
   s.register(manageContent, {
     collection: plans,
     resolve: async (req) => {
-      if (!hasCapability(req._planCapability, PlanCapacity.CAP_CONTENT)) return null
-      return req._plan._id
+      const ctx = req.inject(kPlanContext)
+
+      if (!hasCapability(ctx._planCapability, PlanCapacity.CAP_CONTENT)) return null
+      return ctx._plan._id
     },
     prefix: '/content'
   })

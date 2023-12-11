@@ -6,6 +6,7 @@ import { BSON } from 'mongodb'
 import { getFileUrl, loadOrgOssSettings } from '../../common/files.js'
 import { solutionDataKey, solutionDetailsKey } from '../../../index.js'
 import { FastifyRequest } from 'fastify'
+import { kContestContext } from '../inject.js'
 
 function checkUser(
   req: FastifyRequest,
@@ -13,9 +14,10 @@ function checkUser(
   bypass: boolean | undefined,
   bypassCap: BSON.Long = ContestCapability.CAP_ADMIN
 ) {
+  const ctx = req.inject(kContestContext)
   return (
     bypass ||
-    hasCapability(req._contestCapability, bypassCap) ||
+    hasCapability(ctx._contestCapability, bypassCap) ||
     req.user.userId.equals(userId ?? '')
   )
 }
@@ -31,20 +33,22 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
   )
 
   s.post('/submit', {}, async (req, rep) => {
-    const { solutionAllowSubmit } = req._contestStage.settings
+    const ctx = req.inject(kContestContext)
+
+    const { solutionAllowSubmit } = ctx._contestStage.settings
     if (
       !solutionAllowSubmit &&
-      !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)
+      !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)
     ) {
       return rep.forbidden()
     }
 
     const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
-    const admin = hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)
+    const admin = hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)
     const { modifiedCount } = await solutions.updateOne(
       {
         _id: solutionId,
-        contestId: req._contestId,
+        contestId: ctx._contestId,
         userId: admin ? undefined : req.user.userId,
         state: admin ? undefined : SolutionState.CREATED
       },
@@ -88,13 +92,15 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kContestContext)
+
       const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
-      const { solutionShowOther } = req._contestStage.settings
-      const admin = hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)
+      const { solutionShowOther } = ctx._contestStage.settings
+      const admin = hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)
       const solution = await solutions.findOne(
         {
           _id: solutionId,
-          contestId: req._contestId,
+          contestId: ctx._contestId,
           userId: admin || solutionShowOther ? undefined : req.user.userId
         },
         {
@@ -123,17 +129,19 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
   s.register(getFileUrl, {
     prefix: '/details',
     resolve: async (type, query, req) => {
+      const ctx = req.inject(kContestContext)
+
       const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
       const solution = await solutions.findOne({
         _id: solutionId,
-        contestId: req._contestId
+        contestId: ctx._contestId
       })
       if (!solution) throw s.httpErrors.notFound()
-      const { solutionShowOtherDetails } = req._contestStage.settings
+      const { solutionShowOtherDetails } = ctx._contestStage.settings
       if (!checkUser(req, solution.userId, solutionShowOtherDetails)) {
         throw s.httpErrors.forbidden()
       }
-      return [await loadOrgOssSettings(req._contest.orgId), solutionDetailsKey(solution._id)]
+      return [await loadOrgOssSettings(ctx._contest.orgId), solutionDetailsKey(solution._id)]
     },
     allowedTypes: ['download']
   })
@@ -141,17 +149,19 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
   s.register(getFileUrl, {
     prefix: '/data',
     resolve: async (type, query, req) => {
+      const ctx = req.inject(kContestContext)
+
       const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
       const solution = await solutions.findOne({
         _id: solutionId,
-        contestId: req._contestId
+        contestId: ctx._contestId
       })
       if (!solution) throw s.httpErrors.notFound()
-      const { solutionShowOtherData } = req._contestStage.settings
+      const { solutionShowOtherData } = ctx._contestStage.settings
       if (!checkUser(req, solution.userId, solutionShowOtherData)) {
         throw s.httpErrors.forbidden()
       }
-      return [await loadOrgOssSettings(req._contest.orgId), solutionDataKey(solution._id)]
+      return [await loadOrgOssSettings(ctx._contest.orgId), solutionDataKey(solution._id)]
     },
     allowedTypes: ['download']
   })
@@ -159,8 +169,10 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
 
 export const contestSolutionRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
-    const { solutionEnabled } = req._contestStage.settings
-    if (!solutionEnabled && !hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)) {
+    const ctx = req.inject(kContestContext)
+
+    const { solutionEnabled } = ctx._contestStage.settings
+    if (!solutionEnabled && !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) {
       return rep.forbidden()
     }
   })
@@ -195,7 +207,9 @@ export const contestSolutionRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const { solutionShowOther } = req._contestStage.settings
+      const ctx = req.inject(kContestContext)
+
+      const { solutionShowOther } = ctx._contestStage.settings
       if (!checkUser(req, req.query.userId, solutionShowOther)) {
         return rep.forbidden()
       }
@@ -206,7 +220,7 @@ export const contestSolutionRoutes = defineRoutes(async (s) => {
         req.query.perPage,
         req.query.count,
         {
-          contestId: req._contest._id,
+          contestId: ctx._contest._id,
           problemId: req.query.problemId ? new BSON.UUID(req.query.problemId) : undefined,
           userId: req.query.userId ? new BSON.UUID(req.query.userId) : undefined
         },

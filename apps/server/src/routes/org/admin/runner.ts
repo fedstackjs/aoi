@@ -2,6 +2,7 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes } from '../../common/index.js'
 import { BSON } from 'mongodb'
 import { runners } from '../../../index.js'
+import { kOrgContext } from '../inject.js'
 
 export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
   s.post(
@@ -18,7 +19,7 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const payload = {
-        orgId: req._orgId,
+        orgId: req.inject(kOrgContext)._orgId,
         runnerId: new BSON.UUID()
       }
       const token = await rep.jwtSign(payload, { expiresIn: '5min' })
@@ -46,7 +47,7 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      const list = await runners.find({ orgId: req._orgId }).toArray()
+      const list = await runners.find({ orgId: req.inject(kOrgContext)._orgId }).toArray()
       return list
     }
   )
@@ -74,7 +75,7 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const runner = await runners.findOne({
         _id: new BSON.UUID(req.params.runnerId),
-        orgId: req._orgId
+        orgId: req.inject(kOrgContext)._orgId
       })
       if (!runner) return rep.notFound()
       return runner
@@ -98,7 +99,7 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const { modifiedCount } = await runners.updateOne(
-        { _id: new BSON.UUID(req.params.runnerId), orgId: req._orgId },
+        { _id: new BSON.UUID(req.params.runnerId), orgId: req.inject(kOrgContext)._orgId },
         { $set: req.body }
       )
       if (!modifiedCount) return rep.notFound()
@@ -119,7 +120,7 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
       // TODO: handle side effects
       const { deletedCount } = await runners.deleteOne({
         _id: new BSON.UUID(req.params.runnerId),
-        orgId: req._orgId
+        orgId: req.inject(kOrgContext)._orgId
       })
       if (!deletedCount) return rep.notFound()
       return {}

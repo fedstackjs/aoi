@@ -10,12 +10,11 @@ import {
   paginationSkip,
   problems
 } from '../../index.js'
+import { defineInjectionPoint } from '../../utils/inject.js'
 
-declare module 'fastify' {
-  interface FastifyRequest {
-    _groupId: BSON.UUID
-  }
-}
+const kGroupContext = defineInjectionPoint<{
+  groupId: BSON.UUID
+}>('group')
 
 export const groupScopedRoutes = defineRoutes(async (s) => {
   s.addHook(
@@ -28,7 +27,9 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
   )
 
   s.addHook('onRequest', async (req) => {
-    req._groupId = loadUUID(req.params, 'groupId', s.httpErrors.notFound())
+    req.provide(kGroupContext, {
+      groupId: loadUUID(req.params, 'groupId', s.httpErrors.notFound())
+    })
   })
 
   s.get(
@@ -46,7 +47,9 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const group = await groups.findOne({ _id: req._groupId })
+      const group = await groups.findOne({
+        _id: req.inject(kGroupContext).groupId
+      })
       if (!group) return rep.notFound()
       return group
     }
@@ -61,7 +64,10 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const group = await groups.findOne({ _id: req._groupId }, { projection: { profile: 1 } })
+      const group = await groups.findOne(
+        { _id: req.inject(kGroupContext).groupId },
+        { projection: { profile: 1 } }
+      )
       if (!group) return rep.notFound()
       return group.profile
     }
@@ -76,12 +82,13 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const group = await groups.findOne({ _id: req._groupId }, { projection: { orgId: 1 } })
+      const ctx = req.inject(kGroupContext)
+      const group = await groups.findOne({ _id: ctx.groupId }, { projection: { orgId: 1 } })
       if (!group) return rep.notFound()
       const membership = await loadMembership(req.user.userId, group.orgId)
       if (!membership) return rep.forbidden()
       ensureCapability(membership.capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
-      await groups.updateOne({ _id: req._groupId }, { $set: { profile: req.body } })
+      await groups.updateOne({ _id: ctx.groupId }, { $set: { profile: req.body } })
       return {}
     }
   )
@@ -94,18 +101,19 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const group = await groups.findOne({ _id: req._groupId }, { projection: { orgId: 1 } })
+      const ctx = req.inject(kGroupContext)
+      const group = await groups.findOne({ _id: ctx.groupId }, { projection: { orgId: 1 } })
       if (!group) return rep.notFound()
       const membership = await loadMembership(req.user.userId, group.orgId)
       if (!membership) return rep.forbidden()
       ensureCapability(membership.capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
       // Remove Dependencies
-      await orgMemberships.updateMany({ orgId: group.orgId }, { $pull: { groups: req._groupId } })
+      await orgMemberships.updateMany({ orgId: group.orgId }, { $pull: { groups: ctx.groupId } })
       await problems.updateMany(
-        { 'associations.principalId': req._groupId },
-        { $pull: { associations: { principalId: req._groupId } } }
+        { 'associations.principalId': ctx.groupId },
+        { $pull: { associations: { principalId: ctx.groupId } } }
       )
-      await groups.deleteOne({ _id: req._groupId })
+      await groups.deleteOne({ _id: ctx.groupId })
       return {}
     }
   )
@@ -126,17 +134,19 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const group = await groups.findOne({ _id: req._groupId }, { projection: { orgId: 1 } })
+      const ctx = req.inject(kGroupContext)
+
+      const group = await groups.findOne({ _id: ctx.groupId }, { projection: { orgId: 1 } })
       if (!group) return rep.notFound()
 
       let count = 0
       if (req.query.count) {
-        count = await orgMemberships.countDocuments({ orgId: group.orgId, groups: req._groupId })
+        count = await orgMemberships.countDocuments({ orgId: group.orgId, groups: ctx.groupId })
       }
       const skip = paginationSkip(req.query.page, req.query.perPage)
       const members = await orgMemberships
         .aggregate([
-          { $match: { orgId: group.orgId, groups: req._groupId } },
+          { $match: { orgId: group.orgId, groups: ctx.groupId } },
           { $skip: skip },
           { $limit: req.query.perPage },
           { $project: { _id: 1, userId: 1, capability: 1 } },
@@ -184,7 +194,8 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const group = await groups.findOne({ _id: req._groupId }, { projection: { orgId: 1 } })
+      const ctx = req.inject(kGroupContext)
+      const group = await groups.findOne({ _id: ctx.groupId }, { projection: { orgId: 1 } })
       if (!group) return rep.notFound()
       const membership = await loadMembership(req.user.userId, group.orgId)
       if (!membership) return rep.forbidden()
@@ -192,7 +203,7 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       const userId = loadUUID(req.body, 'userId', s.httpErrors.badRequest())
       const { modifiedCount } = await orgMemberships.updateOne(
         { userId, orgId: group.orgId },
-        { $addToSet: { groups: req._groupId } }
+        { $addToSet: { groups: ctx.groupId } }
       )
       if (!modifiedCount) return rep.badRequest()
       return {}
@@ -210,7 +221,8 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const group = await groups.findOne({ _id: req._groupId }, { projection: { orgId: 1 } })
+      const ctx = req.inject(kGroupContext)
+      const group = await groups.findOne({ _id: ctx.groupId }, { projection: { orgId: 1 } })
       if (!group) return rep.notFound()
       const membership = await loadMembership(req.user.userId, group.orgId)
       if (!membership) return rep.forbidden()
@@ -218,7 +230,7 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       const userId = loadUUID(req.params, 'userId', s.httpErrors.badRequest())
       const { modifiedCount } = await orgMemberships.updateOne(
         { userId, orgId: group.orgId },
-        { $pull: { groups: req._groupId } }
+        { $pull: { groups: ctx.groupId } }
       )
       if (!modifiedCount) return rep.badRequest()
       return {}

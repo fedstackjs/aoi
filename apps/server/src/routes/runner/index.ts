@@ -7,12 +7,7 @@ import { runnerSolutionRoutes } from './solution.js'
 import { packageJson } from '../../utils/package.js'
 import { runnerRanklistRoutes } from './ranklist.js'
 import { logger } from '../../index.js'
-
-declare module 'fastify' {
-  interface FastifyRequest {
-    _runner: IRunner
-  }
-}
+import { kRunnerContext } from './inject.js'
 
 const registrationPayload = TypeCompiler.Compile(
   Type.Object({
@@ -46,7 +41,9 @@ export const runnerRoutes = defineRoutes(async (s) => {
     const runner = await runners.findOne({ _id: runnerId })
     if (!runner) throw s.httpErrors.unauthorized()
     if (req.headers['x-aoi-runner-key'] !== runner.key) throw s.httpErrors.unauthorized()
-    req._runner = runner
+    req.provide(kRunnerContext, {
+      _runner: runner
+    })
     rep.header('x-aoi-api-version', packageJson.version)
     updateAccessedAt(runner)
   })
@@ -105,7 +102,7 @@ export const runnerRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      await runners.updateOne({ _id: req._runner._id }, { $set: req.body })
+      await runners.updateOne({ _id: req.inject(kRunnerContext)._runner._id }, { $set: req.body })
       return {}
     }
   )

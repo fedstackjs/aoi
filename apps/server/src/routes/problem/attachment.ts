@@ -4,22 +4,25 @@ import { defineRoutes, paramSchemaMerger } from '../common/index.js'
 import { ensureCapability } from '../../utils/index.js'
 import { ProblemCapability, problems } from '../../db/index.js'
 import { problemAttachmentKey } from '../../oss/index.js'
+import { kProblemContext } from './inject.js'
 
 const attachmentScopedRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', paramSchemaMerger(Type.Object({ key: Type.String() })))
   s.register(getFileUrl, {
     prefix: '/url',
     resolve: async (type, query, req) => {
+      const ctx = req.inject(kProblemContext)
+
       if (type !== 'download') {
         ensureCapability(
-          req._problemCapability,
+          ctx._problemCapability,
           ProblemCapability.CAP_CONTENT,
           s.httpErrors.forbidden()
         )
       }
-      const oss = await loadOrgOssSettings(req._problem.orgId)
+      const oss = await loadOrgOssSettings(ctx._problem.orgId)
       const key = (req.params as { key: string }).key
-      return [oss, problemAttachmentKey(req._problemId, key), query]
+      return [oss, problemAttachmentKey(ctx._problemId, key), query]
     }
   })
 
@@ -34,15 +37,17 @@ const attachmentScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kProblemContext)
+
       ensureCapability(
-        req._problemCapability,
+        ctx._problemCapability,
         ProblemCapability.CAP_CONTENT,
         s.httpErrors.forbidden()
       )
 
       const key = (req.params as { key: string }).key
       const { modifiedCount } = await problems.updateOne(
-        { _id: req._problemId },
+        { _id: ctx._problemId },
         { $pull: { attachments: { key } } }
       )
       if (!modifiedCount) return rep.notFound()
@@ -69,7 +74,9 @@ export const problemAttachmentRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      return req._problem.attachments
+      const ctx = req.inject(kProblemContext)
+
+      return ctx._problem.attachments
     }
   )
 
@@ -86,15 +93,17 @@ export const problemAttachmentRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kProblemContext)
+
       ensureCapability(
-        req._problemCapability,
+        ctx._problemCapability,
         ProblemCapability.CAP_CONTENT,
         s.httpErrors.forbidden()
       )
 
       const { key, name, description } = req.body
       const { modifiedCount } = await problems.updateOne(
-        { _id: req._problemId, [`attachments.key`]: { $ne: key } },
+        { _id: ctx._problemId, [`attachments.key`]: { $ne: key } },
         { $push: { attachments: { key, name, description } } }
       )
       if (!modifiedCount) return rep.conflict()

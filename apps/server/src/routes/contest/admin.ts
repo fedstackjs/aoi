@@ -4,21 +4,26 @@ import { ensureCapability } from '../../utils/index.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
 import { defineRoutes } from '../common/index.js'
 import { SContestStage } from '../../schemas/contest.js'
+import { kContestContext } from './inject.js'
 
 export const contestAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req) => {
-    ensureCapability(req._contestCapability, ContestCapability.CAP_ADMIN, s.httpErrors.forbidden())
+    ensureCapability(
+      req.inject(kContestContext)._contestCapability,
+      ContestCapability.CAP_ADMIN,
+      s.httpErrors.forbidden()
+    )
   })
 
   s.register(manageACL, {
     collection: contests,
-    resolve: async (req) => req._contestId,
+    resolve: async (req) => req.inject(kContestContext)._contestId,
     defaultCapability: ContestCapability.CAP_ACCESS,
     prefix: '/access'
   })
   s.register(manageAccessLevel, {
     collection: contests,
-    resolve: async (req) => req._contestId,
+    resolve: async (req) => req.inject(kContestContext)._contestId,
     prefix: '/accessLevel'
   })
 
@@ -31,7 +36,7 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     },
     async (req) => {
       // TODO: handle dependencies
-      await contests.deleteOne({ _id: req._contestId })
+      await contests.deleteOne({ _id: req.inject(kContestContext)._contestId })
       return {}
     }
   )
@@ -51,7 +56,7 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     async (req) => {
       const { modifiedCount } = await solutions.updateOne(
         {
-          contestId: req._contestId,
+          contestId: req.inject(kContestContext)._contestId,
           state: SolutionState.CREATED
         },
         {
@@ -79,7 +84,7 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      return req._contest.stages
+      return req.inject(kContestContext)._contest.stages
     }
   )
 
@@ -100,7 +105,10 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
       const start = stages[1].start
       const end = stages[stages.length - 1].start
 
-      await contests.updateOne({ _id: req._contestId }, { $set: { stages, start, end } })
+      await contests.updateOne(
+        { _id: req.inject(kContestContext)._contestId },
+        { $set: { stages, start, end } }
+      )
       return {}
     }
   )

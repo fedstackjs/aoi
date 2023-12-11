@@ -5,6 +5,7 @@ import { ISolution, ProblemCapability, SolutionState, solutions } from '../../db
 import { BSON } from 'mongodb'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import { solutionDataKey, solutionDetailsKey } from '../../index.js'
+import { kProblemContext } from './inject.js'
 
 const solutionScopedRoutes = defineRoutes(async (s) => {
   s.addHook(
@@ -17,13 +18,15 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
   )
 
   s.post('/submit', {}, async (req, rep) => {
+    const ctx = req.inject(kProblemContext)
+
     const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
-    const admin = hasCapability(req._problemCapability, ProblemCapability.CAP_ADMIN)
+    const admin = hasCapability(ctx._problemCapability, ProblemCapability.CAP_ADMIN)
     const { modifiedCount } = await solutions.updateOne(
       {
         _id: solutionId,
         contestId: { $exists: false },
-        problemId: req._problemId,
+        problemId: ctx._problemId,
         userId: admin ? undefined : req.user.userId,
         state: admin ? undefined : SolutionState.CREATED
       },
@@ -65,12 +68,13 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kProblemContext)
       const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
       const solution = await solutions.findOne(
         {
           _id: solutionId,
           contestId: { $exists: false },
-          problemId: req._problemId
+          problemId: ctx._problemId
         },
         {
           projection: {
@@ -95,14 +99,16 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
   s.register(getFileUrl, {
     prefix: '/details',
     resolve: async (type, query, req) => {
+      const ctx = req.inject(kProblemContext)
+
       const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
       const solution = await solutions.findOne({
         _id: solutionId,
         contestId: { $exists: false },
-        problemId: req._problemId
+        problemId: ctx._problemId
       })
       if (!solution) throw s.httpErrors.notFound()
-      return [await loadOrgOssSettings(req._problem.orgId), solutionDetailsKey(solution._id)]
+      return [await loadOrgOssSettings(ctx._problem.orgId), solutionDetailsKey(solution._id)]
     },
     allowedTypes: ['download']
   })
@@ -110,14 +116,16 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
   s.register(getFileUrl, {
     prefix: '/data',
     resolve: async (type, query, req) => {
+      const ctx = req.inject(kProblemContext)
+
       const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
       const solution = await solutions.findOne({
         _id: solutionId,
         contestId: { $exists: false },
-        problemId: req._problemId
+        problemId: ctx._problemId
       })
       if (!solution) throw s.httpErrors.notFound()
-      return [await loadOrgOssSettings(req._problem.orgId), solutionDataKey(solution._id)]
+      return [await loadOrgOssSettings(ctx._problem.orgId), solutionDataKey(solution._id)]
     },
     allowedTypes: ['download']
   })
@@ -152,9 +160,11 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kProblemContext)
+
       const userId = req.query.userId ? new BSON.UUID(req.query.userId) : undefined
       // check auth
-      const isAdmin = hasCapability(req._problemCapability, ProblemCapability.CAP_ADMIN)
+      const isAdmin = hasCapability(ctx._problemCapability, ProblemCapability.CAP_ADMIN)
       const isCurrentUser = userId !== undefined && userId.equals(req.user.userId)
       if (!isAdmin && !isCurrentUser) {
         return rep.forbidden()
@@ -166,7 +176,7 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
         req.query.perPage,
         req.query.count,
         {
-          problemId: req._problemId,
+          problemId: ctx._problemId,
           contestId: { $exists: false },
           userId: req.query.userId ? new BSON.UUID(req.query.userId) : undefined
         },

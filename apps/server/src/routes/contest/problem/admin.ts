@@ -4,10 +4,12 @@ import { SContestProblemSettings } from '../../../schemas/contest.js'
 import { BSON } from 'mongodb'
 import { ContestCapability, contests, problems } from '../../../db/index.js'
 import { hasCapability } from '../../../utils/index.js'
+import { kContestContext } from '../inject.js'
 
 export const problemAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
-    if (!hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)) {
+    const ctx = req.inject(kContestContext)
+    if (!hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) {
       return rep.forbidden()
     }
   })
@@ -23,14 +25,15 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kContestContext)
       const problemId = new BSON.UUID(req.body.problemId)
       const exists = await problems.countDocuments({
         _id: problemId,
-        orgId: req._contest.orgId
+        orgId: ctx._contest.orgId
       })
       if (!exists) return rep.notFound()
       const { modifiedCount } = await contests.updateOne(
-        { _id: req._contestId, 'problems.problemId': { $ne: problemId } },
+        { _id: ctx._contestId, 'problems.problemId': { $ne: problemId } },
         { $push: { problems: { problemId, settings: req.body.settings } } }
       )
       if (!modifiedCount) return rep.conflict()
@@ -49,7 +52,8 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const problem = req._contest.problems.find(({ problemId }) =>
+      const ctx = req.inject(kContestContext)
+      const problem = ctx._contest.problems.find(({ problemId }) =>
         problemId.equals(req.params.problemId)
       )
       if (!problem) return rep.notFound()
@@ -68,9 +72,10 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kContestContext)
       const problemId = new BSON.UUID(req.params.problemId)
       const { modifiedCount } = await contests.updateOne(
-        { _id: req._contestId, 'problems.problemId': problemId },
+        { _id: ctx._contestId, 'problems.problemId': problemId },
         { $set: { 'problems.$.settings': req.body } }
       )
       if (!modifiedCount) return rep.notFound()
@@ -88,9 +93,10 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kContestContext)
       const problemId = new BSON.UUID(req.params.problemId)
       const { modifiedCount } = await contests.updateOne(
-        { _id: req._contestId },
+        { _id: ctx._contestId },
         { $pull: { problems: { problemId } } }
       )
       if (!modifiedCount) return rep.notFound()

@@ -5,6 +5,7 @@ import { paginationSkip } from '../../../utils/index.js'
 import { defineRoutes, loadUUID } from '../../common/index.js'
 import { BSON } from 'mongodb'
 import { SUserProfile } from '../../../index.js'
+import { kOrgContext } from '../inject.js'
 
 export const orgAdminMemberRoutes = defineRoutes(async (s) => {
   s.get(
@@ -23,14 +24,15 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
+      const ctx = req.inject(kOrgContext)
       let count = 0
       if (req.query.count) {
-        count = await orgMemberships.countDocuments({ orgId: req._orgId })
+        count = await orgMemberships.countDocuments({ orgId: ctx._orgId })
       }
       const skip = paginationSkip(req.query.page, req.query.perPage)
       const members = await orgMemberships
         .aggregate([
-          { $match: { orgId: req._orgId } },
+          { $match: { orgId: ctx._orgId } },
           { $skip: skip },
           { $limit: req.query.perPage },
           {
@@ -101,13 +103,14 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kOrgContext)
       const userId = loadUUID(req.body, 'userId', s.httpErrors.badRequest())
       const exists = await users.countDocuments({ _id: userId })
       if (!exists) return rep.badRequest()
       const { insertedId } = await orgMemberships.insertOne({
         _id: new BSON.UUID(),
         userId,
-        orgId: req._orgId,
+        orgId: ctx._orgId,
         capability: OrgCapability.CAP_ACCESS,
         groups: []
       })
@@ -129,10 +132,11 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kOrgContext)
       const userId = loadUUID(req.params, 'userId', s.httpErrors.badRequest())
       const capability = new BSON.Long(req.body.capability)
       const { modifiedCount } = await orgMemberships.updateOne(
-        { userId, orgId: req._orgId },
+        { userId, orgId: ctx._orgId },
         { $set: { capability } }
       )
       if (!modifiedCount) return rep.notFound()
@@ -151,12 +155,13 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kOrgContext)
       const userId = loadUUID(req.params, 'userId', s.httpErrors.badRequest())
       if (userId.equals(req.user.userId)) return rep.badRequest()
       // TODO: Should we check for associated resources?
       const { deletedCount } = await orgMemberships.deleteOne({
         userId,
-        orgId: req._orgId
+        orgId: ctx._orgId
       })
       if (!deletedCount) return rep.notFound()
       return {}
@@ -183,6 +188,7 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
+      const ctx = req.inject(kOrgContext)
       const usersToInsert = await Promise.all(
         req.body.users.map(
           async (user) =>
@@ -209,7 +215,7 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
           const { insertedId } = await orgMemberships.insertOne({
             _id: new BSON.UUID(),
             userId: id,
-            orgId: req._orgId,
+            orgId: ctx._orgId,
             capability: new BSON.Long(req.body.users[i].orgCapability),
             groups: req.body.users[i].orgGroups.map((g) => new BSON.UUID(g))
           })

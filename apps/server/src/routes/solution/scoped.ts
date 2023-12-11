@@ -1,22 +1,23 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
+import { defineInjectionPoint } from '../../utils/inject.js'
 
 const solutionIdSchema = Type.Object({
   solutionId: Type.String()
 })
 
-declare module 'fastify' {
-  interface FastifyRequest {
-    _solutionId: BSON.UUID
-  }
-}
+const kSolutionContext = defineInjectionPoint<{
+  _solutionId: BSON.UUID
+}>('solution')
 
 export const solutionScopedRoute = defineRoutes(async (s) => {
   s.addHook('onRoute', paramSchemaMerger(solutionIdSchema))
 
   // TODO: Access Control
   s.addHook('onRequest', async (req) => {
-    req._solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.notFound())
+    req.provide(kSolutionContext, {
+      _solutionId: loadUUID(req.params, 'solutionId', s.httpErrors.notFound())
+    })
   })
 })

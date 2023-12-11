@@ -4,13 +4,11 @@ import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
 import { SUserProfile, UserCapability, hasCapability, users } from '../../index.js'
 import { loadUserCapability } from '../common/access.js'
+import { defineInjectionPoint } from '../../utils/inject.js'
 
-declare module 'fastify' {
-  interface FastifyRequest {
-    _userId: BSON.UUID
-    _uid: BSON.UUID
-  }
-}
+const kUserContext = defineInjectionPoint<{
+  _userId: BSON.UUID
+}>('user')
 
 export const userScopedRoutes = defineRoutes(async (s) => {
   s.addHook(
@@ -22,8 +20,9 @@ export const userScopedRoutes = defineRoutes(async (s) => {
     )
   )
   s.addHook('onRequest', async (req) => {
-    req._userId = loadUUID(req.params, 'userId', s.httpErrors.notFound())
-    req._uid = req._userId
+    req.provide(kUserContext, {
+      _userId: loadUUID(req.params, 'userId', s.httpErrors.notFound())
+    })
   })
 
   s.get(
@@ -40,7 +39,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const user = await users.findOne(
-        { _id: req._userId },
+        { _id: req.inject(kUserContext)._userId },
         { projection: { profile: 1, capability: 1 } }
       )
       if (!user) return rep.notFound()
@@ -61,11 +60,12 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const user = await users.findOne({ _id: req._userId }, { projection: { profile: 1 } })
+      const ctx = req.inject(kUserContext)
+      const user = await users.findOne({ _id: ctx._userId }, { projection: { profile: 1 } })
       if (!user) return rep.notFound()
       const capability = await loadUserCapability(req)
       const allowSensitive =
-        req.user.userId.equals(req._userId) || hasCapability(capability, UserCapability.CAP_ADMIN)
+        req.user.userId.equals(ctx._userId) || hasCapability(capability, UserCapability.CAP_ADMIN)
       return allowSensitive
         ? user.profile
         : {
@@ -90,8 +90,8 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      console.log('ID', req._uid)
-      const user = await users.findOne({ _id: req._uid }, { projection: { profile: 1 } })
+      const ctx = req.inject(kUserContext)
+      const user = await users.findOne({ _id: ctx._userId }, { projection: { profile: 1 } })
       if (!user) return rep.notFound()
       return {
         name: user.profile.name,
@@ -108,9 +108,11 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kUserContext)
+
       const capability = await loadUserCapability(req)
       if (
-        !req.user.userId.equals(req._userId) &&
+        !req.user.userId.equals(ctx._userId) &&
         !hasCapability(capability, UserCapability.CAP_ADMIN)
       )
         return rep.forbidden()
@@ -142,7 +144,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       }
       if (!validation()) return rep.badRequest('Invalid profile update')
 
-      await users.updateOne({ _id: req._userId }, { $set: { profile: req.body } })
+      await users.updateOne({ _id: ctx._userId }, { $set: { profile: req.body } })
       return {}
     }
   )
@@ -158,15 +160,16 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kUserContext)
       const capability = await loadUserCapability(req)
       if (
-        !req.user.userId.equals(req._userId) &&
+        !req.user.userId.equals(ctx._userId) &&
         !hasCapability(capability, UserCapability.CAP_ADMIN)
       )
         return rep.forbidden()
 
       const user = await users.findOne(
-        { _id: req._userId },
+        { _id: ctx._userId },
         { projection: { 'authSources.password': 1 } }
       )
       if (!user) return rep.notFound()
@@ -176,7 +179,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       }
 
       const password = await bcrypt.hash(req.body.newPassword, 10)
-      await users.updateOne({ _id: req._userId }, { $set: { 'authSources.password': password } })
+      await users.updateOne({ _id: ctx._userId }, { $set: { 'authSources.password': password } })
       return {}
     }
   )

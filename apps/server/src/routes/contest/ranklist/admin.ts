@@ -3,10 +3,12 @@ import { ContestCapability, contests } from '../../../db/index.js'
 import { hasCapability } from '../../../utils/index.js'
 import { defineRoutes } from '../../common/index.js'
 import { SContestRanklistSettings } from '../../../index.js'
+import { kContestContext } from '../inject.js'
 
 export const ranklistAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
-    if (!hasCapability(req._contestCapability, ContestCapability.CAP_ADMIN)) {
+    const ctx = req.inject(kContestContext)
+    if (!hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) {
       return rep.forbidden()
     }
   })
@@ -22,9 +24,11 @@ export const ranklistAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kContestContext)
+
       const { key, name } = req.body
       const { modifiedCount } = await contests.updateOne(
-        { _id: req._contestId, [`ranklists.key`]: { $ne: key } },
+        { _id: ctx._contestId, [`ranklists.key`]: { $ne: key } },
         { $push: { ranklists: { key, name, settings: {} } } }
       )
       if (!modifiedCount) return rep.conflict()
@@ -45,7 +49,9 @@ export const ranklistAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const ranklist = req._contest.ranklists.find(({ key }) => key === req.params.key)
+      const ctx = req.inject(kContestContext)
+
+      const ranklist = ctx._contest.ranklists.find(({ key }) => key === req.params.key)
       if (!ranklist) return rep.notFound()
       return ranklist.settings
     }
@@ -62,8 +68,10 @@ export const ranklistAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kContestContext)
+
       const { modifiedCount } = await contests.updateOne(
-        { _id: req._contestId, 'ranklists.key': req.params.key },
+        { _id: ctx._contestId, 'ranklists.key': req.params.key },
         { $set: { 'ranklists.$.settings': req.body } }
       )
       if (!modifiedCount) return rep.notFound()
@@ -81,8 +89,10 @@ export const ranklistAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kContestContext)
+
       const { modifiedCount } = await contests.updateOne(
-        { _id: req._contestId },
+        { _id: ctx._contestId },
         { $pull: { ranklists: { key: req.params.key } } }
       )
       if (!modifiedCount) return rep.notFound()

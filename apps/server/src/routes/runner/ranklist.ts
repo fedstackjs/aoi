@@ -16,6 +16,13 @@ import {
   contestRanklistKey,
   getUploadUrl
 } from '../../index.js'
+import { defineInjectionPoint } from '../../utils/inject.js'
+import { kRunnerContext } from './inject.js'
+
+const kRunnerRanklistContext = defineInjectionPoint<{
+  _contestId: BSON.UUID
+  _taskId: BSON.UUID
+}>('runnerRanklist')
 
 const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
   s.addHook(
@@ -29,8 +36,10 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
   )
 
   s.addHook('onRequest', async (req) => {
-    req._contestId = loadUUID(req.params, 'contestId', s.httpErrors.notFound())
-    req._taskId = loadUUID(req.params, 'taskId', s.httpErrors.notFound())
+    req.provide(kRunnerRanklistContext, {
+      _contestId: loadUUID(req.params, 'contestId', s.httpErrors.notFound()),
+      _taskId: loadUUID(req.params, 'taskId', s.httpErrors.notFound())
+    })
   })
 
   s.post(
@@ -44,8 +53,10 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kRunnerRanklistContext)
+
       const { modifiedCount } = await contests.updateOne(
-        { _id: req._contestId, ranklistTaskId: req._taskId },
+        { _id: ctx._contestId, ranklistTaskId: ctx._taskId },
         {
           $addFields: {
             ranklistState: {
@@ -82,8 +93,10 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kRunnerRanklistContext)
+
       const contest = await contests.findOne(
-        { _id: req._contestId, ranklistTaskId: req._taskId },
+        { _id: ctx._contestId, ranklistTaskId: ctx._taskId },
         { projection: { problems: 1 } }
       )
       if (!contest) return rep.notFound()
@@ -133,15 +146,17 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kRunnerRanklistContext)
+
       const contest = await contests.findOne(
-        { _id: req._contestId, ranklistTaskId: req._taskId },
+        { _id: ctx._contestId, ranklistTaskId: ctx._taskId },
         { projection: { ranklists: 1 } }
       )
       if (!contest) return rep.notFound()
       const list = await contestParticipants
         .find(
           {
-            contestId: req._contestId,
+            contestId: ctx._contestId,
             updatedAt: { $gt: req.query.since }
           },
           { limit: 50, sort: { updatedAt: 1 } }
@@ -162,15 +177,17 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kRunnerRanklistContext)
+
       const contest = await contests.findOne(
-        { _id: req._contestId, ranklistTaskId: req._taskId },
+        { _id: ctx._contestId, ranklistTaskId: ctx._taskId },
         { projection: { ranklists: 1 } }
       )
       if (!contest) return rep.notFound()
       const list = await solutions
         .find(
           {
-            contestId: req._contestId,
+            contestId: ctx._contestId,
             state: SolutionState.COMPLETED,
             completedAt: { $gt: req.query.since }
           },
@@ -197,8 +214,10 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      const ctx = req.inject(kRunnerRanklistContext)
+
       const contest = await contests.findOne(
-        { _id: req._contestId, ranklistTaskId: req._taskId },
+        { _id: ctx._contestId, ranklistTaskId: ctx._taskId },
         { projection: { ranklists: 1, orgId: 1 } }
       )
       if (!contest) return rep.notFound()
@@ -206,7 +225,7 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       if (!oss) return rep.preconditionFailed()
       const urls = contest.ranklists.map(async ({ key }) => ({
         key,
-        url: await getUploadUrl(oss, contestRanklistKey(req._contestId, key))
+        url: await getUploadUrl(oss, contestRanklistKey(ctx._contestId, key))
       }))
       return Promise.all(urls)
     }
@@ -215,7 +234,7 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
 
 export const runnerRanklistRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
-    if (!req._runner.labels.includes('ranker')) {
+    if (!req.inject(kRunnerContext)._runner.labels.includes('ranker')) {
       return rep.forbidden()
     }
   })
@@ -244,16 +263,20 @@ export const runnerRanklistRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
+      const runnerCtx = req.inject(kRunnerContext)
       const { value } = await contests.findOneAndUpdate(
         {
-          orgId: req._runner.orgId,
+          orgId: runnerCtx._runner.orgId,
           ranklistState: ContestRanklistState.INVALID,
-          $or: [{ ranklistRunnerId: req._runner._id }, { ranklistRunnerId: { $exists: false } }]
+          $or: [
+            { ranklistRunnerId: runnerCtx._runner._id },
+            { ranklistRunnerId: { $exists: false } }
+          ]
         },
         {
           $set: {
             ranklistState: ContestRanklistState.PENDING,
-            ranklistRunnerId: req._runner._id,
+            ranklistRunnerId: runnerCtx._runner._id,
             ranklistTaskId: new BSON.UUID()
           }
         },
