@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, paramSchemaMerger, loadCapability, loadMembership } from '../common/index.js'
 import { contestRanklistKey } from '../../index.js'
-import { getFileUrlNoSec, loadOrgOssSettings } from '../common/files.js'
+import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import {
   OrgCapability,
   ContestCapability,
@@ -29,6 +29,9 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
       })
     )
   )
+  s.addHook('onRoute', (route) => {
+    ;(route.schema ??= {}).security = []
+  })
 
   s.addHook('onRequest', async (req) => {
     const ranklistIdStr = (req.params as Record<string, string>).ranklistId
@@ -42,17 +45,15 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
     req._pubranklist = ranklist
   })
 
-  s.register(async (s) => {
-    s.register(getFileUrlNoSec, {
-      resolve: async (type, query, req) => {
-        if (!req._pubranklist.visible) throw s.httpErrors.notFound()
-        if (type !== 'download') throw s.httpErrors.badRequest()
-        const oss = await loadOrgOssSettings(req._pubranklist.orgId)
-        const key = req._pubranklist.ranklistKey
-        return [oss, contestRanklistKey(req._pubranklist.contestId, key), query]
-      },
-      allowedTypes: ['download']
-    })
+  s.register(getFileUrl, {
+    resolve: async (type, query, req) => {
+      if (!req._pubranklist.visible) throw s.httpErrors.notFound()
+      if (type !== 'download') throw s.httpErrors.badRequest()
+      const oss = await loadOrgOssSettings(req._pubranklist.orgId)
+      const key = req._pubranklist.ranklistKey
+      return [oss, contestRanklistKey(req._pubranklist.contestId, key), query]
+    },
+    allowedTypes: ['download']
   })
 
   s.get(
@@ -66,7 +67,7 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
         }
       }
     },
-    async (req, rep) => {
+    async (req) => {
       return { visible: req._pubranklist.visible }
     }
   )
