@@ -28,6 +28,7 @@ export interface IContestParticipant {
   contestId: BSON.UUID
   results: Record<string, IContestParticipantResult>
   updatedAt: number
+  tags?: string[]
 }
 
 export const contestParticipants = db.collection<IContestParticipant>('contestParticipants')
