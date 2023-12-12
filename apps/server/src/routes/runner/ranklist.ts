@@ -127,6 +127,7 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
               _id: Type.UUID(),
               userId: Type.UUID(),
               contestId: Type.UUID(),
+              tags: Type.Optional(Type.Array(Type.String())),
               results: Type.Record(
                 Type.String(),
                 Type.Object({

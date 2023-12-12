@@ -7,6 +7,7 @@ import {
 } from '../../../index.js'
 import { defineRoutes } from '../../common/index.js'
 import { kContestContext } from '../inject.js'
+import { BSON } from 'mongodb'
 
 export const contestParticipantRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
@@ -52,4 +53,84 @@ export const contestParticipantRoutes = defineRoutes(async (s) => {
       )
     }
   )
+
+  s.register(contestParticipantAdminRoutes, { prefix: '/admin' })
+})
+
+const contestParticipantAdminRoutes = defineRoutes(async (s) => {
+  s.addHook('onRequest', async (req, rep) => {
+    const ctx = req.inject(kContestContext)
+    if (!hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) {
+      return rep.forbidden()
+    }
+  })
+
+  s.post(
+    '/import',
+    {
+      schema: {
+        description: 'Import participants'
+      }
+    },
+    async () => {
+      // TODO: implement import participants
+      return s.httpErrors.notImplemented()
+    }
+  )
+
+  s.get(
+    '/:userId',
+    {
+      schema: {
+        description: 'Get participant',
+        params: Type.Object({
+          userId: Type.UUID()
+        }),
+        response: {
+          200: Type.Object({
+            tags: Type.Optional(Type.Array(Type.String()))
+          })
+        }
+      }
+    },
+    async (req) => {
+      const ctx = req.inject(kContestContext)
+      const userId = new BSON.UUID(req.params.userId)
+      const participant = await contestParticipants.findOne({
+        _contestId: ctx._contestId,
+        userId
+      })
+      if (!participant) throw s.httpErrors.notFound()
+      return participant
+    }
+  )
+
+  s.patch(
+    '/:userId',
+    {
+      schema: {
+        description: 'Update participant',
+        params: Type.Object({
+          userId: Type.UUID()
+        }),
+        body: Type.Object({
+          tags: Type.Optional(Type.Array(Type.String()))
+        })
+      }
+    },
+    async (req) => {
+      const ctx = req.inject(kContestContext)
+      const userId = new BSON.UUID(req.params.userId)
+      await contestParticipants.updateOne(
+        { _contestId: ctx._contestId, userId },
+        { $set: { tags: req.body.tags, updatedAt: req._now } }
+      )
+      return 0
+    }
+  )
+
+  s.delete('/:userId', {}, async () => {
+    // TODO: delete participant
+    return s.httpErrors.notImplemented()
+  })
 })

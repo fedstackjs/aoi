@@ -25,6 +25,7 @@ export interface IContestDTO {
       solutionShowOtherDetails: boolean
       solutionShowOtherData: boolean
       ranklistEnabled: boolean
+      participantEnabled: boolean
     }
   }
 }

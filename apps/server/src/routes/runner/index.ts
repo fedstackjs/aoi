@@ -8,6 +8,7 @@ import { packageJson } from '../../utils/package.js'
 import { runnerRanklistRoutes } from './ranklist.js'
 import { logger } from '../../index.js'
 import { kRunnerContext } from './inject.js'
+import { FastifyRequest } from 'fastify'
 
 const registrationPayload = TypeCompiler.Compile(
   Type.Object({
@@ -18,12 +19,23 @@ const registrationPayload = TypeCompiler.Compile(
 
 const RELATIME_DELAY = 60 * 1000 // 1 minute
 
-function updateAccessedAt(runner: IRunner) {
+function updateAccessedAt(req: FastifyRequest, runner: IRunner) {
   const now = Date.now()
   if (runner.accessedAt < now - RELATIME_DELAY) {
-    runners.updateOne({ _id: runner._id }, { $set: { accessedAt: now } }).catch((err) => {
-      logger.error(err)
-    })
+    runners
+      .updateOne(
+        { _id: runner._id },
+        {
+          $set: {
+            accessedAt: now,
+            version: req.headers['user-agent']
+          }
+        },
+        { ignoreUndefined: true }
+      )
+      .catch((err) => {
+        logger.error(err)
+      })
   }
 }
 
@@ -45,7 +57,7 @@ export const runnerRoutes = defineRoutes(async (s) => {
       _runner: runner
     })
     rep.header('x-aoi-api-version', packageJson.version)
-    updateAccessedAt(runner)
+    updateAccessedAt(req, runner)
   })
 
   s.post(

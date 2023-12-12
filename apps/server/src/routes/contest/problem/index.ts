@@ -244,11 +244,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
           $inc: { [`results.${problemId}.solutionCount`]: 1 },
           $set: {
             [`results.${problemId}.lastSolutionId`]: newSolutionId,
-            [`results.${problemId}.lastSolution`]: {
-              score: 0,
-              status: '',
-              completedAt: 0
-            }
+            [`results.${problemId}.lastSolution`]: { score: 0, status: '', completedAt: 0 }
           }
         }
       )
