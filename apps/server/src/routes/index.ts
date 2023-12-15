@@ -71,6 +71,9 @@ export const apiRoutes = defineRoutes(async (s) => {
   })
 
   s.addHook('onRequest', async (req, rep) => {
+    req._now = Date.now()
+    req._container = createInjectionContainer()
+
     // JWT is the default security scheme
     if ('security' in req.routeSchema) return
     try {
@@ -78,8 +81,6 @@ export const apiRoutes = defineRoutes(async (s) => {
     } catch (err) {
       rep.send(err)
     }
-    req._now = Date.now()
-    req._container = createInjectionContainer()
   })
 
   s.get(

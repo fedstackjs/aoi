@@ -21,6 +21,7 @@ import { contestAdminRoutes } from './admin.js'
 import { contestProblemRoutes } from './problem/index.js'
 import { contestSolutionRoutes } from './solution/index.js'
 import { contestRanklistRoutes } from './ranklist/index.js'
+import { contestParticipantRoutes } from './participant/index.js'
 import { manageContent } from '../common/content.js'
 import { kContestContext } from './inject.js'
 
@@ -149,6 +150,7 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
+      // TODO: Optimize this route
       const ctx = req.inject(kContestContext)
       console.log(ctx._contest.participantCount)
       return {
@@ -196,4 +198,5 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
   s.register(contestRanklistRoutes, { prefix: '/ranklist' })
   s.register(contestProblemRoutes, { prefix: '/problem' })
   s.register(contestSolutionRoutes, { prefix: '/solution' })
+  s.register(contestParticipantRoutes, { prefix: '/participant' })
 })

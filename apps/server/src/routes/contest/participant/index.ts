@@ -29,7 +29,13 @@ export const contestParticipantRoutes = defineRoutes(async (s) => {
           count: Type.Boolean({ default: false })
         }),
         response: {
-          200: Type.PaginationResult(Type.Object({}))
+          200: Type.PaginationResult(
+            Type.Object({
+              _id: Type.UUID(),
+              userId: Type.UUID(),
+              tags: Type.Optional(Type.Array(Type.String()))
+            })
+          )
         }
       }
     },
@@ -41,7 +47,7 @@ export const contestParticipantRoutes = defineRoutes(async (s) => {
         req.query.perPage,
         req.query.count,
         {
-          _contestId: ctx._contestId
+          contestId: ctx._contestId
         },
         {
           projection: {
@@ -97,7 +103,7 @@ const contestParticipantAdminRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kContestContext)
       const userId = new BSON.UUID(req.params.userId)
       const participant = await contestParticipants.findOne({
-        _contestId: ctx._contestId,
+        contestId: ctx._contestId,
         userId
       })
       if (!participant) throw s.httpErrors.notFound()
@@ -122,7 +128,7 @@ const contestParticipantAdminRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kContestContext)
       const userId = new BSON.UUID(req.params.userId)
       await contestParticipants.updateOne(
-        { _contestId: ctx._contestId, userId },
+        { contestId: ctx._contestId, userId },
         { $set: { tags: req.body.tags, updatedAt: req._now } }
       )
       return 0

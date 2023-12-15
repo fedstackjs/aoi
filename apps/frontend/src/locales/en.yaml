@@ -148,6 +148,7 @@ tabs:
   data: Data
   solutions: Solution
   ranklist: Ranklist
+  participant: Participant
   problem-description: Description
 
 metrics:

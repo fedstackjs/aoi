@@ -19,7 +19,19 @@
           <tbody>
             <tr v-for="(man, i) in value.participant.list" :key="i">
               <td>{{ man.rank }}</td>
-              <td><PrincipalProfile :principal-id="man.userId" /></td>
+              <td class="u-flex u-items-center">
+                <PrincipalProfile :principal-id="man.userId" />
+                <div v-if="man.tags" class="u-pl-2 u-flex u-items-center u-gap-2">
+                  <div v-for="(tag, i) of man.tags" :key="i">
+                    <VTooltip v-if="tag.startsWith('!star:')" :text="tag.slice(6)">
+                      <template v-slot:activator="{ props }">
+                        <VIcon color="warning" v-bind="props">mdi-star</VIcon>
+                      </template>
+                    </VTooltip>
+                    <VChip v-else>{{ tag }}</VChip>
+                  </div>
+                </div>
+              </td>
               <td v-for="(column, i) in man.columns" :key="i">
                 <article v-html="renderMarkdown(column.content)"></article>
               </td>

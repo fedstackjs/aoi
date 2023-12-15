@@ -27,6 +27,7 @@ export const ranklistParticipantSchema = Type.Object({
     Type.Object({
       rank: Type.Integer(),
       userId: Type.String(),
+      tags: Type.Optional(Type.Array(Type.String())),
       columns: Type.Array(
         Type.Object({
           content: Type.String()

@@ -148,6 +148,7 @@ tabs:
   data: 数据
   solutions: 提交记录
   ranklist: 排行榜
+  participant: 参赛选手
   problem-description: 题面
 
 metrics:

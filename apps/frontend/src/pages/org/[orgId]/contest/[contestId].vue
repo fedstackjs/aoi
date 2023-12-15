@@ -40,7 +40,7 @@
                     showAdminTab ||
                     (value.currentStage.settings.problemEnabled && participant.state.value)
                   "
-                  prepend-icon="mdi-list-box"
+                  prepend-icon="mdi-list-box-outline"
                   :to="rel('problem')"
                   :text="t('tabs.problems')"
                 />
@@ -58,6 +58,12 @@
                   prepend-icon="mdi-chevron-triple-up"
                   :to="rel('ranklist')"
                   :text="t('tabs.ranklist')"
+                />
+                <VTab
+                  v-if="showAdminTab || value.currentStage.settings.participantEnabled"
+                  prepend-icon="mdi-account-details-outline"
+                  :to="rel('participant')"
+                  :text="t('tabs.participant')"
                 />
                 <VTab
                   prepend-icon="mdi-cog-outline"

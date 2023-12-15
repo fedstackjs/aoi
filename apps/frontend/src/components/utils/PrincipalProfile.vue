@@ -4,7 +4,12 @@
       <VAvatar>
         <AppGravatar :email="value.email" />
       </VAvatar>
-      <code class="u-pl-2">{{ value.name }}</code>
+      <code class="u-pl-2">
+        <RouterLink v-if="to" :to="to">
+          {{ value.name }}
+        </RouterLink>
+        <span v-else>{{ value.name }}</span>
+      </code>
     </template>
   </AsyncState>
 </template>
@@ -17,6 +22,7 @@ import { useAsyncState } from '@vueuse/core'
 
 const props = defineProps<{
   principalId: string
+  to?: string
 }>()
 
 const profile = useAsyncState(async () => {
