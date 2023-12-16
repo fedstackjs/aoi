@@ -1,5 +1,11 @@
 import { Type } from '@sinclair/typebox'
-import { ContestCapability, SolutionState, contests, solutions } from '../../index.js'
+import {
+  ContestCapability,
+  ContestRanklistState,
+  SolutionState,
+  contests,
+  solutions
+} from '../../index.js'
 import { ensureCapability } from '../../utils/index.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
 import { defineRoutes } from '../common/index.js'
@@ -74,6 +80,22 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
       return { modifiedCount }
     }
   )
+
+  s.post('/update-ranklists', async (req) => {
+    await contests.updateOne(
+      {
+        _id: req.inject(kContestContext)._contestId,
+        ranklists: { $exists: true, $ne: [] }
+      },
+      {
+        $set: {
+          ranklistUpdatedAt: req._now,
+          ranklistState: ContestRanklistState.INVALID
+        }
+      }
+    )
+    return 0
+  })
 
   s.get(
     '/stages',
