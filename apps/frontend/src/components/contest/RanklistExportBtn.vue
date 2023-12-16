@@ -46,6 +46,7 @@ async function exportRanklist() {
     const header = [
       t('term.rank'),
       t('term.username'),
+      t('term.tags'),
       t('term.email'),
       t('term.realname'),
       t('term.telephone'),
@@ -60,6 +61,7 @@ async function exportRanklist() {
       const row = [
         participant.rank,
         profile.name,
+        participant.tags?.map((tag) => tag.replace(/^![^:]+:/, '')).join(',') ?? '',
         profile.email,
         profile.realname,
         profile.telephone,
