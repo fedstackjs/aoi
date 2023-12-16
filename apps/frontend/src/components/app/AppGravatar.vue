@@ -14,5 +14,5 @@ const props = defineProps<{
   email: string
 }>()
 
-const hash = computed(() => md5(props.email))
+const hash = computed(() => (props.email.includes('@') ? md5(props.email) : props.email))
 </script>

@@ -6,7 +6,10 @@
       </VBtn>
     </VCardActions>
     <VDivider />
-    <SettingsEditor :endpoint="`user/${props.userId}/profile`">
+    <SettingsEditor
+      :endpoint="`user/${props.userId}/profile`"
+      @updated="invalidateProfile(props.userId)"
+    >
       <template v-slot="scoped">
         <UserProfileInput v-model="scoped.value" />
       </template>
@@ -32,6 +35,7 @@ import UserProfileInput from '@/components/user/UserProfileInput.vue'
 import { computed } from 'vue'
 import { useChangePassword } from '@/utils/user/password'
 import { toRef } from 'vue'
+import { invalidateProfile } from '@/utils/profile'
 
 const { t } = useI18n()
 

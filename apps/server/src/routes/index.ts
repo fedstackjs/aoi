@@ -25,6 +25,7 @@ import {
   provide
 } from '../utils/inject.js'
 import type { FastifyRequest } from 'fastify'
+import { publicRoutes } from './public/index.js'
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
@@ -106,4 +107,5 @@ export const apiRoutes = defineRoutes(async (s) => {
   s.register(infoRoutes, { prefix: '/info' })
   s.register(announcementRoutes, { prefix: '/announcement' })
   s.register(pubrkRoutes, { prefix: '/rk' })
+  s.register(publicRoutes, { prefix: '/public' })
 })

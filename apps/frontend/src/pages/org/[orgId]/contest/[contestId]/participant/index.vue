@@ -3,7 +3,7 @@
     :headers="headers"
     :items-length="participants.state.value.total"
     :items="participants.state.value.items"
-    :items-per-page-options="[{ title: '15', value: 15 }]"
+    :items-per-page-options="perPageOptions"
     :loading="participants.isLoading.value"
     v-model:page="page"
     v-model:items-per-page="itemsPerPage"
@@ -49,6 +49,13 @@ const {
 const headers = [
   { title: t('term.user'), key: 'userId', align: 'start', sortable: false },
   { title: t('term.tags'), key: 'tags', align: 'start', sortable: false }
+] as const
+
+const perPageOptions = [
+  { title: '15', value: 15 },
+  { title: '30', value: 30 },
+  { title: '50', value: 50 },
+  { title: '100', value: 100 }
 ] as const
 
 const rel = (path: string) => `/org/${props.orgId}/contest/${props.contestId}/participant/${path}`
