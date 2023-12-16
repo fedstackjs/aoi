@@ -19,6 +19,14 @@
       >
         {{ t('action.submit-all') }}
       </VBtn>
+      <VBtn
+        color="red"
+        variant="elevated"
+        @click="updateRanklistsTask.execute()"
+        :loading="updateRanklistsTask.isLoading.value"
+      >
+        {{ t('action.update-ranklists') }}
+      </VBtn>
       <VBtn color="red" variant="elevated" @click="deleteContest()">
         {{ t('action.delete') }}
       </VBtn>
@@ -47,9 +55,11 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const router = useRouter()
 
-const submitAllTask = useAsyncTask(async () => {
-  http.post(`contest/${props.contestId}/admin/submit-all`)
-})
+const submitAllTask = useAsyncTask(() => http.post(`contest/${props.contestId}/admin/submit-all`))
+
+const updateRanklistsTask = useAsyncTask(() =>
+  http.post(`contest/${props.contestId}/admin/update-ranklists`)
+)
 
 async function deleteContest() {
   await http.delete(`contest/${props.contestId}/admin`)
@@ -62,7 +72,9 @@ async function deleteContest() {
 en:
   action:
     submit-all: Submit all solutions
+    update-ranklists: Update ranklists
 zh-Hans:
   action:
     submit-all: 提交所有解答
+    update-ranklists: 更新排行榜
 </i18n>
