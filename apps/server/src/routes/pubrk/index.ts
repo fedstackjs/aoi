@@ -26,7 +26,7 @@ export const pubrkRoutes = defineRoutes(async (s) => {
         }
       }
     },
-    async (req, rep) => {
+    async (req) => {
       const orgId = loadUUID(req.body, 'orgId', s.httpErrors.badRequest())
       const contestId = loadUUID(req.body, 'contestId', s.httpErrors.badRequest())
       const membership = await loadMembership(req.user.userId, orgId)
@@ -68,7 +68,7 @@ export const pubrkRoutes = defineRoutes(async (s) => {
         }
       }
     },
-    async (req, rep) => {
+    async (req) => {
       const contestId = loadUUID(req.query, 'contestId', s.httpErrors.badRequest())
       const ranklistKey = req.query.ranklistKey
       const ranklist = await pubrk.findOne({ contestId, ranklistKey })

@@ -26,6 +26,7 @@
     "@mdi/font": "7.0.96",
     "@sinclair/typebox": "^0.30.4",
     "@types/blueimp-md5": "^2.18.0",
+    "@types/debug": "^4.1.12",
     "@types/dompurify": "^3.0.2",
     "@types/markdown-it": "^12.2.3",
     "@types/ms": "^0.7.31",
@@ -63,5 +64,9 @@
     "vue-tsc": "^1.2.0",
     "vuetify": "^3.3.12",
     "webfontloader": "^1.0.0"
+  },
+  "dependencies": {
+    "debug": "^4.3.4",
+    "idb-keyval": "^6.2.1"
   }
 }
