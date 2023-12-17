@@ -1,0 +1,98 @@
+<template>
+  <VDataTableServer
+    :headers="headers"
+    :items-length="contests.state.value.total"
+    :items="contests.state.value.items"
+    :items-per-page-options="[{ title: '15', value: 15 }]"
+    :loading="contests.isLoading.value"
+    v-model:page="page"
+    v-model:items-per-page="itemsPerPage"
+    item-value="_id"
+    @update:options="({ page, itemsPerPage }) => contests.execute(0, page, itemsPerPage)"
+  >
+    <template v-slot:[`item.slug`]="{ item }">
+      <code>{{ item.raw.slug }}</code>
+    </template>
+    <template v-slot:[`item.title`]="{ item }">
+      <RouterLink :to="`/org/${orgId}/contest/${item.raw._id}`">
+        {{ item.raw.title }}
+      </RouterLink>
+    </template>
+    <template v-slot:[`item.count`]="{ item }">
+      <code>{{ item.raw.participantCount }}</code>
+    </template>
+    <template v-slot:[`item.time`]="{ item }">
+      <code>{{ getTimeRange(item.raw.stages) }}</code>
+    </template>
+    <template v-slot:[`item.stage`]="{ item }">
+      <ContestStageChip :stages="item.raw.stages" :now="now" />
+    </template>
+    <template v-slot:[`item.tags`]="{ item }">
+      <VChipGroup>
+        <VChip
+          v-for="tag in item.raw.tags"
+          :key="tag"
+          :to="`/org/${orgId}/contest/tag/${encodeURIComponent(tag)}`"
+        >
+          {{ tag }}
+        </VChip>
+      </VChipGroup>
+    </template>
+  </VDataTableServer>
+</template>
+
+<script setup lang="ts">
+import { withTitle } from '@/utils/title'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { VDataTableServer } from 'vuetify/labs/components'
+import { usePagination } from '@/utils/pagination'
+import { watch } from 'vue'
+import ContestStageChip from '@/components/utils/ContestStageChip.vue'
+
+const props = defineProps<{
+  orgId: string
+  search?: string
+  tag?: string
+}>()
+
+const { t } = useI18n()
+const now = +new Date()
+
+withTitle(computed(() => t('pages.contests')))
+
+const headers = [
+  { title: t('term.slug'), key: 'slug', align: 'start', sortable: false },
+  { title: t('term.name'), key: 'title', sortable: false },
+  { title: t('term.participant-count'), key: 'count', sortable: false },
+  { title: t('term.contest-time'), key: 'time', sortable: false },
+  { title: t('term.contest-stage'), key: 'stage', sortable: false },
+  { title: t('term.tags'), key: 'tags', sortable: false }
+] as const
+
+const {
+  page,
+  itemsPerPage,
+  result: contests
+} = usePagination(
+  `contest`,
+  computed(() => JSON.parse(JSON.stringify(props)))
+)
+
+const getTimeRange = (
+  stages: {
+    name: string
+    start: number
+  }[]
+) => {
+  const b = stages[1].start
+  const e = stages[stages.length - 1].start
+  return `${new Date(b).toLocaleString()} - ${new Date(e).toLocaleString()}`
+}
+
+watch(
+  () => props,
+  () => contests.execute(0, (page.value = 1), itemsPerPage.value),
+  { deep: true }
+)
+</script>

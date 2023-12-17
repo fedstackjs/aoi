@@ -1,0 +1,164 @@
+pages:
+  home: Home
+  about: About
+  problems: Problems
+  contests: Contests
+  groups: Group
+  signin: Sign in
+  signup: Sign up
+  admin: Admin
+  plans: Plans
+  user-info: User Info
+  user-settings: User Settings
+  forgot-passwd: Forgot Password
+  logout: Log out
+  modify-passwd: Modify Password
+  announcements: Announcements
+  solutions: Solutions
+
+action:
+  reload: Reload
+  reset: Reset
+  save: Save
+  delete: Delete
+  cancel: Cancel
+  submit: Submit
+  new: New
+  create: Create
+  upload: Upload
+  rejudge: Rejudge
+  download: Download
+  update: Update
+  register: Register
+  refresh: Refresh
+  copy: Copy
+  add: Add
+  view: View
+  publish: Publish
+  cancel-publish: Cancel Publish
+  export: Export
+
+term:
+  content: Content
+  title: Title
+  slug: Slug
+  tags: Tags
+  state: State
+  status: Status
+  score: Score
+  key: Key
+  id: ID
+  name: Name
+  description: Description
+  hash: Hash
+  current-hash: Current Hash
+  runner-label: Runner Label
+  message: Message
+  config: Config
+  username: Username
+  password: Password
+  email: Email
+  realname: Real Name
+  actions: Actions
+  settings: Settings
+  access: Access
+  members: Members
+  runners: Runners
+  profile: Profile
+  capabilities: Capabilities
+  labels: Labels
+  danger-zone: Danger Zone
+  principle-id: Principle ID
+  association: Association
+  start-time: Start Time
+  end-time: End Time
+  filename: Filename
+  overview: Overview
+  participant: Participant
+  rank: Rank
+  schedule: Schedule
+  jobs: Jobs
+  summary: Summary
+  tests: Tests
+  contest-stage: Contest Stage
+  user-id: User ID
+  preconditions: Preconditions
+  contest: Contest
+  contest-id: Contest ID
+  problem: Problem
+  problem-id: Problem ID
+  search: Search
+  version: Version
+  batch-import: Batch Import
+  user: User
+  date: Date
+  stage: Stage
+  preview: Preview
+  participant-count: Participant Count
+  contest-time: Contest Time
+  telephone: Telephone
+  school: School
+  student-grade: Student Grade
+  is-public: Is Public
+  is-visible: Is Visible
+
+common:
+  created-at: Created at
+  accessed-at: Accessed at
+  submitted-at: Submitted at
+  completed-at: Completed at
+  show-before: Show before
+  show-after: Show after
+  from: from
+  to: to
+  lasts: lasts
+  all: All
+  self: Self
+
+auth:
+  access-level: Access Level
+  public: Public
+  restricted: Restricted
+  private: Private
+
+cap:
+  access: Access
+  problem: Problem
+  contest: Contest
+  admin: Admin
+  plan: Plan
+
+msg:
+  not-found: Not Found
+  no-problem: No Problem
+  no-ranklist: No Ranklist
+  no-contest: No Contest
+  operation-success: Operation Success
+  session-expired: Session Expired, Please Sign in Again.
+
+tabs:
+  description: Description
+  contests: Contests
+  management: Management
+  problems: Problems
+  submit: Submit
+  attachments: Attachments
+  data: Data
+  solutions: Solution
+  ranklist: Ranklist
+  participant: Participant
+  problem-description: Description
+
+metrics:
+  cpu: CPU
+  mem: Memory
+
+difficulty:
+  easy: Easy
+  medium: Medium
+  hard: Hard
+
+stages:
+  upcoming: Upcoming
+  running: Running
+  end: End

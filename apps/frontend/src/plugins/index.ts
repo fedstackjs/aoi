@@ -1,19 +1,10 @@
-/**
- * plugins/index.ts
- *
- * Automatically included in `./src/main.ts`
- */
-
-// Plugins
-import { loadFonts } from './webfontloader'
+import type { App } from 'vue'
+import i18n from './i18n'
 import vuetify from './vuetify'
-import pinia from '../store'
+import toast, { toastOptions } from './toast'
+import pinia from '../stores'
 import router from '../router'
 
-// Types
-import type { App } from 'vue'
-
 export function registerPlugins(app: App) {
-  loadFonts()
-  app.use(vuetify).use(router).use(pinia)
+  app.use(i18n).use(vuetify).use(toast, toastOptions).use(router).use(pinia)
 }

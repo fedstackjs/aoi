@@ -1,0 +1,54 @@
+{
+  "name": "@aoi-js/server",
+  "version": "0.0.43",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "AGPL-3.0-only",
+  "packageManager": "yarn@3.6.2",
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "!lib/**/*.map",
+    "!lib/**/*.d.ts"
+  ],
+  "bin": {
+    "aoi-server": "lib/cli/index.js"
+  },
+  "dependencies": {
+    "@aoi-js/common": "workspace:^",
+    "@aws-sdk/client-s3": "^3.385.0",
+    "@aws-sdk/s3-request-presigner": "^3.385.0",
+    "@fastify/jwt": "^7.2.0",
+    "@fastify/sensible": "^5.2.0",
+    "@fastify/static": "^6.10.2",
+    "@fastify/swagger": "^8.8.0",
+    "@fastify/swagger-ui": "^1.9.2",
+    "@fastify/type-provider-typebox": "^3.3.0",
+    "@sinclair/typebox": "^0.29.4",
+    "bcrypt": "^5.1.0",
+    "fastify": "^4.19.2",
+    "mongodb": "^5.7.0",
+    "pino": "^8.14.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "concurrently": "^8.2.0",
+    "dotenv": "^16.3.1",
+    "nodemon": "^3.0.1",
+    "pino-pretty": "^10.0.1"
+  },
+  "optionalDependencies": {
+    "@aoi-js/frontend": "workspace:^"
+  },
+  "scripts": {
+    "build": "run -T tsc",
+    "type-check": "run -T tsc --noEmit",
+    "lint": "run -T eslint --ignore-path .gitignore .",
+    "format": "run -T prettier --ignore-path .gitignore --check .",
+    "dev-build": "run build -w --preserveWatchOutput",
+    "dev-serve": "nodemon -r dotenv/config lib/cli/index.js | pino-pretty",
+    "dev": "concurrently -i --default-input-target serve \"yarn:dev-*\""
+  }
+}

@@ -1,0 +1,62 @@
+<template>
+  <VCard variant="flat">
+    <VTabs v-model="currentTab">
+      <VTab value="show">
+        {{ t('ranklist-show') }}
+      </VTab>
+      <VTab v-if="admin" value="settings" prepend-icon="mdi-cog-outline">
+        {{ t('ranklist-settings') }}
+      </VTab>
+    </VTabs>
+    <VWindow v-model="currentTab">
+      <VWindowItem value="show">
+        <RanklistViewer :endpoint="endpoint" />
+      </VWindowItem>
+      <VWindowItem value="settings">
+        <RanklistSettings
+          :ranklist-key="props.ranklistKey"
+          :org-id="props.orgId"
+          :contest-id="props.contestId"
+          @updated="emit('updated')"
+        />
+      </VWindowItem>
+    </VWindow>
+  </VCard>
+</template>
+
+<script setup lang="ts">
+import type { IContestDTO } from '@/components/contest/types'
+import { useI18n } from 'vue-i18n'
+import RanklistSettings from '@/components/contest/RanklistSettings.vue'
+import { ref } from 'vue'
+import RanklistViewer from '@/components/utils/RanklistViewer.vue'
+import { useContestCapability } from '@/utils/contest/inject'
+
+const props = defineProps<{
+  orgId: string
+  contestId: string
+  contest: IContestDTO
+  ranklistKey: string
+  ranklists: [{ key: string; name: string }]
+}>()
+
+const emit = defineEmits<{
+  (ev: 'updated'): void
+}>()
+
+const { t } = useI18n()
+const currentTab = ref()
+const admin = useContestCapability('admin')
+
+const endpoint = `contest/${props.contestId}/ranklist/${props.ranklistKey}/url`
+</script>
+<i18n>
+en:
+  ranklist-settings: Ranklist Settings
+  ranklist-show: Ranklist Details
+  ranklist-waiting-in-progress: Generating ranklist, please refresh the page later.
+zh-Hans:
+  ranklist-settings: 设置
+  ranklist-show: 排行榜
+  ranklist-waiting-in-progress: 正在生成排行榜，请稍后刷新页面。
+</i18n>

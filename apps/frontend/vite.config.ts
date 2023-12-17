@@ -1,23 +1,43 @@
-// Plugins
+import { fileURLToPath, URL } from 'node:url'
+import { execSync } from 'node:child_process'
 import vue from '@vitejs/plugin-vue'
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
-
-// Utilities
 import { defineConfig } from 'vite'
-import { fileURLToPath, URL } from 'node:url'
+import pages from 'vite-plugin-pages'
+import uno from 'unocss/vite'
+import vueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 
-// https://vitejs.dev/config/
+const gitHash = execSync('git rev-parse --short HEAD').toString().trim()
+const gitBranch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim()
+
 export default defineConfig({
+  build: {
+    target: 'esnext'
+  },
   plugins: [
     vue({
-      template: { transformAssetUrls }
+      template: { transformAssetUrls },
+      script: {
+        defineModel: true
+      }
     }),
-    // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
     vuetify({
       autoImport: true
+    }),
+    pages(),
+    uno(),
+    vueI18nPlugin({
+      defaultSFCLang: 'yml',
+      include: fileURLToPath(new URL('./src/locales/**', import.meta.url))
     })
   ],
-  define: { 'process.env': {} },
+  define: {
+    'process.env': {},
+    __GIT_HASH__: JSON.stringify(gitHash),
+    __GIT_BRANCH__: JSON.stringify(gitBranch),
+    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+    __APP_NAME__: JSON.stringify(process.env.AOI_APP_NAME ?? 'AOI')
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -25,6 +45,8 @@ export default defineConfig({
     extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue']
   },
   server: {
-    port: 3000
+    proxy: {
+      '/api': 'http://localhost:1926'
+    }
   }
 })

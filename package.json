@@ -1,16 +1,34 @@
 {
-  "name": "@aoi/workspace",
-  "packageManager": "yarn@3.6.0",
+  "name": "@aoi-js/workspace",
+  "packageManager": "yarn@3.6.2",
+  "license": "AGPL-3.0-only",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "libs/*"
   ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
+    "concurrently": "^8.2.0",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
+    "husky": "^8.0.3",
     "prettier": "^3.0.0",
-    "typescript": "^5.1.6"
+    "rimraf": "^5.0.1",
+    "typescript": "^5.1.6",
+    "zx": "^7.2.3"
+  },
+  "scripts": {
+    "postinstall": "husky install",
+    "all:build": "yarn workspaces foreach -t run build",
+    "all:check-lint": "yarn workspaces foreach run lint",
+    "all:check-format": "yarn workspaces foreach run format",
+    "all:check-type": "yarn workspaces foreach run type-check",
+    "all:check": "concurrently -m 1 \"yarn:all:check-*\"",
+    "git:precommit": "run all:check"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
   }
 }

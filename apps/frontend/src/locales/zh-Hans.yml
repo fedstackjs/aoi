@@ -1,0 +1,164 @@
+pages:
+  home: 首页
+  about: 关于
+  problems: 题库
+  contests: 比赛
+  groups: 小组
+  signin: 登录
+  signup: 注册
+  admin: 管理
+  plans: 计划
+  user-info: 用户信息
+  user-settings: 用户设置
+  forgot-passwd: 忘记密码
+  logout: 登出
+  modify-passwd: 修改密码
+  announcements: 公告
+  solutions: 提交记录
+
+action:
+  reload: 重载
+  reset: 重置
+  save: 保存
+  delete: 删除
+  cancel: 取消
+  submit: 提交
+  new: 新建
+  create: 创建
+  upload: 上传
+  rejudge: 重测
+  download: 下载
+  update: 更新
+  register: 注册
+  refresh: 刷新
+  copy: 复制
+  add: 添加
+  view: 查看
+  publish: 发布
+  cancel-publish: 取消发布
+  export: 导出
+
+term:
+  content: 内容
+  title: 标题
+  slug: 编号
+  tags: 标签
+  state: 状态
+  status: 评测结果
+  score: 得分
+  key: Key
+  id: ID
+  name: 名称
+  description: 描述
+  hash: 哈希值
+  current-hash: 当前哈希值
+  runner-label: 评测标签
+  message: 消息
+  config: 配置
+  username: 用户名
+  password: 密码
+  email: 邮箱
+  realname: 真实姓名
+  actions: 动作
+  settings: 设置
+  access: 访问
+  members: 成员
+  runners: 评测机
+  profile: 档案
+  capabilities: 权限
+  labels: 标签
+  danger-zone: 危险设置
+  principle-id: 用户或小组 ID
+  association: 授权
+  start-time: 开始时间
+  end-time: 结束时间
+  filename: 文件名
+  overview: 总览
+  participant: 选手
+  rank: 排名
+  schedule: 时间计划
+  jobs: 任务
+  summary: 总结
+  tests: 子任务
+  contest-stage: 比赛阶段
+  user-id: 用户 ID
+  preconditions: 前提条件
+  contest: 比赛
+  contest-id: 比赛 ID
+  problem: 题目
+  problem-id: 题目 ID
+  search: 搜索
+  version: 版本
+  batch-import: 批量导入
+  user: 用户
+  date: 日期
+  stage: 阶段
+  preview: 预览
+  participant-count: 参赛选手数
+  contest-time: 比赛时间
+  telephone: 电话
+  school: 学校
+  student-grade: 年级
+  is-public: 是否公开
+  is-visible: 是否可见
+
+common:
+  created-at: 创建于
+  accessed-at: 访问于
+  submitted-at: 提交于
+  completed-at: 完成于
+  show-before: 在...时之前显示
+  show-after: 在...时之后显示
+  from: 从
+  to: 至
+  lasts: 持续
+  all: 全部
+  self: 自己
+
+auth:
+  access-level: 权限等级
+  public: 公开
+  restricted: 受限
+  private: 私有
+
+cap:
+  access: 访问权限
+  problem: 题目控制
+  contest: 比赛控制
+  admin: 管理权限
+  plan: 计划权限
+
+msg:
+  not-found: 页面不存在
+  no-problem: 还未添加问题
+  no-ranklist: 还未创建排行榜
+  no-contest: 还未添加比赛
+  operation-success: 操作成功
+  session-expired: 会话已过期，请重新登录
+
+tabs:
+  description: 描述
+  contests: 比赛
+  management: 管理
+  problems: 题库
+  submit: 提交
+  attachments: 附件
+  data: 数据
+  solutions: 提交记录
+  ranklist: 排行榜
+  participant: 参赛选手
+  problem-description: 题面
+
+metrics:
+  cpu: CPU
+  mem: Memory
+
+difficulty:
+  easy: 简单
+  medium: 中等
+  hard: 困难
+
+stages:
+  upcoming: 即将开始
+  running: 正在进行
+  end: 已结束

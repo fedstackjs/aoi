@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  server:
+    build: ../../images/server
+    expose:
+      - 1926
+    environment:
+      - AOI_MONGO_URL=mongodb://mongo:27017/aoi
+      - AOI_JWT_SECRET=${AOI_JWT_SECRET}
+
+  mongo:
+    image: mongo:latest
+    volumes:
+      - ./mongo:/data/db
+    expose:
+      - 27017
