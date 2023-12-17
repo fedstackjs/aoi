@@ -29,6 +29,7 @@ const keys: {
   solutionEnabled: 'solution-enabled',
   solutionAllowSubmit: 'solution-allow-submit',
   solutionShowOther: 'solution-show-other',
+  solutionShowDetails: 'solution-show-details',
   solutionShowOtherDetails: 'solution-show-other-details',
   solutionShowOtherData: 'solution-show-other-data',
   ranklistEnabled: 'ranklist-enabled',
@@ -52,6 +53,7 @@ en:
     solution-enabled: Solution Enabled
     solution-allow-submit: Solution Allow Submit
     solution-show-other: Solution Allow Other
+    solution-show-details: Solution Show Details
     solution-show-other-details: Solution Allow Other Details
     solution-show-other-data: Solution Allow Other Data
     ranklist-enabled: Ranklist Enabled
@@ -64,6 +66,7 @@ en:
     solution-enabled: Enable solution
     solution-allow-submit: Allow submit
     solution-show-other: Allow show other
+    solution-show-details: Allow show details
     solution-show-other-details: Allow show other details
     solution-show-other-data: Allow show other data
     ranklist-enabled: Enable ranklist
@@ -77,6 +80,7 @@ zh-Hans:
     solution-enabled: 启用提交记录
     solution-allow-submit: 允许提交
     solution-show-other: 允许展示他人提交记录
+    solution-show-details: 允许展示提交记录细节
     solution-show-other-details: 允许展示他人提交记录细节
     solution-show-other-data: 允许展示他人提交记录数据
     ranklist-enabled: 启用排名
@@ -89,6 +93,7 @@ zh-Hans:
     solution-enabled: 开启后，选手才可提交或查看提交
     solution-allow-submit: 开启后，选手才可以提交
     solution-show-other: 开启后，选手可以查看他人提交记录（仅状态）
+    solution-show-details: 开启后，选手可以查看自己的提交详情
     solution-show-other-details: 开启后，选手可以查看他人提交详情
     solution-show-other-data: 开启后，选手可以查看他人提交内容（代码、数据等）
     ranklist-enabled: 开启后，选手才可以查看排行榜

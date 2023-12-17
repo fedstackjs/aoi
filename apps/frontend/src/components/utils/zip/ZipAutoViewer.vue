@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAsyncTask } from '@/utils/async'
+import { noMessage, useAsyncTask } from '@/utils/async'
 import { http } from '@/utils/http'
 import { shallowRef } from 'vue'
 import JSZip from 'jszip'
@@ -22,6 +22,7 @@ const task = useAsyncTask(async () => {
   const blob = await resp.blob()
   const file = new File([blob], 'data.zip', { type: 'application/zip' })
   zip.value = await JSZip.loadAsync(file)
+  return noMessage()
 })
 
 task.execute()

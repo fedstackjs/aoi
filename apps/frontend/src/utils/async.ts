@@ -3,13 +3,22 @@ import { useI18n } from 'vue-i18n'
 import { useToast } from 'vue-toastification'
 
 const kAsyncTaskMessage = Symbol('AsyncTaskMessage')
+const kNoMessage = Symbol('NoMessage')
 
 export function withMessage<T>(message: string, value?: T): { value?: T } {
   return { [kAsyncTaskMessage]: message, value } as { value?: T }
 }
 
+export function noMessage<T>(value?: T): { value?: T } {
+  return { [kNoMessage]: true, value } as { value?: T }
+}
+
 function hasMessage<T>(value: unknown): value is { [kAsyncTaskMessage]: string; value: T } {
   return typeof value === 'object' && value !== null && kAsyncTaskMessage in value
+}
+
+export function hasNoMessage<T>(value: unknown): value is { [kNoMessage]: true; value: T } {
+  return typeof value === 'object' && value !== null && kNoMessage in value
 }
 
 export function getMessage(value: unknown): string | undefined {
@@ -25,7 +34,9 @@ export function useAsyncTask(task: () => Promise<unknown>) {
     isLoading.value = true
     try {
       const result = await task()
-      toast.success(getMessage(result) ?? t('msg.operation-success'))
+      if (!hasNoMessage(result)) {
+        toast.success(getMessage(result) ?? t('msg.operation-success'))
+      }
     } catch (err) {
       toast.error(`${err}`)
     }

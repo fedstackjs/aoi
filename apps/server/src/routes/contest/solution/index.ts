@@ -131,13 +131,20 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     resolve: async (type, query, req) => {
       const ctx = req.inject(kContestContext)
 
+      const { solutionShowOtherDetails, solutionShowDetails } = ctx._contestStage.settings
+      if (
+        !solutionShowDetails &&
+        !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)
+      ) {
+        throw s.httpErrors.forbidden()
+      }
+
       const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
       const solution = await solutions.findOne({
         _id: solutionId,
         contestId: ctx._contestId
       })
       if (!solution) throw s.httpErrors.notFound()
-      const { solutionShowOtherDetails } = ctx._contestStage.settings
       if (!checkUser(req, solution.userId, solutionShowOtherDetails)) {
         throw s.httpErrors.forbidden()
       }

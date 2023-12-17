@@ -95,12 +95,12 @@
       :loading="solution.isLoading.value"
       :disabled="autoRefresh.isActive.value"
     />
-    <VBtn :text="t('action.view')" @click="viewFile = true" />
+    <VBtn v-if="showData && !viewFile" :text="t('action.view')" @click="viewFile = true" />
   </VCardActions>
-  <VCardText v-if="viewFile">
+  <VCardText v-if="showData && viewFile">
     <ZipAutoViewer :endpoint="downloadEndpoint" default-file="answer.code" />
   </VCardText>
-  <template v-if="solution.state.value?.state === 4">
+  <template v-if="showDetails && solution.state.value?.state === 4">
     <VDivider />
     <VCardSubtitle>{{ t('solution.details') }}</VCardSubtitle>
     <SolutionDetails :problem-id="problemId" :contest-id="contestId" :solution-id="solutionId" />
@@ -124,6 +124,8 @@ import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
 import PrincipalProfile from '../utils/PrincipalProfile.vue'
 import { computed } from 'vue'
 import { useContestProblemTitle } from '@/utils/contest/problem/inject'
+import { useContestCapability, useContestSettings } from '@/utils/contest/inject'
+import { useAppState } from '@/stores/app'
 
 const props = defineProps<{
   orgId: string
@@ -134,6 +136,26 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+
+const app = useAppState()
+const contestSettings = props.contestId ? useContestSettings() : null
+const contestCapability = props.contestId ? useContestCapability('admin') : null
+const showDetails = computed(() => {
+  if (!contestSettings) return true // Problem
+  if (contestCapability?.value) return true
+  if (solution.state.value?.userId === app.userId) {
+    return !!contestSettings.value.solutionShowDetails
+  }
+  return !!contestSettings.value.solutionShowOtherDetails
+})
+const showData = computed(() => {
+  if (!contestSettings) return true // Problem
+  if (contestCapability?.value) return true
+  if (solution.state.value?.userId === app.userId) {
+    return true
+  }
+  return !!contestSettings.value.solutionShowOtherData
+})
 
 const downloadEndpoint = computed(() =>
   props.contestId

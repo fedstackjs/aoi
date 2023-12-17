@@ -22,6 +22,7 @@ export interface IContestDTO {
       solutionEnabled: boolean
       solutionAllowSubmit: boolean
       solutionShowOther: boolean
+      solutionShowDetails: boolean
       solutionShowOtherDetails: boolean
       solutionShowOtherData: boolean
       ranklistEnabled: boolean
