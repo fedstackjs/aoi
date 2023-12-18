@@ -7,7 +7,7 @@ permissions:
   contents: write
 
 jobs:
-  check:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,7 +19,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -37,9 +36,10 @@ jobs:
         run: corepack yarn
 
       - name: Build packages
-        run: corepack yarn workspaces foreach -t run build
+        run: corepack yarn workspaces foreach --topological-dev run build
+
+      - name: Setup Yarn
+        run: corepack yarn config set -H 'npmAuthToken' "${{ secrets.NPM_TOKEN }}"
 
       - name: Publish and commit
         run: corepack yarn zx scripts/publish.mjs
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -18,12 +18,14 @@ for (const { ident } of items) {
   shouldCommit = true
 }
 
-if (shouldCommit && process.env.CI) {
-  await $`git config user.name github-actions`
-  await $`git config user.email github-actions@github.com`
-  await $`git add .`
-  await $`git commit -m "chore: apply versions and publish"`
-  await $`git push`
-} else {
-  console.log(`Time to commit and push!`)
+if (shouldCommit) {
+  if (process.env.CI) {
+    await $`git config user.name github-actions`
+    await $`git config user.email github-actions@github.com`
+    await $`git add .`
+    await $`git commit -m "chore: apply versions and publish"`
+    await $`git push`
+  } else {
+    console.log(`Time to commit and push!`)
+  }
 }

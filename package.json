@@ -25,7 +25,7 @@
     "all:check-lint": "yarn workspaces foreach run lint",
     "all:check-format": "yarn workspaces foreach run format",
     "all:check-type": "yarn workspaces foreach run type-check",
-    "all:check": "concurrently -m 1 \"yarn:all:check-*\"",
+    "all:check": "concurrently \"yarn:all:check-*\"",
     "git:precommit": "run all:check"
   },
   "dependencies": {
