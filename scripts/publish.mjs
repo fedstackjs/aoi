@@ -20,8 +20,8 @@ for (const { ident } of items) {
 
 if (shouldCommit) {
   if (process.env.CI) {
-    await $`git config user.name github-actions`
-    await $`git config user.email github-actions@github.com`
+    await $`git config user.name aoi-js-bot`
+    await $`git config user.email aoi@fedstack.org`
     await $`git add .`
     await $`git commit -m "chore: apply versions and publish"`
     await $`git push`
