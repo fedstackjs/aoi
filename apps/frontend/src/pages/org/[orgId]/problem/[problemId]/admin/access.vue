@@ -1,5 +1,9 @@
 <template>
-  <AssociationEditor :prefix="`problem/${problem._id}/admin/access`" :bits="problemBits" />
+  <AssociationEditor
+    :prefix="`problem/${problem._id}/admin/access`"
+    :bits="problemBits"
+    :org-id="orgId"
+  />
 </template>
 
 <script setup lang="ts">

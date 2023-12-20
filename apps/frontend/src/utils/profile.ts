@@ -6,7 +6,7 @@ import { http } from './http'
 const log = debug('util:profile')
 
 export interface IPublicProfile {
-  principleId: string
+  principalId: string
   name: string
   emailHash: string
 }
@@ -19,12 +19,12 @@ export interface IProfileCacheEntry {
 const cacheTTL = 3600 * 1000 // 1 hour
 const fetchQueue = new AsyncQueue()
 
-export async function fetchPrinciplesProfiles(principleIds: string[]) {
+export async function fetchPrincipalsProfiles(principalIds: string[]) {
   const profiles = await fetchQueue.enqueue(async () =>
     http
-      .post('public/fetch-principles-profiles', {
+      .post('public/fetch-principals-profiles', {
         json: {
-          principleIds
+          principalIds
         }
       })
       .json<IPublicProfile[]>()
@@ -32,24 +32,24 @@ export async function fetchPrinciplesProfiles(principleIds: string[]) {
   const now = Date.now()
   await Promise.all(
     profiles.map((profile: IProfileCacheEntry['profile']) =>
-      set(`profile:${profile.principleId}`, { profile, updatedAt: now })
+      set(`profile:${profile.principalId}`, { profile, updatedAt: now })
     )
   )
-  const profilesMap = Object.fromEntries(profiles.map((profile) => [profile.principleId, profile]))
-  return principleIds.map((id) => profilesMap[id])
+  const profilesMap = Object.fromEntries(profiles.map((profile) => [profile.principalId, profile]))
+  return principalIds.map((id) => profilesMap[id])
 }
 
-const getQueue = new BatchingQueue(fetchPrinciplesProfiles)
+const getQueue = new BatchingQueue(fetchPrincipalsProfiles)
 
-export async function getProfile(principleId: string) {
-  const result: IProfileCacheEntry | undefined = await get(`profile:${principleId}`)
+export async function getProfile(principalId: string) {
+  const result: IProfileCacheEntry | undefined = await get(`profile:${principalId}`)
   if (result && result.updatedAt > Date.now() - cacheTTL) return result.profile
-  log(`Principle ${principleId} profile cache miss`)
-  const profile = await getQueue.enqueue(principleId)
+  log(`Principal ${principalId} profile cache miss`)
+  const profile = await getQueue.enqueue(principalId)
   return profile
 }
 
-export async function invalidateProfile(principleId: string) {
-  await set(`profile:${principleId}`, undefined)
-  log(`Principle ${principleId} profile cache invalidated`)
+export async function invalidateProfile(principalId: string) {
+  await set(`profile:${principalId}`, undefined)
+  log(`Principal ${principalId} profile cache invalidated`)
 }

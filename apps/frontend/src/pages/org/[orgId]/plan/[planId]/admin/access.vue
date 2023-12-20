@@ -1,5 +1,5 @@
 <template>
-  <AssociationEditor :prefix="`plan/${planId}/admin/access`" :bits="planBits" />
+  <AssociationEditor :prefix="`plan/${planId}/admin/access`" :bits="planBits" :org-id="orgId" />
 </template>
 
 <script setup lang="ts">

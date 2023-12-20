@@ -8,7 +8,7 @@
   />
 </template>
 
-<script setup lang="ts" generic="Data,  Shallow extends boolean = true">
+<script setup lang="ts" generic="Data, Shallow extends boolean = true">
 import { type UseAsyncStateReturn } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { http } from '@/utils/http'

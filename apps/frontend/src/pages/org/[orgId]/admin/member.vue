@@ -24,25 +24,25 @@
       @update:options="({ page, itemsPerPage }) => members.execute(0, page, itemsPerPage)"
     >
       <template v-slot:[`item._id`]="{ item }">
-        <code>{{ item.raw.user._id }}</code>
+        <code>{{ item.user._id }}</code>
       </template>
       <template v-slot:[`item.profile`]="{ item }">
-        <RouterLink :to="`/user/${item.raw.user._id}`">
+        <RouterLink :to="`/user/${item.user._id}`">
           <VAvatar>
-            <AppGravatar :email="item.raw.user.profile.email" />
+            <AppGravatar :email="item.user.profile.email" />
           </VAvatar>
-          <code class="u-pl-2">{{ item.raw.user.profile.name }}</code>
+          <code class="u-pl-2">{{ item.user.profile.name }}</code>
         </RouterLink>
       </template>
       <template v-slot:[`item._cap`]="{ item }">
-        <CapabilityChips :bits="orgBits" :capability="item.raw.capability" />
+        <CapabilityChips :bits="orgBits" :capability="item.capability" />
       </template>
       <template v-slot:[`item._actions`]="{ item }">
-        <VBtn icon="mdi-delete" variant="text" @click="deleteMember(item.raw.user._id)" />
+        <VBtn icon="mdi-delete" variant="text" @click="deleteMember(item.user._id)" />
         <VBtn
           icon="mdi-pencil"
           variant="text"
-          @click="openDialog(item.raw.user._id, item.raw.capability)"
+          @click="openDialog(item.user._id, item.capability)"
         />
       </template>
     </VDataTableServer>
@@ -61,7 +61,6 @@
 </template>
 
 <script setup lang="ts">
-import { VDataTableServer } from 'vuetify/labs/components'
 import { http } from '@/utils/http'
 import { orgBits } from '@/utils/capability'
 import { ref } from 'vue'
@@ -84,7 +83,20 @@ const headers = [
   { title: t('term.actions'), key: '_actions' }
 ] as const
 
-const { page, itemsPerPage, result: members } = usePagination(`org/${props.orgId}/admin/member`, {})
+const {
+  page,
+  itemsPerPage,
+  result: members
+} = usePagination<{
+  user: {
+    _id: string
+    profile: {
+      name: string
+      email: string
+    }
+  }
+  capability: string
+}>(`org/${props.orgId}/admin/member`, {})
 
 async function deleteMember(userId: string) {
   await http.delete(`org/${props.orgId}/admin/member/${userId}`)

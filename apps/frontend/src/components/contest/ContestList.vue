@@ -11,26 +11,26 @@
     @update:options="({ page, itemsPerPage }) => contests.execute(0, page, itemsPerPage)"
   >
     <template v-slot:[`item.slug`]="{ item }">
-      <code>{{ item.raw.slug }}</code>
+      <code>{{ item.slug }}</code>
     </template>
     <template v-slot:[`item.title`]="{ item }">
-      <RouterLink :to="`/org/${orgId}/contest/${item.raw._id}`">
-        {{ item.raw.title }}
+      <RouterLink :to="`/org/${orgId}/contest/${item._id}`">
+        {{ item.title }}
       </RouterLink>
     </template>
     <template v-slot:[`item.count`]="{ item }">
-      <code>{{ item.raw.participantCount }}</code>
+      <code>{{ item.participantCount }}</code>
     </template>
     <template v-slot:[`item.time`]="{ item }">
-      <code>{{ getTimeRange(item.raw.stages) }}</code>
+      <code>{{ getTimeRange(item.stages) }}</code>
     </template>
     <template v-slot:[`item.stage`]="{ item }">
-      <ContestStageChip :stages="item.raw.stages" :now="now" />
+      <ContestStageChip :stages="item.stages" :now="now" />
     </template>
     <template v-slot:[`item.tags`]="{ item }">
       <VChipGroup>
         <VChip
-          v-for="tag in item.raw.tags"
+          v-for="tag in item.tags"
           :key="tag"
           :to="`/org/${orgId}/contest/tag/${encodeURIComponent(tag)}`"
         >
@@ -45,10 +45,10 @@
 import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { VDataTableServer } from 'vuetify/labs/components'
 import { usePagination } from '@/utils/pagination'
 import { watch } from 'vue'
 import ContestStageChip from '@/components/utils/ContestStageChip.vue'
+import type { IContestDTO } from './types'
 
 const props = defineProps<{
   orgId: string
@@ -74,7 +74,7 @@ const {
   page,
   itemsPerPage,
   result: contests
-} = usePagination(
+} = usePagination<IContestDTO & { participantCount: number }>(
   `contest`,
   computed(() => JSON.parse(JSON.stringify(props)))
 )

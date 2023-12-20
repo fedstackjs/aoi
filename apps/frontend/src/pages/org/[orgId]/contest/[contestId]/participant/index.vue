@@ -11,11 +11,11 @@
     @update:options="({ page, itemsPerPage }) => participants.execute(0, page, itemsPerPage)"
   >
     <template v-slot:[`item.userId`]="{ item }">
-      <PrincipalProfile :to="admin ? rel(item.raw.userId) : ''" :principal-id="item.raw.userId" />
+      <PrincipalProfile :to="admin ? rel(item.userId) : ''" :principal-id="item.userId" />
     </template>
     <template v-slot:[`item.tags`]="{ item }">
       <VChipGroup>
-        <VChip v-for="tag in item.raw.tags" :key="tag">
+        <VChip v-for="tag in item.tags" :key="tag">
           {{ tag }}
         </VChip>
       </VChipGroup>
@@ -24,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import { VDataTableServer } from 'vuetify/labs/components'
 import { useI18n } from 'vue-i18n'
 import type { IContestDTO } from '@/components/contest/types'
 import { useContestCapability } from '@/utils/contest/inject'
@@ -44,7 +43,10 @@ const {
   page,
   itemsPerPage,
   result: participants
-} = usePagination(`contest/${props.contestId}/participant`, {})
+} = usePagination<{
+  userId: string
+  tags: string[]
+}>(`contest/${props.contestId}/participant`, {})
 
 const headers = [
   { title: t('term.user'), key: 'userId', align: 'start', sortable: false },

@@ -208,7 +208,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
       const maxSize = config.solution?.maxSize ?? 1024 * 1024 * 10 // 10MiB
       if (req.body.size > maxSize) return rep.badRequest('Solution too large')
 
-      const { value } = await solutions.findOneAndUpdate(
+      const value = await solutions.findOneAndUpdate(
         {
           problemId,
           contestId: ctx._contestId,

@@ -11,17 +11,17 @@ export const publicRoutes = defineRoutes(async (s) => {
   })
 
   s.post(
-    '/fetch-principles-profiles',
+    '/fetch-principals-profiles',
     {
       schema: {
-        description: 'Batch fetch principle profiles',
+        description: 'Batch fetch principal profiles',
         body: Type.Object({
-          principleIds: Type.Array(Type.UUID())
+          principalIds: Type.Array(Type.UUID())
         }),
         response: {
           200: Type.Array(
             Type.Object({
-              principleId: Type.UUID(),
+              principalId: Type.UUID(),
               name: Type.String(),
               emailHash: Type.String()
             }),
@@ -31,10 +31,10 @@ export const publicRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      const principleIds = req.body.principleIds.map((id) => new BSON.UUID(id))
+      const principalIds = req.body.principalIds.map((id) => new BSON.UUID(id))
       const matchedUsers = await users
         .find(
-          { _id: { $in: principleIds } },
+          { _id: { $in: principalIds } },
           {
             projection: {
               'profile.name': 1,
@@ -45,7 +45,7 @@ export const publicRoutes = defineRoutes(async (s) => {
         .toArray()
       const matchedGroups = await groups
         .find(
-          { _id: { $in: principleIds } },
+          { _id: { $in: principalIds } },
           {
             projection: {
               name: 1,
@@ -56,7 +56,7 @@ export const publicRoutes = defineRoutes(async (s) => {
         .toArray()
       const result = [...matchedUsers, ...matchedGroups].map(
         ({ _id, profile: { name, email } }) => ({
-          principleId: _id,
+          principalId: _id,
           name,
           emailHash: createHash('md5').update(email).digest('hex')
         })

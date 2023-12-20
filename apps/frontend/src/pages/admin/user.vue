@@ -12,24 +12,24 @@
       @update:options="({ page, itemsPerPage }) => users.execute(0, page, itemsPerPage)"
     >
       <template v-slot:[`item._id`]="{ item }">
-        <code>{{ item.raw._id }}</code>
+        <code>{{ item._id }}</code>
       </template>
       <template v-slot:[`item.profile`]="{ item }">
-        <RouterLink :to="`/user/${item.raw._id}`">
+        <RouterLink :to="`/user/${item._id}`">
           <VAvatar>
-            <AppGravatar :email="item.raw.profile.email" />
+            <AppGravatar :email="item.profile.email" />
           </VAvatar>
-          <code class="u-pl-2">{{ item.raw.profile.name }}</code>
+          <code class="u-pl-2">{{ item.profile.name }}</code>
         </RouterLink>
       </template>
       <template v-slot:[`item._cap`]="{ item }">
-        <CapabilityChips :bits="userBits" :capability="item.raw.capability ?? '0'" />
+        <CapabilityChips :bits="userBits" :capability="item.capability ?? '0'" />
       </template>
       <template v-slot:[`item._actions`]="{ item }">
         <VBtn
           icon="mdi-pencil"
           variant="text"
-          @click="openDialog(item.raw._id, item.raw.capability ?? '0')"
+          @click="openDialog(item._id, item.capability ?? '0')"
         />
       </template>
     </VDataTableServer>
@@ -55,7 +55,6 @@ import { userBits } from '@/utils/capability'
 import { http } from '@/utils/http'
 import { usePagination } from '@/utils/pagination'
 import { ref } from 'vue'
-import { VDataTableServer } from 'vuetify/labs/components'
 
 const headers = [
   { title: 'Profile', key: 'profile', align: 'start', sortable: false },
@@ -64,7 +63,18 @@ const headers = [
   { title: 'Actions', key: '_actions' }
 ] as const
 
-const { page, itemsPerPage, result: users } = usePagination(`admin/user`, {})
+const {
+  page,
+  itemsPerPage,
+  result: users
+} = usePagination<{
+  _id: string
+  profile: {
+    name: string
+    email: string
+  }
+  capability?: string
+}>(`admin/user`, {})
 
 const dialog = ref(false)
 const dialogUserId = ref('')
