@@ -11,15 +11,15 @@
     @update:options="({ page, itemsPerPage }) => problems.execute(0, page, itemsPerPage)"
   >
     <template v-slot:[`item.slug`]="{ item }">
-      <code>{{ item.raw.slug }}</code>
+      <code>{{ item.slug }}</code>
     </template>
     <template v-slot:[`item.title`]="{ item }">
-      <RouterLink :to="`/org/${orgId}/problem/${item.raw._id}`">
-        {{ item.raw.title }}
+      <RouterLink :to="`/org/${orgId}/problem/${item._id}`">
+        {{ item.title }}
       </RouterLink>
     </template>
     <template v-slot:[`item.tags`]="{ item }">
-      <ProblemTagGroup :tags="item.raw.tags" :url-prefix="`/org/${orgId}/problem/tag`" />
+      <ProblemTagGroup :tags="item.tags" :url-prefix="`/org/${orgId}/problem/tag`" />
     </template>
   </VDataTableServer>
 </template>
@@ -28,10 +28,10 @@
 import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { VDataTableServer } from 'vuetify/labs/components'
 import { usePagination } from '@/utils/pagination'
 import { watch } from 'vue'
 import ProblemTagGroup from './ProblemTagGroup.vue'
+import type { IProblemDTO } from './types'
 
 const props = defineProps<{
   orgId: string
@@ -53,7 +53,7 @@ const {
   page,
   itemsPerPage,
   result: problems
-} = usePagination(
+} = usePagination<IProblemDTO>(
   `problem`,
   computed(() => JSON.parse(JSON.stringify(props)))
 )

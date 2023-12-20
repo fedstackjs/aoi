@@ -35,17 +35,17 @@
       <template v-slot="{ value }">
         <VDataTable :headers="headers" :items="value" item-value="_id">
           <template v-slot:[`item._id`]="{ item }">
-            <code>{{ item.raw._id }}</code>
+            <code>{{ item._id }}</code>
           </template>
           <template v-slot:[`item.createdAt`]="{ item }">
-            <VChip :text="new Date(item.raw.createdAt).toLocaleString()" />
+            <VChip :text="new Date(item.createdAt).toLocaleString()" />
           </template>
           <template v-slot:[`item.accessedAt`]="{ item }">
-            <VChip v-bind="runnerLastAccessAttrs(item.raw.accessedAt)" />
+            <VChip v-bind="runnerLastAccessAttrs(item.accessedAt)" />
           </template>
           <template v-slot:[`item._labels`]="{ item }">
             <VChipGroup>
-              <VChip v-for="label in item.raw.labels" :key="label" small>
+              <VChip v-for="label in item.labels" :key="label" small>
                 {{ label }}
               </VChip>
             </VChipGroup>
@@ -54,7 +54,7 @@
             <VBtn
               variant="text"
               icon="mdi-pencil"
-              @click="(editRunnerId = item.raw._id), (editDialog = true)"
+              @click="(editRunnerId = item._id), (editDialog = true)"
             />
           </template>
         </VDataTable>
@@ -79,7 +79,6 @@
 </template>
 
 <script setup lang="ts">
-import { VDataTable } from 'vuetify/labs/components'
 import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'

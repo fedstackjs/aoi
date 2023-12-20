@@ -265,7 +265,7 @@ export const runnerRanklistRoutes = defineRoutes(async (s) => {
     },
     async (req) => {
       const runnerCtx = req.inject(kRunnerContext)
-      const { value } = await contests.findOneAndUpdate(
+      const value = await contests.findOneAndUpdate(
         {
           orgId: runnerCtx._runner.orgId,
           ranklistState: ContestRanklistState.INVALID,

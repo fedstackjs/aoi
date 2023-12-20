@@ -127,7 +127,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       if (req.body.size > maxSize) return rep.badRequest('Solution too large')
 
       const idOnUpsert = new BSON.UUID()
-      const { value } = await solutions.findOneAndUpdate(
+      const value = await solutions.findOneAndUpdate(
         { problemId: ctx._problemId, userId: req.user.userId, state: SolutionState.CREATED },
         {
           $set: {

@@ -14,14 +14,14 @@
             @update:options="({ page, itemsPerPage }) => groups.execute(0, page, itemsPerPage)"
           >
             <template v-slot:[`item._id`]="{ item }">
-              <code>{{ item.raw._id }}</code>
+              <code>{{ item._id }}</code>
             </template>
             <template v-slot:[`item.name`]="{ item }">
-              <RouterLink :to="`/org/${orgId}/group/${item.raw._id}`">
+              <RouterLink :to="`/org/${orgId}/group/${item._id}`">
                 <VAvatar>
-                  <AppGravatar :email="item.raw.profile.email" />
+                  <AppGravatar :email="item.profile.email" />
                 </VAvatar>
-                <code class="u-pl-2">{{ item.raw.profile.name }}</code>
+                <code class="u-pl-2">{{ item.profile.name }}</code>
               </RouterLink>
             </template>
           </VDataTableServer>
@@ -32,7 +32,6 @@
 </template>
 
 <script setup lang="ts">
-import { VDataTableServer } from 'vuetify/labs/components'
 import { http } from '@/utils/http'
 import { withTitle } from '@/utils/title'
 import { useAsyncState } from '@vueuse/core'

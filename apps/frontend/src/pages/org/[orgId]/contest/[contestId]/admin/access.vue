@@ -1,5 +1,9 @@
 <template>
-  <AssociationEditor :prefix="`contest/${contestId}/admin/access`" :bits="contestBits" />
+  <AssociationEditor
+    :prefix="`contest/${contestId}/admin/access`"
+    :bits="contestBits"
+    :org-id="orgId"
+  />
 </template>
 
 <script setup lang="ts">

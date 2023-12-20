@@ -23,28 +23,27 @@
       @update:options="({ page, itemsPerPage }) => groups.execute(0, page, itemsPerPage)"
     >
       <template v-slot:[`item._id`]="{ item }">
-        <code>{{ item.raw._id }}</code>
+        <code>{{ item._id }}</code>
       </template>
       <template v-slot:[`item.profile`]="{ item }">
-        <RouterLink :to="`/user/${item.raw.user._id}`">
+        <RouterLink :to="`/user/${item.user._id}`">
           <VAvatar>
-            <AppGravatar :email="item.raw.user.profile.email" />
+            <AppGravatar :email="item.user.profile.email" />
           </VAvatar>
-          <code class="u-pl-2">{{ item.raw.user.profile.name }}</code>
+          <code class="u-pl-2">{{ item.user.profile.name }}</code>
         </RouterLink>
       </template>
       <template v-slot:[`item._cap`]="{ item }">
-        <CapabilityChips :capability="item.raw.capability" :bits="orgBits" />
+        <CapabilityChips :capability="item.capability" :bits="orgBits" />
       </template>
       <template v-slot:[`item._actions`]="{ item }">
-        <VBtn icon="mdi-delete" variant="text" @click="deleteMember(item.raw.user._id)" />
+        <VBtn icon="mdi-delete" variant="text" @click="deleteMember(item.user._id)" />
       </template>
     </VDataTableServer>
   </VCard>
 </template>
 
 <script setup lang="ts">
-import { VDataTableServer } from 'vuetify/labs/components'
 import { http } from '@/utils/http'
 import { withTitle } from '@/utils/title'
 import { useAsyncState } from '@vueuse/core'

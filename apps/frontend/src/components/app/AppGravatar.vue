@@ -1,5 +1,5 @@
 <template>
-  <VImg :src="'https://cravatar.cn/avatar/' + hash">
+  <VImg :src="url">
     <template #error>
       <VIcon>mdi-account</VIcon>
     </template>
@@ -7,12 +7,12 @@
 </template>
 
 <script setup lang="ts">
-import md5 from 'blueimp-md5'
+import { getAvatarUrl } from '@/utils/avatar'
 import { computed } from 'vue'
 
 const props = defineProps<{
   email: string
 }>()
 
-const hash = computed(() => (props.email.includes('@') ? md5(props.email) : props.email))
+const url = computed(() => getAvatarUrl(props.email))
 </script>

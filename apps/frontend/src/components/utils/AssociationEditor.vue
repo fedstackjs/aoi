@@ -3,12 +3,12 @@
     <VCardTitle class="d-flex justify-space-between align-center">
       <div>{{ t('term.association') }}</div>
       <div class="flex-grow-1 u-max-w-64">
-        <VTextField
-          v-model="newPrincipalId"
+        <PrincipalInput
           density="compact"
-          :label="t('term.principle-id')"
+          :label="t('term.principal-id')"
           append-icon="mdi-plus"
-          @click:append="addPrinciple"
+          :org-id="orgId"
+          @add="addPrincipal"
         />
       </div>
     </VCardTitle>
@@ -19,17 +19,17 @@
       item-value="_id"
     >
       <template v-slot:[`item.profile`]="{ item }">
-        <PrincipalProfile :principalId="item.raw.principalId" />
+        <PrincipalProfile :principalId="item.principalId" />
       </template>
       <template v-slot:[`item._cap`]="{ item }">
-        <CapabilityChips :capability="item.raw.capability" :bits="bits" />
+        <CapabilityChips :capability="item.capability" :bits="bits" />
       </template>
       <template v-slot:[`item._actions`]="{ item }">
-        <VBtn icon="mdi-delete" variant="text" @click="deletePrinciple(item.raw.principalId)" />
+        <VBtn icon="mdi-delete" variant="text" @click="deletePrincipal(item.principalId)" />
         <VBtn
           icon="mdi-pencil"
           variant="text"
-          @click="openDialog(item.raw.principalId, item.raw.capability)"
+          @click="openDialog(item.principalId, item.capability)"
         />
       </template>
     </VDataTable>
@@ -48,7 +48,6 @@
 </template>
 
 <script setup lang="ts">
-import { VDataTable } from 'vuetify/labs/components'
 import { useAsyncState } from '@vueuse/core'
 import { http } from '@/utils/http'
 import type { IAssociation } from '@/types'
@@ -57,10 +56,12 @@ import { ref } from 'vue'
 import CapabilityChips from './CapabilityChips.vue'
 import PrincipalProfile from './PrincipalProfile.vue'
 import CapabilityInput from './CapabilityInput.vue'
+import PrincipalInput from './PrincipalInput.vue'
 
 const props = defineProps<{
   prefix: string
   bits: Record<string, number>
+  orgId: string
 }>()
 
 const { t } = useI18n()
@@ -76,17 +77,14 @@ const associations = useAsyncState(async () => {
   return resp.json<IAssociation[]>()
 }, [])
 
-const newPrincipalId = ref('')
-
-async function addPrinciple() {
+async function addPrincipal(newPrincipalId: string) {
   await http.post(`${props.prefix}`, {
-    json: { principalId: newPrincipalId.value }
+    json: { principalId: newPrincipalId }
   })
-  newPrincipalId.value = ''
   associations.execute()
 }
 
-async function deletePrinciple(principalId: string) {
+async function deletePrincipal(principalId: string) {
   await http.delete(`${props.prefix}/${principalId}`)
   associations.execute()
 }

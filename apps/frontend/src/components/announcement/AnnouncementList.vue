@@ -11,12 +11,12 @@
     @update:options="({ page, itemsPerPage }) => announcements.execute(0, page, itemsPerPage)"
   >
     <template v-slot:[`item.title`]="{ item }">
-      <RouterLink :to="`/announcement/${item.raw._id}`">
-        {{ item.raw.title }}
+      <RouterLink :to="`/announcement/${item._id}`">
+        {{ item.title }}
       </RouterLink>
     </template>
     <template v-slot:[`item.date`]="{ item }">
-      <code>{{ fmtDate(item.raw.date) }}</code>
+      <code>{{ fmtDate(item.date) }}</code>
     </template>
   </VDataTableServer>
 </template>
@@ -25,7 +25,6 @@
 import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { VDataTableServer } from 'vuetify/labs/components'
 import { usePagination } from '@/utils/pagination'
 import { fmtDate } from './fmtdate'
 
@@ -38,5 +37,13 @@ const headers = [
   { title: t('term.date'), key: 'date', sortable: false }
 ] as const
 
-const { page, itemsPerPage, result: announcements } = usePagination(`announcement`, {})
+const {
+  page,
+  itemsPerPage,
+  result: announcements
+} = usePagination<{
+  _id: string
+  title: string
+  date: string
+}>(`announcement`, {})
 </script>

@@ -17,31 +17,30 @@
     @update:options="({ page, itemsPerPage }) => submissions.execute(0, page, itemsPerPage)"
   >
     <template v-slot:[`item.state`]="{ item }">
-      <SolutionStateChip :state="item.raw.state" />
+      <SolutionStateChip :state="item.state" />
     </template>
     <template v-slot:[`item.userId`]="{ item }">
-      <PrincipalProfile :principal-id="item.raw.userId" />
+      <PrincipalProfile :principal-id="item.userId" />
     </template>
     <template v-slot:[`item.title`]="{ item }">
-      <RouterLink :to="rel(item.raw)" style="color: primary">
-        {{ item.raw.problemTitle }}
+      <RouterLink :to="rel(item)" style="color: primary">
+        {{ item.problemTitle }}
       </RouterLink>
     </template>
     <template v-slot:[`item.status`]="{ item }">
-      <SolutionStatusChip :status="item.raw.status" :to="rel(item.raw)" />
+      <SolutionStatusChip :status="item.status" :to="rel(item)" />
     </template>
     <template v-slot:[`item.score`]="{ item }">
-      <SolutionScoreDisplay :score="item.raw.score" :to="rel(item.raw)" />
+      <SolutionScoreDisplay :score="item.score" :to="rel(item)" />
     </template>
     <template v-slot:[`item.submittedAt`]="{ item }">
-      <code>{{ getDate(item.raw.submittedAt) }}</code>
+      <code>{{ getDate(item.submittedAt) }}</code>
     </template>
   </VDataTableServer>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { VDataTableServer } from 'vuetify/labs/components'
 import SolutionStateChip from '@/components/solution/SolutionStateChip.vue'
 import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
 import SolutionScoreDisplay from '../SolutionScoreDisplay.vue'
@@ -49,6 +48,7 @@ import SolutionStatusChip from '../SolutionStatusChip.vue'
 import { usePagination } from '@/utils/pagination'
 import { computed, ref } from 'vue'
 import { useAppState } from '@/stores/app'
+import type { ISolutionDTO } from '../types'
 
 const { t } = useI18n()
 const app = useAppState()
@@ -73,7 +73,7 @@ const {
   page,
   itemsPerPage,
   result: submissions
-} = usePagination(
+} = usePagination<ISolutionDTO & { problemTitle: string }>(
   'solution',
   computed(() => {
     return userId.value
@@ -97,7 +97,7 @@ const rel = (item: any) => {
     : `/org/${props.orgId}/problem/${parentId}/solution/${_id}`
 }
 
-const getDate = (d: number) => new Date(d).toLocaleString()
+const getDate = (d?: number) => (d ? new Date(d).toLocaleString() : '')
 </script>
 <i18n>
 en:

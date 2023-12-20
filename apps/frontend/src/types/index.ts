@@ -15,7 +15,7 @@ export interface IProfile {
 }
 
 export interface IAssociation {
-  principleId: string
+  principalId: string
   capability: string
 }
 

@@ -103,7 +103,7 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const now = req._now
       const ctx = req.inject(kRunnerSolutionContext)
-      const { value } = await solutions.findOneAndUpdate(
+      const value = await solutions.findOneAndUpdate(
         {
           _id: ctx._solutionId,
           taskId: ctx._taskId,
@@ -194,7 +194,7 @@ export const runnerSolutionRoutes = defineRoutes(async (s) => {
     async (req) => {
       const runnerCtx = req.inject(kRunnerContext)
       const taskId = new BSON.UUID()
-      const { value: solution } = await solutions.findOneAndUpdate(
+      const solution = await solutions.findOneAndUpdate(
         {
           orgId: runnerCtx._runner.orgId,
           state: SolutionState.PENDING,

@@ -22,19 +22,19 @@
           }"
         >
           <template v-slot:[`item.name`]="{ item }">
-            <code>{{ item.raw.name }}</code>
+            <code>{{ item.name }}</code>
           </template>
           <template v-slot:[`item.email`]="{ item }">
-            <code>{{ item.raw.email }}</code>
+            <code>{{ item.email }}</code>
           </template>
           <template v-slot:[`item.realname`]="{ item }">
-            <code>{{ item.raw.realname }}</code>
+            <code>{{ item.realname }}</code>
           </template>
           <template v-slot:[`item.password`]="{ item }">
-            <code>{{ item.raw.password }}</code>
+            <code>{{ item.password }}</code>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
-            <VBtn icon="mdi-delete" variant="text" @click="deleteItem(item.raw.name)" />
+            <VBtn icon="mdi-delete" variant="text" @click="deleteItem(item.name)" />
           </template>
         </VDataTable>
         <VAlert v-if="pageState === 'ferr'" type="error">{{ t('error-file') }}</VAlert>
@@ -68,7 +68,6 @@
 </template>
 
 <script setup lang="ts">
-import { VDataTable } from 'vuetify/labs/components'
 import { http } from '@/utils/http'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
