@@ -12,6 +12,7 @@ await server.register(fastifySensible)
 await server.register(schemaRoutes, { prefix: '/schemas' })
 
 if (hasModule('@fastify/swagger') && hasModule('@fastify/swagger-ui')) {
+  logger.warn('Swagger is enabled and is not recommended for production use')
   const { default: fastifySwagger } = await import('@fastify/swagger')
   const { default: fastifySwaggerUi } = await import('@fastify/swagger-ui')
 
