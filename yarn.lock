@@ -47,7 +47,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@aoi-js/frontend@workspace:^, @aoi-js/frontend@workspace:apps/frontend":
+"@aoi-js/frontend@workspace:apps/frontend":
   version: 0.0.0-use.local
   resolution: "@aoi-js/frontend@workspace:apps/frontend"
   dependencies:
@@ -107,14 +107,12 @@ __metadata:
   resolution: "@aoi-js/server@workspace:apps/server"
   dependencies:
     "@aoi-js/common": "workspace:^"
-    "@aoi-js/frontend": "workspace:^"
     "@aws-sdk/client-s3": ^3.385.0
     "@aws-sdk/s3-request-presigner": ^3.385.0
     "@fastify/jwt": ^7.2.0
     "@fastify/sensible": ^5.2.0
-    "@fastify/static": ^6.10.2
-    "@fastify/swagger": ^8.8.0
-    "@fastify/swagger-ui": ^1.9.2
+    "@fastify/swagger": ^8.12.1
+    "@fastify/swagger-ui": ^2.0.1
     "@fastify/type-provider-typebox": ^3.3.0
     "@sinclair/typebox": ^0.29.4
     "@types/bcrypt": ^5.0.0
@@ -127,7 +125,9 @@ __metadata:
     pino: ^8.17.1
     pino-pretty: ^10.3.0
   dependenciesMeta:
-    "@aoi-js/frontend":
+    "@fastify/swagger":
+      optional: true
+    "@fastify/swagger-ui":
       optional: true
   bin:
     aoi-server: lib/cli/index.js
@@ -1543,7 +1543,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/static@npm:^6.0.0, @fastify/static@npm:^6.10.2":
+"@fastify/static@npm:^6.0.0":
   version: 6.12.0
   resolution: "@fastify/static@npm:6.12.0"
   dependencies:
@@ -1557,20 +1557,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/swagger-ui@npm:^1.9.2":
-  version: 1.10.2
-  resolution: "@fastify/swagger-ui@npm:1.10.2"
+"@fastify/swagger-ui@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@fastify/swagger-ui@npm:2.0.1"
   dependencies:
     "@fastify/static": ^6.0.0
     fastify-plugin: ^4.0.0
     openapi-types: ^12.0.2
     rfdc: ^1.3.0
     yaml: ^2.2.2
-  checksum: 74bfc3a9499a39407161679434057c616accbaf6c142a3e11356b2e70f4759ca5e1813b05b9d6cbd2b933668574bf296fe9051ea4af2698641edd92f092c09f3
+  checksum: ec004af28ecc73d64bdf17569f2b86776b480392c0310d56ac1e850348d639a4872e773f1ec82a55e4bb35329b23fe7e8b8e04e40cb8da71808f3f1435b15bb3
   languageName: node
   linkType: hard
 
-"@fastify/swagger@npm:^8.8.0":
+"@fastify/swagger@npm:^8.12.1":
   version: 8.12.1
   resolution: "@fastify/swagger@npm:8.12.1"
   dependencies:

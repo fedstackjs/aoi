@@ -15,7 +15,12 @@ let shouldCommit = false
 for (const { ident } of items) {
   console.log(`Publishing ${chalk.greenBright(ident)}...`)
   await $`yarn workspace ${ident} npm publish --access public`
+  await $`yarn workspace ${ident} pack --out package.tgz`
   shouldCommit = true
+  if (process.env.CI) {
+    const name = ident.split('/')[1]
+    await $`echo "${name}_updated=true" >> "$GITHUB_OUTPUT"`
+  }
 }
 
 if (shouldCommit) {

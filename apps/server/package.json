@@ -22,9 +22,6 @@
     "@aws-sdk/s3-request-presigner": "^3.385.0",
     "@fastify/jwt": "^7.2.0",
     "@fastify/sensible": "^5.2.0",
-    "@fastify/static": "^6.10.2",
-    "@fastify/swagger": "^8.8.0",
-    "@fastify/swagger-ui": "^1.9.2",
     "@fastify/type-provider-typebox": "^3.3.0",
     "@sinclair/typebox": "^0.29.4",
     "bcrypt": "^5.1.1",
@@ -40,7 +37,8 @@
     "pino-pretty": "^10.3.0"
   },
   "optionalDependencies": {
-    "@aoi-js/frontend": "workspace:^"
+    "@fastify/swagger": "^8.12.1",
+    "@fastify/swagger-ui": "^2.0.1"
   },
   "scripts": {
     "build": "run -T tsc",
