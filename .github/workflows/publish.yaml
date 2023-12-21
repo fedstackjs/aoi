@@ -48,7 +48,7 @@ jobs:
         run: corepack yarn zx scripts/publish.mjs
 
       - name: Upload server tgz
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: steps.publish.outputs.server_updated == 'true'
         with:
           name: server
@@ -63,7 +63,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download server tgz
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: server
           path: apps/server
@@ -72,8 +72,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: registry.cn-hangzhou.aliyuncs.com
-          username: ${{ secrets.ALIYUN_USERNAME }}
-          password: ${{ secrets.ALIYUN_PASSWORD }}
+          username: ${{ secrets.ACR_USER }}
+          password: ${{ secrets.ACR_PASS }}
 
       - name: Build and push server Docker image
         uses: docker/build-push-action@v4
