@@ -7,10 +7,12 @@
     <template #append>
       <VDivider />
       <div class="u-flex u-items-center">
-        <VBtn variant="text" class="text-none px-2" color="text" rounded="sm">
+        <VBtn variant="text" class="text-none text-left px-2" color="text" rounded="sm">
           <div>
-            <div class="u-text-sm">AoiUI v{{ appBuildInfo.version }}</div>
-            <div class="u-text-xs u-font-mono u-text-blue-900">
+            <div class="u-text-sm u-font-mono u-tracking-tighter">
+              AOI-UI v{{ appBuildInfo.version }}
+            </div>
+            <div class="u-text-xs u-font-mono u-tracking-tighter u-text-blue-900">
               {{ appBuildInfo.hash }}@{{ appBuildInfo.branch }}
             </div>
           </div>

@@ -35,8 +35,7 @@ export default defineConfig({
     'process.env': {},
     __GIT_HASH__: JSON.stringify(gitHash),
     __GIT_BRANCH__: JSON.stringify(gitBranch),
-    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
-    __APP_NAME__: JSON.stringify(process.env.AOI_APP_NAME ?? 'AOI')
+    __BUILD_TIME__: JSON.stringify(new Date().toISOString())
   },
   resolve: {
     alias: {
