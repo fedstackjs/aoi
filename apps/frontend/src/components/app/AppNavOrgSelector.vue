@@ -68,6 +68,7 @@ const joinedOrgs = useAsyncState(async () => {
       }
     }>
   >()
+  // TODO: optimize UX here
   const jmp = async () => {
     await router.isReady() // wait for router to be ready, FINE
     if (orgArr.length > 0 && router.currentRoute.value.path === '/') {
