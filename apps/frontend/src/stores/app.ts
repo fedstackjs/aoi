@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useAsyncState, useLocalStorage, useTitle, watchDebounced } from '@vueuse/core'
 import { http, isLoggedIn, userId } from '@/utils/http'
 import { useRoute } from 'vue-router'
@@ -18,7 +18,11 @@ export const useAppState = defineStore('app_state', () => {
   }, null)
   watchDebounced(userId, () => user.execute(), { immediate: true })
 
-  const orgId = computed(() => '' + (route.params.orgId ?? ''))
+  const orgId = ref((route.params.orgId as string) ?? '')
+  watch(
+    () => route.params.orgId,
+    (val) => val && (orgId.value = val as string)
+  )
   const orgProfile = useAsyncState(
     async () => {
       if (!orgId.value) return null

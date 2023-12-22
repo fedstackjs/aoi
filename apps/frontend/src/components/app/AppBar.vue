@@ -41,5 +41,5 @@ import SearchBox from '../homepage/SearchBox.vue'
 const { t } = useI18n()
 const appState = useAppState()
 
-const appName = __APP_NAME__
+const appName = import.meta.env.VITE_APP_NAME ?? 'AOI'
 </script>

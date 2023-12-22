@@ -1,11 +1,12 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
-RUN corepack enable
+ARG NODE_ENV=production
+ENV NODE_ENV $NODE_ENV
 WORKDIR /opt
 COPY apps/server/package.tgz /opt/package.tgz
 RUN tar -xzf package.tgz && rm package.tgz && mv package aoi-server
 WORKDIR /opt/aoi-server
-RUN npm install --omit=dev --omit=optional
+RUN npm install --omit=dev --omit=optional && npm cache clean --force
 
 USER node
 
