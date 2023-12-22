@@ -4,8 +4,18 @@ import { apiRoutes } from '../routes/index.js'
 import { logger } from '../utils/logger.js'
 import { schemaRoutes } from './schemas.js'
 import { hasModule } from '../utils/module.js'
+import { loadEnv } from '../index.js'
 
-const server = fastify({ logger })
+const trustProxy = loadEnv('TRUST_PROXY', JSON.parse, false)
+
+if (trustProxy) {
+  logger.warn('Trust proxy is enabled')
+}
+
+const server = fastify({
+  logger,
+  trustProxy
+})
 
 await server.register(fastifySensible)
 
