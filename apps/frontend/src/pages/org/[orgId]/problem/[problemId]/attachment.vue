@@ -123,9 +123,8 @@ const uploadInfo = reactive({
 
 async function uploadFile() {
   try {
-    const resp = await http.get(
-      `problem/${props.problem._id}/attachment/${uploadInfo.key}/url/upload`
-    )
+    const key = encodeURIComponent(uploadInfo.key)
+    const resp = await http.get(`problem/${props.problem._id}/attachment/${key}/url/upload`)
     const { url } = await resp.json<{ url: string }>()
     await fetch(url, {
       method: 'PUT',

@@ -124,9 +124,8 @@ watch(
 
 async function uploadFile() {
   try {
-    const resp = await http.get(
-      `contest/${props.contestId}/attachment/${uploadInfo.key}/url/upload`
-    )
+    const key = encodeURIComponent(uploadInfo.key)
+    const resp = await http.get(`contest/${props.contestId}/attachment/${key}/url/upload`)
     const { url } = await resp.json<{ url: string }>()
     await fetch(url, {
       method: 'PUT',
