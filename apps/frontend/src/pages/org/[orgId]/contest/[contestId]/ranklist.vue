@@ -10,7 +10,7 @@
             v-for="ranklist in value"
             :key="ranklist.key"
             prepend-icon="mdi-list-box-outline"
-            :to="rel(ranklist.key)"
+            :to="rel(encodeURIComponent(ranklist.key))"
             exact
           >
             {{ ranklist.name }}
