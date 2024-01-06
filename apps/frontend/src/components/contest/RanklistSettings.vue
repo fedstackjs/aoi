@@ -3,7 +3,9 @@
     <VCardSubtitle>
       {{ t('term.schedule') }}
     </VCardSubtitle>
-    <SettingsEditor :endpoint="`contest/${contestId}/ranklist/${props.ranklistKey}/settings`">
+    <SettingsEditor
+      :endpoint="`contest/${contestId}/ranklist/${encodeURIComponent(props.ranklistKey)}/settings`"
+    >
       <template v-slot="scoped">
         <RanklistSettingsInput v-model="scoped.value" />
       </template>
@@ -56,7 +58,7 @@ const emit = defineEmits<{
 }>()
 
 async function deleteRanklist() {
-  await http.delete(`contest/${props.contestId}/ranklist/${props.ranklistKey}`)
+  await http.delete(`contest/${props.contestId}/ranklist/${encodeURIComponent(props.ranklistKey)}`)
   router.push(`/org/${props.orgId}/contest/${props.contestId}/ranklist`)
   emit('updated')
 }

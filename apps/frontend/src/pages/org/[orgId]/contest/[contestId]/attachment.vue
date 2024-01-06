@@ -86,6 +86,7 @@ const attachments = useAsyncState(async () => {
 const canManage = computed(() => hasCapability(props.contest.capability, 1))
 
 async function downloadFile(key: string) {
+  key = encodeURIComponent(key)
   const resp = await http.get(`contest/${props.contestId}/attachment/${key}/url/download`)
   const { url } = await resp.json<{ url: string }>()
   window.open(url)
@@ -93,6 +94,7 @@ async function downloadFile(key: string) {
 
 async function deleteFile(key: string) {
   try {
+    key = encodeURIComponent(key)
     const resp = await http.get(`contest/${props.contestId}/attachment/${key}/url/delete`)
     const { url } = await resp.json<{ url: string }>()
     await fetch(url, { method: 'DELETE' })

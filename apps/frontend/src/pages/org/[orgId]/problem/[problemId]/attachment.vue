@@ -94,6 +94,7 @@ const snackbarText = ref('')
 const canManage = computed(() => hasCapability(props.problem.capability, 1))
 
 async function downloadFile(key: string) {
+  key = encodeURIComponent(key)
   const resp = await http.get(`problem/${props.problem._id}/attachment/${key}/url/download`)
   const { url } = await resp.json<{ url: string }>()
   window.open(url)
@@ -101,6 +102,7 @@ async function downloadFile(key: string) {
 
 async function deleteFile(key: string) {
   try {
+    key = encodeURIComponent(key)
     const resp = await http.get(`problem/${props.problem._id}/attachment/${key}/url/delete`)
     const { url } = await resp.json<{ url: string }>()
     await fetch(url, { method: 'DELETE' })
