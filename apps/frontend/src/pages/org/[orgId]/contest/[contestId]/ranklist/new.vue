@@ -49,7 +49,7 @@ async function addRanklist() {
     await http.post(`contest/${contestId}/ranklist`, {
       json: payload
     })
-    router.replace(`/org/${orgId}/contest/${contestId}/ranklist/${payload.key}`)
+    router.replace(`/org/${orgId}/contest/${contestId}/ranklist/${encodeURIComponent(payload.key)}`)
     emit('updated')
   } catch (err) {
     toast.error(`Error: ${err}`)
