@@ -38,7 +38,9 @@ async function getProfile(_id: string) {
 async function exportRanklist() {
   toast.info(t('start-generating'))
   try {
-    const endpoint = `contest/${props.contestId}/ranklist/${props.ranklistKey}/url/download`
+    const endpoint =
+      `contest/${props.contestId}/` +
+      `ranklist/${encodeURIComponent(props.ranklistKey)}/url/download`
     const { url } = await http.get(endpoint).json<{ url: string }>()
     const jsondata = await ky.get(url).json<Ranklist>()
     const workbook = xlsx.utils.book_new()

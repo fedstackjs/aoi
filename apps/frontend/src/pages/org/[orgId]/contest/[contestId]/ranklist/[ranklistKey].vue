@@ -48,7 +48,7 @@ const { t } = useI18n()
 const currentTab = ref()
 const admin = useContestCapability('admin')
 
-const endpoint = `contest/${props.contestId}/ranklist/${props.ranklistKey}/url`
+const endpoint = `contest/${props.contestId}/ranklist/${encodeURIComponent(props.ranklistKey)}/url`
 </script>
 <i18n>
 en:

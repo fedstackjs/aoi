@@ -37,6 +37,7 @@ const props = defineProps<{
 }>()
 
 async function downloadFile(key: string) {
+  key = encodeURIComponent(key)
   const resp = await http.get(
     `contest/${props.contestId}/problem/${props.problem._id}/attachment/${key}/url/download`
   )
