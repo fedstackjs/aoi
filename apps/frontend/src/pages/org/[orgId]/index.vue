@@ -40,5 +40,5 @@ import FriendLinksCard from '@/components/homepage/FriendLinksCard.vue'
 const { t } = useI18n()
 const appState = useAppState()
 
-withTitle(computed(() => t('pages.home')))
+withTitle(computed(() => t('pages.org-home')))
 </script>

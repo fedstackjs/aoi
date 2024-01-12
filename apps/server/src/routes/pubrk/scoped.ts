@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { defineRoutes, paramSchemaMerger, loadCapability, loadMembership } from '../common/index.js'
+import { defineRoutes, paramSchemaMerger, loadCapability } from '../common/index.js'
 import { contestRanklistKey } from '../../index.js'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import {
@@ -89,7 +89,7 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kPubrkContext)
       const contest = await contests.findOne({ _id: ctx._pubranklist.contestId })
       if (!contest) throw s.httpErrors.notFound()
-      const membership = await loadMembership(req.user.userId, contest.orgId)
+      const membership = await req.loadMembership(contest.orgId)
       const capability = loadCapability(
         contest,
         membership,
@@ -123,7 +123,7 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kPubrkContext)
       const contest = await contests.findOne({ _id: ctx._pubranklist.contestId })
       if (!contest) throw s.httpErrors.notFound()
-      const membership = await loadMembership(req.user.userId, contest.orgId)
+      const membership = await req.loadMembership(contest.orgId)
       const capability = loadCapability(
         contest,
         membership,

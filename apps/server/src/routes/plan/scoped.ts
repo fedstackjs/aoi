@@ -1,11 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import {
-  defineRoutes,
-  loadCapability,
-  loadMembership,
-  paramSchemaMerger,
-  tryLoadUUID
-} from '../common/index.js'
+import { defineRoutes, loadCapability, paramSchemaMerger, tryLoadUUID } from '../common/index.js'
 import { PlanCapacity, planParticipants, plans } from '../../db/index.js'
 import { CAP_ALL, hasCapability } from '../../utils/index.js'
 import { BSON } from 'mongodb'
@@ -29,7 +23,7 @@ export const planScopedRoutes = defineRoutes(async (s) => {
     if (!planId) return rep.notFound()
     const plan = await plans.findOne({ _id: planId })
     if (!plan) return rep.notFound()
-    const membership = await loadMembership(req.user.userId, plan.orgId)
+    const membership = await req.loadMembership(plan.orgId)
     const capability = loadCapability(
       plan,
       membership,

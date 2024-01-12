@@ -4,10 +4,10 @@
       <template v-slot="{ value }">
         <VCarousel cycle show-arrows="hover" hide-delimiter-background class="h-auto">
           <template v-slot:prev="{ props }">
-            <v-btn icon="mdi-chevron-left" variant="text" @click="props.onClick" />
+            <VBtn icon="mdi-chevron-left" variant="text" @click="props.onClick" />
           </template>
           <template v-slot:next="{ props }">
-            <v-btn icon="mdi-chevron-right" variant="text" @click="props.onClick" />
+            <VBtn icon="mdi-chevron-right" variant="text" @click="props.onClick" />
           </template>
           <VCarouselItem v-for="(item, i) in value" :key="i" :src="item.url" :alt="item.title" />
         </VCarousel>

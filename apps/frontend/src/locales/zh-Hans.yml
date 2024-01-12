@@ -1,5 +1,6 @@
 pages:
   home: 首页
+  org-home: 组织首页
   about: 关于
   problems: 题库
   contests: 比赛
@@ -135,6 +136,7 @@ msg:
   no-contest: 还未添加比赛
   operation-success: 操作成功
   session-expired: 会话已过期，请重新登录
+  no-joined-organization: 您还未加入任何组织
 
 tabs:
   description: 描述

@@ -76,30 +76,6 @@ export const userScopedRoutes = defineRoutes(async (s) => {
     }
   )
 
-  s.get(
-    '/profile_na',
-    {
-      schema: {
-        response: {
-          200: Type.Object({
-            name: Type.String(),
-            email: Type.String()
-          })
-        },
-        security: []
-      }
-    },
-    async (req, rep) => {
-      const ctx = req.inject(kUserContext)
-      const user = await users.findOne({ _id: ctx._userId }, { projection: { profile: 1 } })
-      if (!user) return rep.notFound()
-      return {
-        name: user.profile.name,
-        email: user.profile.email
-      }
-    }
-  )
-
   s.patch(
     '/profile',
     {

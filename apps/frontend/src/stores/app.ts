@@ -18,6 +18,21 @@ export const useAppState = defineStore('app_state', () => {
   }, null)
   watchDebounced(userId, () => user.execute(), { immediate: true })
 
+  const joinedOrgs = useAsyncState(async () => {
+    const orgs = await http.get('org').json<
+      Array<{
+        _id: string
+        profile: {
+          name: string
+          email: string
+        }
+      }>
+    >()
+    if (!orgId.value) orgId.value = orgs[0]._id
+    return orgs
+  }, [])
+  watchDebounced(userId, () => joinedOrgs.execute(), { immediate: true })
+
   const orgId = ref((route.params.orgId as string) ?? '')
   watch(
     () => route.params.orgId,
@@ -50,6 +65,7 @@ export const useAppState = defineStore('app_state', () => {
     loggedIn,
     userId,
     user: computed(() => user),
+    joinedOrgs: computed(() => joinedOrgs),
     userCapability: withOverride('userCapability', () => user.state.value?.capability ?? '0'),
     orgId,
     orgProfile: computed(() => orgProfile),

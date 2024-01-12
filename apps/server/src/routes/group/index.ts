@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadMembership, loadUUID, swaggerTagMerger } from '../common/index.js'
+import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { groupScopedRoutes } from './scoped.js'
 import { ensureCapability, findPaginated } from '../../utils/index.js'
 import { OrgCapability, SGroupProfile, groups } from '../../index.js'
@@ -58,7 +58,7 @@ export const groupRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const orgId = loadUUID(req.body, 'orgId', s.httpErrors.badRequest())
-      const membership = await loadMembership(req.user.userId, orgId)
+      const membership = await req.loadMembership(orgId)
       if (!membership) return rep.forbidden()
       ensureCapability(membership.capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
       const { insertedId } = await groups.insertOne({

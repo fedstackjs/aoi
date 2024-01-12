@@ -26,6 +26,7 @@ import {
 } from '../utils/inject.js'
 import type { FastifyRequest } from 'fastify'
 import { publicRoutes } from './public/index.js'
+import { IOrgMembership, orgMemberships } from '../db/index.js'
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
@@ -39,6 +40,7 @@ declare module 'fastify' {
     _container: IContainer
     provide<T>(point: InjectionPoint<T>, value: T): void
     inject<T>(point: InjectionPoint<T>): T
+    loadMembership(orgId: BSON.UUID): Promise<IOrgMembership | null>
   }
 }
 
@@ -56,10 +58,19 @@ function decoratedInject<T>(this: FastifyRequest, point: InjectionPoint<T>): T {
   return inject(this._container, point)
 }
 
+async function decoratedLoadMembership(
+  this: FastifyRequest,
+  orgId: BSON.UUID
+): Promise<IOrgMembership | null> {
+  if (!this.user) return null
+  return orgMemberships.findOne({ userId: this.user.userId, orgId })
+}
+
 export const apiRoutes = defineRoutes(async (s) => {
   s.decorateRequest('_container', null)
   s.decorateRequest('provide', decoratedProvide)
   s.decorateRequest('inject', decoratedInject)
+  s.decorateRequest('loadMembership', decoratedLoadMembership)
 
   s.register(fastifyJwt, {
     secret: loadEnv('JWT_SECRET', String),
@@ -75,13 +86,13 @@ export const apiRoutes = defineRoutes(async (s) => {
     req._now = Date.now()
     req._container = createInjectionContainer()
 
+    if (req.headers.authorization) {
+      await req.jwtVerify()
+    }
+
     // JWT is the default security scheme
     if ('security' in req.routeSchema) return
-    try {
-      await req.jwtVerify()
-    } catch (err) {
-      rep.send(err)
-    }
+    if (!req.user) return rep.forbidden()
   })
 
   s.get(

@@ -1,12 +1,7 @@
 import { FastifyPluginAsyncTypebox, TSchema, Type } from '@fastify/type-provider-typebox'
 import { RouteOptions } from 'fastify'
 import { BSON } from 'mongodb'
-import {
-  IOrgMembership,
-  orgMemberships,
-  IPrincipalControlable,
-  IWithAccessLevel
-} from '../../db/index.js'
+import { IOrgMembership, IPrincipalControlable, IWithAccessLevel } from '../../db/index.js'
 import { CAP_NONE, computeCapability } from '../../utils/capability.js'
 import { AccessLevel } from '../../schemas/index.js'
 
@@ -45,10 +40,6 @@ export function tryLoadUUID(obj: unknown, key: string) {
   const uuid = (obj as Record<string, string>)[key]
   if (!BSON.UUID.isValid(uuid)) return null
   return new BSON.UUID(uuid)
-}
-
-export function loadMembership(userId: BSON.UUID, orgId: BSON.UUID) {
-  return orgMemberships.findOne({ userId, orgId })
 }
 
 export function defaultCapability(

@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadMembership, swaggerTagMerger } from '../common/index.js'
+import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
 import { CAP_NONE, findPaginated, hasCapability } from '../../utils/index.js'
 import { plans } from '../../db/plan.js'
@@ -31,7 +31,7 @@ export const planRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const orgId = new BSON.UUID(req.body.orgId)
-      const membership = await loadMembership(req.user.userId, orgId)
+      const membership = await req.loadMembership(orgId)
       if (!hasCapability(membership?.capability ?? CAP_NONE, OrgCapability.CAP_PLAN))
         return rep.forbidden()
 
@@ -83,7 +83,7 @@ export const planRoutes = defineRoutes(async (s) => {
       const searchFilter = searchToFilter(rest)
       if (!searchFilter) return rep.badRequest('Bad search parameters')
 
-      const membership = await loadMembership(req.user.userId, orgId)
+      const membership = await req.loadMembership(orgId)
       const basicAccessLevel = membership
         ? hasCapability(membership.capability, OrgCapability.CAP_CONTEST)
           ? AccessLevel.PRIVATE
@@ -133,7 +133,7 @@ export const planRoutes = defineRoutes(async (s) => {
       const { orgId: rawOrgId } = req.query
       const orgId = new BSON.UUID(rawOrgId)
       const searchFilter = { 'settings.promotion': true }
-      const membership = await loadMembership(req.user.userId, orgId)
+      const membership = await req.loadMembership(orgId)
       const basicAccessLevel = membership
         ? hasCapability(membership.capability, OrgCapability.CAP_CONTEST)
           ? AccessLevel.PRIVATE
