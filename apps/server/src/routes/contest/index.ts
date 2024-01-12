@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadMembership, loadUUID, swaggerTagMerger } from '../common/index.js'
+import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { CAP_NONE, ensureCapability, findPaginated, hasCapability } from '../../utils/index.js'
 import { AccessLevel } from '../../schemas/index.js'
 import { ContestRanklistState, OrgCapability, contests } from '../../db/index.js'
@@ -35,7 +35,7 @@ export const contestRoutes = defineRoutes(async (s) => {
     },
     async (req) => {
       const orgId = loadUUID(req.body, 'orgId', s.httpErrors.badRequest())
-      const membership = await loadMembership(req.user.userId, orgId)
+      const membership = await req.loadMembership(orgId)
       ensureCapability(
         membership?.capability ?? CAP_NONE,
         OrgCapability.CAP_CONTEST,
@@ -101,7 +101,7 @@ export const contestRoutes = defineRoutes(async (s) => {
       const searchFilter = searchToFilter(rest)
       if (!searchFilter) return rep.badRequest('Bad search parameters')
 
-      const membership = await loadMembership(req.user.userId, orgId)
+      const membership = await req.loadMembership(orgId)
       const basicAccessLevel = membership
         ? hasCapability(membership.capability, OrgCapability.CAP_CONTEST)
           ? AccessLevel.PRIVATE
@@ -118,19 +118,87 @@ export const contestRoutes = defineRoutes(async (s) => {
         },
         searchFilter
       )
-      const result = await findPaginated(contests, page, perPage, count, filter, {
-        projection: {
-          _id: 1,
-          slug: 1,
-          title: 1,
-          tags: 1,
-          stages: {
-            name: 1,
-            start: 1
-          },
-          participantCount: 1
+      const result = await findPaginated(
+        contests,
+        page,
+        perPage,
+        count,
+        filter,
+        {
+          projection: {
+            _id: 1,
+            slug: 1,
+            title: 1,
+            tags: 1,
+            stages: {
+              name: 1,
+              start: 1
+            },
+            participantCount: 1
+          }
+        },
+        { start: -1 }
+      )
+      return result
+    }
+  )
+
+  s.get(
+    '/public',
+    {
+      schema: {
+        description: 'List public contests',
+        security: [],
+        querystring: Type.Object({
+          page: Type.Integer({ minimum: 1, default: 1 }),
+          perPage: Type.Integer({ enum: [15, 30] }),
+          count: Type.Boolean({ default: false }),
+          search: Type.Optional(Type.String({ minLength: 1 })),
+          tag: Type.Optional(Type.String())
+        }),
+        response: {
+          200: Type.PaginationResult(
+            Type.Object({
+              _id: Type.UUID(),
+              orgId: Type.UUID(),
+              slug: Type.String(),
+              title: Type.String(),
+              tags: Type.Array(Type.String()),
+              stages: Type.Array(Type.Pick(SContestStage, ['name', 'start'] as const)),
+              participantCount: Type.Integer()
+            })
+          )
         }
-      })
+      }
+    },
+    async (req, rep) => {
+      const { page, perPage, count, ...rest } = req.query
+      const searchFilter = searchToFilter(rest)
+      if (!searchFilter) return rep.badRequest('Bad search parameters')
+
+      const filter = filterMerge({ accessLevel: AccessLevel.PUBLIC }, searchFilter)
+      const result = await findPaginated(
+        contests,
+        page,
+        perPage,
+        count,
+        filter,
+        {
+          projection: {
+            _id: 1,
+            orgId: 1,
+            slug: 1,
+            title: 1,
+            tags: 1,
+            stages: {
+              name: 1,
+              start: 1
+            },
+            participantCount: 1
+          }
+        },
+        { start: -1 }
+      )
       return result
     }
   )

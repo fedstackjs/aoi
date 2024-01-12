@@ -30,8 +30,12 @@
     </template>
     <VCard class="u-min-w-64" :title="t('select-organization')">
       <VDivider />
-      <VList>
-        <VListItem v-for="org in joinedOrgs.state.value" :key="org._id" :to="'/org/' + org._id">
+      <VList v-if="appState.joinedOrgs.state.value.length">
+        <VListItem
+          v-for="org in appState.joinedOrgs.state.value"
+          :key="org._id"
+          :to="'/org/' + org._id"
+        >
           <template #prepend>
             <VAvatar rounded="lg">
               <AppGravatar :email="org.profile.email" />
@@ -40,6 +44,11 @@
           <VListItemTitle>{{ org.profile.name }}</VListItemTitle>
         </VListItem>
       </VList>
+      <VCardText v-else>
+        <VAlert type="info">
+          {{ t('msg.no-joined-organization') }}
+        </VAlert>
+      </VCardText>
     </VCard>
   </VMenu>
 </template>
@@ -51,38 +60,9 @@ import AppGravatar from '../app/AppGravatar.vue'
 import { useAppState } from '@/stores/app'
 import { useI18n } from 'vue-i18n'
 import { watch } from 'vue'
-import { useRouter } from 'vue-router'
 
 const appState = useAppState()
 const { t } = useI18n()
-const router = useRouter()
-
-const joinedOrgs = useAsyncState(async () => {
-  const orgs = await http.get('org')
-  const orgArr = await orgs.json<
-    Array<{
-      _id: string
-      profile: {
-        name: string
-        email: string
-      }
-    }>
-  >()
-  // TODO: optimize UX here
-  const jmp = async () => {
-    await router.isReady() // wait for router to be ready, FINE
-    if (orgArr.length > 0 && router.currentRoute.value.path === '/') {
-      router.replace(`/org/${orgArr[0]._id}`)
-    }
-  }
-  jmp()
-  return orgArr
-}, [])
-
-watch(
-  () => appState.userId,
-  () => joinedOrgs.execute()
-)
 </script>
 
 <i18n global>

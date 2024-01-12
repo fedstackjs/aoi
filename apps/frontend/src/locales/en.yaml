@@ -1,5 +1,6 @@
 pages:
   home: Home
+  org-home: Organization Home
   about: About
   problems: Problems
   contests: Contests
@@ -135,6 +136,7 @@ msg:
   no-contest: No Contest
   operation-success: Operation Success
   session-expired: Session Expired, Please Sign in Again.
+  no-joined-organization: You have not joined any organization yet.
 
 tabs:
   description: Description

@@ -1,11 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import {
-  defineRoutes,
-  loadCapability,
-  loadMembership,
-  loadUUID,
-  paramSchemaMerger
-} from '../common/index.js'
+import { defineRoutes, loadCapability, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
 import { SContestStage } from '../../schemas/contest.js'
 import {
@@ -39,7 +33,7 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
     const contestId = loadUUID(req.params, 'contestId', s.httpErrors.badRequest())
     const contest = await contests.findOne({ _id: contestId })
     if (!contest) return rep.notFound()
-    const membership = await loadMembership(req.user.userId, contest.orgId)
+    const membership = await req.loadMembership(contest.orgId)
     const capability = loadCapability(
       contest,
       membership,

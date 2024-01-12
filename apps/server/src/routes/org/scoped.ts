@@ -31,10 +31,7 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
     const orgId = loadUUID(req.params, 'orgId', s.httpErrors.notFound())
     req.provide(kOrgContext, {
       _orgId: orgId,
-      _orgMembership: await orgMemberships.findOne({
-        userId: req.user.userId,
-        orgId: orgId
-      })
+      _orgMembership: await req.loadMembership(orgId)
     })
   })
 
@@ -44,6 +41,7 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
     '/',
     {
       schema: {
+        description: 'Get organization details',
         response: {
           200: Type.Object({
             profile: SOrgProfile,
@@ -59,6 +57,7 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
       const org = await orgs.findOne({ _id: ctx._orgId })
       if (!org) throw s.httpErrors.badRequest()
       if (
+        req.user &&
         org.ownerId.equals(req.user.userId) &&
         !hasCapability(ctx._orgMembership?.capability ?? CAP_NONE, OrgCapability.CAP_ADMIN)
       ) {

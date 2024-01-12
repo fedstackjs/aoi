@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadMembership, loadUUID, swaggerTagMerger } from '../common/index.js'
+import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { CAP_NONE, ensureCapability } from '../../utils/index.js'
 import { OrgCapability, pubrk } from '../../db/index.js'
 import { pubrkScopedRoutes } from './scoped.js'
@@ -29,7 +29,7 @@ export const pubrkRoutes = defineRoutes(async (s) => {
     async (req) => {
       const orgId = loadUUID(req.body, 'orgId', s.httpErrors.badRequest())
       const contestId = loadUUID(req.body, 'contestId', s.httpErrors.badRequest())
-      const membership = await loadMembership(req.user.userId, orgId)
+      const membership = await req.loadMembership(orgId)
       ensureCapability(
         membership?.capability ?? CAP_NONE,
         OrgCapability.CAP_ADMIN,

@@ -9,13 +9,7 @@ import {
   solutions,
   problemStatuses
 } from '../../db/index.js'
-import {
-  defineRoutes,
-  loadCapability,
-  loadMembership,
-  loadUUID,
-  paramSchemaMerger
-} from '../common/index.js'
+import { defineRoutes, loadCapability, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/capability.js'
 import { getUploadUrl } from '../../oss/index.js'
 import { loadOrgOssSettings } from '../common/files.js'
@@ -39,7 +33,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
     // TODO: optimize using projection
     const problem = await problems.findOne({ _id: problemId })
     if (!problem) throw s.httpErrors.notFound()
-    const membership = await loadMembership(req.user.userId, problem.orgId)
+    const membership = await req.loadMembership(problem.orgId)
     const capability = loadCapability(
       problem,
       membership,

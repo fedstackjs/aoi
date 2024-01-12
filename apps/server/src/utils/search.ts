@@ -15,13 +15,5 @@ export function searchToFilter(query: { search?: string; tag?: string }): Docume
 }
 
 export function filterMerge(base: Document, extra: Document): Document {
-  const result: Document = {}
-  if (base.orgId) result.orgId = base.orgId
-  if (extra.tags) result.tags = extra.tags
-  if (extra.$or) {
-    result.$and = [{ $or: extra.$or }, { $or: base.$or }]
-  } else {
-    result.$or = base.$or
-  }
-  return result
+  return { $and: [base, extra] }
 }

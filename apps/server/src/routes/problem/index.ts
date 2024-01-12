@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadMembership, loadUUID, swaggerTagMerger } from '../common/index.js'
+import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { problemScopedRoutes } from './scoped.js'
 import { CAP_NONE, ensureCapability, hasCapability } from '../../utils/capability.js'
 import { BSON } from 'mongodb'
@@ -33,7 +33,7 @@ export const problemRoutes = defineRoutes(async (s) => {
     },
     async (req) => {
       const orgId = loadUUID(req.body, 'orgId', s.httpErrors.badRequest())
-      const membership = await loadMembership(req.user.userId, orgId)
+      const membership = await req.loadMembership(orgId)
       ensureCapability(
         membership?.capability ?? CAP_NONE,
         OrgCapability.CAP_PROBLEM,
@@ -102,7 +102,7 @@ export const problemRoutes = defineRoutes(async (s) => {
       const searchFilter = searchToFilter(rest)
       if (!searchFilter) return rep.badRequest('Bad search parameters')
 
-      const membership = await loadMembership(req.user.userId, orgId)
+      const membership = await req.loadMembership(orgId)
       const basicAccessLevel = membership
         ? hasCapability(membership.capability, OrgCapability.CAP_PROBLEM)
           ? AccessLevel.PRIVATE

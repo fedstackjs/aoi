@@ -1,5 +1,5 @@
 import { BSON } from 'mongodb'
-import { defineRoutes, loadMembership, loadUUID, paramSchemaMerger } from '../common/index.js'
+import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
 import {
   OrgCapability,
@@ -85,7 +85,7 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kGroupContext)
       const group = await groups.findOne({ _id: ctx.groupId }, { projection: { orgId: 1 } })
       if (!group) return rep.notFound()
-      const membership = await loadMembership(req.user.userId, group.orgId)
+      const membership = await req.loadMembership(group.orgId)
       if (!membership) return rep.forbidden()
       ensureCapability(membership.capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
       await groups.updateOne({ _id: ctx.groupId }, { $set: { profile: req.body } })
@@ -104,7 +104,7 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kGroupContext)
       const group = await groups.findOne({ _id: ctx.groupId }, { projection: { orgId: 1 } })
       if (!group) return rep.notFound()
-      const membership = await loadMembership(req.user.userId, group.orgId)
+      const membership = await req.loadMembership(group.orgId)
       if (!membership) return rep.forbidden()
       ensureCapability(membership.capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
       // Remove Dependencies
@@ -197,7 +197,7 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kGroupContext)
       const group = await groups.findOne({ _id: ctx.groupId }, { projection: { orgId: 1 } })
       if (!group) return rep.notFound()
-      const membership = await loadMembership(req.user.userId, group.orgId)
+      const membership = await req.loadMembership(group.orgId)
       if (!membership) return rep.forbidden()
       ensureCapability(membership.capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
       const userId = loadUUID(req.body, 'userId', s.httpErrors.badRequest())
@@ -224,7 +224,7 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kGroupContext)
       const group = await groups.findOne({ _id: ctx.groupId }, { projection: { orgId: 1 } })
       if (!group) return rep.notFound()
-      const membership = await loadMembership(req.user.userId, group.orgId)
+      const membership = await req.loadMembership(group.orgId)
       if (!membership) return rep.forbidden()
       ensureCapability(membership.capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
       const userId = loadUUID(req.params, 'userId', s.httpErrors.badRequest())
