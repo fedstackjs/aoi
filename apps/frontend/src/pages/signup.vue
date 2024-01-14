@@ -62,7 +62,7 @@
           variant="text"
           prepend-icon="mdi-chevron-left"
           :text="t('pages.signin')"
-          to="/signin"
+          to="/login"
         />
       </VCardText>
     </VForm>
@@ -180,7 +180,7 @@ async function signup() {
     const { token } = await resp.json<{ token: string }>()
     login(token)
     toast.success(t('hint.signup-success'))
-    router.push('/signin')
+    router.push('/login')
   } catch (error) {
     toast.error(t('hint.signup-username-exists'))
     return

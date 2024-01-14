@@ -5,13 +5,33 @@ import { BSON } from 'mongodb'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { SUserProfile } from '../../schemas/index.js'
 import { infos, orgMemberships, OrgCapability } from '../../db/index.js'
-import { authProviders } from '../../auth/index.js'
+import { authProviderList, authProviders } from '../../auth/index.js'
+import { loadEnv } from '../../index.js'
+
+const signupEnabled = loadEnv('SIGNUP_ENABLED', (x) => !!JSON.parse(x), true)
 
 export const authRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', (route) => {
     ;(route.schema ??= {}).security = []
   })
   s.addHook('onRoute', swaggerTagMerger('auth'))
+
+  s.get(
+    '/login',
+    {
+      schema: {
+        response: {
+          200: Type.Object({
+            providers: Type.Array(Type.String()),
+            signup: Type.Boolean()
+          })
+        }
+      }
+    },
+    async () => {
+      return { providers: authProviderList.map((p) => p.name), signup: signupEnabled }
+    }
+  )
 
   s.post(
     '/preLogin',
@@ -71,6 +91,8 @@ export const authRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
+      if (!signupEnabled) return rep.notFound()
+
       const { profile, password: rawPassword } = req.body
       if (!profile.telephone) return rep.badRequest('Telephone is required')
       if (!profile.school) return rep.badRequest('School is required')

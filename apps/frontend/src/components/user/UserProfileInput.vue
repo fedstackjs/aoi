@@ -1,28 +1,56 @@
 <template>
-  <VTextField v-model="model.name" :label="t('term.name')" type="string" :rules="usernameRules" />
-  <VTextField v-model="model.email" :label="t('term.email')" type="string" :rules="emailRules" />
+  <VTextField
+    v-model="model.name"
+    :label="t('term.name')"
+    type="string"
+    :rules="usernameRules"
+    :append-inner-icon="verified['name']"
+    :readonly="!!verified['name']"
+  />
+  <VTextField
+    v-model="model.email"
+    :label="t('term.email')"
+    type="string"
+    :rules="emailRules"
+    :append-inner-icon="verified['email']"
+    :readonly="!!verified['email']"
+  />
   <VTextField
     v-model="model.realname"
     :label="t('term.realname')"
     type="string"
     :rules="realnameRules"
+    :append-inner-icon="verified['realname']"
+    :readonly="!!verified['realname']"
   />
   <VTextField
     v-model="model.telephone"
     :label="t('term.telephone')"
     type="string"
     :rules="telephoneRules"
+    :append-inner-icon="verified['telephone']"
+    :readonly="!!verified['telephone']"
   />
-  <VTextField v-model="model.school" :label="t('term.school')" type="string" :rules="schoolRules" />
+  <VTextField
+    v-model="model.school"
+    :label="t('term.school')"
+    type="string"
+    :rules="schoolRules"
+    :append-inner-icon="verified['school']"
+    :readonly="!!verified['school']"
+  />
   <VTextField
     v-model="model.studentGrade"
     :label="t('term.student-grade')"
     type="string"
     :rules="studentGradeRules"
+    :append-inner-icon="verified['studentGrade']"
+    :readonly="!!verified['studentGrade']"
   />
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -34,7 +62,14 @@ const model = defineModel<{
   telephone: string
   school: string
   studentGrade: string
+  verified: string[]
 }>({ required: true })
+
+const verified = computed(() =>
+  Object.fromEntries(
+    (model.value.verified ?? []).map((field) => [field, 'mdi-check-decagram-outline'])
+  )
+)
 
 const usernameRules = [
   (value: string) => {
@@ -53,14 +88,14 @@ const emailRules = [
 ]
 
 const realnameRules = [
-  (value: string) => {
+  (value = '') => {
     if (value.length > 0) return true
     return t('hint.violate-realname-rule')
   }
 ]
 
 const telephoneRules = [
-  (value: string) => {
+  (value = '') => {
     const telRegex = /^1[3456789]\d{9}$/
     if (value.length > 0 && telRegex.test(value)) return true
     return t('hint.violate-telephone-rule')
@@ -68,14 +103,14 @@ const telephoneRules = [
 ]
 
 const schoolRules = [
-  (value: string) => {
+  (value = '') => {
     if (value.length > 0) return true
     return t('hint.violate-school-rule')
   }
 ]
 
 const studentGradeRules = [
-  (value: string) => {
+  (value = '') => {
     if (value.length > 0) return true
     return t('hint.violate-stugrade-rule')
   }

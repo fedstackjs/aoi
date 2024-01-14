@@ -1,7 +1,6 @@
 <template>
-  <VCard class="mt-6 mx-auto pa-4" max-width="450" :title="t('pages.signin')">
-    <VCardTitle class=""></VCardTitle>
-    <VForm fast-fail @submit.prevent>
+  <VForm fast-fail validate-on="submit lazy" @submit.prevent="signin">
+    <VCardText>
       <VTextField
         v-model="username"
         prepend-inner-icon="mdi-account-outline"
@@ -20,34 +19,27 @@
         :rules="passwordRules"
       >
       </VTextField>
+    </VCardText>
 
-      <VBtn type="submit" @click="signin()" color="primary" block size="large" class="mt-4">
+    <VCardActions>
+      <VBtn :loading="isLoading" type="submit" color="primary" block size="large" variant="flat">
         {{ t('pages.signin') }}
       </VBtn>
-
-      <VCardText class="d-flex justify-center">
-        <VBtn variant="text" to="/forgot"> {{ t('pages.forgot-passwd') }} </VBtn>
-        <VBtn variant="text" to="/signup"> {{ t('pages.signup') }} </VBtn>
-      </VCardText>
-    </VForm>
-  </VCard>
+    </VCardActions>
+  </VForm>
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
 import { http, login } from '@/utils/http'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAppState } from '@/stores/app'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
+import type { SubmitEventPromise } from 'vuetify'
 
 const { t } = useI18n()
 const router = useRouter()
-const appState = useAppState()
 const toast = useToast()
-
-if (appState.loggedIn) router.replace('/')
 
 const username = ref('')
 const password = ref('')
@@ -66,13 +58,14 @@ const passwordRules = [
   }
 ]
 
-const showPassword = ref<boolean>(false)
+const showPassword = ref(false)
+const isLoading = ref(false)
 
-withTitle(computed(() => t('pages.signin')))
+async function signin(ev: SubmitEventPromise) {
+  isLoading.value = true
+  const result = await ev
+  if (!result.valid) return
 
-async function signin() {
-  if (!usernameRules.every((rule) => rule(username.value) === true)) return
-  if (!passwordRules.every((rule) => rule(password.value) === true)) return
   try {
     const resp = await http.post('auth/login', {
       json: {
@@ -93,10 +86,11 @@ async function signin() {
     }
   } catch (err) {
     toast.error(t('hint.signin-wrong-credentials'))
-    return
   }
+  isLoading.value = false
 }
 </script>
+
 <i18n>
 en:
   hint:
