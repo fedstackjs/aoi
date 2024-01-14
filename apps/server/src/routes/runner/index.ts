@@ -48,7 +48,7 @@ export const runnerRoutes = defineRoutes(async (s) => {
 
   s.addHook('onRequest', async (req, rep) => {
     // Skip register route
-    if (!req.routeSchema.security?.length) return
+    if (!req.routeOptions.schema.security?.length) return
     const runnerId = loadUUID(req.headers, 'x-aoi-runner-id', s.httpErrors.unauthorized())
     const runner = await runners.findOne({ _id: runnerId })
     if (!runner) throw s.httpErrors.unauthorized()

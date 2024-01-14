@@ -75,7 +75,13 @@ async function signin() {
   if (!passwordRules.every((rule) => rule(password.value) === true)) return
   try {
     const resp = await http.post('auth/login', {
-      json: { username: username.value, password: password.value }
+      json: {
+        provider: 'password',
+        payload: {
+          username: username.value,
+          password: password.value
+        }
+      }
     })
     const { token, userId } = await resp.json<{ token?: string; userId?: string }>()
     toast.success(t('hint.signin-success'))

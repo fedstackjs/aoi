@@ -7,10 +7,13 @@ export function useChangePassword(userId: MaybeRef<string>) {
   const newPassword = ref('')
   const userIdRef = toRef(userId)
   const updateTask = useAsyncTask(async () => {
-    await http.patch(`user/${userIdRef.value}/password`, {
+    await http.post(`user/${userIdRef.value}/bind`, {
       json: {
-        oldPassword: oldPassword.value,
-        newPassword: newPassword.value
+        provider: 'password',
+        payload: {
+          oldPassword: oldPassword.value,
+          password: newPassword.value
+        }
       }
     })
   })
