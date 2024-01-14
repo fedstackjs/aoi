@@ -30,7 +30,10 @@ import { IOrgMembership, orgMemberships } from '../db/index.js'
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
-    user: { userId: BSON.UUID }
+    user: {
+      userId: BSON.UUID
+      tags?: string[]
+    }
   }
 }
 
@@ -88,10 +91,16 @@ export const apiRoutes = defineRoutes(async (s) => {
 
     if (req.headers.authorization) {
       await req.jwtVerify()
+
+      // Only allow tagged routes
+      if (req.user.tags) {
+        const tags = new Set(req.user.tags)
+        if (!req.routeOptions.schema.tags?.some((tag) => tags.has(tag))) return rep.forbidden()
+      }
     }
 
     // JWT is the default security scheme
-    if ('security' in req.routeSchema) return
+    if ('security' in req.routeOptions.schema) return
     if (!req.user) return rep.forbidden()
   })
 

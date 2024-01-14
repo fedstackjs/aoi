@@ -11,6 +11,7 @@ export const UserCapability = {
 export interface IUserAuthSources {
   password?: string
   passwordResetDue?: boolean
+  mail?: string
 }
 
 export interface IUser {

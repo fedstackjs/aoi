@@ -9,7 +9,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const appState = useAppState()
-  if (to.path.startsWith('/org') && !appState.loggedIn) return next('/signin')
+  if (to.path.startsWith('/org') && !appState.loggedIn) return next('/login')
   return next()
 })
 
