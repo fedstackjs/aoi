@@ -17,6 +17,7 @@
     "prettier": "^3.1.1",
     "rimraf": "^5.0.5",
     "typescript": "^5.3.3",
+    "vitepress": "^1.0.0-rc.36",
     "zx": "^7.2.3"
   },
   "scripts": {
@@ -26,7 +27,10 @@
     "all:check-format": "yarn workspaces foreach run format",
     "all:check-type": "yarn workspaces foreach run type-check",
     "all:check": "concurrently \"yarn:all:check-*\"",
-    "git:precommit": "run all:check"
+    "git:precommit": "run all:check",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "xlsx": "^0.18.5"

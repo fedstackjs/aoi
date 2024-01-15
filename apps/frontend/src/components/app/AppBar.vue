@@ -12,7 +12,7 @@
       </VBtn>
     </VToolbarItems>
     <VAppBarTitle>{{ appState.title }}</VAppBarTitle>
-    <TimeLabel />
+    <TimeLabel v-if="showCountdown" />
 
     <VSpacer></VSpacer>
 
@@ -42,4 +42,5 @@ const { t } = useI18n()
 const appState = useAppState()
 
 const appName = import.meta.env.VITE_APP_NAME ?? 'AOI'
+const showCountdown = !!import.meta.env.VITE_APPBAR_SHOW_COUNTDOWN
 </script>

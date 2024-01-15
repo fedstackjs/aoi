@@ -16,3 +16,6 @@ package.tgz
 
 /scripts/local/*
 !/scripts/local/.gitkeep
+
+docs/.vitepress/dist
+docs/.vitepress/cache
