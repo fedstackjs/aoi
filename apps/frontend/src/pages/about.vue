@@ -4,11 +4,10 @@
       <VCol>
         <VCard :title="t('about-us')">
           <VCardText>
-            <div align="center">
+            <a class="u-flex u-flex-col u-items-center" href="https://aoi.fedstack.org">
               <AppLogo width="128" />
               <q class="u-text-lg u-font-italic">The <b>AOI</b> Project</q>
-            </div>
-            <MarkdownRenderer :md="t('about-us-content')" />
+            </a>
           </VCardText>
         </VCard>
       </VCol>
@@ -31,18 +30,6 @@ withTitle(computed(() => t('pages.about')))
 <i18n>
 en:
   about-us: About This Project
-  about-us-content: |
-    The AOI Project. \
-    [GitHub Repository](https://github.com/zhzxdev/aoi) \
-    [Issues & Bug Report](https://github.com/zhzxdev/aoi/issues/new) \
-    [Wiki](https://github.com/zhzxdev/aoi/wiki) \
-    [Discussions](https://github.com/zhzxdev/aoi/discussions)
 zh-Hans:
   about-us: 关于本项目
-  about-us-content: |
-    欢迎使用AOI项目. \
-    [GitHub仓库](https://github.com/zhzxdev/aoi) \
-    [问题反馈](https://github.com/zhzxdev/aoi/issues/new) \
-    [文档](https://github.com/zhzxdev/aoi/wiki) \
-    [讨论](https://github.com/zhzxdev/aoi/discussions)
 </i18n>
