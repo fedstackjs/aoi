@@ -17,7 +17,6 @@
 
 <script setup lang="ts">
 import AppLogo from '@/components/app/AppLogo.vue'
-import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
 import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
