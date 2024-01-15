@@ -10,6 +10,7 @@
         </RouterLink>
         <span v-else>{{ value.name }}</span>
       </code>
+      <VIcon icon="mdi-account-multiple" v-if="value.principalType === 'group'" />
     </template>
   </AsyncState>
 </template>

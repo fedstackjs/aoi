@@ -69,7 +69,7 @@ term:
   capabilities: Capabilities
   labels: Labels
   danger-zone: Danger Zone
-  principle-id: Principle ID
+  principal-id: Principal ID
   association: Association
   start-time: Start Time
   end-time: End Time
@@ -102,6 +102,7 @@ term:
   student-grade: Student Grade
   is-public: Is Public
   is-visible: Is Visible
+  otp-code: OTP Code
 
 common:
   created-at: Created at

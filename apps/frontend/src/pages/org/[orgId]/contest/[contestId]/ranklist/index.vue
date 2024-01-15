@@ -3,6 +3,9 @@
     <VCardText v-if="!ranklists.length">
       <VAlert type="info">{{ t('msg.no-ranklist') }}</VAlert>
     </VCardText>
+    <VCardText v-else>
+      {{ t('ranklist-msg', { count: ranklists.length }) }}
+    </VCardText>
   </VCard>
 </template>
 
@@ -19,3 +22,12 @@ defineProps<{
 
 const { t } = useI18n()
 </script>
+
+<i18n>
+en:
+  ranklist-msg: |
+    There are {count} ranklists in this contest. Select one from left to start.
+zh-Hans:
+  ranklist-msg: |
+    这场比赛有 {count} 个排行榜。从左侧选择一个开始。
+</i18n>

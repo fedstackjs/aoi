@@ -38,6 +38,7 @@
 
 <script setup lang="ts">
 import { http, login } from '@/utils/http'
+import { HTTPError } from 'ky'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -87,7 +88,14 @@ async function preLogin() {
     toast.success(t('hint.email-sent'))
     emailIcon.value = 'mdi-send-check'
   } catch (err) {
-    toast.error(t('hint.email-send-failed'))
+    let msg = `${err}`
+    if (err instanceof HTTPError) {
+      msg = await err.response
+        .json()
+        .then(({ message }) => message)
+        .catch((err) => `${err}`)
+    }
+    toast.error(t('hint.email-send-failed', { msg }))
     emailSent.value = false
     emailIcon.value = 'mdi-send'
   }
@@ -129,7 +137,7 @@ en:
     violate-email-rule: Invalid email address
     violate-code-rule: Invalid code
     email-sent: Email sent
-    email-send-failed: Failed to send email
+    email-send-failed: 'Failed to send email: {msg}'
     signin-wrong-credentials: Wrong email or code
     signin-success: Sign in successfully
 zh-Hans:
@@ -137,7 +145,7 @@ zh-Hans:
     violate-email-rule: 邮箱地址无效
     violate-code-rule: 验证码无效
     email-sent: 邮件已发送
-    email-send-failed: 邮件发送失败
+    email-send-failed: '邮件发送失败: {msg}'
     signin-wrong-credentials: 邮箱或验证码错误
     signin-success: 登录成功
 </i18n>

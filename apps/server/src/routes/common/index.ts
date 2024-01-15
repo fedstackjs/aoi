@@ -1,6 +1,7 @@
 import { FastifyPluginAsyncTypebox, TSchema, Type } from '@fastify/type-provider-typebox'
 import { RouteOptions } from 'fastify'
 import { BSON } from 'mongodb'
+import { createHash } from 'node:crypto'
 import { IOrgMembership, IPrincipalControlable, IWithAccessLevel } from '../../db/index.js'
 import { CAP_NONE, computeCapability } from '../../utils/capability.js'
 import { AccessLevel } from '../../schemas/index.js'
@@ -70,4 +71,8 @@ export function loadCapability(
     membership,
     defaultCapability(target, membership, adminMask, capAccess, capAdmin)
   )
+}
+
+export function md5(email: string) {
+  return createHash('md5').update(email).digest('hex')
 }

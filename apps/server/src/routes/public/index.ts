@@ -1,7 +1,6 @@
 import { Type } from '@sinclair/typebox'
-import { defineRoutes, swaggerTagMerger } from '../common/index.js'
+import { defineRoutes, md5, swaggerTagMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
-import { createHash } from 'node:crypto'
 import { groups, users } from '../../db/index.js'
 
 export const publicRoutes = defineRoutes(async (s) => {
@@ -22,6 +21,7 @@ export const publicRoutes = defineRoutes(async (s) => {
           200: Type.Array(
             Type.Object({
               principalId: Type.UUID(),
+              principalType: Type.StringEnum(['user', 'group']),
               name: Type.String(),
               emailHash: Type.String()
             }),
@@ -48,19 +48,26 @@ export const publicRoutes = defineRoutes(async (s) => {
           { _id: { $in: principalIds } },
           {
             projection: {
-              name: 1,
-              email: 1
+              'profile.name': 1,
+              'profile.email': 1
             }
           }
         )
         .toArray()
-      const result = [...matchedUsers, ...matchedGroups].map(
-        ({ _id, profile: { name, email } }) => ({
+      const result = [
+        ...matchedUsers.map(({ _id, profile: { name, email } }) => ({
           principalId: _id,
+          principalType: 'user' as const,
           name,
-          emailHash: createHash('md5').update(email).digest('hex')
-        })
-      )
+          emailHash: md5(email)
+        })),
+        ...matchedGroups.map(({ _id, profile: { name, email } }) => ({
+          principalId: _id,
+          principalType: 'group' as const,
+          name,
+          emailHash: md5(email)
+        }))
+      ]
       return result
     }
   )
