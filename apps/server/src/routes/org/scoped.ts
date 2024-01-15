@@ -1,4 +1,3 @@
-import { createHash } from 'node:crypto'
 import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
 import {
@@ -11,7 +10,7 @@ import {
   orgs,
   users
 } from '../../db/index.js'
-import { defineRoutes, paramSchemaMerger, loadUUID } from '../common/index.js'
+import { defineRoutes, paramSchemaMerger, loadUUID, md5 } from '../common/index.js'
 import { orgAdminRoutes } from './admin/index.js'
 import { SOrgProfile } from '../../schemas/index.js'
 import { CAP_NONE, hasCapability } from '../../index.js'
@@ -97,9 +96,9 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
           200: Type.Array(
             Type.Object({
               principalId: Type.UUID(),
+              principalType: Type.StringEnum(['guest', 'member', 'group']),
               name: Type.String(),
-              emailHash: Type.String(),
-              type: Type.StringEnum(['guest', 'member', 'group'])
+              emailHash: Type.String()
             }),
             { maxItems: 50 }
           )
@@ -118,7 +117,10 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
 
       const matchedUsers = await users
         .aggregate<
-          Pick<IUser, '_id' | 'profile'> & { membership?: IOrgMembership; type: 'member' | 'group' }
+          Pick<IUser, '_id' | 'profile'> & {
+            membership?: IOrgMembership
+            principalType: 'member' | 'group'
+          }
         >([
           { $match: { ...matchExpr } },
           {
@@ -146,7 +148,7 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
           { $unwind: { path: '$membership', preserveNullAndEmptyArrays: true } },
           {
             $addFields: {
-              type: {
+              principalType: {
                 $cond: {
                   if: { $eq: ['$membership', null] },
                   then: 'guest',
@@ -159,7 +161,7 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
         .toArray()
 
       const matchedGroups = await groups
-        .aggregate<Pick<IGroup, '_id' | 'profile'> & { type: 'group' }>([
+        .aggregate<Pick<IGroup, '_id' | 'profile'> & { principalType: 'group' }>([
           { $match: { orgId, ...matchExpr } },
           {
             $project: {
@@ -167,16 +169,16 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
               'profile.email': 1
             }
           },
-          { $addFields: { type: 'group' } }
+          { $addFields: { principalType: 'group' } }
         ])
         .toArray()
 
       const result = [...matchedUsers, ...matchedGroups].map(
-        ({ _id, profile: { name, email }, type }) => ({
+        ({ _id, profile: { name, email }, principalType }) => ({
           principalId: _id,
+          principalType,
           name,
-          emailHash: createHash('md5').update(email).digest('hex'),
-          type
+          emailHash: md5(email)
         })
       )
       return result

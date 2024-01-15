@@ -16,6 +16,7 @@
         v-bind="props"
         :prepend-avatar="item?.raw?.avatar"
         :title="item?.raw?.title"
+        :append-icon="appendIcons[item?.raw?.type]"
       ></VListItem>
     </template>
   </VAutocomplete>
@@ -32,15 +33,16 @@ import { useToast } from 'vue-toastification'
 
 interface ISearchResultItem {
   principalId: string
+  principalType: 'guest' | 'member' | 'group'
   name: string
   emailHash: string
-  type: 'guest' | 'member' | 'group'
 }
 
 interface IPrincipalItem {
   title: string
   value: string
   avatar: string
+  type: 'guest' | 'member' | 'group'
 }
 
 const { t } = useI18n()
@@ -52,6 +54,12 @@ const props = defineProps<{
 const emits = defineEmits<{
   add: [principalId: string]
 }>()
+
+const appendIcons: Record<string, string> = {
+  guest: 'mdi-incognito',
+  member: 'mdi-account',
+  group: 'mdi-account-multiple'
+}
 
 const search = ref('')
 const model = ref<IPrincipalItem>()
@@ -75,7 +83,8 @@ const {
         ({
           title: item.name,
           value: item.principalId,
-          avatar: getAvatarUrl(item.emailHash)
+          avatar: getAvatarUrl(item.emailHash),
+          type: item.principalType
         }) satisfies IPrincipalItem
     )
   },

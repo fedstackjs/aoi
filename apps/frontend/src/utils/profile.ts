@@ -7,6 +7,7 @@ const log = debug('util:profile')
 
 export interface IPublicProfile {
   principalId: string
+  principalType: string
   name: string
   emailHash: string
 }
