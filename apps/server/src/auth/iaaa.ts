@@ -1,8 +1,8 @@
 import { Type } from '@sinclair/typebox'
-import { loadEnv, users } from '../index.js'
+import { IUser, loadEnv, users } from '../index.js'
 import { BaseAuthProvider } from './base.js'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
-import { UUID } from 'mongodb'
+import { Filter, UUID } from 'mongodb'
 import { httpErrors } from '@fastify/sensible'
 import { validate } from '@lcpu/iaaa'
 import { FastifyRequest } from 'fastify'
@@ -17,6 +17,7 @@ export class IaaaAuthProvider extends BaseAuthProvider {
   private iaaaId = ''
   private iaaaKey = ''
   private allowSignupFromLogin = false
+  private allowRebind = false
 
   constructor() {
     super()
@@ -32,6 +33,7 @@ export class IaaaAuthProvider extends BaseAuthProvider {
       (x) => !!JSON.parse(x),
       false
     )
+    this.allowRebind = loadEnv('IAAA_ALLOW_REBIND', (x) => !!JSON.parse(x), false)
 
     await users.createIndex(
       { 'authSources.iaaaId': 1 },
@@ -43,18 +45,20 @@ export class IaaaAuthProvider extends BaseAuthProvider {
     if (!TokenPayload.Check(payload)) throw httpErrors.badRequest()
     const resp = await validate(req.ip, this.iaaaId, this.iaaaKey, payload.token)
     if (!resp.success) throw httpErrors.forbidden(resp.errMsg)
-    await users.updateOne(
-      { _id: userId },
-      {
-        $set: {
-          'profile.realname': resp.userInfo.name,
-          'profile.school': '北京大学',
-          'profile.studentGrade': `${resp.userInfo.dept}${resp.userInfo.detailType}(${resp.userInfo.campus})`,
-          'authSources.iaaaId': resp.userInfo.identityId
-        },
-        $addToSet: { 'profile.verified': { $each: ['realname', 'school', 'studentGrade'] } }
-      }
-    )
+    const filter: Filter<IUser> = { _id: userId }
+    if (!this.allowRebind) {
+      filter['authSources.iaaaId'] = { $exists: false }
+    }
+    const { matchedCount } = await users.updateOne(filter, {
+      $set: {
+        'profile.realname': resp.userInfo.name,
+        'profile.school': '北京大学',
+        'profile.studentGrade': `${resp.userInfo.dept}${resp.userInfo.detailType}(${resp.userInfo.campus})`,
+        'authSources.iaaaId': resp.userInfo.identityId
+      },
+      $addToSet: { 'profile.verified': { $each: ['realname', 'school', 'studentGrade'] } }
+    })
+    if (!matchedCount) return httpErrors.badRequest('User already bound')
     return {}
   }
 
