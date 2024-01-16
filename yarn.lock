@@ -289,6 +289,7 @@ __metadata:
     "@fastify/swagger": ^8.12.1
     "@fastify/swagger-ui": ^2.0.1
     "@fastify/type-provider-typebox": ^3.3.0
+    "@lcpu/iaaa": ^1.0.0
     "@sinclair/typebox": ^0.29.4
     "@types/bcrypt": ^5.0.0
     "@types/nodemailer": ^6.4.14
@@ -2002,6 +2003,15 @@ __metadata:
     "@jridgewell/resolve-uri": ^3.1.0
     "@jridgewell/sourcemap-codec": ^1.4.14
   checksum: cd1a7353135f385909468ff0cf20bdd37e59f2ee49a13a966dedf921943e222082c583ade2b579ff6cd0d8faafcb5461f253e1bf2a9f48fec439211fdbe788f5
+  languageName: node
+  linkType: hard
+
+"@lcpu/iaaa@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@lcpu/iaaa@npm:1.0.0"
+  dependencies:
+    node-fetch: ^3.3.0
+  checksum: ffc6e58920ea0cc3ef35d1b106380644b26dc792f760c44b119166f59f8eaa4b73b33d131b61c7b4e48b745954db8c9570a4329e70e7cbed4f55bb8c83983856
   languageName: node
   linkType: hard
 
@@ -7487,6 +7497,17 @@ __metadata:
     encoding:
       optional: true
   checksum: d76d2f5edb451a3f05b15115ec89fc6be39de37c6089f1b6368df03b91e1633fd379a7e01b7ab05089a25034b2023d959b47e59759cb38d88341b2459e89d6e5
+  languageName: node
+  linkType: hard
+
+"node-fetch@npm:^3.3.0":
+  version: 3.3.2
+  resolution: "node-fetch@npm:3.3.2"
+  dependencies:
+    data-uri-to-buffer: ^4.0.0
+    fetch-blob: ^3.1.4
+    formdata-polyfill: ^4.0.10
+  checksum: 06a04095a2ddf05b0830a0d5302699704d59bda3102894ea64c7b9d4c865ecdff2d90fd042df7f5bc40337266961cb6183dcc808ea4f3000d024f422b462da92
   languageName: node
   linkType: hard
 

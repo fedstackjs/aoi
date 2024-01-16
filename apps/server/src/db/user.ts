@@ -12,6 +12,7 @@ export interface IUserAuthSources {
   password?: string
   passwordResetDue?: boolean
   mail?: string
+  iaaaId?: string
 }
 
 export interface IUser {

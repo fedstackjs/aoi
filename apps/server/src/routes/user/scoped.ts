@@ -140,7 +140,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       const { provider, payload } = req.body
       const providerInstance = authProviders[provider]
       if (!providerInstance || !providerInstance.preBind) return rep.badRequest()
-      return providerInstance.preBind(ctx._userId, payload)
+      return providerInstance.preBind(ctx._userId, payload, req, rep)
     }
   )
 
@@ -171,7 +171,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       const { provider, payload } = req.body
       const providerInstance = authProviders[provider]
       if (!providerInstance) return rep.badRequest()
-      return providerInstance.bind(ctx._userId, payload)
+      return providerInstance.bind(ctx._userId, payload, req, rep)
     }
   )
 })

@@ -1,3 +1,4 @@
+import { FastifyReply, FastifyRequest } from 'fastify'
 import { BSON } from 'mongodb'
 
 export abstract class BaseAuthProvider {
@@ -7,12 +8,36 @@ export abstract class BaseAuthProvider {
 
   init?(): Promise<void>
 
-  preBind?(userId: BSON.UUID, payload: unknown): Promise<unknown>
-  abstract bind(userId: BSON.UUID, payload: unknown): Promise<unknown>
+  preBind?(
+    userId: BSON.UUID,
+    payload: unknown,
+    req: FastifyRequest,
+    rep: FastifyReply
+  ): Promise<unknown>
+  abstract bind(
+    userId: BSON.UUID,
+    payload: unknown,
+    req: FastifyRequest,
+    rep: FastifyReply
+  ): Promise<unknown>
 
-  preVerify?(userId: BSON.UUID, payload: unknown): Promise<unknown>
-  abstract verify(userId: BSON.UUID, payload: unknown): Promise<boolean>
+  preVerify?(
+    userId: BSON.UUID,
+    payload: unknown,
+    req: FastifyRequest,
+    rep: FastifyReply
+  ): Promise<unknown>
+  abstract verify(
+    userId: BSON.UUID,
+    payload: unknown,
+    req: FastifyRequest,
+    rep: FastifyReply
+  ): Promise<boolean>
 
-  preLogin?(payload: unknown): Promise<unknown>
-  abstract login(payload: unknown): Promise<[userId: BSON.UUID, tags?: string[]]>
+  preLogin?(payload: unknown, req: FastifyRequest, rep: FastifyReply): Promise<unknown>
+  abstract login(
+    payload: unknown,
+    req: FastifyRequest,
+    rep: FastifyReply
+  ): Promise<[userId: BSON.UUID, tags?: string[]]>
 }
