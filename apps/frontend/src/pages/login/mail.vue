@@ -37,8 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { http, login } from '@/utils/http'
-import { HTTPError } from 'ky'
+import { http, login, prettyHTTPError } from '@/utils/http'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -88,14 +87,7 @@ async function preLogin() {
     toast.success(t('hint.email-sent'))
     emailIcon.value = 'mdi-send-check'
   } catch (err) {
-    let msg = `${err}`
-    if (err instanceof HTTPError) {
-      msg = await err.response
-        .json()
-        .then(({ message }) => message)
-        .catch((err) => `${err}`)
-    }
-    toast.error(t('hint.email-send-failed', { msg }))
+    toast.error(t('hint.email-send-failed', { msg: await prettyHTTPError(err) }))
     emailSent.value = false
     emailIcon.value = 'mdi-send'
   }

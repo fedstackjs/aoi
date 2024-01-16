@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'vue-toastification'
+import { prettyHTTPError } from './http'
 
 const kAsyncTaskMessage = Symbol('AsyncTaskMessage')
 const kNoMessage = Symbol('NoMessage')
@@ -38,7 +39,7 @@ export function useAsyncTask(task: () => Promise<unknown>) {
         toast.success(getMessage(result) ?? t('msg.operation-success'))
       }
     } catch (err) {
-      toast.error(`${err}`)
+      toast.error(await prettyHTTPError(err))
     }
     isLoading.value = false
   }
