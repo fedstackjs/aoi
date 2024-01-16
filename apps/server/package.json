@@ -23,6 +23,7 @@
     "@fastify/jwt": "^7.2.0",
     "@fastify/sensible": "^5.2.0",
     "@fastify/type-provider-typebox": "^3.3.0",
+    "@lcpu/iaaa": "^1.0.0",
     "@sinclair/typebox": "^0.29.4",
     "@types/nodemailer": "^6.4.14",
     "bcrypt": "^5.1.1",

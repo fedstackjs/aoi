@@ -115,3 +115,7 @@ export class BatchingQueue<T, R> {
       .catch((err) => entries.forEach(({ reject }) => reject(err)))
   }
 }
+
+export function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}

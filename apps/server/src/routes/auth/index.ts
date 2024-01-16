@@ -50,7 +50,7 @@ export const authRoutes = defineRoutes(async (s) => {
       const { provider, payload } = req.body
       const providerInstance = authProviders[provider]
       if (!providerInstance || !providerInstance.preLogin) return rep.badRequest()
-      return providerInstance.preLogin(payload)
+      return providerInstance.preLogin(payload, req, rep)
     }
   )
 
@@ -74,7 +74,7 @@ export const authRoutes = defineRoutes(async (s) => {
       const { provider, payload } = req.body
       const providerInstance = authProviders[provider]
       if (!providerInstance) return rep.badRequest()
-      const [userId, tags] = await providerInstance.login(payload)
+      const [userId, tags] = await providerInstance.login(payload, req, rep)
       const token = await rep.jwtSign({ userId: userId.toString(), tags }, { expiresIn: '7d' })
       return { token }
     }
