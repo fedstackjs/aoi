@@ -52,7 +52,7 @@ export class IaaaAuthProvider extends BaseAuthProvider {
           'profile.studentGrade': `${resp.userInfo.dept}${resp.userInfo.detailType}(${resp.userInfo.campus})`,
           'authSources.iaaaId': resp.userInfo.identityId
         },
-        $addToSet: { 'profile.verified': ['realname', 'school', 'studentGrade'] }
+        $addToSet: { 'profile.verified': { $each: ['realname', 'school', 'studentGrade'] } }
       }
     )
     return {}

@@ -21,6 +21,7 @@ import UserAuthPassword from './UserAuthPassword.vue'
 import UserAuthMail from './UserAuthMail.vue'
 import type { Component } from 'vue'
 import { useI18n } from 'vue-i18n'
+import UserAuthIaaa from './UserAuthIaaa.vue'
 
 defineProps<{
   userId: string
@@ -30,7 +31,8 @@ const { t } = useI18n()
 
 const components: Record<string, Component> = {
   password: UserAuthPassword,
-  mail: UserAuthMail
+  mail: UserAuthMail,
+  iaaa: UserAuthIaaa
 }
 
 const login = useAsyncState(
@@ -47,8 +49,10 @@ en:
   user-auth: User Authentication
   provider-password: Password Login
   provider-mail: Email Login
+  provider-iaaa: IAAA Login
 zh-Hans:
   user-auth: 用户认证
   provider-password: 密码登录
   provider-mail: 邮箱登录
+  provider-iaaa: 北京大学统一身份认证
 </i18n>

@@ -41,3 +41,13 @@ export function logout() {
 export function login(_token: string) {
   token.value = _token
 }
+
+export async function prettyHTTPError(err: unknown, defaultMsg = `${err}`): Promise<string> {
+  if (err instanceof HTTPError) {
+    return await err.response
+      .json()
+      .then(({ message }) => message)
+      .catch((err) => `${err}`)
+  }
+  return defaultMsg
+}
