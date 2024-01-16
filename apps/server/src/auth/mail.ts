@@ -131,7 +131,7 @@ export class MailAuthProvider extends BaseAuthProvider {
       { _id: userId },
       {
         $set: { 'profile.email': value.mail, 'authSources.mail': value.mail },
-        $addToSet: { 'profile.verified': ['email'] }
+        $addToSet: { 'profile.verified': { $each: ['email'] } }
       }
     )
     return {}

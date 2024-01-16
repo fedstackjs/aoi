@@ -8,6 +8,8 @@ import {
   IContestStage
 } from '../schemas/contest.js'
 import { ISolution } from './solution.js'
+import { IUser } from './user.js'
+import { IUserProfile } from '../index.js'
 
 export const ContestCapability = {
   CAP_ACCESS: capabilityMask(0),
@@ -83,4 +85,22 @@ export function getCurrentContestStage(now: number, { stages }: IContest) {
     if (stages[i].start <= now) return stages[i]
   }
   return stages[0]
+}
+
+export async function evalTagRules(
+  stage: IContestStage,
+  user: IUser
+): Promise<string[] | undefined> {
+  if (!stage.settings.tagRules) return undefined
+  const tags: string[] = []
+  const rules = stage.settings.tagRules
+  if (rules.copyVerifiedFields && user.profile.verified) {
+    const { verified } = user.profile
+    const fields = rules.copyVerifiedFields
+      .split(',')
+      .filter((field): field is keyof IUserProfile => verified.includes(field))
+      .map((field) => `${user.profile[field]}`)
+    tags.push(...fields)
+  }
+  return tags
 }
