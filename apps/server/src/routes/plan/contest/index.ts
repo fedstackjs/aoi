@@ -6,7 +6,9 @@ import {
   SPlanContestSettings,
   contestParticipants,
   contests,
-  getCurrentContestStage
+  evalTagRules,
+  getCurrentContestStage,
+  users
 } from '../../../index.js'
 import { contestAdminRoutes } from './admin.js'
 import { BSON } from 'mongodb'
@@ -98,13 +100,22 @@ const planContestViewRoutes = defineRoutes(async (s) => {
       if (!contest) return rep.notFound()
       const stage = getCurrentContestStage(Date.now(), contest)
       if (!stage.settings.registrationEnabled) return rep.preconditionFailed(`Registration closed`)
-      await contestParticipants.insertOne({
-        _id: new BSON.UUID(),
-        userId: req.user.userId,
-        contestId: contestId,
-        results: {},
-        updatedAt: Date.now()
-      })
+      const user = await users.findOne({ _id: req.user.userId })
+      if (!user) return rep.notFound()
+      await contestParticipants.insertOne(
+        {
+          _id: new BSON.UUID(),
+          userId: req.user.userId,
+          contestId: contestId,
+          results: {},
+          tags: await evalTagRules(stage, user),
+          updatedAt: Date.now()
+        },
+        { ignoreUndefined: true }
+      )
+
+      // TODO: see contest register
+      await contests.updateOne({ _id: contestId }, { $inc: { participantCount: 1 } })
       return {}
     }
   )

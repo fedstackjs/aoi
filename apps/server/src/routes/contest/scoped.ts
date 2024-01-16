@@ -7,7 +7,9 @@ import {
   OrgCapability,
   contestParticipants,
   contests,
-  getCurrentContestStage
+  evalTagRules,
+  getCurrentContestStage,
+  users
 } from '../../db/index.js'
 import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/index.js'
 import { contestAttachmentRoutes } from './attachment.js'
@@ -111,21 +113,22 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
         return rep.forbidden()
       }
 
-      await contestParticipants.insertOne({
-        _id: new BSON.UUID(),
-        userId: req.user.userId,
-        contestId: ctx._contestId,
-        results: {},
-        updatedAt: Date.now()
-      })
+      const user = await users.findOne({ _id: req.user.userId })
+      if (!user) return rep.notFound()
+      await contestParticipants.insertOne(
+        {
+          _id: new BSON.UUID(),
+          userId: req.user.userId,
+          contestId: ctx._contestId,
+          results: {},
+          tags: await evalTagRules(ctx._contestStage, user),
+          updatedAt: Date.now()
+        },
+        { ignoreUndefined: true }
+      )
 
       // TODO: add to the corresponding contest
-      await contests.updateOne(
-        { _id: ctx._contestId },
-        {
-          $inc: { participantCount: 1 }
-        }
-      )
+      await contests.updateOne({ _id: ctx._contestId }, { $inc: { participantCount: 1 } })
 
       return {}
     }

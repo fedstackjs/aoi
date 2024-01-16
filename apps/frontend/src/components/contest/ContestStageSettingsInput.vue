@@ -9,11 +9,14 @@
       :messages="hint"
     />
   </div>
+  <VDivider />
+  <ContestStageTagRulesInput v-model="model.tagRules" />
 </template>
 
 <script setup lang="ts">
 import type { IContestStage } from '@/types'
 import { useI18n } from 'vue-i18n'
+import ContestStageTagRulesInput from './ContestStageTagRulesInput.vue'
 
 const { t } = useI18n()
 

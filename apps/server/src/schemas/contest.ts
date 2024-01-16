@@ -28,7 +28,15 @@ export const SContestStage = Type.StrictObject({
       // Enable function function to participants
       ranklistEnabled: Type.Boolean(),
       // Show participants panel
-      participantEnabled: Type.Boolean()
+      participantEnabled: Type.Boolean(),
+      // Participant tag rules
+      tagRules: Type.Optional(
+        Type.Partial(
+          Type.StrictObject({
+            copyVerifiedFields: Type.String()
+          })
+        )
+      )
     })
   )
 })
