@@ -10,5 +10,10 @@ export default createVuetify({
     locale: 'zh-Hans',
     fallback: 'en',
     messages: { 'zh-Hans': zhHans, en }
+  },
+  icons: {
+    sets: {
+      svg: {} as never
+    }
   }
 })
