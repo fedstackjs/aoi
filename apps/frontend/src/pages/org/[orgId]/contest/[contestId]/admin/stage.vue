@@ -29,6 +29,28 @@
               <VTextField :label="t('term.name')" v-model="item.name" />
               <DateTimeInput :label="t('term.start-time')" v-model="item.start" :disabled="!i" />
               <ContestStageSettingsInput v-model="item.settings" />
+              <VDivider />
+              <VCardActions>
+                <VBtn
+                  variant="tonal"
+                  color="error"
+                  @click="value.splice(i, 1)"
+                  :disabled="!i || i === value.length - 1"
+                >
+                  {{ t('action.delete') }}
+                </VBtn>
+                <VBtn variant="tonal" color="green" :disabled="!i" @click="create(i)">
+                  {{ t('action.add-before') }}
+                </VBtn>
+                <VBtn
+                  variant="tonal"
+                  color="blue"
+                  :disabled="i === value.length - 1"
+                  @click="create(i + 1)"
+                >
+                  {{ t('action.add-after') }}
+                </VBtn>
+              </VCardActions>
             </VExpansionPanelText>
           </VExpansionPanel>
         </VExpansionPanels>
@@ -77,12 +99,12 @@ const stages = useAsyncState(
   { shallow: false }
 )
 
-function create() {
-  stages.state.value.push({
+function create(i = stages.state.value.length) {
+  stages.state.value.splice(i, 0, {
     name: 'unnamed stage',
-    start: +new Date(),
+    start: i === stages.state.value.length ? +new Date() : stages.state.value[i].start,
     settings: {}
-  } satisfies IContestStage)
+  } as IContestStage)
 }
 
 async function save() {
@@ -96,3 +118,14 @@ async function save() {
   }
 }
 </script>
+
+<i18n>
+en:
+  action:
+    add-before: Add Before
+    add-after: Add After
+zh-Hans:
+  action:
+    add-before: 在前面添加
+    add-after: 在后面添加
+</i18n>
