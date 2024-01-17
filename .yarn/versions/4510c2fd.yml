@@ -1,4 +1,0 @@
-releases:
-  "@aoi-js/common": patch
-  "@aoi-js/frontend": patch
-  "@aoi-js/server": patch
