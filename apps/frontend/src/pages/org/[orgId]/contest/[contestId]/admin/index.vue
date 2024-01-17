@@ -31,6 +31,24 @@
         {{ t('action.delete') }}
       </VBtn>
     </VCardActions>
+    <VDivider />
+    <VCardActions class="u-gap-2">
+      <VBtn
+        variant="tonal"
+        color="blue"
+        :loading="ranklistInfo.isLoading.value"
+        prepend-icon="mdi-refresh"
+        @click="ranklistInfo.execute()"
+      >
+        {{ t('ranklist-state', { state: ranklistStates[ranklistInfo.state.value.ranklistState] }) }}
+      </VBtn>
+      <VChip prepend-icon="mdi-calendar-clock" color="green">
+        {{ new Date(ranklistInfo.state.value.ranklistUpdatedAt).toLocaleString() }}
+      </VChip>
+      <VChip prepend-icon="mdi-server-network" color="orange" class="u-font-mono">
+        {{ ranklistInfo.state.value.ranklistRunnerId ?? 'Pending' }}
+      </VChip>
+    </VCardActions>
   </VCard>
 </template>
 
@@ -39,6 +57,7 @@ import type { IContestDTO } from '@/components/contest/types'
 import AccessLevelEditor from '@/components/utils/AccessLevelEditor.vue'
 import { useAsyncTask } from '@/utils/async'
 import { http } from '@/utils/http'
+import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
@@ -57,6 +76,27 @@ const router = useRouter()
 
 const submitAllTask = useAsyncTask(() => http.post(`contest/${props.contestId}/admin/submit-all`))
 
+const ranklistStates: Record<number, string> = {
+  '-1': '[Loading...]',
+  0: 'Valid',
+  1: 'Pending',
+  2: 'Invalid'
+}
+
+const ranklistInfo = useAsyncState(
+  () =>
+    http.get(`contest/${props.contestId}/admin/ranklist-info`).json<{
+      ranklistState: number
+      ranklistUpdatedAt: number
+      ranklistRunnerId?: string
+    }>(),
+  {
+    ranklistState: -1,
+    ranklistUpdatedAt: 0
+  },
+  { immediate: true }
+)
+
 const updateRanklistsTask = useAsyncTask(() =>
   http.post(`contest/${props.contestId}/admin/update-ranklists`)
 )
@@ -70,10 +110,12 @@ async function deleteContest() {
 
 <i18n>
 en:
+  ranklist-state: Ranklist State is {state}
   action:
     submit-all: Submit all solutions
     update-ranklists: Update ranklists
 zh-Hans:
+  ranklist-state: '排行榜状态: {state}'
   action:
     submit-all: 提交所有解答
     update-ranklists: 更新排行榜
