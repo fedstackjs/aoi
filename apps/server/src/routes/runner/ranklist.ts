@@ -257,7 +257,8 @@ export const runnerRanklistRoutes = defineRoutes(async (s) => {
                   name: Type.String(),
                   settings: SContestRanklistSettings
                 })
-              )
+              ),
+              ranklistUpdatedAt: Type.Integer()
             })
           )
         }
@@ -287,7 +288,8 @@ export const runnerRanklistRoutes = defineRoutes(async (s) => {
       return {
         taskId: value.ranklistTaskId,
         contestId: value._id,
-        ranklists: value.ranklists
+        ranklists: value.ranklists,
+        ranklistUpdatedAt: value.ranklistUpdatedAt
       }
     }
   )

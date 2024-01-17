@@ -81,6 +81,30 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     }
   )
 
+  s.get(
+    '/ranklist-info',
+    {
+      schema: {
+        response: {
+          200: Type.Object({
+            ranklistState: Type.Integer(),
+            ranklistUpdatedAt: Type.Integer(),
+            ranklistRunnerId: Type.Optional(Type.UUID())
+          })
+        }
+      }
+    },
+    async (req) => {
+      const { _contest } = req.inject(kContestContext)
+      const { ranklistState, ranklistUpdatedAt, ranklistRunnerId } = _contest
+      return {
+        ranklistState,
+        ranklistUpdatedAt,
+        ranklistRunnerId
+      }
+    }
+  )
+
   s.post('/update-ranklists', async (req) => {
     await contests.updateOne(
       {

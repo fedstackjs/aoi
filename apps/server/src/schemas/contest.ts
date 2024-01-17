@@ -54,7 +54,8 @@ export interface IContestProblemSettings extends Static<typeof SContestProblemSe
 
 export const SContestRanklistSettings = Type.StrictObject({
   showAfter: Type.Optional(Type.Integer()),
-  showBefore: Type.Optional(Type.Integer())
+  showBefore: Type.Optional(Type.Integer()),
+  config: Type.Optional(Type.String())
 })
 
 export interface IContestRanklistSettings extends Static<typeof SContestRanklistSettings> {}
