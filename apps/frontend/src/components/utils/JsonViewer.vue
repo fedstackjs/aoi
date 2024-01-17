@@ -8,7 +8,7 @@
         <VTab prepend-icon="mdi-code-json" value="raw" v-if="!hideRaw">
           {{ t('raw') }}
         </VTab>
-        <VTab prepend-icon="mdi-refresh" @click="data.execute()">
+        <VTab prepend-icon="mdi-refresh" :value="currentTab" @click="data.execute()">
           {{ t('action.refresh') }}
         </VTab>
       </VTabs>
