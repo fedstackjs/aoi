@@ -1,6 +1,6 @@
 {
   "name": "@aoi-js/workspace",
-  "packageManager": "yarn@3.6.2",
+  "packageManager": "yarn@4.0.2",
   "license": "AGPL-3.0-only",
   "private": true,
   "workspaces": [
@@ -22,17 +22,14 @@
   },
   "scripts": {
     "postinstall": "husky install",
-    "all:build": "yarn workspaces foreach -t run build",
-    "all:check-lint": "yarn workspaces foreach run lint",
-    "all:check-format": "yarn workspaces foreach run format",
-    "all:check-type": "yarn workspaces foreach run type-check",
+    "all:build": "yarn workspaces foreach -Apt --exclude @aoi-js/frontend run build",
+    "all:check-lint": "yarn workspaces foreach -Ap run lint",
+    "all:check-format": "yarn workspaces foreach -Ap run format",
+    "all:check-type": "yarn workspaces foreach -Ap run type-check",
     "all:check": "concurrently \"yarn:all:check-*\"",
     "git:precommit": "run all:check",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
-  },
-  "dependencies": {
-    "xlsx": "^0.18.5"
   }
 }

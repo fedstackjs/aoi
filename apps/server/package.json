@@ -6,7 +6,6 @@
     "access": "public"
   },
   "license": "AGPL-3.0-only",
-  "packageManager": "yarn@3.6.2",
   "main": "lib/index.js",
   "files": [
     "lib",
