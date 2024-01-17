@@ -249,6 +249,7 @@ __metadata:
     blueimp-md5: "npm:^2.19.0"
     debug: "npm:^4.3.4"
     dompurify: "npm:^3.0.6"
+    echarts: "npm:^5.4.3"
     eslint-plugin-prettier: "npm:^5.1.0"
     eslint-plugin-vue: "npm:^9.19.2"
     github-markdown-css: "npm:^5.5.0"
@@ -268,6 +269,7 @@ __metadata:
     vite-plugin-vuetify: "npm:^2.0.1"
     vscode-oniguruma: "npm:1"
     vue: "npm:^3.3.13"
+    vue-echarts: "npm:^6.6.8"
     vue-i18n: "npm:^9.8.0"
     vue-router: "npm:^4.2.5"
     vue-toastification: "npm:next"
@@ -4932,6 +4934,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"echarts@npm:^5.4.3":
+  version: 5.4.3
+  resolution: "echarts@npm:5.4.3"
+  dependencies:
+    tslib: "npm:2.3.0"
+    zrender: "npm:5.4.4"
+  checksum: 4a4edc95a83faf498ada31f9764d98841daf2dbcae0861c5e7c1e53fba6e6e9cfdd05a2cd60e6092f1d361316380ca79826486800fde9b4fc4b024ba67c23919
+  languageName: node
+  linkType: hard
+
 "electron-to-chromium@npm:^1.4.601":
   version: 1.4.615
   resolution: "electron-to-chromium@npm:1.4.615"
@@ -8288,6 +8300,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"resize-detector@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "resize-detector@npm:0.3.0"
+  checksum: 644410e83a76c135dc59ec755f140558243f80eaff627e697317bd3a2cbaf80ee93539be93401ce450e40a9ac917d60ad9ab2f3a0b9b5ab7f5992ca860173162
+  languageName: node
+  linkType: hard
+
 "resolve-from@npm:^4.0.0":
   version: 4.0.0
   resolution: "resolve-from@npm:4.0.0"
@@ -9073,6 +9092,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:2.3.0":
+  version: 2.3.0
+  resolution: "tslib@npm:2.3.0"
+  checksum: 9c55c9abd5ecd94e5fd37573db27e26933fb6c33506431403fb4627dcb8aa9a45b772afa6d05dd2c25dc1de22a213193251e6303742f3bcdc179e523a9295bfd
+  languageName: node
+  linkType: hard
+
 "tslib@npm:^1.11.1":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
@@ -9566,6 +9592,42 @@ __metadata:
   languageName: node
   linkType: hard
 
+"vue-demi@npm:^0.13.11":
+  version: 0.13.11
+  resolution: "vue-demi@npm:0.13.11"
+  peerDependencies:
+    "@vue/composition-api": ^1.0.0-rc.1
+    vue: ^3.0.0-0 || ^2.6.0
+  peerDependenciesMeta:
+    "@vue/composition-api":
+      optional: true
+  bin:
+    vue-demi-fix: bin/vue-demi-fix.js
+    vue-demi-switch: bin/vue-demi-switch.js
+  checksum: 6c02d1248cfc405478f21f2d3eca3bfba537ad0ff5116f5efc4e0bf296b35cd5d3e2beff4807365018894da18901110c4d5cb8c205273872c4c902fe7522de4f
+  languageName: node
+  linkType: hard
+
+"vue-echarts@npm:^6.6.8":
+  version: 6.6.8
+  resolution: "vue-echarts@npm:6.6.8"
+  dependencies:
+    resize-detector: "npm:^0.3.0"
+    vue-demi: "npm:^0.13.11"
+  peerDependencies:
+    "@vue/composition-api": ^1.0.5
+    "@vue/runtime-core": ^3.0.0
+    echarts: ^5.4.1
+    vue: ^2.6.12 || ^3.1.1
+  peerDependenciesMeta:
+    "@vue/composition-api":
+      optional: true
+    "@vue/runtime-core":
+      optional: true
+  checksum: 5efa91eab21e9c137bed40ef8c50f5e698e4d71001abf3c131d9ece52982e2a544d92d3e98049ae47cde2cded86181db853e7c31555c669e552b9eeda5282ba2
+  languageName: node
+  linkType: hard
+
 "vue-eslint-parser@npm:^9.3.1":
   version: 9.3.2
   resolution: "vue-eslint-parser@npm:9.3.2"
@@ -9996,6 +10058,15 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
+  languageName: node
+  linkType: hard
+
+"zrender@npm:5.4.4":
+  version: 5.4.4
+  resolution: "zrender@npm:5.4.4"
+  dependencies:
+    tslib: "npm:2.3.0"
+  checksum: 4f9bc308aedef8655d3bb2c1ec5588b2e5a0e099019b7959476de18d3bb199d5c0763f291079c363c198a57acaeb8db9d8ce3a1425404f5e9ccbfa93a2edf298
   languageName: node
   linkType: hard
 

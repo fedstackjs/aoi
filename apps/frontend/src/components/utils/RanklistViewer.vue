@@ -1,11 +1,13 @@
 <template>
   <component :is="JsonViewer<Ranklist>" :endpoint="props.endpoint" hide-raw>
     <template v-slot="{ value }">
-      <VCard flat>
-        <!-- Topstar -->
-        <!-- TODO -->
-      </VCard>
-      <VDivider />
+      <template v-if="value.topstar">
+        <VCard flat>
+          <!-- Topstar -->
+          <RanklistTopstars :topstar="value.topstar" />
+        </VCard>
+        <VDivider />
+      </template>
       <VCard flat>
         <!-- participants -->
         <VTable>
@@ -52,6 +54,7 @@ import type { Ranklist } from '@aoi-js/common'
 import { renderMarkdown } from '@/utils/md'
 import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
 import { useI18n } from 'vue-i18n'
+import RanklistTopstars from '../contest/RanklistTopstars.vue'
 
 const { t } = useI18n()
 const props = defineProps<{

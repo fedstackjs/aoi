@@ -48,3 +48,9 @@ export function useContestSettings() {
   if (!contest) throw new Error('No contest provided')
   return computed(() => contest.value.currentStage.settings)
 }
+
+export function useContestData() {
+  const contest = inject(kContest)
+  if (!contest) throw new Error('No contest provided')
+  return computed(() => contest.value)
+}
