@@ -14,13 +14,13 @@
       </div>
     </VCardTitle>
     <VTabs v-model="currentTab">
-      <VTab prepend-icon="mdi-form-textarea" value="form">
+      <VTab v-if="problem.config.submit.form" prepend-icon="mdi-form-textarea" value="form">
         {{ t('submit-form') }}
       </VTab>
-      <VTab prepend-icon="mdi-file" value="upload-file">
+      <VTab v-if="problem.config.submit.upload" prepend-icon="mdi-file" value="upload-file">
         {{ t('submit-upload-file') }}
       </VTab>
-      <VTab prepend-icon="mdi-folder" value="upload-dir">
+      <VTab v-if="problem.config.submit.zipFolder" prepend-icon="mdi-folder" value="upload-dir">
         {{ t('submit-upload-dir') }}
       </VTab>
     </VTabs>
