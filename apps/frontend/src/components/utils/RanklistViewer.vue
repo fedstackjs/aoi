@@ -1,5 +1,5 @@
 <template>
-  <component :is="JsonViewer<Ranklist>" :endpoint="props.endpoint">
+  <component :is="JsonViewer<Ranklist>" :endpoint="props.endpoint" hide-raw>
     <template v-slot="{ value }">
       <VCard flat>
         <!-- Topstar -->

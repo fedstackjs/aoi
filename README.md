@@ -1,14 +1,11 @@
-<center>
+<div align=center>
 
-<h1>
-  The
-  <ruby>
-    AOI
-    <rp>(</rp><rt>Any OJ Infra</rt><rp>)</rp>
-  </ruby>
-  Project
-</h1>
+<img src=docs/public/logo.svg width=240>
 
-</center>
+# The **AOI** Project
+
+> The ultimate, scalable, performant online judge infrastructure
 
 [![Publish](https://github.com/fedstackjs/aoi/actions/workflows/publish.yaml/badge.svg)](https://github.com/fedstackjs/aoi/actions/workflows/publish.yaml)
+
+</div>

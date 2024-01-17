@@ -180,6 +180,9 @@ export const runnerSolutionRoutes = defineRoutes(async (s) => {
             Type.Object({
               taskId: Type.UUID(),
               solutionId: Type.UUID(),
+              orgId: Type.UUID(),
+              userId: Type.UUID(),
+              contestId: Type.UUID(),
               problemConfig: problemConfigSchema,
               problemDataUrl: Type.String(),
               problemDataHash: Type.String(),
@@ -204,7 +207,13 @@ export const runnerSolutionRoutes = defineRoutes(async (s) => {
       )
       if (!solution) return {}
 
-      const info = { taskId, solutionId: solution._id }
+      const info = {
+        taskId,
+        solutionId: solution._id,
+        orgId: solution.orgId,
+        userId: solution.userId,
+        contestId: solution.contestId
+      }
 
       const oss = await loadOrgOssSettings(runnerCtx._runner.orgId)
       if (!oss) return { ...info, errMsg: 'OSS not enabled' }
