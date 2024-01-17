@@ -152,9 +152,9 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
           solutionCount: upserted && maxSolutionCount ? { $lt: maxSolutionCount } : undefined
         },
         {
-          $inc: upserted ? { solutionCount: 1 } : undefined,
+          $inc: { solutionCount: upserted ? 1 : undefined },
           $set: { lastSolutionId: value._id, lastSolutionScore: 0, lastSolutionStatus: '' },
-          $setOnInsert: { _id: new BSON.UUID() }
+          $setOnInsert: { _id: new BSON.UUID(), solutionCount: upserted ? undefined : 0 }
         },
         { upsert: true, ignoreUndefined: true }
       )
