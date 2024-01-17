@@ -5,7 +5,6 @@
     "access": "public"
   },
   "license": "AGPL-3.0-only",
-  "packageManager": "yarn@3.6.2",
   "type": "module",
   "files": [
     "dist"
@@ -66,6 +65,7 @@
     "vue-toastification": "next",
     "vue-tsc": "^1.8.25",
     "vuetify": "^3.4.8",
-    "webfontloader": "^1.6.28"
+    "webfontloader": "^1.6.28",
+    "xlsx": "^0.18.5"
   }
 }
