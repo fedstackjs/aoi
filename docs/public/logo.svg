@@ -1,13 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg id="a" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 831.38">
-  <defs>
-    <style>.b{fill:#afddff;}.c{fill:#1966c0;}.d{fill:#7bc6ff;}.e{fill:#1597f6;}</style>
-  </defs>
-  <g>
-    <polygon class="b" points="480 0 264.05 374.03 645.18 286.1 480 0" />
-    <polygon class="b" points="960 831.38 693.36 369.56 106.95 646.13 0 831.38 960 831.38" />
-    <polygon class="c" points="606.4 310.32 320.55 376.27 202.73 580.34 642.53 372.91 606.4 310.32" />
-  </g>
-  <polygon class="e" points="264.05 374.03 320.55 376.27 606.4 310.32 645.18 286.1 264.05 374.03" />
-  <polygon class="d" points="202.73 580.34 106.95 646.13 693.36 369.56 642.53 372.91 202.73 580.34" />
-</svg>
+<?xml version="1.0" encoding="UTF-8"?><svg id="a" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024"><defs><style>.d{fill:#1597f6;}.d,.e,.f,.g{stroke-width:0px;}.e{fill:#afddff;}.f{fill:#1966c0;}.g{fill:#7bc6ff;}.h{filter:url(#b);}</style><filter id="b" filterUnits="userSpaceOnUse"><feOffset dx="7" dy="7"/><feGaussianBlur result="c" stdDeviation="5"/><feFlood flood-color="#000" flood-opacity=".75"/><feComposite in2="c" operator="in"/><feComposite in="SourceGraphic"/></filter></defs><g class="h"><polygon class="g" points="234.73 676.65 138.95 742.44 725.36 465.86 674.53 469.22 234.73 676.65"/><polygon class="e" points="512 96.31 296.05 470.34 677.18 382.41 512 96.31"/><polygon class="e" points="992 927.69 725.36 465.86 138.95 742.44 32 927.69 992 927.69"/><polygon class="f" points="638.4 406.63 352.55 472.58 234.73 676.65 674.53 469.22 638.4 406.63"/><polygon class="d" points="296.05 470.34 352.55 472.58 638.4 406.63 677.18 382.41 296.05 470.34"/></g></svg>
