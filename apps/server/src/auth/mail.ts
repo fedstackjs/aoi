@@ -99,7 +99,7 @@ export class MailAuthProvider extends BaseAuthProvider {
   private async sendCode(key: string, mail: string, purpose: string) {
     if (!this.checkWhitelist(mail)) throw httpErrors.badRequest('Email address not allowed')
     const ttl = await cache.ttl(key)
-    if (ttl > 0) throw httpErrors.tooManyRequests('Too many requests')
+    if (ttl > 0) throw httpErrors.tooManyRequests(`Wait for ${Math.ceil(ttl / 1000)} seconds`)
     const code = rnd.generate({ length: 6, charset: 'numeric' })
     await cache.setx(key, { code, mail }, 5 * 60 * 1000)
     const info = await this.transporter.sendMail({
