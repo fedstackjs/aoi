@@ -37,3 +37,21 @@
     --vp-home-hero-image-filter: blur(72px);
   }
 }
+
+@keyframes float {
+  0% {
+    transform: translateX(-50%) translateY(-50%)
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-60%)
+  }
+
+  to {
+    transform: translateX(-50%) translateY(-50%)
+  }
+}
+
+#VPContent div.VPHero.has-image.VPHomeHero div.image img.VPImage {
+  animation: float 6s ease-in-out infinite;
+}
