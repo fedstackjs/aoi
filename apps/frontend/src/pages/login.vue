@@ -7,7 +7,7 @@
             {{ t('pages.signin') }}
           </VCardTitle>
           <VDivider />
-          <VAlert v-if="hint" type="info" :text="hint" class="ma-4 mb-0" />
+          <VAlert v-if="hint" type="info" class="ma-4 mb-0 u-whitespace-pre" :text="hint" />
           <RouterView />
         </VCard>
       </VCol>
