@@ -11,7 +11,7 @@
         @click:append="preLogin"
       />
 
-      <VOtpInput v-if="emailSent" v-model="code" />
+      <VOtpInput v-if="emailSent" v-model.trim="code" />
     </VCardText>
 
     <VCardActions v-if="emailSent">

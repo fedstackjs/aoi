@@ -124,9 +124,9 @@ export class MailAuthProvider extends BaseAuthProvider {
     const { code } = payload
     const key = this.userKey(userId)
     const value = await cache.getx<{ code: string; mail: string }>(key)
-    await cache.del(key)
     if (!value) throw httpErrors.forbidden('Invalid code')
     if (value.code !== code) throw httpErrors.forbidden('Invalid code')
+    await cache.del(key)
     await users.updateOne(
       { _id: userId },
       {
@@ -151,9 +151,9 @@ export class MailAuthProvider extends BaseAuthProvider {
     const { code } = payload
     const key = this.userKey(userId)
     const value = await cache.getx<{ code: string; mail: string }>(key)
-    await cache.del(key)
     if (!value) throw httpErrors.forbidden('Invalid code')
     if (value.code !== code) throw httpErrors.forbidden('Invalid code')
+    await cache.del(key)
     return true
   }
 
@@ -176,9 +176,9 @@ export class MailAuthProvider extends BaseAuthProvider {
     if (this.allowSignupFromLogin) {
       const key = this.mailKey(email)
       const value = await cache.getx<{ code: string; mail: string }>(key)
-      await cache.del(key)
       if (!value) throw httpErrors.forbidden('Invalid code')
       if (value.code !== code) throw httpErrors.forbidden('Invalid code')
+      await cache.del(key)
       const user = await users.findOne({ 'authSources.mail': email }, { projection: { _id: 1 } })
       if (user) return [user._id]
       const { insertedId } = await users.insertOne({
@@ -199,9 +199,9 @@ export class MailAuthProvider extends BaseAuthProvider {
       if (!user) throw httpErrors.notFound('User not found')
       const key = this.userKey(user._id)
       const value = await cache.getx<{ code: string; mail: string }>(key)
-      await cache.del(key)
       if (!value) throw httpErrors.forbidden('Invalid code')
       if (value.code !== code) throw httpErrors.forbidden('Invalid code')
+      await cache.del(key)
       return [user._id]
     }
   }
