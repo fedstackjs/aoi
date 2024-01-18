@@ -11,23 +11,16 @@
         @click:append="preLogin"
       />
 
-      <VTextField
-        v-if="emailSent"
-        v-model="code"
-        prepend-inner-icon="mdi-numeric"
-        :label="t('term.otp-code')"
-        :rules="codeRules"
-      />
+      <VOtpInput v-if="emailSent" v-model="code" />
     </VCardText>
 
-    <VCardActions>
+    <VCardActions v-if="emailSent">
       <VBtn
-        :disabled="!emailSent"
+        :disabled="code.length !== 6"
         :loading="isLoading"
         type="submit"
         color="primary"
         block
-        size="large"
         variant="flat"
       >
         {{ t('pages.signin') }}
@@ -51,6 +44,7 @@ const toast = useToast()
 const email = ref('')
 const emailIcon = ref('mdi-send')
 const emailSent = ref(false)
+const emailSending = ref(false)
 const code = ref('')
 
 const emailRules = [
@@ -61,19 +55,11 @@ const emailRules = [
   }
 ]
 
-const codeRules = [
-  (value: string) => {
-    const re = /^[0-9]{6}$/
-    if (re.test(value)) return true
-    return t('hint.violate-code-rule')
-  }
-]
-
 const isLoading = ref(false)
 
 async function preLogin() {
-  if (emailSent.value) return
-  emailSent.value = true
+  if (emailSending.value) return
+  emailSending.value = true
   emailIcon.value = 'mdi-send-clock'
   try {
     await http.post('auth/preLogin', {
@@ -86,11 +72,12 @@ async function preLogin() {
     })
     toast.success(t('hint.email-sent'))
     emailIcon.value = 'mdi-send-check'
+    emailSent.value = true
   } catch (err) {
     toast.error(t('hint.email-send-failed', { msg: await prettyHTTPError(err) }))
-    emailSent.value = false
     emailIcon.value = 'mdi-send'
   }
+  emailSending.value = false
 }
 
 async function signin(ev: SubmitEventPromise) {
@@ -108,14 +95,10 @@ async function signin(ev: SubmitEventPromise) {
         }
       }
     })
-    const { token, userId } = await resp.json<{ token?: string; userId?: string }>()
+    const { token } = await resp.json<{ token: string }>()
     toast.success(t('hint.signin-success'))
-    if (token) {
-      login(token)
-      router.replace('/')
-    } else {
-      router.replace(`/initial?uid=${userId}`)
-    }
+    login(token)
+    router.replace('/')
   } catch (err) {
     toast.error(t('hint.signin-wrong-credentials'))
   }
