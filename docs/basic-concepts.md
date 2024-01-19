@@ -39,3 +39,5 @@ AOI的权限模型是基于控制实体（Principal）的。控制实体是用�
 - 计划
 
 ## AOI系统架构
+
+![Arch](https://pub-88de94d1076a46e2a317ff578c7fabb1.r2.dev/docs/arch.svg)
