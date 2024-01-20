@@ -16,7 +16,7 @@ export const schemaRoutes: FastifyPluginAsyncTypebox = async (s) => {
       }
     },
     (req, rep) => {
-      if (!schemas[req.params.name]) return rep.notFound()
+      if (!Object.hasOwn(schemas, req.params.name)) return rep.notFound()
       return rep.header('content-type', 'application/json').send(schemas[req.params.name])
     }
   )

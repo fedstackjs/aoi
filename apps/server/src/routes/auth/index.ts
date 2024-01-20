@@ -48,9 +48,8 @@ export const authRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const { provider, payload } = req.body
-      const providerInstance = authProviders[provider]
-      if (!providerInstance || !providerInstance.preLogin) return rep.badRequest()
-      return providerInstance.preLogin(payload, req, rep)
+      if (!Object.hasOwn(authProviders, provider)) return rep.badRequest()
+      return authProviders[provider].preLogin?.(payload, req, rep) ?? {}
     }
   )
 
@@ -72,9 +71,8 @@ export const authRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const { provider, payload } = req.body
-      const providerInstance = authProviders[provider]
-      if (!providerInstance) return rep.badRequest()
-      const [userId, tags] = await providerInstance.login(payload, req, rep)
+      if (!Object.hasOwn(authProviders, provider)) return rep.badRequest()
+      const [userId, tags] = await authProviders[provider].login(payload, req, rep)
       const token = await rep.jwtSign({ userId: userId.toString(), tags }, { expiresIn: '7d' })
       return { token }
     }
