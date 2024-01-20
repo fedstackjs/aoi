@@ -45,3 +45,11 @@ await solutions.createIndex(
 )
 await solutions.createIndex({ problemId: 1, submittedAt: -1 })
 await solutions.createIndex({ contestId: 1, submittedAt: -1 })
+await solutions.createIndex(
+  { contestId: 1, completedAt: 1, _id: 1 },
+  {
+    partialFilterExpression: {
+      state: SolutionState.COMPLETED
+    }
+  }
+)

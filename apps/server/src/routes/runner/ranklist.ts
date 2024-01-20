@@ -1,4 +1,4 @@
-import { BSON } from 'mongodb'
+import { BSON, UUID } from 'mongodb'
 import {
   ContestRanklistState,
   SolutionState,
@@ -119,7 +119,8 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get participants for contest',
         querystring: Type.Object({
-          since: Type.Number()
+          since: Type.Number(),
+          lastId: Type.UUID()
         }),
         response: {
           200: Type.Array(
@@ -158,9 +159,12 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
         .find(
           {
             contestId: ctx._contestId,
-            updatedAt: { $gt: req.query.since }
+            $or: [
+              { updatedAt: { $gt: req.query.since } },
+              { updatedAt: req.query.since, _id: { $gt: new UUID(req.query.lastId) } }
+            ]
           },
-          { limit: 50, sort: { updatedAt: 1 } }
+          { limit: 50, sort: { updatedAt: 1, _id: 1 } }
         )
         .toArray()
       return list
@@ -173,7 +177,8 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get solutions for contest',
         querystring: Type.Object({
-          since: Type.Number()
+          since: Type.Number(),
+          lastId: Type.UUID()
         })
       }
     },
@@ -190,9 +195,12 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
           {
             contestId: ctx._contestId,
             state: SolutionState.COMPLETED,
-            completedAt: { $gt: req.query.since }
+            $or: [
+              { completedAt: { $gt: req.query.since } },
+              { completedAt: req.query.since, _id: { $gt: new UUID(req.query.lastId) } }
+            ]
           },
-          { limit: 50, projection: { taskId: 0 }, sort: { completedAt: 1 } }
+          { limit: 50, projection: { taskId: 0 }, sort: { completedAt: 1, _id: 1 } }
         )
         .toArray()
       return list
