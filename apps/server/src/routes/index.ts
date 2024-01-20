@@ -35,6 +35,7 @@ const SUserPayload = Type.Object({
   mfa: Type.Optional(Type.String())
 })
 type UserPayload = Static<typeof SUserPayload>
+const userPayload = TypeCompiler.Compile(SUserPayload)
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
@@ -52,14 +53,6 @@ declare module 'fastify' {
     verifyMfa(token: string): string
   }
 }
-
-const userPayload = TypeCompiler.Compile(
-  Type.Object({
-    userId: Type.UUID(),
-    tags: Type.Optional(Type.Array(Type.String())),
-    mfa: Type.Optional(Type.String())
-  })
-)
 
 function decoratedProvide<T>(this: FastifyRequest, point: InjectionPoint<T>, value: T) {
   return provide(this._container, point, value)
