@@ -12,7 +12,7 @@ const signupEnabled = loadEnv('SIGNUP_ENABLED', (x) => !!JSON.parse(x), true)
 
 export const authRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', (route) => {
-    ;(route.schema ??= {}).security = []
+    ;(route.schema ??= {}).security ??= []
   })
   s.addHook('onRoute', swaggerTagMerger('auth'))
 
@@ -74,6 +74,56 @@ export const authRoutes = defineRoutes(async (s) => {
       if (!Object.hasOwn(authProviders, provider)) return rep.badRequest()
       const [userId, tags] = await authProviders[provider].login(payload, req, rep)
       const token = await rep.jwtSign({ userId: userId.toString(), tags }, { expiresIn: '7d' })
+      return { token }
+    }
+  )
+
+  s.post(
+    '/preVerify',
+    {
+      schema: {
+        security: [{ bearerAuth: [] }],
+        body: Type.Object({
+          provider: Type.String(),
+          payload: Type.Unknown()
+        }),
+        response: {
+          200: Type.Unknown()
+        }
+      }
+    },
+    async (req, rep) => {
+      const { provider, payload } = req.body
+      if (!Object.hasOwn(authProviders, provider)) return rep.badRequest()
+      return authProviders[provider].preVerify?.(req.user.userId, payload, req, rep) ?? {}
+    }
+  )
+
+  s.post(
+    '/verify',
+    {
+      schema: {
+        security: [{ bearerAuth: [] }],
+        body: Type.Object({
+          provider: Type.String(),
+          payload: Type.Unknown()
+        }),
+        response: {
+          200: Type.Object({
+            token: Type.String()
+          })
+        }
+      }
+    },
+    async (req, rep) => {
+      const { provider, payload } = req.body
+      if (!Object.hasOwn(authProviders, provider)) return rep.badRequest()
+      const verified = await authProviders[provider].verify(req.user.userId, payload, req, rep)
+      if (!verified) return rep.forbidden()
+      const token = await rep.jwtSign(
+        { userId: req.user.userId.toString(), tags: [], mfa: provider },
+        { expiresIn: '30min' }
+      )
       return { token }
     }
   )
