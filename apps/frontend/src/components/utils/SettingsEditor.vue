@@ -23,6 +23,7 @@ import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import AsyncState from './AsyncState.vue'
 import { nextTick } from 'vue'
+import { watch } from 'vue'
 
 const props = defineProps<{
   endpoint: string
@@ -41,6 +42,12 @@ const settings = useAsyncState(
   null,
   { shallow: false }
 )
+
+watch(
+  () => props.endpoint,
+  () => settings.execute()
+)
+
 const patchSettings = useAsyncTask(async () => {
   await http.patch(props.endpoint, {
     json: settings.state.value

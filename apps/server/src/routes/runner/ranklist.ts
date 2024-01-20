@@ -57,19 +57,21 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
 
       const { modifiedCount } = await contests.updateOne(
         { _id: ctx._contestId, ranklistTaskId: ctx._taskId },
-        {
-          $addFields: {
-            ranklistState: {
-              $cond: {
-                if: {
-                  $eq: ['$ranklistUpdatedAt', req.body.ranklistUpdatedAt]
-                },
-                then: ContestRanklistState.VALID,
-                else: ContestRanklistState.INVALID
+        [
+          {
+            $addFields: {
+              ranklistState: {
+                $cond: {
+                  if: {
+                    $eq: ['$ranklistUpdatedAt', req.body.ranklistUpdatedAt]
+                  },
+                  then: ContestRanklistState.VALID,
+                  else: ContestRanklistState.INVALID
+                }
               }
             }
           }
-        }
+        ]
       )
       if (modifiedCount === 0) return rep.notFound()
       return {}

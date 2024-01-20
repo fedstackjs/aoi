@@ -36,6 +36,7 @@ import { useI18n } from 'vue-i18n'
 import MonacoEditor from './MonacoEditor.vue'
 import AsyncState from './AsyncState.vue'
 import ky from 'ky'
+import { watch } from 'vue'
 
 const props = defineProps<{
   endpoint?: string
@@ -64,6 +65,8 @@ const data = useAsyncState(async () => {
   const json = await ky.get(url).json<T>()
   return json
 }, null)
+
+watch([() => props.endpoint, () => props.url, () => props.rawString], () => data.execute())
 </script>
 <i18n>
 en:
