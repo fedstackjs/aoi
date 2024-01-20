@@ -35,6 +35,7 @@ export interface IContestParticipant {
 
 export const contestParticipants = db.collection<IContestParticipant>('contestParticipants')
 await contestParticipants.createIndex({ userId: 1, contestId: 1 }, { unique: true })
+await contestParticipants.createIndex({ contestId: 1, updatedAt: 1, _id: 1 })
 
 export interface IContestProblem {
   problemId: BSON.UUID
