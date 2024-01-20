@@ -138,9 +138,8 @@ export const userScopedRoutes = defineRoutes(async (s) => {
         return rep.forbidden()
 
       const { provider, payload } = req.body
-      const providerInstance = authProviders[provider]
-      if (!providerInstance || !providerInstance.preBind) return rep.badRequest()
-      return providerInstance.preBind(ctx._userId, payload, req, rep)
+      if (!Object.hasOwn(authProviders, provider)) return rep.badRequest()
+      return authProviders[provider].preBind?.(ctx._userId, payload, req, rep) ?? {}
     }
   )
 
@@ -169,9 +168,8 @@ export const userScopedRoutes = defineRoutes(async (s) => {
         return rep.forbidden()
 
       const { provider, payload } = req.body
-      const providerInstance = authProviders[provider]
-      if (!providerInstance) return rep.badRequest()
-      return providerInstance.bind(ctx._userId, payload, req, rep)
+      if (!Object.hasOwn(authProviders, provider)) return rep.badRequest()
+      return authProviders[provider].bind(ctx._userId, payload, req, rep)
     }
   )
 })

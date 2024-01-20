@@ -4,7 +4,7 @@
     "composite": true,
     "rootDir": "src",
     "target": "ESNext",
-    "lib": [],
+    "lib": ["ESNext"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "declaration": true,
