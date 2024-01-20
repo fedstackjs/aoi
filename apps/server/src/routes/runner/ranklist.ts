@@ -179,7 +179,27 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
         querystring: Type.Object({
           since: Type.Number(),
           lastId: Type.UUID()
-        })
+        }),
+        response: {
+          200: Type.Array(
+            Type.Object({
+              _id: Type.UUID(),
+              problemId: Type.UUID(),
+              userId: Type.UUID(),
+              label: Type.String(),
+              problemDataHash: Type.String(),
+              state: Type.Integer(),
+              solutionDataHash: Type.String(),
+              score: Type.Number(),
+              metrics: Type.Record(Type.String(), Type.Number()),
+              status: Type.String(),
+              message: Type.String(),
+              createdAt: Type.Integer(),
+              submittedAt: Type.Integer(),
+              completedAt: Type.Integer()
+            })
+          )
+        }
       }
     },
     async (req, rep) => {
@@ -203,7 +223,8 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
           { limit: 50, projection: { taskId: 0 }, sort: { completedAt: 1, _id: 1 } }
         )
         .toArray()
-      return list
+      // Since state is COMPLETED, we can safely cast to the correct type
+      return list as Array<(typeof list)[number] & { submittedAt: number; completedAt: number }>
     }
   )
 
