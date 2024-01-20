@@ -14,6 +14,7 @@
       </VWindowItem>
       <VWindowItem value="settings">
         <RanklistSettings
+          :key="props.ranklistKey"
           :ranklist-key="props.ranklistKey"
           :org-id="props.orgId"
           :contest-id="props.contestId"
@@ -31,6 +32,7 @@ import RanklistSettings from '@/components/contest/RanklistSettings.vue'
 import { ref } from 'vue'
 import RanklistViewer from '@/components/utils/RanklistViewer.vue'
 import { useContestCapability } from '@/utils/contest/inject'
+import { computed } from 'vue'
 
 const props = defineProps<{
   orgId: string
@@ -48,8 +50,11 @@ const { t } = useI18n()
 const currentTab = ref()
 const admin = useContestCapability('admin')
 
-const endpoint = `contest/${props.contestId}/ranklist/${encodeURIComponent(props.ranklistKey)}/url`
+const endpoint = computed(
+  () => `contest/${props.contestId}/ranklist/${encodeURIComponent(props.ranklistKey)}/url`
+)
 </script>
+
 <i18n>
 en:
   ranklist-settings: Ranklist Settings
