@@ -119,7 +119,8 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       schema: {
         body: Type.Object({
           provider: Type.String(),
-          payload: Type.Unknown()
+          payload: Type.Unknown(),
+          mfaToken: Type.Optional(Type.String())
         }),
         response: {
           200: Type.Unknown()
@@ -139,6 +140,10 @@ export const userScopedRoutes = defineRoutes(async (s) => {
 
       const { provider, payload } = req.body
       if (!Object.hasOwn(authProviders, provider)) return rep.badRequest()
+      if (authProviders[provider].enableMfaBind) {
+        if (!req.body.mfaToken) return rep.badRequest()
+        req.verifyMfa(req.body.mfaToken)
+      }
       return authProviders[provider].preBind?.(ctx._userId, payload, req, rep) ?? {}
     }
   )
@@ -149,7 +154,8 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       schema: {
         body: Type.Object({
           provider: Type.String(),
-          payload: Type.Unknown()
+          payload: Type.Unknown(),
+          mfaToken: Type.Optional(Type.String())
         }),
         response: {
           200: Type.Unknown()
@@ -169,6 +175,10 @@ export const userScopedRoutes = defineRoutes(async (s) => {
 
       const { provider, payload } = req.body
       if (!Object.hasOwn(authProviders, provider)) return rep.badRequest()
+      if (authProviders[provider].enableMfaBind) {
+        if (!req.body.mfaToken) return rep.badRequest()
+        req.verifyMfa(req.body.mfaToken)
+      }
       return authProviders[provider].bind(ctx._userId, payload, req, rep)
     }
   )

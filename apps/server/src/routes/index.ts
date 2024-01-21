@@ -74,7 +74,7 @@ function decoratedVerifyMfa(this: FastifyRequest, token: string): string {
   if (!this.user) throw this.server.httpErrors.forbidden()
   const payload = this.server.jwt.verify<UserPayload>(token)
   if (userPayload.Check(payload)) {
-    if (this.user.userId !== new UUID(payload.userId)) throw this.server.httpErrors.forbidden()
+    if (!this.user.userId.equals(payload.userId)) throw this.server.httpErrors.forbidden()
     if (!payload.mfa) throw this.server.httpErrors.forbidden()
     if (!Object.hasOwn(authProviders, payload.mfa)) throw this.server.httpErrors.badRequest()
     return payload.mfa

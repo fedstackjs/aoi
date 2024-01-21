@@ -4,7 +4,13 @@ import routes from '~pages'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes
+  routes: [
+    ...routes,
+    {
+      path: '/:pathMatch(.*)*',
+      component: () => import('@/components/utils/NotFound.vue')
+    }
+  ]
 })
 
 router.beforeEach((to, from, next) => {

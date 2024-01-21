@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { useAsyncState, useLocalStorage, useTitle, watchDebounced } from '@vueuse/core'
 import { http, isLoggedIn, userId } from '@/utils/http'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import type { IOrgProfile, IUserProfile } from '@/types'
 
 export const useAppState = defineStore('app_state', () => {
@@ -52,6 +52,7 @@ export const useAppState = defineStore('app_state', () => {
   const navBar = ref<boolean>()
   const title = useTitle()
   const loggedIn = isLoggedIn
+  const mfaToken = useLocalStorage('mfaToken', '', { writeDefaults: false })
 
   const debug = useLocalStorage('aoi-GENSHIN-START!', false, { writeDefaults: false })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,6 +65,7 @@ export const useAppState = defineStore('app_state', () => {
     title,
     loggedIn,
     userId,
+    mfaToken,
     user: computed(() => user),
     joinedOrgs: computed(() => joinedOrgs),
     userCapability: withOverride('userCapability', () => user.state.value?.capability ?? '0'),
@@ -77,3 +79,30 @@ export const useAppState = defineStore('app_state', () => {
     overrides
   }
 })
+
+export function useMfa() {
+  const app = useAppState()
+  const router = useRouter()
+  const route = useRoute()
+  return {
+    hasMfaToken: computed(() => {
+      if (!app.mfaToken) return false
+      const { exp } = JSON.parse(atob(app.mfaToken.split('.')[1]))
+      return exp * 1000 > Date.now()
+    }),
+    postVerify: (token: string) => {
+      app.mfaToken = token
+      if (route.query.redirect) {
+        router.replace(`${route.query.redirect}`)
+      } else {
+        router.replace('/')
+      }
+    },
+    doVerify: () => {
+      router.push({
+        path: '/auth/verify',
+        query: { redirect: route.fullPath }
+      })
+    }
+  }
+}
