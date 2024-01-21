@@ -33,6 +33,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
       {
         $set: {
           state: SolutionState.PENDING,
+          // Problem solutions are not synced with rankers,
+          // so we can use local time here
           submittedAt: req._now,
           score: 0,
           status: '',

@@ -60,21 +60,23 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      const { modifiedCount } = await solutions.updateOne(
+      const { modifiedCount } = await solutions.updateMany(
         {
           contestId: req.inject(kContestContext)._contestId,
           state: SolutionState.CREATED
         },
-        {
-          $set: {
-            state: SolutionState.PENDING,
-            submittedAt: req._now,
-            score: 0,
-            status: '',
-            metrics: {},
-            message: ''
+        [
+          {
+            $set: {
+              state: SolutionState.PENDING,
+              submittedAt: { $convert: { input: '$$NOW', to: 'double' } },
+              score: 0,
+              status: '',
+              metrics: {},
+              message: ''
+            }
           }
-        },
+        ],
         { ignoreUndefined: true }
       )
       return { modifiedCount }
@@ -120,13 +122,15 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
           _id: req.inject(kContestContext)._contestId,
           ranklists: { $exists: true, $ne: [] }
         },
-        {
-          $set: {
-            ranklistUpdatedAt: req._now,
-            ranklistState: ContestRanklistState.INVALID
+        [
+          {
+            $set: {
+              ranklistUpdatedAt: { $convert: { input: '$$NOW', to: 'double' } },
+              ranklistState: ContestRanklistState.INVALID
+            }
           },
-          $unset: req.body.resetRunner ? { ranklistRunnerId: 1 } : {}
-        },
+          ...(req.body.resetRunner ? [{ $unset: ['ranklistRunnerId'] }] : [])
+        ],
         { ignoreUndefined: true }
       )
       return 0

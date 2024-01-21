@@ -264,6 +264,8 @@ const problemViewRoutes = defineRoutes(async (s) => {
         metrics: {},
         status: '',
         message: '',
+        // createdAt is only a reference time,
+        // so use local time here
         createdAt: req._now
       })
       const uploadUrl = await getUploadUrl(oss, solutionDataKey(insertedId), {

@@ -101,7 +101,6 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const now = req._now
       const ctx = req.inject(kRunnerSolutionContext)
       const value = await solutions.findOneAndUpdate(
         {
@@ -109,7 +108,9 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
           taskId: ctx._taskId,
           state: { $in: [SolutionState.QUEUED, SolutionState.RUNNING] }
         },
-        { $set: { state: SolutionState.COMPLETED, completedAt: now } },
+        // Since completedAt is only for reference,
+        // use local time here
+        { $set: { state: SolutionState.COMPLETED, completedAt: req._now } },
         { projection: { userId: 1, problemId: 1, contestId: 1, score: 1, status: 1 } }
       )
       if (!value) return rep.conflict()
@@ -120,17 +121,19 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
             contestId: value.contestId,
             [`results.${value.problemId}.lastSolutionId`]: value._id
           },
-          {
-            $set: {
-              [`results.${value.problemId}.lastSolution`]: {
-                _id: value._id,
-                score: value.score,
-                status: value.status,
-                completedAt: now
-              },
-              updatedAt: now
+          [
+            {
+              $set: {
+                [`results.${value.problemId}.lastSolution`]: {
+                  _id: value._id,
+                  score: value.score,
+                  status: value.status,
+                  completedAt: req._now
+                },
+                updatedAt: { $convert: { input: '$$NOW', to: 'double' } }
+              }
             }
-          }
+          ]
         )
         if (modifiedCount) {
           // update contest ranklist state
@@ -139,12 +142,14 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
               _id: value.contestId,
               ranklists: { $exists: true, $ne: [] }
             },
-            {
-              $set: {
-                ranklistUpdatedAt: now,
-                ranklistState: ContestRanklistState.INVALID
+            [
+              {
+                $set: {
+                  ranklistUpdatedAt: { $convert: { input: '$$NOW', to: 'double' } },
+                  ranklistState: ContestRanklistState.INVALID
+                }
               }
-            }
+            ]
           )
         }
       } else {
