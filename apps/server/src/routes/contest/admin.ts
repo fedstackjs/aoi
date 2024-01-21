@@ -105,21 +105,33 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     }
   )
 
-  s.post('/update-ranklists', async (req) => {
-    await contests.updateOne(
-      {
-        _id: req.inject(kContestContext)._contestId,
-        ranklists: { $exists: true, $ne: [] }
-      },
-      {
-        $set: {
-          ranklistUpdatedAt: req._now,
-          ranklistState: ContestRanklistState.INVALID
-        }
+  s.post(
+    '/update-ranklists',
+    {
+      schema: {
+        body: Type.Object({
+          resetRunner: Type.Optional(Type.Boolean())
+        })
       }
-    )
-    return 0
-  })
+    },
+    async (req) => {
+      await contests.updateOne(
+        {
+          _id: req.inject(kContestContext)._contestId,
+          ranklists: { $exists: true, $ne: [] }
+        },
+        {
+          $set: {
+            ranklistUpdatedAt: req._now,
+            ranklistState: ContestRanklistState.INVALID
+          },
+          $unset: req.body.resetRunner ? { ranklistRunnerId: 1 } : {}
+        },
+        { ignoreUndefined: true }
+      )
+      return 0
+    }
+  )
 
   s.get(
     '/stages',
