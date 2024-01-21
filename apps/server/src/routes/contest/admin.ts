@@ -127,9 +127,9 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
             $set: {
               ranklistUpdatedAt: { $convert: { input: '$$NOW', to: 'double' } },
               ranklistState: ContestRanklistState.INVALID
-            },
-            $unset: req.body.resetRunner ? { ranklistRunnerId: 1 } : {}
-          }
+            }
+          },
+          ...(req.body.resetRunner ? [{ $unset: ['ranklistRunnerId'] }] : [])
         ],
         { ignoreUndefined: true }
       )
