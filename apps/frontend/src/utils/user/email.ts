@@ -14,7 +14,8 @@ export function useChangeEmail(userId: MaybeRef<string>) {
         provider: 'mail',
         payload: {
           email: newEmail.value
-        }
+        },
+        mfaToken: app.mfaToken
       }
     })
   })

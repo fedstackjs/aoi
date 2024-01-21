@@ -17,9 +17,6 @@
       </VCol>
     </VRow>
   </VCardText>
-  <VCardText v-if="login.state.value.signup" class="text-center">
-    <VBtn variant="tonal" to="/signup"> {{ t('pages.signup') }} </VBtn>
-  </VCardText>
 </template>
 
 <script setup lang="ts">
