@@ -50,6 +50,7 @@ import { computed, ref } from 'vue'
 import { useAppState } from '@/stores/app'
 import { useContestProblemTitle } from '@/utils/contest/problem/inject'
 import type { ISolutionDTO } from './types'
+import { useRouteQuery } from '@vueuse/router'
 
 const { t } = useI18n()
 const app = useAppState()
@@ -78,7 +79,7 @@ const headersProblem = [
   { title: t('common.submitted-at'), key: 'submittedAt', align: 'start', sortable: false }
 ] as const
 
-const userId = ref(app.userId as string)
+const userId = useRouteQuery('userId')
 
 const {
   page,
