@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { IUser, loadEnv, users } from '../index.js'
+import { IUser, loadEnv, parseBoolean, users } from '../index.js'
 import { BaseAuthProvider } from './base.js'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { Filter, UUID } from 'mongodb'
@@ -28,12 +28,8 @@ export class IaaaAuthProvider extends BaseAuthProvider {
   override async init(): Promise<void> {
     this.iaaaId = loadEnv('IAAA_ID', String)
     this.iaaaKey = loadEnv('IAAA_KEY', String)
-    this.allowSignupFromLogin = loadEnv(
-      'IAAA_ALLOW_SIGNUP_FROM_LOGIN',
-      (x) => !!JSON.parse(x),
-      false
-    )
-    this.allowRebind = loadEnv('IAAA_ALLOW_REBIND', (x) => !!JSON.parse(x), false)
+    this.allowSignupFromLogin = loadEnv('IAAA_ALLOW_SIGNUP_FROM_LOGIN', parseBoolean, false)
+    this.allowRebind = loadEnv('IAAA_ALLOW_REBIND', parseBoolean, false)
 
     await users.createIndex(
       { 'authSources.iaaaId': 1 },

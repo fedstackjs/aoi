@@ -1,7 +1,7 @@
 import mailer from 'nodemailer'
 
 import { BaseAuthProvider } from './base.js'
-import { loadEnv, logger, users } from '../index.js'
+import { loadEnv, logger, parseBoolean, users } from '../index.js'
 import { UUID } from 'mongodb'
 import { Type } from '@sinclair/typebox'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
@@ -50,11 +50,7 @@ export class MailAuthProvider extends BaseAuthProvider {
     this.transporter = mailer.createTransport(options)
     this.from = loadEnv('MAIL_FROM', String, '"AOI System" <aoi@fedstack.org>')
     this.html = loadEnv('MAIL_HTML', String, defaultMailHtml)
-    this.allowSignupFromLogin = loadEnv(
-      'MAIL_ALLOW_SIGNUP_FROM_LOGIN',
-      (x) => !!JSON.parse(x),
-      false
-    )
+    this.allowSignupFromLogin = loadEnv('MAIL_ALLOW_SIGNUP_FROM_LOGIN', parseBoolean, false)
     const whitelist = loadEnv('MAIL_WHITELIST', JSON.parse, null)
     if (whitelist && Array.isArray(whitelist)) {
       this.whitelist = []

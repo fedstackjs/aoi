@@ -15,3 +15,5 @@ export function loadEnv<T, S extends [] | [T]>(
   const value = process.env[key]
   return transform(value ?? '')
 }
+
+export const parseBoolean = (value: string) => !!JSON.parse(value)

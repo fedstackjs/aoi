@@ -6,9 +6,9 @@ import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { SUserProfile } from '../../schemas/index.js'
 import { infos, orgMemberships, OrgCapability } from '../../db/index.js'
 import { authProviderList, authProviders } from '../../auth/index.js'
-import { loadEnv } from '../../index.js'
+import { loadEnv, parseBoolean } from '../../index.js'
 
-const signupEnabled = loadEnv('SIGNUP_ENABLED', (x) => !!JSON.parse(x), true)
+const signupEnabled = loadEnv('SIGNUP_ENABLED', parseBoolean, true)
 
 export const authRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', (route) => {

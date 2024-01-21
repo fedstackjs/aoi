@@ -1,8 +1,13 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { BSON } from 'mongodb'
+import { loadEnv, parseBoolean } from '../index.js'
 
 export abstract class BaseAuthProvider {
-  constructor() {}
+  enableMfaBind
+
+  constructor() {
+    this.enableMfaBind = loadEnv('AUTH_ENABLE_MFA_BIND', parseBoolean, false)
+  }
 
   abstract readonly name: string
 
