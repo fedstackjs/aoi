@@ -127,10 +127,14 @@ const contestParticipantAdminRoutes = defineRoutes(async (s) => {
     async (req) => {
       const ctx = req.inject(kContestContext)
       const userId = new BSON.UUID(req.params.userId)
-      await contestParticipants.updateOne(
-        { contestId: ctx._contestId, userId },
-        { $set: { tags: req.body.tags, updatedAt: req._now } }
-      )
+      await contestParticipants.updateOne({ contestId: ctx._contestId, userId }, [
+        {
+          $set: {
+            tags: req.body.tags,
+            updatedAt: { $convert: { input: '$$NOW', to: 'double' } }
+          }
+        }
+      ])
       return 0
     }
   )
