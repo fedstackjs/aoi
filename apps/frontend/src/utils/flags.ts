@@ -1,1 +1,1 @@
-export const enableMfa = !import.meta.env.DISABLE_MFA_BIND
+export const enableMfa = !import.meta.env.VITE_DISABLE_MFA_BIND
