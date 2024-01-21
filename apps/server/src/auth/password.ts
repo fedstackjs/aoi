@@ -43,8 +43,9 @@ export class PasswordAuthProvider extends BaseAuthProvider {
         { projection: { 'authSources.password': 1 } }
       )
       if (!user) throw httpErrors.notFound()
-      if (user.authSources.password && !bcrypt.compare(oldPassword, user.authSources.password))
-        throw httpErrors.forbidden()
+      if (!user.authSources.password) throw httpErrors.forbidden(`User has no password`)
+      const match = await bcrypt.compare(oldPassword, user.authSources.password)
+      if (!match) throw httpErrors.forbidden(`Invalid password`)
     }
     const { password } = payload
     const hash = await bcrypt.hash(password, 10)
@@ -69,7 +70,8 @@ export class PasswordAuthProvider extends BaseAuthProvider {
       { projection: { _id: 1, authSources: 1 } }
     )
     if (!user || !user.authSources.password) throw new Error('user not found')
-    if (!bcrypt.compare(password, user.authSources.password)) throw new Error('invalid password')
+    const match = await bcrypt.compare(password, user.authSources.password)
+    if (!match) throw httpErrors.forbidden(`Invalid password`)
     return [user._id, user.authSources.passwordResetDue ? ['user-auth'] : undefined]
   }
 }

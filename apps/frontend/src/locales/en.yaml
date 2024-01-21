@@ -7,6 +7,7 @@ pages:
   groups: Group
   signin: Sign in
   signup: Sign up
+  verify: Verify
   admin: Admin
   plans: Plans
   user-info: User Info
@@ -16,6 +17,7 @@ pages:
   modify-passwd: Modify Password
   announcements: Announcements
   solutions: Solutions
+  not-found: Not Found
 
 action:
   reload: Reload
@@ -38,6 +40,7 @@ action:
   publish: Publish
   cancel-publish: Cancel Publish
   export: Export
+  back: Go Back
 
 term:
   content: Content

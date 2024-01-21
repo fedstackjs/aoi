@@ -6,7 +6,7 @@ export abstract class BaseAuthProvider {
   enableMfaBind
 
   constructor() {
-    this.enableMfaBind = loadEnv('AUTH_ENABLE_MFA_BIND', parseBoolean, false)
+    this.enableMfaBind = loadEnv('AUTH_ENABLE_MFA_BIND', parseBoolean, true)
   }
 
   abstract readonly name: string

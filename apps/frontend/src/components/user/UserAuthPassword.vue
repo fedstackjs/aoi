@@ -1,6 +1,11 @@
 <template>
   <VCardText>
-    <VTextField v-model="oldPassword" :label="t('old-password')" type="password" />
+    <VTextField
+      v-if="!enableMfa"
+      v-model="oldPassword"
+      :label="t('old-password')"
+      type="password"
+    />
     <VTextField v-model="newPassword" :label="t('new-password')" type="password" />
   </VCardText>
   <VCardActions>
@@ -11,6 +16,7 @@
 </template>
 
 <script setup lang="ts">
+import { enableMfa } from '@/utils/flags'
 import { useChangePassword } from '@/utils/user/password'
 import { toRef } from 'vue'
 import { useI18n } from 'vue-i18n'

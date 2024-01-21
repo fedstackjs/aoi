@@ -22,7 +22,7 @@
       <AppBarUserMenu />
     </VToolbarItems>
     <VToolbarItems v-else>
-      <VBtn color="blue-darken-1" to="/login" exact>
+      <VBtn color="blue-darken-1" to="/auth/login" exact>
         {{ t('pages.signin') }}
       </VBtn>
     </VToolbarItems>

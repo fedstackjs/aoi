@@ -4,7 +4,10 @@
   </VCardTitle>
   <VSkeletonLoader type="image" v-if="login.isLoading.value" />
   <VCardText v-else>
-    <VRow>
+    <VAlert v-if="enableMfa && !hasMfaToken" type="info" color="" :title="t('mfa-required')">
+      <VBtn variant="outlined" @click="doVerify" :text="t('do-verify')" />
+    </VAlert>
+    <VRow v-else>
       <VCol v-for="method of login.state.value.providers" :key="method">
         <VCard variant="outlined" :title="t(`provider-${method}`)">
           <component :is="components[method]" :userId="userId" />
@@ -22,12 +25,15 @@ import UserAuthMail from './UserAuthMail.vue'
 import type { Component } from 'vue'
 import { useI18n } from 'vue-i18n'
 import UserAuthIaaa from './UserAuthIaaa.vue'
+import { useMfa } from '@/stores/app'
+import { enableMfa } from '@/utils/flags'
 
 defineProps<{
   userId: string
 }>()
 
 const { t } = useI18n()
+const { hasMfaToken, doVerify } = useMfa()
 
 const components: Record<string, Component> = {
   password: UserAuthPassword,
@@ -50,9 +56,13 @@ en:
   provider-password: Password Login
   provider-mail: Email Login
   provider-iaaa: IAAA Login
+  mfa-required: MFA Required
+  do-verify: Verify
 zh-Hans:
   user-auth: 用户认证
   provider-password: 密码登录
   provider-mail: 邮箱登录
   provider-iaaa: 北京大学统一身份认证
+  mfa-required: 需要多因子身份认证
+  do-verify: 开始认证
 </i18n>

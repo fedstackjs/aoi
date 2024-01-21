@@ -133,10 +133,13 @@ export class MailAuthProvider extends BaseAuthProvider {
     return {}
   }
 
-  override async preVerify(userId: UUID): Promise<unknown> {
+  override async preVerify(userId: UUID, payload: unknown): Promise<unknown> {
+    if (!EmailPayload.Check(payload)) throw httpErrors.badRequest('Invalid payload')
+    const { email } = payload
     const user = await users.findOne({ _id: userId }, { projection: { 'authSources.mail': 1 } })
     if (!user) throw httpErrors.notFound('User not found')
     if (!user.authSources.mail) throw new Error('user has no email')
+    if (user.authSources.mail !== email) throw httpErrors.forbidden('Invalid email')
     const key = this.userKey(userId)
     await this.sendCode(key, user.authSources.mail, 'verification')
     return {}

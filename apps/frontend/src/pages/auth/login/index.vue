@@ -6,7 +6,7 @@
     <VRow dense>
       <VCol v-for="method of login.state.value.providers" :key="method" cols="12">
         <VBtn
-          :to="`/login/${method}`"
+          :to="{ path: `/auth/login/${method}`, query: route.query }"
           block
           variant="flat"
           :prepend-icon="icons[method] ?? 'mdi-fingerprint'"
@@ -26,8 +26,11 @@
 import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 const { t } = useI18n()
+
+const route = useRoute()
 
 const icons: Record<string, string> = {
   password: 'mdi-lock',

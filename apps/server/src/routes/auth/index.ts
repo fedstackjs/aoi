@@ -63,8 +63,7 @@ export const authRoutes = defineRoutes(async (s) => {
         }),
         response: {
           200: Type.Object({
-            userId: Type.Optional(Type.String()),
-            token: Type.Optional(Type.String())
+            token: Type.String()
           })
         }
       }

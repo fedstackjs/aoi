@@ -62,7 +62,7 @@
           variant="text"
           prepend-icon="mdi-chevron-left"
           :text="t('pages.signin')"
-          to="/login"
+          to="/auth/login"
         />
       </VCardText>
     </VForm>

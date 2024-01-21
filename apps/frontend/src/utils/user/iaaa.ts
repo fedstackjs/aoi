@@ -1,6 +1,7 @@
 import { type MaybeRef, toRef } from 'vue'
 import { sleep, useAsyncTask } from '../async'
 import { http } from '../http'
+import { useAppState } from '@/stores/app'
 
 const html = `
 <form action=https://iaaa.pku.edu.cn/iaaa/oauth.jsp method=post name=iaaa style="display: none">
@@ -32,13 +33,15 @@ export async function getToken() {
 
 export function useRebindIaaa(userId: MaybeRef<string>) {
   const userIdRef = toRef(userId)
+  const app = useAppState()
   const updateTask = useAsyncTask(async () => {
     await http.post(`user/${userIdRef.value}/bind`, {
       json: {
         provider: 'iaaa',
         payload: {
           token: await getToken()
-        }
+        },
+        mfaToken: app.mfaToken
       }
     })
   })
