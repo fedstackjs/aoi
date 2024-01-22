@@ -30,16 +30,16 @@
 </template>
 
 <script setup lang="ts">
-import { http, login, prettyHTTPError } from '@/utils/http'
+import { useLogin } from '@/stores/app'
+import { http, prettyHTTPError } from '@/utils/http'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import type { SubmitEventPromise } from 'vuetify'
 
 const { t } = useI18n()
-const router = useRouter()
 const toast = useToast()
+const { postLogin } = useLogin()
 
 const email = ref('')
 const emailIcon = ref('mdi-send')
@@ -97,8 +97,7 @@ async function signin(ev: SubmitEventPromise) {
     })
     const { token } = await resp.json<{ token: string }>()
     toast.success(t('hint.signin-success'))
-    login(token)
-    router.replace('/')
+    postLogin(token)
   } catch (err) {
     toast.error(t('hint.signin-wrong-credentials'))
   }

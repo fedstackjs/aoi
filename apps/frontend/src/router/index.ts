@@ -15,7 +15,8 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const appState = useAppState()
-  if (to.path.startsWith('/org') && !appState.loggedIn) return next('/login')
+  if (to.path.startsWith('/org') && !appState.loggedIn)
+    return next({ path: '/auth/login', query: { redirect: to.fullPath } })
   return next()
 })
 

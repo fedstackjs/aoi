@@ -7,14 +7,17 @@
 
 <script setup lang="ts">
 import { useAsyncTask } from '@/utils/async'
-import { http, login, prettyHTTPError } from '@/utils/http'
+import { http, prettyHTTPError } from '@/utils/http'
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { getToken } from '@/utils/user/iaaa'
+import { useLogin } from '@/stores/app'
 
 const { t } = useI18n()
 const router = useRouter()
+const route = useRoute()
+const { postLogin } = useLogin()
 
 const task = useAsyncTask(async () => {
   try {
@@ -27,10 +30,9 @@ const task = useAsyncTask(async () => {
       }
     })
     const { token } = await resp.json<{ token: string }>()
-    login(token)
-    router.replace('/')
+    postLogin(token)
   } catch (err) {
-    router.replace('/login')
+    router.replace({ path: '/auth/login', query: route.query })
     throw new Error(await prettyHTTPError(err))
   }
 })

@@ -5,10 +5,10 @@
         <div>
           <VList density="compact">
             <VListItem
-              v-for="file in props.zip.files"
-              :key="file.name"
-              :title="file.name"
-              @click="currentFile = file"
+              v-for="name in files"
+              :key="zip.files[name].name"
+              :title="zip.files[name].name"
+              @click="currentFile = zip.files[name]"
             />
           </VList>
         </div>
@@ -27,11 +27,17 @@ import ZipFileViewer from './ZipFileViewer.vue'
 const props = defineProps<{
   zip: JSZip
   defaultFile?: string
+  showMetadata?: boolean
 }>()
 
+const files = computed(() => {
+  const keys = Object.keys(props.zip.files)
+  if (props.showMetadata) return keys
+  return keys.filter((fn) => fn !== '.metadata.json')
+})
+
 const showSideBar = computed(() => {
-  // show iff there are more than one files, excluding .metadata.json
-  return Object.keys(props.zip.files).filter((fn) => fn !== '.metadata.json').length > 1
+  return files.value.length > 1
 })
 
 const currentFile = shallowRef<JSZip.JSZipObject>()
@@ -42,8 +48,8 @@ function initialize() {
   if (props.defaultFile) {
     currentFile.value = props.zip.file(props.defaultFile) ?? undefined
   }
-  if (!currentFile.value && Object.keys(props.zip.files).length == 1) {
-    currentFile.value = props.zip.files[Object.keys(props.zip.files)[0]]
+  if (!currentFile.value && !showSideBar.value) {
+    currentFile.value = props.zip.files[files.value[0]]
   }
 }
 initialize()

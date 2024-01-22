@@ -180,7 +180,7 @@ async function signup() {
     const { token } = await resp.json<{ token: string }>()
     login(token)
     toast.success(t('hint.signup-success'))
-    router.push('/login')
+    router.push('auth/login')
   } catch (error) {
     toast.error(t('hint.signup-username-exists'))
     return
