@@ -9,7 +9,7 @@
             <!-- <th class="text-center">{{ t('term.hash') }}</th>
             <th class="text-center">{{ t('term.runner-label') }}</th> -->
             <th class="text-center">{{ t('term.user') }}</th>
-            <th class="text-center">{{ t('term.title') }}</th>
+            <th class="text-center" v-if="contestId">{{ t('term.title') }}</th>
             <th class="text-center" v-text="t('common.created-at')" />
             <th class="text-center" v-if="value.submittedAt" v-text="t('common.submitted-at')" />
           </thead>
@@ -34,7 +34,7 @@
               <td class="text-center">
                 <PrincipalProfile :principal-id="value.userId" />
               </td>
-              <td class="text-center">
+              <td class="text-center" v-if="contestId">
                 <code>{{ useContestProblemTitle(value.problemId)?.value }}</code>
               </td>
               <td class="text-center" v-text="new Date(value.createdAt).toLocaleString()" />
@@ -98,7 +98,7 @@
     <VBtn v-if="showData && !viewFile" :text="t('action.view')" @click="viewFile = true" />
   </VCardActions>
   <VCardText v-if="showData && viewFile">
-    <ZipAutoViewer :endpoint="downloadEndpoint" default-file="answer.code" />
+    <ZipAutoViewer :endpoint="downloadEndpoint" default-file="answer.code" show-metadata />
   </VCardText>
   <template v-if="showDetails && solution.state.value?.state === 4">
     <VDivider />

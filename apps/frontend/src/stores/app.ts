@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { useAsyncState, useLocalStorage, useTitle, watchDebounced } from '@vueuse/core'
-import { http, isLoggedIn, userId } from '@/utils/http'
+import { http, isLoggedIn, login, userId } from '@/utils/http'
 import { useRoute, useRouter } from 'vue-router'
 import type { IOrgProfile, IUserProfile } from '@/types'
 
@@ -101,6 +101,28 @@ export function useMfa() {
     doVerify: () => {
       router.push({
         path: '/auth/verify',
+        query: { redirect: route.fullPath }
+      })
+    }
+  }
+}
+
+export function useLogin() {
+  const router = useRouter()
+  const route = useRoute()
+  return {
+    isLoggedIn,
+    postLogin: (token: string) => {
+      login(token)
+      if (route.query.redirect) {
+        router.replace(`${route.query.redirect}`)
+      } else {
+        router.replace('/')
+      }
+    },
+    doLogin: () => {
+      router.push({
+        path: '/auth/login',
         query: { redirect: route.fullPath }
       })
     }

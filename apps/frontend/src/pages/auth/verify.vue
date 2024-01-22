@@ -44,7 +44,7 @@ const appState = useAppState()
 const { hasMfaToken } = useMfa()
 withI18nTitle('pages.verify')
 
-if (!appState.loggedIn) router.replace('/login')
+if (!appState.loggedIn) router.replace('/auth/login')
 if (hasMfaToken.value) router.replace('/')
 
 const hint = import.meta.env.VITE_VERIFY_HINT

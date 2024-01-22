@@ -23,7 +23,7 @@
       <PrincipalProfile :principal-id="item.userId" />
     </template>
     <template v-slot:[`item.title`]="{ item }">
-      <RouterLink :to="rel(item._id)" style="color: primary">
+      <RouterLink v-if="contestId" :to="rel(item._id)" style="color: primary">
         {{ useContestProblemTitle(item.problemId)?.value }}
       </RouterLink>
     </template>

@@ -30,16 +30,16 @@
 </template>
 
 <script setup lang="ts">
-import { http, login } from '@/utils/http'
+import { useLogin } from '@/stores/app'
+import { http } from '@/utils/http'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import type { SubmitEventPromise } from 'vuetify'
 
 const { t } = useI18n()
-const router = useRouter()
 const toast = useToast()
+const { postLogin } = useLogin()
 
 const username = ref('')
 const password = ref('')
@@ -76,14 +76,9 @@ async function signin(ev: SubmitEventPromise) {
         }
       }
     })
-    const { token, userId } = await resp.json<{ token?: string; userId?: string }>()
+    const { token } = await resp.json<{ token: string }>()
     toast.success(t('hint.signin-success'))
-    if (token) {
-      login(token)
-      router.replace('/')
-    } else {
-      router.replace(`/initial?uid=${userId}`)
-    }
+    postLogin(token)
   } catch (err) {
     toast.error(t('hint.signin-wrong-credentials'))
   }

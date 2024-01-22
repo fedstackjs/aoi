@@ -19,7 +19,8 @@ const props = defineProps<{
 }>()
 
 const knownStatus: Record<string, [string, string]> = {
-  Accepted: ['mdi-check', 'success']
+  Accepted: ['mdi-check', 'success'],
+  Success: ['mdi-check', 'info']
 }
 const display = computed(() => knownStatus[props.status] ?? ['mdi-circle-outline', ''])
 </script>
