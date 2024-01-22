@@ -45,7 +45,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': 'http://localhost:1926'
+      '/api': process.env.AOI_URL ?? 'http://localhost:1926'
     }
   }
 })
