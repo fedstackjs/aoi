@@ -1,6 +1,6 @@
 {
   "name": "@aoi-js/frontend",
-  "version": "0.0.56",
+  "version": "0.0.57",
   "publishConfig": {
     "access": "public"
   },
