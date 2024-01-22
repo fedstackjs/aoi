@@ -20,7 +20,12 @@ const props = defineProps<{
 
 const knownStatus: Record<string, [string, string]> = {
   Accepted: ['mdi-check', 'success'],
-  Success: ['mdi-check', 'info']
+  Success: ['mdi-check', 'info'],
+  'Memory Limit Exceeded': ['mdi-database-alert-outline', 'error'],
+  'Time Limit Exceeded': ['mdi-timer-alert-outline', 'error'],
+  'Wrong Answer': ['mdi-close', 'error'],
+  'Compile Error': ['mdi-code-braces', 'error'],
+  'Internal Error': ['mdi-help-circle-outline', '']
 }
-const display = computed(() => knownStatus[props.status] ?? ['mdi-circle-outline', ''])
+const display = computed(() => knownStatus[props.status] ?? ['mdi-circle-outline', 'warning'])
 </script>

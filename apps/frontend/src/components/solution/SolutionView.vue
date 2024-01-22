@@ -1,5 +1,5 @@
 <template>
-  <AsyncState :state="solution">
+  <AsyncState :state="solution" :force-loading="autoRefresh.isActive.value">
     <template v-slot="{ value }">
       <VCardText>
         <VTable>
