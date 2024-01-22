@@ -8,7 +8,8 @@
         :rules="emailRules"
         :readonly="emailSent"
         :append-icon="emailIcon"
-        @click:append="preLogin"
+        @click:append="preVerify"
+        @keydown.enter.prevent.stop="preVerify"
       />
 
       <VOtpInput v-if="emailSent" v-model.trim="code" />
@@ -57,7 +58,7 @@ const emailRules = [
 
 const isLoading = ref(false)
 
-async function preLogin() {
+async function preVerify() {
   if (emailSending.value) return
   emailSending.value = true
   emailIcon.value = 'mdi-send-clock'

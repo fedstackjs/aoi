@@ -9,6 +9,7 @@
         :readonly="emailSent"
         :append-icon="emailIcon"
         @click:append="preLogin"
+        @keydown.enter.prevent.stop="preLogin"
       />
 
       <VOtpInput v-if="emailSent" v-model.trim="code" />
