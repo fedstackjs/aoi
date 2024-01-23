@@ -11,6 +11,7 @@ import {
 } from '../../../db/index.js'
 import { hasCapability } from '../../../utils/index.js'
 import { kContestContext } from '../inject.js'
+import { loadProblemSettings } from './common.js'
 
 export const problemAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
@@ -137,6 +138,9 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
         params: Type.Object({
           problemId: Type.UUID()
         }),
+        body: Type.Object({
+          pull: Type.Optional(Type.Boolean())
+        }),
         response: {
           200: Type.Object({
             modifiedCount: Type.Number()
@@ -144,7 +148,20 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
         }
       }
     },
-    async (req) => {
+    async (req, rep) => {
+      const { pull } = req.body
+      const [problemId, settings] = loadProblemSettings(req)
+      if (!settings) return rep.notFound()
+      const problem = await problems.findOne(
+        { _id: problemId },
+        { projection: { currentDataHash: 1, data: 1 } }
+      )
+      if (!problem) return rep.notFound()
+      const { data, currentDataHash } = problem
+      const currentData = data.find(({ hash }) => hash === currentDataHash)
+      if (!currentData) return rep.preconditionFailed('Current data not found')
+      const { config } = currentData
+
       const { modifiedCount } = await solutions.updateMany(
         {
           contestId: req.inject(kContestContext)._contestId,
@@ -154,6 +171,8 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
         [
           {
             $set: {
+              label: pull ? config.label : undefined,
+              problemDataHash: pull ? currentDataHash : undefined,
               state: SolutionState.PENDING,
               score: 0,
               status: '',
@@ -162,7 +181,8 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
             }
           },
           { $unset: ['taskId', 'runnerId'] }
-        ]
+        ],
+        { ignoreUndefined: true }
       )
       return { modifiedCount }
     }
