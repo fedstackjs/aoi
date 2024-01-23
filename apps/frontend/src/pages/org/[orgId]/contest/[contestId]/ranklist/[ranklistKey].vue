@@ -30,7 +30,7 @@ import type { IContestDTO } from '@/components/contest/types'
 import { useI18n } from 'vue-i18n'
 import RanklistSettings from '@/components/contest/RanklistSettings.vue'
 import { ref } from 'vue'
-import RanklistViewer from '@/components/utils/RanklistViewer.vue'
+import RanklistViewer from '@/components/contest/RanklistViewer.vue'
 import { useContestCapability } from '@/utils/contest/inject'
 import { computed } from 'vue'
 

@@ -38,6 +38,8 @@ export interface IContestProblemListDTO {
   settings: {
     score: number
     slug: string
+    solutionCountLimit: number
+    showAfter: number
   }
 }
 
