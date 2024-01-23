@@ -17,6 +17,25 @@
       {{ t('term.danger-zone') }}
     </VCardSubtitle>
     <VCardText>
+      <VBtn
+        color="red"
+        variant="elevated"
+        @click="submitAllTask.execute()"
+        :loading="submitAllTask.isLoading.value"
+      >
+        {{ t('action.submit-all') }}
+      </VBtn>
+      <VBtn
+        color="red"
+        variant="elevated"
+        :append-icon="pull ? 'mdi-source-pull' : 'mdi-pin'"
+        @click="rejudgeAllTask.execute()"
+        @click.middle="pull = !pull"
+        :loading="rejudgeAllTask.isLoading.value"
+      >
+        {{ t('action.rejudge-all') }}
+      </VBtn>
+
       <VBtn color="red" variant="elevated" @click="deleteProblem()">
         {{ t('action.delete') }}
       </VBtn>
@@ -32,6 +51,8 @@ import { useRouter } from 'vue-router'
 import type { IProblemDTO } from '@/components/problem/types'
 import ProblemSettingsInput from '@/components/problem/ProblemSettingsInput.vue'
 import SettingsEditor from '@/components/utils/SettingsEditor.vue'
+import { useAsyncTask, withMessage } from '@/utils/async'
+import { ref } from 'vue'
 
 const props = defineProps<{
   orgId: string
@@ -45,6 +66,21 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const router = useRouter()
+
+const submitAllTask = useAsyncTask(async () => {
+  const { modifiedCount } = await http
+    .post(`problem/${props.problemId}/admin/submit-all`)
+    .json<{ modifiedCount: number }>()
+  return withMessage(t('msg.submit-all-success', { count: modifiedCount }))
+})
+
+const pull = ref(false)
+const rejudgeAllTask = useAsyncTask(async () => {
+  const { modifiedCount } = await http
+    .post(`problem/${props.problemId}/admin/rejudge-all`, { json: { pull: pull.value } })
+    .json<{ modifiedCount: number }>()
+  return withMessage(t('msg.rejudge-all-success', { count: modifiedCount }))
+})
 
 async function deleteProblem() {
   await http.delete(`problem/${props.problemId}/admin`)

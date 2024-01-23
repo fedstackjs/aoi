@@ -17,11 +17,14 @@
       <VBtn
         color="red"
         variant="elevated"
+        :append-icon="pull ? 'mdi-source-pull' : 'mdi-pin'"
         @click="rejudgeAllTask.execute()"
+        @click.middle="pull = !pull"
         :loading="rejudgeAllTask.isLoading.value"
       >
         {{ t('action.rejudge-all') }}
       </VBtn>
+
       <VBtn color="error" variant="elevated" @click="deleteProblem()">
         {{ t('action.delete') }}
       </VBtn>
@@ -42,6 +45,7 @@ import { useRoute, useRouter } from 'vue-router'
 import SettingsEditor from '@/components/utils/SettingsEditor.vue'
 import ContestProblemSettingsInput from './ContestProblemSettingsInput.vue'
 import { useAsyncTask, withMessage } from '@/utils/async'
+import { ref } from 'vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -62,9 +66,12 @@ const submitAllTask = useAsyncTask(async () => {
   return withMessage(t('msg.submit-all-success', { count: modifiedCount }))
 })
 
+const pull = ref(false)
 const rejudgeAllTask = useAsyncTask(async () => {
   const { modifiedCount } = await http
-    .post(`contest/${props.contestId}/problem/${props.problem._id}/rejudge-all`)
+    .post(`contest/${props.contestId}/problem/${props.problem._id}/rejudge-all`, {
+      json: { pull: pull.value }
+    })
     .json<{ modifiedCount: number }>()
   return withMessage(t('msg.rejudge-all-success', { count: modifiedCount }))
 })
