@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import RanklistViewer from '@/components/utils/RanklistViewer.vue'
+import RanklistViewer from '@/components/contest/RanklistViewer.vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
