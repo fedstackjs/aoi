@@ -165,6 +165,7 @@ watch(
   () => props.problemId,
   () => {
     problem.execute()
+    solutionCount.execute()
   }
 )
 </script>
