@@ -62,7 +62,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
             metrics: {},
             message: ''
           }
-        }
+        },
+        { $unset: ['taskId', 'runnerId'] }
       ],
       { ignoreUndefined: true }
     )
@@ -92,7 +93,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
             metrics: {},
             message: ''
           }
-        }
+        },
+        { $unset: ['taskId', 'runnerId'] }
       ],
       { ignoreUndefined: true }
     )

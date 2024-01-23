@@ -75,7 +75,8 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
               metrics: {},
               message: ''
             }
-          }
+          },
+          { $unset: ['taskId', 'runnerId'] }
         ]
       )
       return { modifiedCount }
@@ -109,7 +110,8 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
               metrics: {},
               message: ''
             }
-          }
+          },
+          { $unset: ['taskId', 'runnerId'] }
         ]
       )
       return { modifiedCount }

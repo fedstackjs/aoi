@@ -121,7 +121,8 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
               metrics: {},
               message: ''
             }
-          }
+          },
+          { $unset: ['taskId', 'runnerId'] }
         ]
       )
       return { modifiedCount }
@@ -159,7 +160,8 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
               metrics: {},
               message: ''
             }
-          }
+          },
+          { $unset: ['taskId', 'runnerId'] }
         ]
       )
       return { modifiedCount }

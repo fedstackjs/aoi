@@ -40,7 +40,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
             metrics: {},
             message: ''
           }
-        }
+        },
+        { $unset: ['taskId', 'runnerId'] }
       ],
       { ignoreUndefined: true }
     )
@@ -62,15 +63,18 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
         problemId: ctx._problemId,
         state: { $ne: SolutionState.CREATED }
       },
-      {
-        $set: {
-          state: SolutionState.PENDING,
-          score: 0,
-          status: '',
-          metrics: {},
-          message: ''
-        }
-      },
+      [
+        {
+          $set: {
+            state: SolutionState.PENDING,
+            score: 0,
+            status: '',
+            metrics: {},
+            message: ''
+          }
+        },
+        { $unset: ['taskId', 'runnerId'] }
+      ],
       { ignoreUndefined: true }
     )
     if (modifiedCount === 0) return rep.notFound()
