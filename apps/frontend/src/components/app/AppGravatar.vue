@@ -1,7 +1,9 @@
 <template>
   <VImg :src="url">
     <template #error>
-      <VIcon>mdi-account</VIcon>
+      <div class="u-w-full u-h-full u-flex u-justify-center u-items-center">
+        <VIcon size="48" color="secondary">mdi-account-circle</VIcon>
+      </div>
     </template>
   </VImg>
 </template>
