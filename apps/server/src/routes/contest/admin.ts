@@ -11,6 +11,7 @@ import { manageACL, manageAccessLevel } from '../common/access.js'
 import { defineRoutes } from '../common/index.js'
 import { SContestStage } from '../../schemas/contest.js'
 import { kContestContext } from './inject.js'
+import { UUID } from 'mongodb'
 
 export const contestAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req) => {
@@ -88,6 +89,12 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Rejudge all solutions',
+        body: Type.Object({
+          problemId: Type.Optional(Type.UUID()),
+          state: Type.Optional(Type.Integer({ minimum: 1, maximum: 4 })),
+          status: Type.Optional(Type.String()),
+          runnerId: Type.Optional(Type.String())
+        }),
         response: {
           200: Type.Object({
             modifiedCount: Type.Number()
@@ -99,7 +106,15 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
       const { modifiedCount } = await solutions.updateMany(
         {
           contestId: req.inject(kContestContext)._contestId,
-          state: { $ne: SolutionState.CREATED }
+          problemId: req.body.problemId ? new UUID(req.body.problemId) : undefined,
+          state: req.body.state || { $ne: SolutionState.CREATED },
+          status: req.body.status,
+          runnerId:
+            typeof req.body.runnerId === 'string'
+              ? req.body.runnerId
+                ? new UUID(req.body.runnerId)
+                : { $exists: false }
+              : undefined
         },
         [
           {
@@ -112,7 +127,8 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
             }
           },
           { $unset: ['taskId', 'runnerId'] }
-        ]
+        ],
+        { ignoreUndefined: true }
       )
       return { modifiedCount }
     }

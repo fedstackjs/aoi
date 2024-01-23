@@ -108,6 +108,7 @@ term:
   is-public: Is Public
   is-visible: Is Visible
   otp-code: OTP Code
+  runner-id: Runner ID
 
 common:
   created-at: Created at

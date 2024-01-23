@@ -8,6 +8,54 @@
     />
     <VDivider />
     <VCardSubtitle>
+      {{ t('action.rejudge-all') }}
+    </VCardSubtitle>
+    <VCardText>
+      <VForm fast-fail validate-on="submit lazy" @submit.prevent="rejudgeAllTask.execute">
+        <VTextField
+          v-model="rejudgeOptions.problemId"
+          :label="t('term.problem-id')"
+          :rules="[isUUID, isNotEmpty]"
+          :append-icon="rejudgeOptions.problemId === undefined ? 'mdi-null' : 'mdi-delete'"
+          @click:append="rejudgeOptions.problemId = undefined"
+        />
+        <VSelect
+          v-model="rejudgeOptions.state"
+          :items="[
+            { title: 'Pending', value: 1 },
+            { title: 'Queued', value: 2 },
+            { title: 'Running', value: 3 },
+            { title: 'Completed', value: 4 }
+          ]"
+          :label="t('term.state')"
+          :append-icon="rejudgeOptions.state === undefined ? 'mdi-null' : 'mdi-delete'"
+          @click:append="rejudgeOptions.state = undefined"
+        />
+        <VTextField
+          v-model="rejudgeOptions.status"
+          :label="t('term.status')"
+          :append-icon="rejudgeOptions.status === undefined ? 'mdi-null' : 'mdi-delete'"
+          @click:append="rejudgeOptions.status = undefined"
+        />
+        <VTextField
+          v-model="rejudgeOptions.runnerId"
+          :rules="[isUUID]"
+          :label="t('term.runner-id')"
+          :append-icon="rejudgeOptions.runnerId === undefined ? 'mdi-null' : 'mdi-delete'"
+          @click:append="rejudgeOptions.runnerId = undefined"
+        />
+        <VBtn
+          color="red"
+          variant="elevated"
+          type="submit"
+          :loading="rejudgeAllTask.isLoading.value"
+        >
+          {{ t('action.rejudge-all') }}
+        </VBtn>
+      </VForm>
+    </VCardText>
+    <VDivider />
+    <VCardSubtitle>
       {{ t('term.danger-zone') }}
     </VCardSubtitle>
     <VCardActions>
@@ -18,14 +66,6 @@
         :loading="submitAllTask.isLoading.value"
       >
         {{ t('action.submit-all') }}
-      </VBtn>
-      <VBtn
-        color="red"
-        variant="elevated"
-        @click="rejudgeAllTask.execute()"
-        :loading="rejudgeAllTask.isLoading.value"
-      >
-        {{ t('action.rejudge-all') }}
       </VBtn>
 
       <VBtn
@@ -69,12 +109,14 @@
 <script setup lang="ts">
 import type { IContestDTO } from '@/components/contest/types'
 import AccessLevelEditor from '@/components/utils/AccessLevelEditor.vue'
-import { useAsyncTask, withMessage } from '@/utils/async'
+import { useAsyncTask, withMessage, noMessage } from '@/utils/async'
 import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
+import { reactive } from 'vue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import type { SubmitEventPromise } from 'vuetify'
 
 const props = defineProps<{
   orgId: string
@@ -96,9 +138,17 @@ const submitAllTask = useAsyncTask(async () => {
   return withMessage(t('msg.submit-all-success', { count: modifiedCount }))
 })
 
-const rejudgeAllTask = useAsyncTask(async () => {
+const rejudgeOptions = reactive({
+  problemId: undefined as string | undefined,
+  state: undefined as number | undefined,
+  status: undefined as string | undefined,
+  runnerId: undefined as string | undefined
+})
+const rejudgeAllTask = useAsyncTask(async (ev: SubmitEventPromise) => {
+  const result = await ev
+  if (!result.valid) return noMessage()
   const { modifiedCount } = await http
-    .post(`contest/${props.contestId}/admin/rejudge-all`)
+    .post(`contest/${props.contestId}/admin/rejudge-all`, { json: rejudgeOptions })
     .json<{ modifiedCount: number }>()
   return withMessage(t('msg.rejudge-all-success', { count: modifiedCount }))
 })
@@ -139,6 +189,18 @@ async function deleteContest() {
   router.push(`/org/${props.orgId}/contest`)
   emit('updated')
 }
+
+const isUUID = (value: string | undefined) => {
+  if (!value) return true
+  if (/^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(value)) return true
+  return t('hint.not-valid-uuid')
+}
+
+const isNotEmpty = (value: string | undefined) => {
+  if (typeof value !== 'string') return true
+  if (value.length > 0) return true
+  return t('hint.cannot-be-empty')
+}
 </script>
 
 <i18n>
@@ -147,9 +209,15 @@ en:
   reset-runner: Switch Reset Runner
   action:
     update-ranklists: Update ranklists
+  hint:
+    not-valid-uuid: Not a valid UUID
+    cannot-be-empty: Cannot be empty
 zh-Hans:
   ranklist-state: '排行榜状态: {state}'
   reset-runner: 切换重置运行器
   action:
     update-ranklists: 更新排行榜
+  hint:
+    not-valid-uuid: 不是一个有效的 UUID
+    cannot-be-empty: 不能为空
 </i18n>

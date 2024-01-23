@@ -108,6 +108,7 @@ term:
   is-public: 是否公开
   is-visible: 是否可见
   otp-code: 验证码
+  runner-id: 评测机 ID
 
 common:
   created-at: 创建于
