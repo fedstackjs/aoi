@@ -25,7 +25,9 @@ const knownStatus: Record<string, [string, string]> = {
   'Time Limit Exceeded': ['mdi-timer-alert-outline', 'error'],
   'Wrong Answer': ['mdi-close', 'error'],
   'Compile Error': ['mdi-code-braces', 'error'],
-  'Internal Error': ['mdi-help-circle-outline', '']
+  'Internal Error': ['mdi-help-circle-outline', ''],
+  'Runtime Error': ['mdi-alert-decagram-outline', 'error'],
+  Running: ['mdi-play', 'indigo']
 }
 const display = computed(() => knownStatus[props.status] ?? ['mdi-circle-outline', 'warning'])
 </script>
