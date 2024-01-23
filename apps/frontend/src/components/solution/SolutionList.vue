@@ -28,7 +28,8 @@
       </RouterLink>
     </template>
     <template v-slot:[`item.status`]="{ item }">
-      <SolutionStatusChip :status="item.status" :to="rel(item._id)" />
+      <SolutionStatusChip v-if="item.status" :status="item.status" :to="rel(item._id)" />
+      <span v-else>-</span>
     </template>
     <template v-slot:[`item.score`]="{ item }">
       <SolutionScoreDisplay :score="item.score" :to="rel(item._id)" />

@@ -19,6 +19,14 @@
       >
         {{ t('action.submit-all') }}
       </VBtn>
+      <VBtn
+        color="red"
+        variant="elevated"
+        @click="rejudgeAllTask.execute()"
+        :loading="rejudgeAllTask.isLoading.value"
+      >
+        {{ t('action.rejudge-all') }}
+      </VBtn>
 
       <VBtn
         color="red"
@@ -61,7 +69,7 @@
 <script setup lang="ts">
 import type { IContestDTO } from '@/components/contest/types'
 import AccessLevelEditor from '@/components/utils/AccessLevelEditor.vue'
-import { useAsyncTask } from '@/utils/async'
+import { useAsyncTask, withMessage } from '@/utils/async'
 import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
 import { ref } from 'vue'
@@ -81,7 +89,19 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const router = useRouter()
 
-const submitAllTask = useAsyncTask(() => http.post(`contest/${props.contestId}/admin/submit-all`))
+const submitAllTask = useAsyncTask(async () => {
+  const { modifiedCount } = await http
+    .post(`contest/${props.contestId}/admin/submit-all`)
+    .json<{ modifiedCount: number }>()
+  return withMessage(t('msg.submit-all-success', { count: modifiedCount }))
+})
+
+const rejudgeAllTask = useAsyncTask(async () => {
+  const { modifiedCount } = await http
+    .post(`contest/${props.contestId}/admin/rejudge-all`)
+    .json<{ modifiedCount: number }>()
+  return withMessage(t('msg.rejudge-all-success', { count: modifiedCount }))
+})
 
 const ranklistStates: Record<number, string> = {
   '-1': '[Loading...]',
@@ -126,12 +146,10 @@ en:
   ranklist-state: Ranklist State is {state}
   reset-runner: Switch Reset Runner
   action:
-    submit-all: Submit all solutions
     update-ranklists: Update ranklists
 zh-Hans:
   ranklist-state: '排行榜状态: {state}'
   reset-runner: 切换重置运行器
   action:
-    submit-all: 提交所有解答
     update-ranklists: 更新排行榜
 </i18n>

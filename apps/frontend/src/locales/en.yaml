@@ -41,6 +41,8 @@ action:
   cancel-publish: Cancel Publish
   export: Export
   back: Go Back
+  submit-all: Submit all solutions
+  rejudge-all: Rejudge all solutions
 
 term:
   content: Content
@@ -141,6 +143,8 @@ msg:
   operation-success: Operation Success
   session-expired: Session Expired, Please Sign in Again.
   no-joined-organization: You have not joined any organization yet.
+  submit-all-success: 'Submitted {count} solutions'
+  rejudge-all-success: 'Rejudged {count} solutions'
 
 tabs:
   description: Description

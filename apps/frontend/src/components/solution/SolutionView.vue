@@ -84,10 +84,16 @@
   <VCardActions>
     <DownloadBtn :endpoint="downloadEndpoint" />
     <VBtn
-      v-if="admin"
-      :text="t('action.rejudge')"
+      v-if="admin || solution.state.value?.state === 0"
+      :text="t('action.submit')"
       @click="submit.execute()"
       :loading="submit.isLoading.value"
+    />
+    <VBtn
+      v-if="admin"
+      :text="t('action.rejudge')"
+      @click="rejudge.execute()"
+      :loading="rejudge.isLoading.value"
     />
     <VBtn
       :text="t('action.refresh')"
@@ -180,6 +186,15 @@ const submit = useAsyncTask(async () => {
   const url = props.contestId
     ? `contest/${props.contestId}/solution/${props.solutionId}/submit`
     : `problem/${props.problemId}/solution/${props.solutionId}/submit`
+  await http.post(url)
+  solution.execute()
+  autoRefresh.resume()
+})
+
+const rejudge = useAsyncTask(async () => {
+  const url = props.contestId
+    ? `contest/${props.contestId}/solution/${props.solutionId}/rejudge`
+    : `problem/${props.problemId}/solution/${props.solutionId}/rejudge`
   await http.post(url)
   solution.execute()
   autoRefresh.resume()
