@@ -10,7 +10,10 @@ import { cache } from '../cache/index.js'
 import { httpErrors } from '@fastify/sensible'
 
 const SEmailPayload = Type.Object({
-  email: Type.String({ pattern: '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$' })
+  email: Type.String({
+    maxLength: 128,
+    pattern: '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$'
+  })
 })
 
 const EmailPayload = TypeCompiler.Compile(SEmailPayload)
@@ -22,7 +25,10 @@ const SCodePayload = Type.Object({
 const CodePayload = TypeCompiler.Compile(SCodePayload)
 
 const SLoginPayload = Type.Object({
-  email: Type.String({ pattern: '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$' }),
+  email: Type.String({
+    maxLength: 128,
+    pattern: '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$'
+  }),
   code: Type.String({ pattern: '^[0-9]{6}$' })
 })
 
