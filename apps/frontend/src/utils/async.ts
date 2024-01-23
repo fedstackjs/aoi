@@ -26,15 +26,15 @@ export function getMessage(value: unknown): string | undefined {
   return hasMessage(value) ? value[kAsyncTaskMessage] : undefined
 }
 
-export function useAsyncTask(task: () => Promise<unknown>) {
+export function useAsyncTask<T extends Array<unknown>>(task: (...args: T) => Promise<unknown>) {
   const toast = useToast()
   const { t } = useI18n()
   const isLoading = ref(false)
-  const execute = async () => {
+  const execute = async (...args: T) => {
     if (isLoading.value) return
     isLoading.value = true
     try {
-      const result = await task()
+      const result = await task(...args)
       if (!hasNoMessage(result)) {
         toast.success(getMessage(result) ?? t('msg.operation-success'))
       }
