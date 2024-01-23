@@ -44,7 +44,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
               _id: Type.UUID(),
               title: Type.String(),
               tags: Type.Optional(Type.Array(Type.String())),
-              settings: Type.Pick(SContestProblemSettings, ['score', 'slug'] as const)
+              settings: SContestProblemSettings
             })
           )
         }

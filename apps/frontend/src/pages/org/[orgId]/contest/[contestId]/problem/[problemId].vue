@@ -1,18 +1,45 @@
 <template>
-  <VCard variant="flat">
+  <VCard variant="flat" v-if="contestProblem">
     <AsyncState :state="problem" hide-when-loading>
       <template v-slot="{ value }">
-        <VCardTitle class="d-flex justify-space-between">
-          <div>
-            <p class="text-h4">{{ value.title }}</p>
+        <VCardTitle>
+          <div class="d-flex justify-space-between">
+            <div>
+              <p class="text-h4">{{ value.title }}</p>
+            </div>
+            <div>
+              <VChipGroup class="justify-end">
+                <VChip v-for="tag in value.tags" class="mx-2" :key="tag">
+                  {{ tag }}
+                </VChip>
+              </VChipGroup>
+              <ProblemJumpBtn :problem-id="props.problemId" />
+              <VBtn
+                size="small"
+                v-if="admin"
+                prepend-icon="mdi-arrow-top-left"
+                variant="outlined"
+                color="info"
+                :to="{
+                  path: `/org/${orgId}/contest/${contestId}/solution`,
+                  query: { problemId: problemId }
+                }"
+              >
+                {{ t('jump-to-solutions') }}
+              </VBtn>
+            </div>
           </div>
-          <div>
-            <VChipGroup class="justify-end">
-              <VChip v-for="tag in value.tags" class="mx-2" :key="tag">
-                {{ tag }}
-              </VChip>
-            </VChipGroup>
-            <ProblemJumpBtn :problem-id="props.problemId" />
+          <div class="d-flex u-gap-2 pt-2">
+            <VChip
+              color="info"
+              variant="outlined"
+              :text="t('score', { score: contestProblem.settings.score })"
+            />
+            <VChip
+              color="warning"
+              variant="outlined"
+              :text="t('solution-count-limit', { limit: solutionCountLimit })"
+            />
           </div>
         </VCardTitle>
         <VDivider />
@@ -78,6 +105,8 @@ import ProblemTabAdmin from '@/components/contest/ProblemTabAdmin.vue'
 import ProblemJumpBtn from '@/components/contest/ProblemJumpBtn.vue'
 import { useContestCapability, useContestSettings } from '@/utils/contest/inject'
 import { watch } from 'vue'
+import { computed } from 'vue'
+import { useAppState } from '@/stores/app'
 
 const props = defineProps<{
   orgId: string
@@ -101,6 +130,37 @@ const problem = useAsyncState(async () => {
   return resp.json<IContestProblemDTO>()
 }, null)
 
+const app = useAppState()
+
+const solutionCount = useAsyncState(
+  async () => {
+    const { total } = await http
+      .get(`contest/${props.contestId}/solution`, {
+        searchParams: {
+          userId: app.userId,
+          problemId: props.problemId,
+          count: true,
+          perPage: 15,
+          page: 1
+        }
+      })
+      .json<{ total: number }>()
+    return total
+  },
+  0,
+  { immediate: true }
+)
+
+const contestProblem = computed(() => {
+  return props.problems.find((p) => p._id === props.problemId)
+})
+
+const solutionCountLimit = computed(() => {
+  const limit = contestProblem.value?.settings.solutionCountLimit ?? 0
+  if (solutionCount.isLoading.value) return limit
+  return `${solutionCount.state.value}/${limit}`
+})
+
 watch(
   () => props.problemId,
   () => {
@@ -119,6 +179,9 @@ watch(
     problem-solutions: solution
     solutions: solutions
     status: Status
+    jump-to-solutions: Jump to solutions
+    score: 'Score: {score}'
+    solution-count-limit: 'Solution count limit: {limit}'
   zh-Hans:
     problem-description: 题面
     problem-submit: 提交
@@ -128,4 +191,7 @@ watch(
     problem-solutions: 提交记录
     solutions: 提交记录
     status: 状态
+    jump-to-solutions: 跳转到提交记录
+    score: 分数：{score}
+    solution-count-limit: 提交次数限制：{limit}
   </i18n>

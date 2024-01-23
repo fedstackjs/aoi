@@ -1,6 +1,6 @@
 import { useAsyncState } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
-import { ref, type MaybeRef, watch, toRef } from 'vue'
+import { ref, type MaybeRef, watch, toRef, computed } from 'vue'
 import { http } from './http'
 
 function shallowEqual(a: Record<string, unknown>, b: Record<string, unknown>) {
@@ -42,15 +42,22 @@ export function usePagination<T>(
     { items: [], total: page.value * itemsPerPage.value },
     { resetOnExecute: false, immediate: false }
   )
+  const reset = () => {
+    cachedCount = -1
+    page.value = 1
+    result.execute(0, page.value, itemsPerPage.value)
+  }
+  watch(
+    () => endpointRef.value,
+    () => reset()
+  )
   watch(
     () => paramsRef.value,
     (cur, old) => {
       if (shallowEqual(cur, old)) return
-      cachedCount = -1
-      page.value = 1
-      result.execute(0, page.value, itemsPerPage.value)
+      reset()
     },
     { deep: true }
   )
-  return { page, itemsPerPage, result }
+  return { page, itemsPerPage, result, count: computed(() => cachedCount) }
 }

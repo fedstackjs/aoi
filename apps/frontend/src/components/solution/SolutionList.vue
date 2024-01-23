@@ -80,6 +80,7 @@ const headersProblem = [
 ] as const
 
 const userId = useRouteQuery('userId')
+const contestProblemId = useRouteQuery('problemId')
 
 const {
   page,
@@ -87,7 +88,16 @@ const {
   result: submissions
 } = usePagination<ISolutionDTO>(
   props.contestId ? `contest/${props.contestId}/solution` : `problem/${props.problemId}/solution`,
-  computed(() => (userId.value ? { userId: userId.value } : {}))
+  computed(() =>
+    Object.fromEntries(
+      Object.entries({
+        userId,
+        problemId: contestProblemId
+      })
+        .map(([k, v]) => [k, v.value])
+        .filter(([, v]) => v)
+    )
+  )
 )
 
 const rel = (to: string) =>
