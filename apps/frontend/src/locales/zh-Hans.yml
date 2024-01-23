@@ -41,6 +41,8 @@ action:
   cancel-publish: 取消发布
   export: 导出
   back: 返回
+  submit-all: 提交所有解答
+  rejudge-all: 重测所有解答
 
 term:
   content: 内容
@@ -141,6 +143,8 @@ msg:
   operation-success: 操作成功
   session-expired: 会话已过期，请重新登录
   no-joined-organization: 您还未加入任何组织
+  submit-all-success: '提交了 {count} 个解答'
+  rejudge-all-success: '重判了 {count} 个解答'
 
 tabs:
   description: 描述

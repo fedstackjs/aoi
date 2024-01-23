@@ -84,16 +84,21 @@
   <VCardActions>
     <DownloadBtn :endpoint="downloadEndpoint" />
     <VBtn
-      v-if="admin"
-      :text="t('action.rejudge')"
+      v-if="admin || solution.state.value?.state === 0"
+      :text="t('action.submit')"
       @click="submit.execute()"
       :loading="submit.isLoading.value"
     />
     <VBtn
+      v-if="admin"
+      :text="t('action.rejudge')"
+      @click="rejudge.execute()"
+      :loading="rejudge.isLoading.value"
+    />
+    <VBtn
       :text="t('action.refresh')"
       @click="solution.execute()"
-      :loading="solution.isLoading.value"
-      :disabled="autoRefresh.isActive.value"
+      :loading="solution.isLoading.value || autoRefresh.isActive.value"
     />
     <VBtn v-if="showData && !viewFile" :text="t('action.view')" @click="viewFile = true" />
   </VCardActions>
@@ -185,13 +190,26 @@ const submit = useAsyncTask(async () => {
   autoRefresh.resume()
 })
 
-const autoRefresh = useIntervalFn(() => {
-  if (solution.state.value?.state !== 4 && solution.state.value?.state !== 0) {
-    solution.execute()
-  } else {
-    autoRefresh.pause()
-  }
+const rejudge = useAsyncTask(async () => {
+  const url = props.contestId
+    ? `contest/${props.contestId}/solution/${props.solutionId}/rejudge`
+    : `problem/${props.problemId}/solution/${props.solutionId}/rejudge`
+  await http.post(url)
+  solution.execute()
+  autoRefresh.resume()
 })
+
+const autoRefresh = useIntervalFn(
+  () => {
+    if (solution.state.value?.state !== 4 && solution.state.value?.state !== 0) {
+      solution.execute()
+    } else {
+      autoRefresh.pause()
+    }
+  },
+  1500,
+  { immediate: true }
+)
 </script>
 <i18n>
 en:

@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { defineRoutes, paramSchemaMerger, tryLoadUUID } from '../../common/index.js'
+import { defineRoutes, paramSchemaMerger } from '../../common/index.js'
 import { SContestProblemSettings } from '../../../schemas/contest.js'
 import { BSON, Document } from 'mongodb'
 import { problemConfigSchema } from '@aoi-js/common'
@@ -14,17 +14,8 @@ import {
 import { getUploadUrl, problemAttachmentKey, solutionDataKey } from '../../../oss/index.js'
 import { hasCapability } from '../../../utils/index.js'
 import { problemAdminRoutes } from './admin.js'
-import { FastifyRequest } from 'fastify'
 import { kContestContext } from '../inject.js'
-
-function loadProblemSettings(req: FastifyRequest) {
-  const problemId = tryLoadUUID(req.params, 'problemId')
-  if (!problemId) return [null, undefined] as const
-  const ctx = req.inject(kContestContext)
-  const settings = ctx._contest.problems.find((problem) => problemId.equals(problem.problemId))
-    ?.settings
-  return [problemId, settings] as const
-}
+import { loadProblemSettings } from './common.js'
 
 const problemViewRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {

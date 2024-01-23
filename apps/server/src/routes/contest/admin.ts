@@ -75,9 +75,44 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
               metrics: {},
               message: ''
             }
-          }
-        ],
-        { ignoreUndefined: true }
+          },
+          { $unset: ['taskId', 'runnerId'] }
+        ]
+      )
+      return { modifiedCount }
+    }
+  )
+
+  s.post(
+    '/rejudge-all',
+    {
+      schema: {
+        description: 'Rejudge all solutions',
+        response: {
+          200: Type.Object({
+            modifiedCount: Type.Number()
+          })
+        }
+      }
+    },
+    async (req) => {
+      const { modifiedCount } = await solutions.updateMany(
+        {
+          contestId: req.inject(kContestContext)._contestId,
+          state: { $ne: SolutionState.CREATED }
+        },
+        [
+          {
+            $set: {
+              state: SolutionState.PENDING,
+              score: 0,
+              status: '',
+              metrics: {},
+              message: ''
+            }
+          },
+          { $unset: ['taskId', 'runnerId'] }
+        ]
       )
       return { modifiedCount }
     }
