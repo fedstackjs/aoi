@@ -70,6 +70,36 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     return {}
   })
 
+  s.post('/rejudge', {}, async (req, rep) => {
+    const ctx = req.inject(kContestContext)
+
+    const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
+    const admin = hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)
+    if (!admin) return rep.forbidden()
+
+    const { modifiedCount } = await solutions.updateOne(
+      {
+        _id: solutionId,
+        contestId: ctx._contestId,
+        state: { $ne: SolutionState.CREATED }
+      },
+      [
+        {
+          $set: {
+            state: SolutionState.PENDING,
+            score: 0,
+            status: '',
+            metrics: {},
+            message: ''
+          }
+        }
+      ],
+      { ignoreUndefined: true }
+    )
+    if (modifiedCount === 0) return rep.notFound()
+    return {}
+  })
+
   s.get(
     '/',
     {

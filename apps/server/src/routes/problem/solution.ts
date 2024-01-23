@@ -30,12 +30,41 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
         userId: admin ? undefined : req.user.userId,
         state: admin ? undefined : SolutionState.CREATED
       },
+      [
+        {
+          $set: {
+            state: SolutionState.PENDING,
+            submittedAt: { $convert: { input: '$$NOW', to: 'double' } },
+            score: 0,
+            status: '',
+            metrics: {},
+            message: ''
+          }
+        }
+      ],
+      { ignoreUndefined: true }
+    )
+    if (modifiedCount === 0) return rep.notFound()
+    return {}
+  })
+
+  s.post('/rejudge', {}, async (req, rep) => {
+    const ctx = req.inject(kProblemContext)
+
+    const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
+    const admin = hasCapability(ctx._problemCapability, ProblemCapability.CAP_ADMIN)
+    if (!admin) return rep.forbidden()
+
+    const { modifiedCount } = await solutions.updateOne(
+      {
+        _id: solutionId,
+        contestId: { $exists: false },
+        problemId: ctx._problemId,
+        state: { $ne: SolutionState.CREATED }
+      },
       {
         $set: {
           state: SolutionState.PENDING,
-          // Problem solutions are not synced with rankers,
-          // so we can use local time here
-          submittedAt: req._now,
           score: 0,
           status: '',
           metrics: {},
