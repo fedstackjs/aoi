@@ -93,7 +93,27 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
           problemId: Type.Optional(Type.UUID()),
           state: Type.Optional(Type.Integer({ minimum: 1, maximum: 4 })),
           status: Type.Optional(Type.String()),
-          runnerId: Type.Optional(Type.String())
+          runnerId: Type.Optional(Type.String()),
+          score: Type.Optional(
+            Type.Partial(
+              Type.StrictObject({
+                $gt: Type.Integer(),
+                $gte: Type.Integer(),
+                $lt: Type.Integer(),
+                $lte: Type.Integer()
+              })
+            )
+          ),
+          submittedAt: Type.Optional(
+            Type.Partial(
+              Type.StrictObject({
+                $gt: Type.Integer(),
+                $gte: Type.Integer(),
+                $lt: Type.Integer(),
+                $lte: Type.Integer()
+              })
+            )
+          )
         }),
         response: {
           200: Type.Object({
@@ -114,7 +134,9 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
               ? req.body.runnerId
                 ? new UUID(req.body.runnerId)
                 : { $exists: false }
-              : undefined
+              : undefined,
+          score: req.body.score,
+          submittedAt: req.body.submittedAt
         },
         [
           {

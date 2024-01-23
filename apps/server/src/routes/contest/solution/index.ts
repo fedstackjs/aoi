@@ -226,6 +226,28 @@ export const contestSolutionRoutes = defineRoutes(async (s) => {
         querystring: Type.Object({
           userId: Type.Optional(Type.String()),
           problemId: Type.Optional(Type.String()),
+          state: Type.Optional(Type.Integer({ minimum: 1, maximum: 4 })),
+          status: Type.Optional(Type.String()),
+          score: Type.Optional(
+            Type.Partial(
+              Type.StrictObject({
+                $gt: Type.Integer(),
+                $gte: Type.Integer(),
+                $lt: Type.Integer(),
+                $lte: Type.Integer()
+              })
+            )
+          ),
+          submittedAt: Type.Optional(
+            Type.Partial(
+              Type.StrictObject({
+                $gt: Type.Integer(),
+                $gte: Type.Integer(),
+                $lt: Type.Integer(),
+                $lte: Type.Integer()
+              })
+            )
+          ),
           page: Type.Integer({ minimum: 1, default: 1 }),
           perPage: Type.Integer({ enum: [15, 30] }),
           count: Type.Boolean({ default: false })
@@ -263,7 +285,11 @@ export const contestSolutionRoutes = defineRoutes(async (s) => {
         {
           contestId: ctx._contest._id,
           problemId: req.query.problemId ? new BSON.UUID(req.query.problemId) : undefined,
-          userId: req.query.userId ? new BSON.UUID(req.query.userId) : undefined
+          userId: req.query.userId ? new BSON.UUID(req.query.userId) : undefined,
+          state: req.query.state,
+          status: req.query.status,
+          score: req.query.score,
+          submittedAt: req.query.submittedAt
         },
         {
           projection: {
