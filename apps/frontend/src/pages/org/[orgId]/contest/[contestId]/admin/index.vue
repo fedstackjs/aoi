@@ -12,38 +12,82 @@
     </VCardSubtitle>
     <VCardText>
       <VForm fast-fail validate-on="submit lazy" @submit.prevent="rejudgeAllTask.execute">
-        <VTextField
-          v-model="rejudgeOptions.problemId"
-          :label="t('term.problem-id')"
-          :rules="[isUUID, isNotEmpty]"
-          :append-icon="rejudgeOptions.problemId === undefined ? 'mdi-null' : 'mdi-delete'"
-          @click:append="rejudgeOptions.problemId = undefined"
-        />
-        <VSelect
-          v-model="rejudgeOptions.state"
-          :items="[
-            { title: 'Pending', value: 1 },
-            { title: 'Queued', value: 2 },
-            { title: 'Running', value: 3 },
-            { title: 'Completed', value: 4 }
-          ]"
-          :label="t('term.state')"
-          :append-icon="rejudgeOptions.state === undefined ? 'mdi-null' : 'mdi-delete'"
-          @click:append="rejudgeOptions.state = undefined"
-        />
-        <VTextField
-          v-model="rejudgeOptions.status"
-          :label="t('term.status')"
-          :append-icon="rejudgeOptions.status === undefined ? 'mdi-null' : 'mdi-delete'"
-          @click:append="rejudgeOptions.status = undefined"
-        />
-        <VTextField
-          v-model="rejudgeOptions.runnerId"
-          :rules="[isUUID]"
-          :label="t('term.runner-id')"
-          :append-icon="rejudgeOptions.runnerId === undefined ? 'mdi-null' : 'mdi-delete'"
-          @click:append="rejudgeOptions.runnerId = undefined"
-        />
+        <VRow>
+          <VCol cols="12">
+            <VTextField
+              v-model="rejudgeOptions.problemId"
+              :label="t('term.problem-id')"
+              :rules="[isUUID, isNotEmpty]"
+              :append-icon="rejudgeOptions.problemId === undefined ? 'mdi-null' : 'mdi-delete'"
+              @click:append="rejudgeOptions.problemId = undefined"
+            />
+          </VCol>
+          <VCol cols="6">
+            <VSelect
+              v-model="rejudgeOptions.state"
+              :items="[
+                { title: 'Pending', value: 1 },
+                { title: 'Queued', value: 2 },
+                { title: 'Running', value: 3 },
+                { title: 'Completed', value: 4 }
+              ]"
+              :label="t('term.state')"
+              :append-icon="rejudgeOptions.state === undefined ? 'mdi-null' : 'mdi-delete'"
+              @click:append="rejudgeOptions.state = undefined"
+            />
+          </VCol>
+          <VCol cols="6">
+            <VTextField
+              v-model="rejudgeOptions.status"
+              :label="t('term.status')"
+              :append-icon="rejudgeOptions.status === undefined ? 'mdi-null' : 'mdi-delete'"
+              @click:append="rejudgeOptions.status = undefined"
+            />
+          </VCol>
+          <VCol cols="12">
+            <VTextField
+              v-model="rejudgeOptions.runnerId"
+              :rules="[isUUID]"
+              :label="t('term.runner-id')"
+              :append-icon="rejudgeOptions.runnerId === undefined ? 'mdi-null' : 'mdi-delete'"
+              @click:append="rejudgeOptions.runnerId = undefined"
+            />
+          </VCol>
+          <VCol cols="6">
+            <VTextField
+              v-model.number="rejudgeOptions.scoreL"
+              :rules="[(v) => v === undefined || v >= 0, (v) => v === undefined || v <= 100]"
+              :label="t('min-score')"
+              :append-icon="rejudgeOptions.scoreL === undefined ? 'mdi-null' : 'mdi-delete'"
+              @click:append="rejudgeOptions.scoreL = undefined"
+            />
+          </VCol>
+          <VCol cols="6">
+            <VTextField
+              v-model.number="rejudgeOptions.scoreR"
+              :rules="[(v) => v === undefined || v >= 0, (v) => v === undefined || v <= 100]"
+              :label="t('max-score')"
+              :append-icon="rejudgeOptions.scoreR === undefined ? 'mdi-null' : 'mdi-delete'"
+              @click:append="rejudgeOptions.scoreR = undefined"
+            />
+          </VCol>
+          <VCol cols="6">
+            <DateTimeInput
+              v-model="rejudgeOptions.submittedAtL"
+              :label="t('submitted-after')"
+              :append-icon="rejudgeOptions.submittedAtL === undefined ? 'mdi-null' : 'mdi-delete'"
+              @click:append="rejudgeOptions.submittedAtL = undefined"
+            />
+          </VCol>
+          <VCol cols="6">
+            <DateTimeInput
+              v-model="rejudgeOptions.submittedAtR"
+              :label="t('submitted-before')"
+              :append-icon="rejudgeOptions.submittedAtR === undefined ? 'mdi-null' : 'mdi-delete'"
+              @click:append="rejudgeOptions.submittedAtR = undefined"
+            />
+          </VCol>
+        </VRow>
         <VBtn
           color="red"
           variant="elevated"
@@ -109,6 +153,7 @@
 <script setup lang="ts">
 import type { IContestDTO } from '@/components/contest/types'
 import AccessLevelEditor from '@/components/utils/AccessLevelEditor.vue'
+import DateTimeInput from '@/components/utils/DateTimeInput.vue'
 import { useAsyncTask, withMessage, noMessage } from '@/utils/async'
 import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
@@ -142,7 +187,11 @@ const rejudgeOptions = reactive({
   problemId: undefined as string | undefined,
   state: undefined as number | undefined,
   status: undefined as string | undefined,
-  runnerId: undefined as string | undefined
+  runnerId: undefined as string | undefined,
+  scoreL: undefined as number | undefined,
+  scoreR: undefined as number | undefined,
+  submittedAtL: undefined as number | undefined,
+  submittedAtR: undefined as number | undefined
 })
 const rejudgeAllTask = useAsyncTask(async (ev: SubmitEventPromise) => {
   const result = await ev
@@ -207,6 +256,10 @@ const isNotEmpty = (value: string | undefined) => {
 en:
   ranklist-state: Ranklist State is {state}
   reset-runner: Switch Reset Runner
+  min-score: Min Score
+  max-score: Max Score
+  submitted-after: Submitted After
+  submitted-before: Submitted Before
   action:
     update-ranklists: Update ranklists
   hint:
@@ -215,6 +268,10 @@ en:
 zh-Hans:
   ranklist-state: '排行榜状态: {state}'
   reset-runner: 切换重置运行器
+  min-score: 最小分数
+  max-score: 最大分数
+  submitted-after: 提交时间晚于
+  submitted-before: 提交时间早于
   action:
     update-ranklists: 更新排行榜
   hint:

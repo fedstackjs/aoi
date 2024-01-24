@@ -17,7 +17,7 @@
     @update:options="({ page, itemsPerPage }) => submissions.execute(0, page, itemsPerPage)"
   >
     <template v-slot:[`item.state`]="{ item }">
-      <SolutionStateChip :state="item.state" />
+      <SolutionStateChip :state="item.state" @click.right="state = '' + item.state" />
     </template>
     <template v-slot:[`item.userId`]="{ item }">
       <PrincipalProfile :principal-id="item.userId" />
@@ -28,7 +28,12 @@
       </RouterLink>
     </template>
     <template v-slot:[`item.status`]="{ item }">
-      <SolutionStatusChip v-if="item.status" :status="item.status" :to="rel(item._id)" />
+      <SolutionStatusChip
+        v-if="item.status"
+        :status="item.status"
+        :to="rel(item._id)"
+        @click.right="status = item.status"
+      />
       <span v-else>-</span>
     </template>
     <template v-slot:[`item.score`]="{ item }">
@@ -47,7 +52,7 @@ import PrincipalProfile from '../utils/PrincipalProfile.vue'
 import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
 import SolutionStatusChip from './SolutionStatusChip.vue'
 import { usePagination } from '@/utils/pagination'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useAppState } from '@/stores/app'
 import { useContestProblemTitle } from '@/utils/contest/problem/inject'
 import type { ISolutionDTO } from './types'
@@ -82,6 +87,12 @@ const headersProblem = [
 
 const userId = useRouteQuery('userId')
 const contestProblemId = useRouteQuery('problemId')
+const state = useRouteQuery('state')
+const status = useRouteQuery('status')
+const submittedL = useRouteQuery('submittedL')
+const submittedR = useRouteQuery('submittedR')
+const scoreL = useRouteQuery('scoreL')
+const scoreR = useRouteQuery('scoreR')
 
 const {
   page,
@@ -93,7 +104,13 @@ const {
     Object.fromEntries(
       Object.entries({
         userId,
-        problemId: contestProblemId
+        problemId: contestProblemId,
+        state,
+        status,
+        submittedL,
+        submittedR,
+        scoreL,
+        scoreR
       })
         .map(([k, v]) => [k, v.value])
         .filter(([, v]) => v)

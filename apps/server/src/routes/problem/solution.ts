@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
+import { defineRoutes, generateRangeQuery, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { findPaginated, hasCapability } from '../../utils/index.js'
 import { ISolution, ProblemCapability, SolutionState, solutions } from '../../db/index.js'
 import { BSON } from 'mongodb'
@@ -178,28 +178,12 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
         description: 'Get problem solutions',
         querystring: Type.Object({
           userId: Type.Optional(Type.String()),
-          state: Type.Optional(Type.Integer({ minimum: 1, maximum: 4 })),
+          state: Type.Optional(Type.Integer({ minimum: 0, maximum: 4 })),
           status: Type.Optional(Type.String()),
-          score: Type.Optional(
-            Type.Partial(
-              Type.StrictObject({
-                $gt: Type.Integer(),
-                $gte: Type.Integer(),
-                $lt: Type.Integer(),
-                $lte: Type.Integer()
-              })
-            )
-          ),
-          submittedAt: Type.Optional(
-            Type.Partial(
-              Type.StrictObject({
-                $gt: Type.Integer(),
-                $gte: Type.Integer(),
-                $lt: Type.Integer(),
-                $lte: Type.Integer()
-              })
-            )
-          ),
+          scoreL: Type.Optional(Type.Number()),
+          scoreR: Type.Optional(Type.Number()),
+          submittedAtL: Type.Optional(Type.Integer()),
+          submittedAtR: Type.Optional(Type.Integer()),
           page: Type.Integer({ minimum: 1, default: 1 }),
           perPage: Type.Integer({ enum: [15, 30] }),
           count: Type.Boolean({ default: false })
@@ -242,8 +226,8 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
           userId: req.query.userId ? new BSON.UUID(req.query.userId) : undefined,
           state: req.query.state,
           status: req.query.status,
-          score: req.query.score,
-          submittedAt: req.query.submittedAt
+          score: generateRangeQuery(req.query.scoreL, req.query.scoreR),
+          submittedAt: generateRangeQuery(req.query.submittedAtL, req.query.submittedAtR)
         },
         {
           projection: {
