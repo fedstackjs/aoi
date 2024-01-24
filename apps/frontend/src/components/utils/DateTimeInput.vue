@@ -1,22 +1,12 @@
 <template>
-  <VTextField
-    :error="error"
-    v-model="value"
-    :label="label"
-    :disabled="disabled"
-    type="datetime-local"
-  />
+  <VTextField v-bind="$attrs" :error="error" v-model="value" type="datetime-local" />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { computed } from 'vue'
 
-const model = defineModel<number>({ required: true })
-defineProps<{
-  label?: string
-  disabled?: boolean
-}>()
+const model = defineModel<number>()
 
 function toDateTimeLocalString(date: Date) {
   const offset = date.getTimezoneOffset() * 60000
@@ -28,7 +18,7 @@ const error = ref(false)
 
 // convert model to datetime-local format
 const value = computed({
-  get: () => toDateTimeLocalString(new Date(model.value)),
+  get: () => toDateTimeLocalString(new Date(model.value ?? 0)),
   set: (val) => {
     const date = +new Date(val)
     if (Number.isNaN(date)) {

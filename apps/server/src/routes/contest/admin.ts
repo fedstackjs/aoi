@@ -8,7 +8,7 @@ import {
 } from '../../index.js'
 import { ensureCapability } from '../../utils/index.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
-import { defineRoutes } from '../common/index.js'
+import { defineRoutes, generateRangeQuery } from '../common/index.js'
 import { SContestStage } from '../../schemas/contest.js'
 import { kContestContext } from './inject.js'
 import { UUID } from 'mongodb'
@@ -93,7 +93,11 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
           problemId: Type.Optional(Type.UUID()),
           state: Type.Optional(Type.Integer({ minimum: 1, maximum: 4 })),
           status: Type.Optional(Type.String()),
-          runnerId: Type.Optional(Type.String())
+          runnerId: Type.Optional(Type.String()),
+          scoreL: Type.Optional(Type.Number()),
+          scoreR: Type.Optional(Type.Number()),
+          submittedAtL: Type.Optional(Type.Integer()),
+          submittedAtR: Type.Optional(Type.Integer())
         }),
         response: {
           200: Type.Object({
@@ -114,7 +118,9 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
               ? req.body.runnerId
                 ? new UUID(req.body.runnerId)
                 : { $exists: false }
-              : undefined
+              : undefined,
+          score: generateRangeQuery(req.body.scoreL, req.body.scoreR),
+          submittedAt: generateRangeQuery(req.body.submittedAtL, req.body.submittedAtR)
         },
         [
           {

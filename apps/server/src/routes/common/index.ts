@@ -76,3 +76,13 @@ export function loadCapability(
 export function md5(email: string) {
   return createHash('md5').update(email).digest('hex')
 }
+
+export function generateRangeQuery(L?: number, R?: number) {
+  return L === undefined
+    ? R === undefined
+      ? undefined
+      : { $lte: R }
+    : R === undefined
+      ? { $gte: L }
+      : { $gte: L, $lte: R }
+}
