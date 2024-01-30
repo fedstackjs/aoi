@@ -50,7 +50,7 @@ import SubmitForm from './submit/SubmitForm.vue'
 import SubmitFile from './submit/SubmitFile.vue'
 import SubmitDir from './submit/SubmitDir.vue'
 import { computeSHA256 } from '@/utils/files'
-import { http } from '@/utils/http'
+import { http, prettyHTTPError } from '@/utils/http'
 import { useToast } from 'vue-toastification'
 import type { IContestProblemDTO } from '../contest/types'
 import { useRoute, useRouter } from 'vue-router'
@@ -101,7 +101,7 @@ async function submit(file: File) {
     if (err === 'Solution limit reached') {
       toast.error(t('failed.solution-limit-reached'))
     } else {
-      toast.error(err as string)
+      toast.error(prettyHTTPError(err))
     }
   }
 }
