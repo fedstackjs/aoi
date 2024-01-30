@@ -146,6 +146,8 @@ msg:
   no-joined-organization: You have not joined any organization yet.
   submit-all-success: 'Submitted {count} solutions'
   rejudge-all-success: 'Rejudged {count} solutions'
+  submitting: Submitting
+  computing-hash: Computing Hash {progress}%...
 
 tabs:
   description: Description

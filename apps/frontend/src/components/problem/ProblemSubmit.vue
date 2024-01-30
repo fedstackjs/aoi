@@ -13,7 +13,7 @@
         </VChip>
       </div>
     </VCardTitle>
-    <VTabs v-model="currentTab">
+    <VTabs v-show="!submitting" v-model="currentTab">
       <VTab v-if="problem.config.submit.form" prepend-icon="mdi-form-textarea" value="form">
         {{ t('submit-form') }}
       </VTab>
@@ -24,7 +24,7 @@
         {{ t('submit-upload-dir') }}
       </VTab>
     </VTabs>
-    <VWindow v-model="currentTab">
+    <VWindow v-show="!submitting" v-model="currentTab">
       <VWindowItem value="form">
         <SubmitForm v-if="problem.config.submit.form" :config="problem.config" @upload="submit" />
       </VWindowItem>
@@ -39,6 +39,10 @@
         />
       </VWindowItem>
     </VWindow>
+    <VCardText v-if="submitting" class="text-center">
+      <VProgressCircular size="48" :indeterminate="indeterminate" :model-value="progress" />
+      <div class="u-pt-4">{{ submitMsg }}</div>
+    </VCardText>
   </VCard>
 </template>
 
@@ -49,11 +53,10 @@ import type { IProblemDTO } from './types'
 import SubmitForm from './submit/SubmitForm.vue'
 import SubmitFile from './submit/SubmitFile.vue'
 import SubmitDir from './submit/SubmitDir.vue'
-import { computeSHA256 } from '@/utils/files'
-import { http, prettyHTTPError } from '@/utils/http'
-import { useToast } from 'vue-toastification'
+import { useProblemSubmit } from '@/utils/problem/submit'
 import type { IContestProblemDTO } from '../contest/types'
-import { useRoute, useRouter } from 'vue-router'
+import { computed } from 'vue'
+import { toRef } from 'vue'
 
 const props = defineProps<{
   contestId?: string
@@ -62,49 +65,13 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
-const toast = useToast()
 const currentTab = ref()
-const route = useRoute()
-const router = useRouter()
 
-async function submit(file: File) {
-  try {
-    const hash = await computeSHA256(file)
-    const size = file.size
-    let url = props.contestId
-      ? `contest/${props.contestId}/problem/${props.problem._id}/solution`
-      : `problem/${props.problem._id}/solution`
-    const { solutionId, uploadUrl } = await http
-      .post(url, {
-        json: { hash, size }
-      })
-      .json<{
-        solutionId: string
-        uploadUrl: string
-      }>()
-    await fetch(uploadUrl, {
-      method: 'PUT',
-      body: file
-    })
-    if (!props.manualSubmit) {
-      url = props.contestId
-        ? `contest/${props.contestId}/solution/${solutionId}/submit`
-        : `problem/${props.problem._id}/solution/${solutionId}/submit`
-      await http.post(url)
-    }
-    toast.success(t('submit-success'))
-    url = props.contestId
-      ? `/org/${route.params.orgId}/contest/${props.contestId}/solution/${solutionId}`
-      : `/org/${route.params.orgId}/problem/${props.problem._id}/solution/${solutionId}`
-    router.push(url)
-  } catch (err) {
-    if (err === 'Solution limit reached') {
-      toast.error(t('failed.solution-limit-reached'))
-    } else {
-      toast.error(prettyHTTPError(err))
-    }
-  }
-}
+const { submitting, submitMsg, indeterminate, progress, submit } = useProblemSubmit(
+  computed(() => props.problem._id),
+  toRef(props, 'contestId'),
+  toRef(props, 'manualSubmit')
+)
 </script>
 
 <i18n>
