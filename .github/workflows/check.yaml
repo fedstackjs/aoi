@@ -40,7 +40,7 @@ jobs:
         run: corepack yarn version check
 
       - name: Build packages
-        run: corepack yarn all:build
+        run: corepack yarn workspaces foreach -Apt --exclude @aoi-js/frontend run build
 
       - name: Run checks
         run: corepack yarn all:check
