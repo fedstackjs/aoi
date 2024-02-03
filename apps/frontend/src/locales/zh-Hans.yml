@@ -146,6 +146,8 @@ msg:
   no-joined-organization: 您还未加入任何组织
   submit-all-success: '提交了 {count} 个解答'
   rejudge-all-success: '重判了 {count} 个解答'
+  submitting: 提交中
+  computing-hash: 计算哈希值 {progress}%...
 
 tabs:
   description: 描述
