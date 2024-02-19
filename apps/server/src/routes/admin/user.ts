@@ -92,4 +92,22 @@ export const adminUserRoutes = defineRoutes(async (s) => {
       return { userId: insertedId.toString() }
     }
   )
+
+  s.post(
+    '/login',
+    {
+      schema: {
+        description: 'Login as given user, bypassing authentication',
+        body: Type.Object({
+          userId: Type.UUID(),
+          tags: Type.Optional(Type.Array(Type.String()))
+        })
+      }
+    },
+    async (req, rep) => {
+      const { userId, tags } = req.body
+      const token = await rep.jwtSign({ userId: userId.toString(), tags }, { expiresIn: '7d' })
+      return { token }
+    }
+  )
 })

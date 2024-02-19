@@ -13,6 +13,10 @@ function shallowEqual(a: Record<string, unknown>, b: Record<string, unknown>) {
   return true
 }
 
+function removeUndefined(obj: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined))
+}
+
 export function usePagination<T>(
   endpoint: MaybeRef<string>,
   params: MaybeRef<Record<string, unknown>>
@@ -30,7 +34,7 @@ export function usePagination<T>(
             page: page,
             perPage: itemsPerPage,
             count: cachedCount === -1,
-            ...paramsRef.value
+            ...removeUndefined(paramsRef.value)
           }
         })
         .json<{ items: T[]; total: number }>()
