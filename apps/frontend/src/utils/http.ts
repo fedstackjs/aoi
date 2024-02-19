@@ -11,6 +11,12 @@ export const userId = computed(
   () => token.value && JSON.parse(atob(token.value.split('.')[1])).userId
 )
 
+const mfaToken = useLocalStorage('aoi-mfa-token', '', { writeDefaults: false })
+export const isMfaAlive = computed(
+  () => mfaToken.value && JSON.parse(atob(mfaToken.value.split('.')[1])).exp * 1000 > Date.now()
+)
+export const mfaTokenValue = computed(() => mfaToken.value)
+
 export const http: typeof ky = ky.create({
   prefixUrl: '/api',
   hooks: {
@@ -36,10 +42,15 @@ export const http: typeof ky = ky.create({
 
 export function logout() {
   token.value = ''
+  mfaToken.value = ''
 }
 
 export function login(_token: string) {
   token.value = _token
+}
+
+export function setMfaToken(_token: string) {
+  mfaToken.value = _token
 }
 
 export async function prettyHTTPError(err: unknown, defaultMsg = `${err}`): Promise<string> {
