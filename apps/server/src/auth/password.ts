@@ -66,7 +66,7 @@ export class PasswordAuthProvider extends BaseAuthProvider {
     if (!PasswordLoginPayload.Check(payload)) throw new Error('invalid payload')
     const { username, password } = payload
     const user = await users.findOne(
-      { 'profile.name': username },
+      { namespace: { $exists: false }, 'profile.name': username },
       { projection: { _id: 1, authSources: 1 } }
     )
     if (!user || !user.authSources.password) throw new Error('user not found')

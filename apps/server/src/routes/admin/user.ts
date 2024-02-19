@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes } from '../common/index.js'
-import { BSON, Document } from 'mongodb'
-import { findPaginated, users } from '../../index.js'
+import { BSON, Document, UUID } from 'mongodb'
+import { SUserProfile, findPaginated, users } from '../../index.js'
 
 export const adminUserRoutes = defineRoutes(async (s) => {
   s.get(
@@ -61,6 +61,35 @@ export const adminUserRoutes = defineRoutes(async (s) => {
       const capability = new BSON.Long(req.body.capability)
       await users.updateOne({ _id: new BSON.UUID(req.params.userId) }, { $set: { capability } })
       return {}
+    }
+  )
+
+  s.post(
+    '/',
+    {
+      schema: {
+        description: 'Manually create a user',
+        body: Type.StrictObject({
+          profile: SUserProfile,
+          capability: Type.Optional(Type.String()),
+          namespace: Type.Optional(Type.String()),
+          tags: Type.Optional(Type.Array(Type.String()))
+        }),
+        response: {
+          200: Type.Object({
+            userId: Type.String()
+          })
+        }
+      }
+    },
+    async (req) => {
+      const { insertedId } = await users.insertOne({
+        ...req.body,
+        _id: new UUID(),
+        authSources: {},
+        capability: req.body.capability ? new BSON.Long(req.body.capability) : undefined
+      })
+      return { userId: insertedId.toString() }
     }
   )
 })

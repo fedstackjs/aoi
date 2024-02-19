@@ -32,7 +32,9 @@ export const userScopedRoutes = defineRoutes(async (s) => {
         response: {
           200: Type.Object({
             profile: SUserProfile,
-            capability: Type.Optional(Type.String())
+            capability: Type.Optional(Type.String()),
+            namespace: Type.Optional(Type.String()),
+            tags: Type.Optional(Type.Array(Type.String()))
           })
         }
       }
@@ -40,11 +42,11 @@ export const userScopedRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const user = await users.findOne(
         { _id: req.inject(kUserContext)._userId },
-        { projection: { profile: 1, capability: 1 } }
+        { projection: { profile: 1, capability: 1, namespace: 1, tags: 1 } }
       )
       if (!user) return rep.notFound()
       return {
-        profile: user.profile,
+        ...user,
         capability: user.capability?.toString()
       }
     }
