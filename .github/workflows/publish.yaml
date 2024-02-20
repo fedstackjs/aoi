@@ -68,6 +68,10 @@ jobs:
           name: server
           path: apps/server
 
+      - name: Get current server version
+        id: version
+        run: node -p -e "'version='+require('./apps/server/package.json').version" >> $GITHUB_OUTPUT
+
       - name: Log in to Aliyun Container Registry
         uses: docker/login-action@v2
         with:
@@ -83,3 +87,4 @@ jobs:
           file: './docker/dockerfiles/server.dockerfile'
           tags: |
             registry.cn-hangzhou.aliyuncs.com/aoi-js/server:latest
+            registry.cn-hangzhou.aliyuncs.com/aoi-js/server:${{ steps.version.outputs.version }}
