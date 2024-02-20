@@ -21,7 +21,9 @@ export interface IUser {
   profile: IUserProfile
   authSources: IUserAuthSources
   capability?: BSON.Long
+  namespace?: string
+  tags?: string[]
 }
 
 export const users = db.collection<IUser>('users')
-await users.createIndex({ 'profile.name': 1 }, { unique: true })
+await users.createIndex({ namespace: 1, 'profile.name': 1 }, { unique: true })

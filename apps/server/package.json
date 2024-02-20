@@ -8,9 +8,7 @@
   "license": "AGPL-3.0-only",
   "main": "lib/index.js",
   "files": [
-    "lib",
-    "!lib/**/*.map",
-    "!lib/**/*.d.ts"
+    "lib"
   ],
   "bin": {
     "aoi-server": "lib/cli/index.js"
