@@ -24,7 +24,8 @@ export const publicRoutes = defineRoutes(async (s) => {
               principalType: Type.StringEnum(['user', 'group']),
               name: Type.String(),
               emailHash: Type.String(),
-              namespace: Type.Optional(Type.String())
+              namespace: Type.Optional(Type.String()),
+              tags: Type.Optional(Type.Array(Type.String()))
             }),
             { maxItems: 50 }
           )
@@ -40,7 +41,8 @@ export const publicRoutes = defineRoutes(async (s) => {
             projection: {
               'profile.name': 1,
               'profile.email': 1,
-              namespace: 1
+              namespace: 1,
+              tags: 1
             }
           }
         )
@@ -57,12 +59,13 @@ export const publicRoutes = defineRoutes(async (s) => {
         )
         .toArray()
       const result = [
-        ...matchedUsers.map(({ _id, profile: { name, email }, namespace }) => ({
+        ...matchedUsers.map(({ _id, profile: { name, email }, namespace, tags }) => ({
           principalId: _id,
           principalType: 'user' as const,
           name,
           emailHash: md5(email),
-          namespace
+          namespace,
+          tags
         })),
         ...matchedGroups.map(({ _id, profile: { name, email } }) => ({
           principalId: _id,
