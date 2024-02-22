@@ -1,8 +1,8 @@
 <template>
   <VFooter app absolute>
     <VRow no-gutters>
-      <VCol cols="12" class="text-center" v-if="ICP_NAME">
-        <span>{{ ICP_NAME }}</span>
+      <VCol cols="12" class="text-center" v-if="extraFooterText">
+        <span>{{ extraFooterText }}</span>
       </VCol>
       <VCol cols="12" class="text-center text-caption u-opacity-70">
         <I18nT keypath="powered-by">
@@ -16,9 +16,8 @@
 </template>
 
 <script setup lang="ts">
+import { extraFooterText } from '@/utils/flags'
 import { useI18n } from 'vue-i18n'
-
-const ICP_NAME = import.meta.env.VITE_ICP_NAME
 
 const { t } = useI18n()
 </script>

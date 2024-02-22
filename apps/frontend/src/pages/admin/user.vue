@@ -1,5 +1,16 @@
 <template>
-  <VCard title="Users" variant="flat">
+  <VCard variant="flat">
+    <VCardTitle class="d-flex align-center">
+      <div>Users</div>
+      <VSpacer />
+      <VTextField
+        v-model="newSearch"
+        @keydown.enter="search = newSearch"
+        label="Search"
+        hide-details
+        density="compact"
+      />
+    </VCardTitle>
     <VDataTableServer
       :headers="headers"
       :items-length="users.state.value.total"
@@ -76,14 +87,15 @@ import { useRouter } from 'vue-router'
 
 const headers = [
   { title: 'Profile', key: 'profile', align: 'start', sortable: false },
-  { title: 'ID', key: '_id' },
-  { title: 'Capabilities', key: '_cap' },
-  { title: 'Namespace', key: '_namespace' },
-  { title: 'Tags', key: '_tags' },
-  { title: 'Actions', key: '_actions' }
+  { title: 'ID', key: '_id', sortable: false },
+  { title: 'Capabilities', key: '_cap', sortable: false },
+  { title: 'Namespace', key: '_namespace', sortable: false },
+  { title: 'Tags', key: '_tags', sortable: false },
+  { title: 'Actions', key: '_actions', sortable: false }
 ] as const
 
 const search = useRouteQuery('search', '')
+const newSearch = ref(search.value)
 
 const {
   page,

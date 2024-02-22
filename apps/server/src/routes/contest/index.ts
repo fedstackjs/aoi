@@ -85,9 +85,12 @@ export const contestRoutes = defineRoutes(async (s) => {
           200: Type.PaginationResult(
             Type.Object({
               _id: Type.UUID(),
+              accessLevel: Type.AccessLevel(),
               slug: Type.String(),
               title: Type.String(),
               tags: Type.Array(Type.String()),
+              start: Type.Integer(),
+              end: Type.Integer(),
               stages: Type.Array(Type.Pick(SContestStage, ['name', 'start'] as const)),
               participantCount: Type.Integer()
             })
@@ -127,9 +130,12 @@ export const contestRoutes = defineRoutes(async (s) => {
         {
           projection: {
             _id: 1,
+            accessLevel: 1,
             slug: 1,
             title: 1,
             tags: 1,
+            start: 1,
+            end: 1,
             stages: {
               name: 1,
               start: 1

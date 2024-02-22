@@ -17,3 +17,11 @@ export function prettyMs(ms: number, unit: Unit = 's') {
   }
   return result
 }
+
+export function denseDateString(date: Date | number) {
+  const actualDate = new Date(date)
+  const offset = actualDate.getTimezoneOffset()
+  actualDate.setMinutes(actualDate.getMinutes() - offset)
+  const [dateStr, timeStr] = actualDate.toISOString().split('T')
+  return `${dateStr} ${timeStr.split('.')[0]}`
+}

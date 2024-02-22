@@ -69,6 +69,7 @@ export const planRoutes = defineRoutes(async (s) => {
           200: Type.PaginationResult(
             Type.Object({
               _id: Type.UUID(),
+              accessLevel: Type.AccessLevel(),
               slug: Type.String(),
               title: Type.String(),
               tags: Type.Array(Type.String())
@@ -103,6 +104,7 @@ export const planRoutes = defineRoutes(async (s) => {
       const result = await findPaginated(plans, page, perPage, count, filter, {
         projection: {
           _id: 1,
+          accessLevel: 1,
           slug: 1,
           title: 1,
           tags: 1

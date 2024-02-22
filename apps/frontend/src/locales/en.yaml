@@ -135,6 +135,11 @@ cap:
   contest: Contest
   admin: Admin
   plan: Plan
+  createOrg: Org Create
+  solution: Solution
+  content: Content
+  data: Data
+  registration: Registration
 
 msg:
   not-found: Not Found

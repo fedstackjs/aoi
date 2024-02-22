@@ -21,7 +21,12 @@
             />
           </VCardTitle>
           <VDivider />
-          <VAlert v-if="hint" type="info" class="ma-4 mb-0 u-whitespace-pre" :text="hint" />
+          <VAlert
+            v-if="verifyHint"
+            type="info"
+            class="ma-4 mb-0 u-whitespace-pre"
+            :text="verifyHint"
+          />
           <RouterView />
         </VCard>
       </VCol>
@@ -36,6 +41,7 @@ import { useRoute, useRouter } from 'vue-router'
 import AppLogo from '@/components/app/AppLogo.vue'
 import { withI18nTitle } from '@/utils/title'
 import { computed } from 'vue'
+import { verifyHint } from '@/utils/flags'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -47,6 +53,5 @@ withI18nTitle('pages.verify')
 if (!appState.loggedIn) router.replace('/auth/login')
 if (hasMfaToken.value) router.replace('/')
 
-const hint = import.meta.env.VITE_VERIFY_HINT
 const isRoot = computed(() => /^\/auth\/verify\/?$/.test(route.path))
 </script>

@@ -32,6 +32,7 @@
 <script setup lang="ts">
 import { useAppState } from '@/stores/app'
 import { useI18n } from 'vue-i18n'
+import { appName, showCountdown } from '@/utils/flags'
 import AppBarUserMenu from './AppBarUserMenu.vue'
 import AppBarAddMenu from './AppBarAddMenu.vue'
 import AppLogo from './AppLogo.vue'
@@ -40,7 +41,4 @@ import SearchBox from '../homepage/SearchBox.vue'
 
 const { t } = useI18n()
 const appState = useAppState()
-
-const appName = import.meta.env.VITE_APP_NAME ?? 'AOI'
-const showCountdown = !!import.meta.env.VITE_APPBAR_SHOW_COUNTDOWN
 </script>

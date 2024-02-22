@@ -14,6 +14,7 @@
       <code>{{ item.slug }}</code>
     </template>
     <template v-slot:[`item.title`]="{ item }">
+      <AccessLevelBadge :access-level="item.accessLevel" inline />
       <RouterLink :to="`/org/${orgId}/contest/${item._id}`">
         {{ item.title }}
       </RouterLink>
@@ -22,7 +23,16 @@
       <code>{{ item.participantCount }}</code>
     </template>
     <template v-slot:[`item.time`]="{ item }">
-      <code>{{ getTimeRange(item.stages) }}</code>
+      <div>
+        <div>
+          {{ t('common.from') }}
+          <b> {{ denseDateString(item.start) }}</b>
+        </div>
+        <div>
+          {{ t('common.to') }}
+          <b>{{ denseDateString(item.end) }}</b>
+        </div>
+      </div>
     </template>
     <template v-slot:[`item.stage`]="{ item }">
       <ContestStageChip :stages="item.stages" :now="now" />
@@ -48,8 +58,9 @@ import { useI18n } from 'vue-i18n'
 import { usePagination } from '@/utils/pagination'
 import { watch } from 'vue'
 import ContestStageChip from '@/components/utils/ContestStageChip.vue'
+import AccessLevelBadge from '@/components/utils/AccessLevelBadge.vue'
 import type { IContestDTO } from './types'
-
+import { denseDateString } from '@/utils/time'
 const props = defineProps<{
   orgId: string
   search?: string
@@ -78,17 +89,6 @@ const {
   `contest`,
   computed(() => JSON.parse(JSON.stringify(props)))
 )
-
-const getTimeRange = (
-  stages: {
-    name: string
-    start: number
-  }[]
-) => {
-  const b = stages[1].start
-  const e = stages[stages.length - 1].start
-  return `${new Date(b).toLocaleString()} - ${new Date(e).toLocaleString()}`
-}
 
 watch(
   () => props,

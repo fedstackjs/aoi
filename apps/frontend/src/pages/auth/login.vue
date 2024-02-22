@@ -21,7 +21,12 @@
             />
           </VCardTitle>
           <VDivider />
-          <VAlert v-if="hint" type="info" class="ma-4 mb-0 u-whitespace-pre" :text="hint" />
+          <VAlert
+            v-if="loginHint"
+            type="info"
+            class="ma-4 mb-0 u-whitespace-pre"
+            :text="loginHint"
+          />
           <RouterView />
         </VCard>
       </VCol>
@@ -36,6 +41,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { withI18nTitle } from '@/utils/title'
 import AppLogo from '@/components/app/AppLogo.vue'
+import { loginHint } from '@/utils/flags'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -45,6 +51,5 @@ withI18nTitle('pages.signin')
 
 if (appState.loggedIn) router.replace('/')
 
-const hint = import.meta.env.VITE_LOGIN_HINT
 const isRoot = computed(() => /^\/auth\/login\/?$/.test(route.path))
 </script>
