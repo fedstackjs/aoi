@@ -122,7 +122,8 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
           contestId: ctx._contestId,
           results: {},
           tags: await evalTagRules(ctx._contestStage, user),
-          updatedAt: Date.now()
+          createdAt: req._now,
+          updatedAt: req._now
         },
         { ignoreUndefined: true }
       )
