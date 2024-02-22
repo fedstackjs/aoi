@@ -3,7 +3,7 @@ pages:
   org-home: 组织首页
   about: 关于
   problems: 题库
-  contests: 比赛
+  contests: 比赛与题单
   groups: 小组
   signin: 登录
   signup: 注册
@@ -135,6 +135,11 @@ cap:
   contest: 比赛控制
   admin: 管理权限
   plan: 计划权限
+  createOrg: 创建组织
+  solution: 管理提交
+  content: 管理内容
+  data: 管理数据
+  registration: 允许报名
 
 msg:
   not-found: 页面不存在

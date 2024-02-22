@@ -15,6 +15,7 @@
         :to="`/org/${orgId}/contest/${contestId}/solution?userId=${userId}`"
         :text="t('goto-solutions')"
       />
+      <VBtn :to="`/user/${userId}`" :text="t('goto-user')" />
     </VCardActions>
   </template>
 </template>
@@ -40,6 +41,8 @@ const admin = useContestCapability('admin')
 <i18n>
 en:
   goto-solutions: Go to solutions
+  goto-user: Go to user
 zh-Hans:
   goto-solutions: 查看提交
+  goto-user: 查看用户
 </i18n>

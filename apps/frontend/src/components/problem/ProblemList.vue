@@ -14,6 +14,7 @@
       <code>{{ item.slug }}</code>
     </template>
     <template v-slot:[`item.title`]="{ item }">
+      <AccessLevelBadge :access-level="item.accessLevel" inline />
       <RouterLink :to="`/org/${orgId}/problem/${item._id}`">
         {{ item.title }}
       </RouterLink>
@@ -31,6 +32,7 @@ import { useI18n } from 'vue-i18n'
 import { usePagination } from '@/utils/pagination'
 import { watch } from 'vue'
 import ProblemTagGroup from './ProblemTagGroup.vue'
+import AccessLevelBadge from '../utils/AccessLevelBadge.vue'
 import type { IProblemDTO } from './types'
 
 const props = defineProps<{

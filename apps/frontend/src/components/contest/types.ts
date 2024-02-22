@@ -9,6 +9,8 @@ export interface IContestDTO {
   description: string
   tags: string[]
   capability: string
+  start: number
+  end: number
   stages: { name: string; start: number }[]
 
   currentStage: {
