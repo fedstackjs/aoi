@@ -20,6 +20,7 @@ export interface IPlanParticipant {
   userId: BSON.UUID
   planId: BSON.UUID
   results: Record<string, never>
+  createdAt: number
   updatedAt: number
 }
 

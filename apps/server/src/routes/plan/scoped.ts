@@ -99,7 +99,8 @@ export const planScopedRoutes = defineRoutes(async (s) => {
         userId: req.user.userId,
         planId: ctx._plan._id,
         results: {},
-        updatedAt: Date.now()
+        createdAt: req._now,
+        updatedAt: req._now
       })
       return {}
     }
