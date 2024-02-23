@@ -54,9 +54,9 @@ import { renderMarkdown } from '@/utils/md'
 import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
 import { useI18n } from 'vue-i18n'
 import RanklistTopstars from '../contest/RanklistTopstars.vue'
-import { useContestCapability, useContestData } from '@/utils/contest/inject'
 import { ref } from 'vue'
 import { computed } from 'vue'
+import { useRanklistRenderer } from './RanklistRenderer'
 
 const props = defineProps<{
   ranklist: Ranklist
@@ -70,8 +70,5 @@ const length = computed(() =>
   Math.max(1, Math.ceil(props.ranklist.participant.list.length / perPage.value))
 )
 
-const admin = useContestCapability('admin')
-const contest = useContestData()
-const participantUrl = (userId: string) =>
-  `/org/${contest.value.orgId}/contest/${contest.value._id}/participant/${userId}`
+const { admin, participantUrl } = useRanklistRenderer()
 </script>
