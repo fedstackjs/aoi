@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: 'AOI评测系统'
+  name: '<ruby>苍穹<rp>(</rp><rt style="background-clip: text; background-color: #2980b9;">AOI</rt><rp>)</rp></ruby>评测系统'
   text: '一体化在线评测方案'
   tagline: '全功能，可扩展，高性能的评测基础设施'
   image: /logo.svg
