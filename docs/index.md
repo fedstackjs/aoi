@@ -12,10 +12,10 @@ hero:
       text: 开始使用
       link: /getting-started
     - theme: alt
-      text: 用户指南
+      text: 使用指南
       link: /user-guide
     - theme: alt
-      text: 运维指南
+      text: 管理指南
       link: /admin-guide
     - theme: alt
       text: 开发指南
