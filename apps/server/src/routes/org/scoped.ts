@@ -4,7 +4,7 @@ import {
   IGroup,
   IOrgMembership,
   IUser,
-  OrgCapability,
+  ORG_CAPS,
   groups,
   orgMemberships,
   orgs,
@@ -58,12 +58,12 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
       if (
         req.user &&
         org.ownerId.equals(req.user.userId) &&
-        !hasCapability(ctx._orgMembership?.capability ?? CAP_NONE, OrgCapability.CAP_ADMIN)
+        !hasCapability(ctx._orgMembership?.capability ?? CAP_NONE, ORG_CAPS.CAP_ADMIN)
       ) {
         await orgMemberships.updateOne(
           { userId: req.user.userId, orgId: ctx._orgId },
           {
-            $set: { capability: OrgCapability.CAP_ADMIN },
+            $set: { capability: ORG_CAPS.CAP_ADMIN },
             $setOnInsert: {
               _id: new BSON.UUID(),
               groups: []

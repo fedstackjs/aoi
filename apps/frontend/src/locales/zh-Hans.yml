@@ -10,6 +10,7 @@ pages:
   verify: 身份验证
   admin: 管理
   plans: 计划
+  apps: 应用
   user-info: 用户信息
   user-settings: 用户设置
   forgot-passwd: 忘记密码
@@ -18,6 +19,7 @@ pages:
   announcements: 公告
   solutions: 提交记录
   not-found: 页面不存在
+  authorize: 授权登录
 
 action:
   reload: 重载
@@ -43,6 +45,8 @@ action:
   back: 返回
   submit-all: 提交所有解答
   rejudge-all: 重测所有解答
+  verify: 验证身份
+  login-into: 登录到 {app}
 
 term:
   content: 内容
@@ -153,6 +157,8 @@ msg:
   rejudge-all-success: '重判了 {count} 个解答'
   submitting: 提交中
   computing-hash: 计算哈希值 {progress}%...
+  mfa-required: 需要多因素认证
+  oauth-redirect: 点击登录按钮，你将被重定向以登录 {app}
 
 tabs:
   description: 描述

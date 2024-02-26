@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { CAP_NONE, ensureCapability, findPaginated, hasCapability } from '../../utils/index.js'
 import { AccessLevel } from '../../schemas/index.js'
-import { ContestRanklistState, OrgCapability, contests } from '../../db/index.js'
+import { ContestRanklistState, ORG_CAPS, contests } from '../../db/index.js'
 import { SContestStage } from '../../schemas/contest.js'
 import { BSON } from 'mongodb'
 import { contestScopedRoutes } from './scoped.js'
@@ -38,7 +38,7 @@ export const contestRoutes = defineRoutes(async (s) => {
       const membership = await req.loadMembership(orgId)
       ensureCapability(
         membership?.capability ?? CAP_NONE,
-        OrgCapability.CAP_CONTEST,
+        ORG_CAPS.CAP_CONTEST,
         s.httpErrors.forbidden()
       )
       const { insertedId } = await contests.insertOne({
@@ -106,7 +106,7 @@ export const contestRoutes = defineRoutes(async (s) => {
 
       const membership = await req.loadMembership(orgId)
       const basicAccessLevel = membership
-        ? hasCapability(membership.capability, OrgCapability.CAP_CONTEST)
+        ? hasCapability(membership.capability, ORG_CAPS.CAP_CONTEST)
           ? AccessLevel.PRIVATE
           : AccessLevel.RESTRICED
         : AccessLevel.PUBLIC

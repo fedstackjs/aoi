@@ -116,21 +116,31 @@ export function useMfa() {
 export function useLogin() {
   const router = useRouter()
   const route = useRoute()
+
+  function postLogin(token: string) {
+    login(token)
+    if (route.query.redirect) {
+      router.replace(`${route.query.redirect}`)
+    } else {
+      router.replace('/')
+    }
+  }
+
+  function doLogin() {
+    router.push({
+      path: '/auth/login',
+      query: { redirect: route.fullPath }
+    })
+  }
+
+  function checkLogin() {
+    if (!isLoggedIn.value) doLogin()
+  }
+
   return {
     isLoggedIn,
-    postLogin: (token: string) => {
-      login(token)
-      if (route.query.redirect) {
-        router.replace(`${route.query.redirect}`)
-      } else {
-        router.replace('/')
-      }
-    },
-    doLogin: () => {
-      router.push({
-        path: '/auth/login',
-        query: { redirect: route.fullPath }
-      })
-    }
+    postLogin,
+    doLogin,
+    checkLogin
   }
 }

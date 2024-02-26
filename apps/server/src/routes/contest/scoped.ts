@@ -3,8 +3,8 @@ import { defineRoutes, loadCapability, loadUUID, paramSchemaMerger } from '../co
 import { BSON } from 'mongodb'
 import { SContestStage } from '../../schemas/contest.js'
 import {
-  ContestCapability,
-  OrgCapability,
+  CONTEST_CAPS,
+  ORG_CAPS,
   contestParticipants,
   contests,
   evalTagRules,
@@ -39,11 +39,11 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
     const capability = loadCapability(
       contest,
       membership,
-      OrgCapability.CAP_CONTEST,
-      ContestCapability.CAP_ACCESS,
+      ORG_CAPS.CAP_CONTEST,
+      CONTEST_CAPS.CAP_ACCESS,
       CAP_ALL
     )
-    ensureCapability(capability, ContestCapability.CAP_ACCESS, s.httpErrors.forbidden())
+    ensureCapability(capability, CONTEST_CAPS.CAP_ACCESS, s.httpErrors.forbidden())
     req.provide(kContestContext, {
       _contestId: contestId,
       _contest: contest,
@@ -100,15 +100,12 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const ctx = req.inject(kContestContext)
       const { registrationEnabled, registrationAllowPublic } = ctx._contestStage.settings
-      if (
-        !registrationEnabled &&
-        !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)
-      ) {
+      if (!registrationEnabled && !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {
         return rep.forbidden()
       }
       if (
         !registrationAllowPublic &&
-        !hasCapability(ctx._contestCapability, ContestCapability.CAP_REGISTRATION)
+        !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_REGISTRATION)
       ) {
         return rep.forbidden()
       }
@@ -184,7 +181,7 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
     collection: contests,
     resolve: async (req) => {
       const ctx = req.inject(kContestContext)
-      if (!hasCapability(ctx._contestCapability, ContestCapability.CAP_CONTENT)) return null
+      if (!hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_CONTENT)) return null
       return ctx._contestId
     },
     prefix: '/content'

@@ -3,7 +3,7 @@ import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
 import { CAP_NONE, findPaginated, hasCapability } from '../../utils/index.js'
 import { plans } from '../../db/plan.js'
-import { OrgCapability } from '../../db/index.js'
+import { ORG_CAPS } from '../../db/index.js'
 import { AccessLevel } from '../../schemas/index.js'
 import { planScopedRoutes } from './scoped.js'
 import { searchToFilter, filterMerge } from '../../utils/search.js'
@@ -32,7 +32,7 @@ export const planRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const orgId = new BSON.UUID(req.body.orgId)
       const membership = await req.loadMembership(orgId)
-      if (!hasCapability(membership?.capability ?? CAP_NONE, OrgCapability.CAP_PLAN))
+      if (!hasCapability(membership?.capability ?? CAP_NONE, ORG_CAPS.CAP_PLAN))
         return rep.forbidden()
 
       const { insertedId } = await plans.insertOne({
@@ -86,7 +86,7 @@ export const planRoutes = defineRoutes(async (s) => {
 
       const membership = await req.loadMembership(orgId)
       const basicAccessLevel = membership
-        ? hasCapability(membership.capability, OrgCapability.CAP_CONTEST)
+        ? hasCapability(membership.capability, ORG_CAPS.CAP_CONTEST)
           ? AccessLevel.PRIVATE
           : AccessLevel.RESTRICED
         : AccessLevel.PUBLIC
@@ -137,7 +137,7 @@ export const planRoutes = defineRoutes(async (s) => {
       const searchFilter = { 'settings.promotion': true }
       const membership = await req.loadMembership(orgId)
       const basicAccessLevel = membership
-        ? hasCapability(membership.capability, OrgCapability.CAP_CONTEST)
+        ? hasCapability(membership.capability, ORG_CAPS.CAP_CONTEST)
           ? AccessLevel.PRIVATE
           : AccessLevel.RESTRICED
         : AccessLevel.PUBLIC

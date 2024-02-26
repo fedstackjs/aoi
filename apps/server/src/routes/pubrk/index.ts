@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { CAP_NONE, ensureCapability } from '../../utils/index.js'
-import { OrgCapability, pubrk } from '../../db/index.js'
+import { ORG_CAPS, pubrk } from '../../db/index.js'
 import { pubrkScopedRoutes } from './scoped.js'
 
 export const pubrkRoutes = defineRoutes(async (s) => {
@@ -32,7 +32,7 @@ export const pubrkRoutes = defineRoutes(async (s) => {
       const membership = await req.loadMembership(orgId)
       ensureCapability(
         membership?.capability ?? CAP_NONE,
-        OrgCapability.CAP_ADMIN,
+        ORG_CAPS.CAP_ADMIN,
         s.httpErrors.forbidden()
       )
       // find an unused ranklistId, because ranklistId is unique and we created descending index on it

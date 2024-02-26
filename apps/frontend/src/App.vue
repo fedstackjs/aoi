@@ -1,17 +1,17 @@
 <template>
   <VApp>
-    <AppBar />
-    <AppNavDrawer />
+    <AoiBar />
+    <AoiNavDrawer />
     <VMain>
       <RouterView />
     </VMain>
-    <AppFooter />
+    <AoiFooter />
   </VApp>
 </template>
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import AppBar from '@/components/app/AppBar.vue'
-import AppNavDrawer from '@/components/app/AppNavDrawer.vue'
-import AppFooter from '@/components/app/AppFooter.vue'
+import AoiBar from '@/components/aoi/AoiBar.vue'
+import AoiNavDrawer from '@/components/aoi/AoiNavDrawer.vue'
+import AoiFooter from '@/components/aoi/AoiFooter.vue'
 </script>

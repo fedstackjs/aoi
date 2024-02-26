@@ -6,7 +6,7 @@ import {
   paramSchemaMerger
 } from '../../common/index.js'
 import { findPaginated, hasCapability } from '../../../utils/index.js'
-import { ContestCapability, ISolution, SolutionState, solutions } from '../../../db/index.js'
+import { CONTEST_CAPS, ISolution, SolutionState, solutions } from '../../../db/index.js'
 import { BSON } from 'mongodb'
 import { getFileUrl, loadOrgOssSettings } from '../../common/files.js'
 import { solutionDataKey, solutionDetailsKey } from '../../../index.js'
@@ -17,7 +17,7 @@ function checkUser(
   req: FastifyRequest,
   userId: string | BSON.UUID | undefined,
   bypass: boolean | undefined,
-  bypassCap: BSON.Long = ContestCapability.CAP_ADMIN
+  bypassCap: BSON.Long = CONTEST_CAPS.CAP_ADMIN
 ) {
   const ctx = req.inject(kContestContext)
   return (
@@ -41,15 +41,12 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     const ctx = req.inject(kContestContext)
 
     const { solutionAllowSubmit } = ctx._contestStage.settings
-    if (
-      !solutionAllowSubmit &&
-      !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)
-    ) {
+    if (!solutionAllowSubmit && !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {
       return rep.forbidden()
     }
 
     const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
-    const admin = hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)
+    const admin = hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)
     const { modifiedCount } = await solutions.updateOne(
       {
         _id: solutionId,
@@ -80,7 +77,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     const ctx = req.inject(kContestContext)
 
     const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
-    const admin = hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)
+    const admin = hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)
     if (!admin) return rep.forbidden()
 
     const { modifiedCount } = await solutions.updateOne(
@@ -135,7 +132,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
 
       const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
       const { solutionShowOther } = ctx._contestStage.settings
-      const admin = hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)
+      const admin = hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)
       const solution = await solutions.findOne(
         {
           _id: solutionId,
@@ -171,10 +168,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kContestContext)
 
       const { solutionShowOtherDetails, solutionShowDetails } = ctx._contestStage.settings
-      if (
-        !solutionShowDetails &&
-        !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)
-      ) {
+      if (!solutionShowDetails && !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {
         throw s.httpErrors.forbidden()
       }
 
@@ -218,7 +212,7 @@ export const contestSolutionRoutes = defineRoutes(async (s) => {
     const ctx = req.inject(kContestContext)
 
     const { solutionEnabled } = ctx._contestStage.settings
-    if (!solutionEnabled && !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) {
+    if (!solutionEnabled && !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {
       return rep.forbidden()
     }
   })

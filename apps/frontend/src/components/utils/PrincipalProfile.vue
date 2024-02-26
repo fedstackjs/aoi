@@ -2,7 +2,7 @@
   <AsyncState :state="profile" hide-when-loading>
     <template v-slot="{ value }">
       <VAvatar>
-        <AppGravatar :email="value.emailHash" />
+        <AoiGravatar :email="value.emailHash" />
       </VAvatar>
       <code class="u-pl-2">
         <RouterLink v-if="to" :to="to">
@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import AsyncState from './AsyncState.vue'
-import AppGravatar from '../app/AppGravatar.vue'
+import AoiGravatar from '../aoi/AoiGravatar.vue'
 import { useAsyncState } from '@vueuse/core'
 import { getProfile } from '@/utils/profile'
 

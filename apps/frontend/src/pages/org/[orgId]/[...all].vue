@@ -1,7 +1,7 @@
 <template>
-  <AppNotFound />
+  <AoiNotFound />
 </template>
 
 <script setup lang="ts">
-import AppNotFound from '@/components/app/AppNotFound.vue'
+import AoiNotFound from '@/components/aoi/AoiNotFound.vue'
 </script>

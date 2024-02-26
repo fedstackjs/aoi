@@ -5,7 +5,7 @@
         <VListItem class="ma-4">
           <template v-slot:prepend>
             <VAvatar size="96">
-              <AppGravatar :email="value.profile.email" />
+              <AoiGravatar :email="value.profile.email" />
             </VAvatar>
           </template>
           <VListItemTitle class="text-h5 pa-2">
@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { useAsyncState } from '@vueuse/core'
-import AppGravatar from '@/components/app/AppGravatar.vue'
+import AoiGravatar from '@/components/aoi/AoiGravatar.vue'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import { http } from '@/utils/http'
 

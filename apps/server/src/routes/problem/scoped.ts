@@ -2,9 +2,9 @@ import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
 import { problemConfigSchema } from '@aoi-js/common'
 import {
-  ProblemCapability,
+  PROBLEM_CAPS,
   problems,
-  OrgCapability,
+  ORG_CAPS,
   SolutionState,
   solutions,
   problemStatuses
@@ -37,11 +37,11 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
     const capability = loadCapability(
       problem,
       membership,
-      OrgCapability.CAP_PROBLEM,
-      ProblemCapability.CAP_ACCESS,
+      ORG_CAPS.CAP_PROBLEM,
+      PROBLEM_CAPS.CAP_ACCESS,
       CAP_ALL
     )
-    ensureCapability(capability, ProblemCapability.CAP_ACCESS, s.httpErrors.forbidden())
+    ensureCapability(capability, PROBLEM_CAPS.CAP_ACCESS, s.httpErrors.forbidden())
     req.provide(kProblemContext, {
       _problemId: problemId,
       _problemCapability: capability,
@@ -102,10 +102,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kProblemContext)
 
       const { allowPublicSubmit, maxSolutionCount } = ctx._problem.settings
-      if (
-        !allowPublicSubmit &&
-        !hasCapability(ctx._problemCapability, ProblemCapability.CAP_SOLUTION)
-      ) {
+      if (!allowPublicSubmit && !hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_SOLUTION)) {
         return rep.preconditionFailed()
       }
 
@@ -172,7 +169,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
     resolve: async (req) => {
       const ctx = req.inject(kProblemContext)
 
-      if (!hasCapability(ctx._problemCapability, ProblemCapability.CAP_CONTENT)) return null
+      if (!hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_CONTENT)) return null
       return ctx._problemId
     },
     prefix: '/content'

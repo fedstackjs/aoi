@@ -28,7 +28,7 @@
       <template v-slot:[`item.profile`]="{ item }">
         <RouterLink :to="`/user/${item._id}`">
           <VAvatar>
-            <AppGravatar :email="item.profile.email" />
+            <AoiGravatar :email="item.profile.email" />
           </VAvatar>
           <code class="u-pl-2">{{ item.profile.name }}</code>
         </RouterLink>
@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import AppGravatar from '@/components/app/AppGravatar.vue'
+import AoiGravatar from '@/components/aoi/AoiGravatar.vue'
 import CapabilityChips from '@/components/utils/CapabilityChips.vue'
 import CapabilityInput from '@/components/utils/CapabilityInput.vue'
 import { useAppState } from '@/stores/app'

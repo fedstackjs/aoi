@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { groupScopedRoutes } from './scoped.js'
 import { ensureCapability, findPaginated } from '../../utils/index.js'
-import { OrgCapability, SGroupProfile, groups } from '../../index.js'
+import { ORG_CAPS, SGroupProfile, groups } from '../../index.js'
 import { BSON } from 'mongodb'
 
 export const groupRoutes = defineRoutes(async (s) => {
@@ -60,7 +60,7 @@ export const groupRoutes = defineRoutes(async (s) => {
       const orgId = loadUUID(req.body, 'orgId', s.httpErrors.badRequest())
       const membership = await req.loadMembership(orgId)
       if (!membership) return rep.forbidden()
-      ensureCapability(membership.capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
+      ensureCapability(membership.capability, ORG_CAPS.CAP_ADMIN, s.httpErrors.forbidden())
       const { insertedId } = await groups.insertOne({
         _id: new BSON.UUID(),
         orgId,

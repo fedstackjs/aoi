@@ -3,12 +3,13 @@ import { db } from './client.js'
 import { capabilityMask } from '../utils/capability.js'
 import { IOrgProfile, IOrgSettings } from '../schemas/index.js'
 
-export const OrgCapability = {
+export const ORG_CAPS = {
   CAP_ACCESS: capabilityMask(0),
   CAP_ADMIN: capabilityMask(1),
   CAP_PROBLEM: capabilityMask(2),
   CAP_CONTEST: capabilityMask(3),
-  CAP_PLAN: capabilityMask(4)
+  CAP_PLAN: capabilityMask(4),
+  CAP_APP: capabilityMask(5)
 }
 
 export interface IOrg {
@@ -28,6 +29,7 @@ export interface IOrgMembership {
   orgId: BSON.UUID
   capability: BSON.Long
   groups: BSON.UUID[]
+  tags?: string[]
 }
 
 export const orgMemberships = db.collection<IOrgMembership>('orgMemberships')

@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox'
 import bcrypt from 'bcrypt'
-import { IUser, OrgCapability, orgMemberships, users } from '../../../db/index.js'
+import { IUser, ORG_CAPS, orgMemberships, users } from '../../../db/index.js'
 import { paginationSkip } from '../../../utils/index.js'
 import { defineRoutes, loadUUID } from '../../common/index.js'
 import { BSON } from 'mongodb'
@@ -111,7 +111,7 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
         _id: new BSON.UUID(),
         userId,
         orgId: ctx._orgId,
-        capability: OrgCapability.CAP_ACCESS,
+        capability: ORG_CAPS.CAP_ACCESS,
         groups: []
       })
       return { membershipId: insertedId }
@@ -179,7 +179,7 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
               profile: SUserProfile,
               password: Type.String(),
               passwordResetDue: Type.Boolean({ default: false }),
-              orgCapability: Type.String({ default: OrgCapability.CAP_ACCESS.toString() }),
+              orgCapability: Type.String({ default: ORG_CAPS.CAP_ACCESS.toString() }),
               orgGroups: Type.Array(Type.UUID(), { default: [] })
             })
           ),

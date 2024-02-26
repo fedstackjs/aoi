@@ -1,10 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import {
-  ContestCapability,
-  contestParticipants,
-  findPaginated,
-  hasCapability
-} from '../../../index.js'
+import { CONTEST_CAPS, contestParticipants, findPaginated, hasCapability } from '../../../index.js'
 import { defineRoutes } from '../../common/index.js'
 import { kContestContext } from '../inject.js'
 import { BSON } from 'mongodb'
@@ -14,7 +9,7 @@ export const contestParticipantRoutes = defineRoutes(async (s) => {
     const ctx = req.inject(kContestContext)
     const { participantEnabled } = ctx._contestStage.settings
     if (participantEnabled) return
-    if (hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) return
+    if (hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) return
     return rep.forbidden()
   })
 
@@ -66,7 +61,7 @@ export const contestParticipantRoutes = defineRoutes(async (s) => {
 const contestParticipantAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
     const ctx = req.inject(kContestContext)
-    if (!hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) {
+    if (!hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {
       return rep.forbidden()
     }
   })

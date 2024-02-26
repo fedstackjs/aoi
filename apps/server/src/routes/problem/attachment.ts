@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import { defineRoutes, paramSchemaMerger } from '../common/index.js'
 import { ensureCapability } from '../../utils/index.js'
-import { ProblemCapability, problems } from '../../db/index.js'
+import { PROBLEM_CAPS, problems } from '../../db/index.js'
 import { problemAttachmentKey } from '../../oss/index.js'
 import { kProblemContext } from './inject.js'
 
@@ -14,11 +14,7 @@ const attachmentScopedRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kProblemContext)
 
       if (type !== 'download') {
-        ensureCapability(
-          ctx._problemCapability,
-          ProblemCapability.CAP_CONTENT,
-          s.httpErrors.forbidden()
-        )
+        ensureCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_CONTENT, s.httpErrors.forbidden())
       }
       const oss = await loadOrgOssSettings(ctx._problem.orgId)
       const key = (req.params as { key: string }).key
@@ -39,11 +35,7 @@ const attachmentScopedRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const ctx = req.inject(kProblemContext)
 
-      ensureCapability(
-        ctx._problemCapability,
-        ProblemCapability.CAP_CONTENT,
-        s.httpErrors.forbidden()
-      )
+      ensureCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_CONTENT, s.httpErrors.forbidden())
 
       const key = (req.params as { key: string }).key
       const { modifiedCount } = await problems.updateOne(
@@ -95,11 +87,7 @@ export const problemAttachmentRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const ctx = req.inject(kProblemContext)
 
-      ensureCapability(
-        ctx._problemCapability,
-        ProblemCapability.CAP_CONTENT,
-        s.httpErrors.forbidden()
-      )
+      ensureCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_CONTENT, s.httpErrors.forbidden())
 
       const { key, name, description } = req.body
       const { modifiedCount } = await problems.updateOne(

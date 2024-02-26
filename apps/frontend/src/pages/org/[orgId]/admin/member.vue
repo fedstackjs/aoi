@@ -29,7 +29,7 @@
       <template v-slot:[`item.profile`]="{ item }">
         <RouterLink :to="`/user/${item.user._id}`">
           <VAvatar>
-            <AppGravatar :email="item.user.profile.email" />
+            <AoiGravatar :email="item.user.profile.email" />
           </VAvatar>
           <code class="u-pl-2">{{ item.user.profile.name }}</code>
         </RouterLink>
@@ -66,7 +66,7 @@ import { orgBits } from '@/utils/capability'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { usePagination } from '@/utils/pagination'
-import AppGravatar from '@/components/app/AppGravatar.vue'
+import AoiGravatar from '@/components/aoi/AoiGravatar.vue'
 import CapabilityInput from '@/components/utils/CapabilityInput.vue'
 import CapabilityChips from '@/components/utils/CapabilityChips.vue'
 

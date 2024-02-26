@@ -1,7 +1,7 @@
 <template>
   <VNavigationDrawer v-model="appState.navBar">
     <VList nav>
-      <AppNavOrgSelector />
+      <AoiNavOrgSelector />
       <VListItem v-for="(link, i) of links" :key="i" v-bind="link" />
     </VList>
     <template #append>
@@ -30,7 +30,7 @@ import type { VListItem } from 'vuetify/components'
 import { useAppState } from '@/stores/app'
 import LocaleSelectBtn from '@/components/locale/LocaleSelectBtn.vue'
 import { appBuildInfo } from '@/utils/build'
-import AppNavOrgSelector from './AppNavOrgSelector.vue'
+import AoiNavOrgSelector from './AoiNavOrgSelector.vue'
 import { useAppNavMenu } from '@/utils/menus'
 
 const appState = useAppState()

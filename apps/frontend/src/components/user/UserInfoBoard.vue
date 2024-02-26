@@ -5,7 +5,7 @@
     <VListItem class="ma-4">
       <template v-slot:prepend>
         <VAvatar>
-          <AppGravatar :email="props.profile.email" />
+          <AoiGravatar :email="props.profile.email" />
         </VAvatar>
       </template>
       <VListItemTitle class="text-h6">
@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import AppGravatar from '../app/AppGravatar.vue'
+import AoiGravatar from '../aoi/AoiGravatar.vue'
 import type { userInfoProfile } from './types'
 import { computed } from 'vue'
 

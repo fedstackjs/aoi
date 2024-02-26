@@ -1,6 +1,6 @@
 import { Type } from '@fastify/type-provider-typebox'
 import { BSON } from 'mongodb'
-import { UserCapability, orgMemberships, orgs, users } from '../../db/index.js'
+import { USER_CAPS, orgMemberships, orgs, users } from '../../db/index.js'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { orgScopedRoutes } from './scoped.js'
 import { CAP_ALL, CAP_NONE, hasCapability } from '../../utils/capability.js'
@@ -26,7 +26,7 @@ export const orgRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const user = await users.findOne({ _id: req.user.userId }, { projection: { capability: 1 } })
-      if (!user || !hasCapability(user.capability ?? CAP_NONE, UserCapability.CAP_CREATE_ORG))
+      if (!user || !hasCapability(user.capability ?? CAP_NONE, USER_CAPS.CAP_CREATE_ORG))
         return rep.forbidden()
 
       const { insertedId } = await orgs.insertOne({

@@ -1,4 +1,4 @@
-import { UserCapability, hasCapability } from '../../index.js'
+import { USER_CAPS, hasCapability } from '../../index.js'
 import { packageJson } from '../../utils/package.js'
 import { loadUserCapability } from '../common/access.js'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
@@ -9,7 +9,7 @@ export const adminRoutes = defineRoutes(async (s) => {
 
   s.addHook('onRequest', async (req, rep) => {
     const capability = await loadUserCapability(req)
-    if (!hasCapability(capability, UserCapability.CAP_ADMIN)) return rep.forbidden()
+    if (!hasCapability(capability, USER_CAPS.CAP_ADMIN)) return rep.forbidden()
   })
 
   s.get('/', async () => {

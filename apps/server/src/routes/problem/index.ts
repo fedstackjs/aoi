@@ -3,7 +3,7 @@ import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { problemScopedRoutes } from './scoped.js'
 import { CAP_NONE, ensureCapability, hasCapability } from '../../utils/capability.js'
 import { BSON } from 'mongodb'
-import { OrgCapability, problems } from '../../db/index.js'
+import { ORG_CAPS, problems } from '../../db/index.js'
 import { paginationSkip } from '../../utils/pagination.js'
 import { AccessLevel } from '../../schemas/index.js'
 import { searchToFilter, filterMerge } from '../../utils/search.js'
@@ -36,7 +36,7 @@ export const problemRoutes = defineRoutes(async (s) => {
       const membership = await req.loadMembership(orgId)
       ensureCapability(
         membership?.capability ?? CAP_NONE,
-        OrgCapability.CAP_PROBLEM,
+        ORG_CAPS.CAP_PROBLEM,
         s.httpErrors.forbidden()
       )
       const { insertedId } = await problems.insertOne({
@@ -104,7 +104,7 @@ export const problemRoutes = defineRoutes(async (s) => {
 
       const membership = await req.loadMembership(orgId)
       const basicAccessLevel = membership
-        ? hasCapability(membership.capability, OrgCapability.CAP_PROBLEM)
+        ? hasCapability(membership.capability, ORG_CAPS.CAP_PROBLEM)
           ? AccessLevel.PRIVATE
           : AccessLevel.RESTRICED
         : AccessLevel.PUBLIC

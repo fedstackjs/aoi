@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { solutionScopedRoute } from './scoped.js'
 import { findPaginated, hasCapability } from '../../utils/index.js'
-import { ISolution, OrgCapability, problems, solutions } from '../../db/index.js'
+import { ISolution, ORG_CAPS, problems, solutions } from '../../db/index.js'
 import { BSON } from 'mongodb'
 import { orgMemberships } from '../../db/index.js'
 
@@ -58,7 +58,7 @@ export const solutionRoutes = defineRoutes(async (s) => {
       // check auth, satisfy one of the following:
       // 1. admin of the org
       // 2. userId exists and userId is current user
-      const isAdmin = hasCapability(membership.capability, OrgCapability.CAP_ADMIN)
+      const isAdmin = hasCapability(membership.capability, ORG_CAPS.CAP_ADMIN)
       const isCurrentUser = userId !== undefined && userId.equals(req.user.userId)
       if (!isAdmin && !isCurrentUser) {
         return rep.forbidden()

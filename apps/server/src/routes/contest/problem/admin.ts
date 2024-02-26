@@ -2,13 +2,7 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes } from '../../common/index.js'
 import { SContestProblemSettings } from '../../../schemas/contest.js'
 import { BSON } from 'mongodb'
-import {
-  ContestCapability,
-  SolutionState,
-  contests,
-  problems,
-  solutions
-} from '../../../db/index.js'
+import { CONTEST_CAPS, SolutionState, contests, problems, solutions } from '../../../db/index.js'
 import { hasCapability } from '../../../utils/index.js'
 import { kContestContext } from '../inject.js'
 import { loadProblemSettings } from './common.js'
@@ -16,7 +10,7 @@ import { loadProblemSettings } from './common.js'
 export const problemAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
     const ctx = req.inject(kContestContext)
-    if (!hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) {
+    if (!hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {
       return rep.forbidden()
     }
   })

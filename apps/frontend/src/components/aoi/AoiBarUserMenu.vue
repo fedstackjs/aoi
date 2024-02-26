@@ -4,7 +4,7 @@
       <VBtn v-bind="props" :loading="userInfo.isLoading.value" class="text-none">
         <template #prepend>
           <VAvatar>
-            <AppGravatar :email="userInfo.state.value?.profile.email ?? ''" />
+            <AoiGravatar :email="userInfo.state.value?.profile.email ?? ''" />
           </VAvatar>
         </template>
         {{ userInfo.state.value?.profile.name }}
@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import AppGravatar from './AppGravatar.vue'
+import AoiGravatar from './AoiGravatar.vue'
 import { useAppState } from '@/stores/app'
 import { useAppUserMenu } from '@/utils/menus'
 

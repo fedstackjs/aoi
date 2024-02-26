@@ -12,11 +12,11 @@
       <RouterView />
     </VCard>
   </VContainer>
-  <AppNotFound v-else />
+  <AoiNotFound v-else />
 </template>
 
 <script setup lang="ts">
-import AppNotFound from '@/components/app/AppNotFound.vue'
+import AoiNotFound from '@/components/aoi/AoiNotFound.vue'
 import { useUserCapability } from '@/utils/capability'
 
 const isAdmin = useUserCapability('admin')

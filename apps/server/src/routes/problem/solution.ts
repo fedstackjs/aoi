@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, generateRangeQuery, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { findPaginated, hasCapability } from '../../utils/index.js'
-import { ISolution, ProblemCapability, SolutionState, solutions } from '../../db/index.js'
+import { ISolution, PROBLEM_CAPS, SolutionState, solutions } from '../../db/index.js'
 import { BSON } from 'mongodb'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import { solutionDataKey, solutionDetailsKey } from '../../index.js'
@@ -21,7 +21,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     const ctx = req.inject(kProblemContext)
 
     const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
-    const admin = hasCapability(ctx._problemCapability, ProblemCapability.CAP_ADMIN)
+    const admin = hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_ADMIN)
     const { modifiedCount } = await solutions.updateOne(
       {
         _id: solutionId,
@@ -53,7 +53,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     const ctx = req.inject(kProblemContext)
 
     const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
-    const admin = hasCapability(ctx._problemCapability, ProblemCapability.CAP_ADMIN)
+    const admin = hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_ADMIN)
     if (!admin) return rep.forbidden()
 
     const { modifiedCount } = await solutions.updateOne(
@@ -209,7 +209,7 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
 
       const userId = req.query.userId ? new BSON.UUID(req.query.userId) : undefined
       // check auth
-      const isAdmin = hasCapability(ctx._problemCapability, ProblemCapability.CAP_ADMIN)
+      const isAdmin = hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_ADMIN)
       const isCurrentUser = userId !== undefined && userId.equals(req.user.userId)
       if (!isAdmin && !isCurrentUser) {
         return rep.forbidden()

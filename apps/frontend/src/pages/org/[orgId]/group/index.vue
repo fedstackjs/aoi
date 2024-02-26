@@ -19,7 +19,7 @@
             <template v-slot:[`item.name`]="{ item }">
               <RouterLink :to="`/org/${orgId}/group/${item._id}`">
                 <VAvatar>
-                  <AppGravatar :email="item.profile.email" />
+                  <AoiGravatar :email="item.profile.email" />
                 </VAvatar>
                 <code class="u-pl-2">{{ item.profile.name }}</code>
               </RouterLink>
@@ -37,7 +37,7 @@ import { withTitle } from '@/utils/title'
 import { useAsyncState } from '@vueuse/core'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import AppGravatar from '@/components/app/AppGravatar.vue'
+import AoiGravatar from '@/components/aoi/AoiGravatar.vue'
 
 const props = defineProps<{
   orgId: string

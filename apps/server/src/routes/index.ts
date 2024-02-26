@@ -28,11 +28,12 @@ import type { FastifyRequest } from 'fastify'
 import { publicRoutes } from './public/index.js'
 import { IOrgMembership, orgMemberships } from '../db/index.js'
 import { authProviders } from '../auth/index.js'
+import { appRoutes } from './app/index.js'
+import { oauthRoutes } from './oauth/index.js'
 
 const SUserPayload = Type.Object({
   userId: Type.UUID(),
-  tags: Type.Optional(Type.Array(Type.String())),
-  mfa: Type.Optional(Type.String())
+  tags: Type.Optional(Type.Array(Type.String()))
 })
 type UserPayload = Static<typeof SUserPayload>
 const userPayload = TypeCompiler.Compile(SUserPayload)
@@ -50,6 +51,7 @@ declare module 'fastify' {
     provide<T>(point: InjectionPoint<T>, value: T): void
     inject<T>(point: InjectionPoint<T>): T
     loadMembership(orgId: UUID): Promise<IOrgMembership | null>
+    verifyToken(token: string): UserPayload
     verifyMfa(token: string): string
   }
 }
@@ -70,16 +72,21 @@ async function decoratedLoadMembership(
   return orgMemberships.findOne({ userId: this.user.userId, orgId })
 }
 
+function decoratedVerifyToken(this: FastifyRequest, token: string): UserPayload {
+  const payload = this.server.jwt.verify<UserPayload>(token)
+  if (userPayload.Check(payload)) return payload
+  throw this.server.httpErrors.badRequest()
+}
+
 function decoratedVerifyMfa(this: FastifyRequest, token: string): string {
   if (!this.user) throw this.server.httpErrors.forbidden()
-  const payload = this.server.jwt.verify<UserPayload>(token)
-  if (userPayload.Check(payload)) {
-    if (!this.user.userId.equals(payload.userId)) throw this.server.httpErrors.forbidden()
-    if (!payload.mfa) throw this.server.httpErrors.forbidden()
-    if (!Object.hasOwn(authProviders, payload.mfa)) throw this.server.httpErrors.badRequest()
-    return payload.mfa
-  }
-  throw this.server.httpErrors.badRequest()
+  const payload = this.verifyToken(token)
+  if (!this.user.userId.equals(payload.userId)) throw this.server.httpErrors.forbidden()
+  const tag = payload.tags?.find((tag) => tag.startsWith('.mfa.'))
+  if (!tag) throw this.server.httpErrors.forbidden()
+  const type = tag.slice(5)
+  if (!Object.hasOwn(authProviders, type)) throw this.server.httpErrors.badRequest()
+  return type
 }
 
 export const apiRoutes = defineRoutes(async (s) => {
@@ -87,6 +94,7 @@ export const apiRoutes = defineRoutes(async (s) => {
   s.decorateRequest('provide', decoratedProvide)
   s.decorateRequest('inject', decoratedInject)
   s.decorateRequest('loadMembership', decoratedLoadMembership)
+  s.decorateRequest('verifyToken', decoratedVerifyToken)
   s.decorateRequest('verifyMfa', decoratedVerifyMfa)
 
   s.register(fastifyJwt, {
@@ -145,4 +153,6 @@ export const apiRoutes = defineRoutes(async (s) => {
   s.register(announcementRoutes, { prefix: '/announcement' })
   s.register(pubrkRoutes, { prefix: '/rk' })
   s.register(publicRoutes, { prefix: '/public' })
+  s.register(appRoutes, { prefix: '/app' })
+  s.register(oauthRoutes, { prefix: '/oauth' })
 })

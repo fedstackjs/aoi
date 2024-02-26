@@ -5,7 +5,7 @@
         <VCard :title="t('about-us')">
           <VCardText>
             <a class="u-flex u-flex-col u-items-center" href="https://aoi.fedstack.org">
-              <AppLogo width="128" />
+              <AoiLogo width="128" />
               <q class="u-text-lg u-font-italic">The <b>AOI</b> Project</q>
             </a>
           </VCardText>
@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import AppLogo from '@/components/app/AppLogo.vue'
+import AoiLogo from '@/components/aoi/AoiLogo.vue'
 import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'

@@ -2,13 +2,7 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, paramSchemaMerger, loadCapability } from '../common/index.js'
 import { contestRanklistKey } from '../../index.js'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
-import {
-  OrgCapability,
-  ContestCapability,
-  IPublicRanklist,
-  pubrk,
-  contests
-} from '../../db/index.js'
+import { ORG_CAPS, CONTEST_CAPS, IPublicRanklist, pubrk, contests } from '../../db/index.js'
 import { CAP_ALL, hasCapability } from '../../utils/index.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
 
@@ -93,11 +87,11 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
       const capability = loadCapability(
         contest,
         membership,
-        OrgCapability.CAP_CONTEST,
-        ContestCapability.CAP_ACCESS,
+        ORG_CAPS.CAP_CONTEST,
+        CONTEST_CAPS.CAP_ACCESS,
         CAP_ALL
       )
-      if (!hasCapability(capability, ContestCapability.CAP_ADMIN)) {
+      if (!hasCapability(capability, CONTEST_CAPS.CAP_ADMIN)) {
         return rep.forbidden()
       }
       await pubrk.updateOne(
@@ -127,11 +121,11 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
       const capability = loadCapability(
         contest,
         membership,
-        OrgCapability.CAP_CONTEST,
-        ContestCapability.CAP_ACCESS,
+        ORG_CAPS.CAP_CONTEST,
+        CONTEST_CAPS.CAP_ACCESS,
         CAP_ALL
       )
-      if (!hasCapability(capability, ContestCapability.CAP_ADMIN)) {
+      if (!hasCapability(capability, CONTEST_CAPS.CAP_ADMIN)) {
         return rep.forbidden()
       }
       const { deletedCount } = await pubrk.deleteOne({ ranklistId: ctx._ranklistId })

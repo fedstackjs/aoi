@@ -5,7 +5,7 @@ import { capabilityMask } from '../utils/capability.js'
 import { ProblemConfig } from '@aoi-js/common'
 import { IProblemSettings } from '../schemas/problem.js'
 
-export const ProblemCapability = {
+export const PROBLEM_CAPS = {
   CAP_ACCESS: capabilityMask(0), // Can access(view) this problem
   CAP_ADMIN: capabilityMask(1), // Can manage problem ACL
   CAP_SOLUTION: capabilityMask(2), // Can submit solution to this problem

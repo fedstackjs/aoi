@@ -1,4 +1,4 @@
-import { ProblemCapability, SolutionState, problems, solutions } from '../../db/index.js'
+import { PROBLEM_CAPS, SolutionState, problems, solutions } from '../../db/index.js'
 import { defineRoutes } from '../common/index.js'
 import { ensureCapability } from '../../utils/capability.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
@@ -11,7 +11,7 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req) => {
     ensureCapability(
       req.inject(kProblemContext)._problemCapability,
-      ProblemCapability.CAP_ADMIN,
+      PROBLEM_CAPS.CAP_ADMIN,
       s.httpErrors.forbidden()
     )
   })
@@ -19,7 +19,7 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
   s.register(manageACL, {
     collection: problems,
     resolve: async (req) => req.inject(kProblemContext)._problem._id,
-    defaultCapability: ProblemCapability.CAP_ACCESS,
+    defaultCapability: PROBLEM_CAPS.CAP_ACCESS,
     prefix: '/access'
   })
   s.register(manageAccessLevel, {
