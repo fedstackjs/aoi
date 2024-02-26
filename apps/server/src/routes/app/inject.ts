@@ -6,4 +6,4 @@ export const kAppContext = defineInjectionPoint<{
   app: IApp
   capability: BSON.Long
   membership: IOrgMembership
-}>('plan')
+}>('app')

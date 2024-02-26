@@ -46,7 +46,7 @@ const search = ref('')
 
 function onSearch() {
   router.push({
-    path: `/org/${props.orgId}/plan/search`,
+    path: `/org/${props.orgId}/app/search`,
     query: { search: search.value }
   })
 }
