@@ -43,12 +43,12 @@ if (hasModule('@fastify/swagger') && hasModule('@fastify/swagger-ui')) {
           runnerKeyAuth: {
             type: 'apiKey',
             in: 'header',
-            name: 'X-Runner-Key'
+            name: 'X-AOI-Runner-Key'
           },
           runnerId: {
             type: 'apiKey',
             in: 'header',
-            name: 'X-Runner-Id'
+            name: 'X-AOI-Runner-Id'
           }
         }
       },

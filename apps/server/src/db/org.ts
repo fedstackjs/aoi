@@ -8,7 +8,8 @@ export const OrgCapability = {
   CAP_ADMIN: capabilityMask(1),
   CAP_PROBLEM: capabilityMask(2),
   CAP_CONTEST: capabilityMask(3),
-  CAP_PLAN: capabilityMask(4)
+  CAP_PLAN: capabilityMask(4),
+  CAP_APP: capabilityMask(5)
 }
 
 export interface IOrg {

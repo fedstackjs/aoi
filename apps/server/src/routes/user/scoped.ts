@@ -29,6 +29,8 @@ export const userScopedRoutes = defineRoutes(async (s) => {
     '/',
     {
       schema: {
+        description: 'Get user details',
+        tags: ['user.details'],
         response: {
           200: Type.Object({
             profile: SUserProfile,

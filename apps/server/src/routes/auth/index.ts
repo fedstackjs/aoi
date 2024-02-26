@@ -120,7 +120,7 @@ export const authRoutes = defineRoutes(async (s) => {
       const verified = await authProviders[provider].verify(req.user.userId, payload, req, rep)
       if (!verified) return rep.forbidden()
       const token = await rep.jwtSign(
-        { userId: req.user.userId.toString(), tags: [], mfa: provider },
+        { userId: req.user.userId.toString(), tags: [`.mfa.${provider}`] },
         { expiresIn: '30min' }
       )
       return { token }
