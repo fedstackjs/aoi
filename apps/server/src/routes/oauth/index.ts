@@ -1,7 +1,8 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes } from '../common/index.js'
 import { UUID } from 'mongodb'
-import { apps } from '../../db/index.js'
+import { IOrgMembership, IUser, apps, orgMemberships, users } from '../../db/index.js'
+import { SUserProfile } from '../../schemas/index.js'
 
 export const oauthRoutes = defineRoutes(async (s) => {
   s.post(
@@ -18,7 +19,23 @@ export const oauthRoutes = defineRoutes(async (s) => {
         response: {
           200: Type.Object({
             access_token: Type.String(),
-            token_type: Type.String()
+            token_type: Type.String(),
+            user: Type.Optional(
+              Type.Object({
+                profile: SUserProfile,
+                capability: Type.Optional(Type.String()),
+                namespace: Type.Optional(Type.String()),
+                tags: Type.Optional(Type.Array(Type.String()))
+              })
+            ),
+            membership: Type.Optional(
+              Type.Object({
+                orgId: Type.UUID(),
+                capability: Type.String(),
+                groups: Type.Array(Type.UUID()),
+                tags: Type.Optional(Type.Array(Type.String()))
+              })
+            )
           })
         }
       }
@@ -38,7 +55,26 @@ export const oauthRoutes = defineRoutes(async (s) => {
         { userId: userId.toString(), tags: fullAccess ? undefined : scopes },
         { expiresIn: '7d' }
       )
-      return { access_token: token, token_type: 'bearer' }
+      let user: (Omit<IUser, 'capability'> & { capability?: string }) | undefined
+      if (app.settings.attachUser) {
+        const result = await users.findOne({ _id: new UUID(userId) })
+        if (!result) return rep.badRequest()
+        user = {
+          ...result,
+          capability: result.capability?.toString()
+        }
+      }
+      let membership: (Omit<IOrgMembership, 'capability'> & { capability: string }) | undefined
+      if (app.settings.attachMembership) {
+        const result = await orgMemberships.findOne({ orgId: app.orgId, userId: new UUID(userId) })
+        if (result) {
+          membership = {
+            ...result,
+            capability: result.capability.toString()
+          }
+        }
+      }
+      return { access_token: token, token_type: 'bearer', user, membership }
     }
   )
 })

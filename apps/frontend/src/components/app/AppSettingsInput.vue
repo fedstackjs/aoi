@@ -2,6 +2,8 @@
   <div class="u-grid u-grid-cols-2">
     <VCheckbox v-model="model.allowPublicLogin" :label="t('allow-public-login')" />
     <VCheckbox v-model="model.requireMfa" :label="t('require-mfa')" />
+    <VCheckbox v-model="model.attachUser" :label="t('attach-user')" />
+    <VCheckbox v-model="model.attachMembership" :label="t('attach-membership')" />
   </div>
   <VCombobox v-model="model.scopes" :label="t('scopes')" multiple chips />
   <VCardSubtitle> {{ t('redirect-uris') }} </VCardSubtitle>
@@ -32,11 +34,14 @@ const { t } = useI18n()
 </script>
 <i18n>
 en:
-  registration-enabled: Registration Enabled
-  registration-allow-public: Allow Public Registration
-  promotion: Demonstrate on Homepage
+  allow-public-login: Allow public login
+  require-mfa: Require MFA
+  attach-user: Attach user in response
+  attach-membership: Attach membership in response
+
 zh-Hans:
-  registration-enabled: 允许注册
-  registration-allow-public: 允许公开注册
-  promotion: 在主页展示
+  allow-public-login: 允许公共登录
+  require-mfa: 需要多因素认证
+  attach-user: 在响应中附加用户
+  attach-membership: 在响应中附加成员信息
 </i18n>

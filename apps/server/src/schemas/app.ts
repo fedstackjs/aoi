@@ -14,7 +14,9 @@ export const SAppSettings = Type.Partial(
         uri: Type.String(),
         label: Type.String()
       })
-    )
+    ),
+    attachUser: Type.Boolean(),
+    attachMembership: Type.Boolean()
   })
 )
 

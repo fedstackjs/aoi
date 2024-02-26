@@ -29,6 +29,7 @@ export interface IOrgMembership {
   orgId: BSON.UUID
   capability: BSON.Long
   groups: BSON.UUID[]
+  tags?: string[]
 }
 
 export const orgMemberships = db.collection<IOrgMembership>('orgMemberships')
