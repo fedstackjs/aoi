@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto'
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { UUID } from 'mongodb'
@@ -34,6 +35,8 @@ export const appRoutes = defineRoutes(async (s) => {
       if (!hasCapability(membership?.capability ?? CAP_NONE, OrgCapability.CAP_APP))
         return rep.forbidden()
 
+      const secret = randomBytes(32).toString('base64url')
+
       const { insertedId } = await apps.insertOne({
         _id: new UUID(),
         orgId,
@@ -44,9 +47,10 @@ export const appRoutes = defineRoutes(async (s) => {
         accessLevel: req.body.accessLevel,
         associations: [],
         settings: {},
+        secret,
         createdAt: req._now
       })
-      return { appId: insertedId }
+      return { appId: insertedId, secret }
     }
   )
 

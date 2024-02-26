@@ -35,6 +35,13 @@ export const planBits = {
   registration: 3
 }
 
+export const appBits = {
+  access: 0,
+  admin: 1,
+  content: 2,
+  login: 3
+}
+
 export const userBits = {
   admin: 0,
   createOrg: 1

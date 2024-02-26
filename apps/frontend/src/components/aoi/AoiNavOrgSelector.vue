@@ -2,7 +2,7 @@
   <VListItem v-if="appState.orgId" :to="'/org/' + appState.orgId" exact>
     <template #prepend>
       <VAvatar rounded="lg">
-        <AppGravatar :email="appState.orgProfile.state.value?.profile.email ?? ''" />
+        <AoiGravatar :email="appState.orgProfile.state.value?.profile.email ?? ''" />
       </VAvatar>
     </template>
     <VListItemTitle>{{ appState.orgProfile.state.value?.profile.name }}</VListItemTitle>
@@ -38,7 +38,7 @@
         >
           <template #prepend>
             <VAvatar rounded="lg">
-              <AppGravatar :email="org.profile.email" />
+              <AoiGravatar :email="org.profile.email" />
             </VAvatar>
           </template>
           <VListItemTitle>{{ org.profile.name }}</VListItemTitle>
@@ -54,12 +54,9 @@
 </template>
 
 <script setup lang="ts">
-import { http } from '@/utils/http'
-import { useAsyncState } from '@vueuse/core'
-import AppGravatar from '../app/AppGravatar.vue'
+import AoiGravatar from '../aoi/AoiGravatar.vue'
 import { useAppState } from '@/stores/app'
 import { useI18n } from 'vue-i18n'
-import { watch } from 'vue'
 
 const appState = useAppState()
 const { t } = useI18n()

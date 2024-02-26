@@ -6,7 +6,7 @@
           <VCardTitle class="text-center">
             <div>
               <VAvatar size="180" rounded="0">
-                <AppLogo />
+                <AoiLogo />
               </VAvatar>
             </div>
           </VCardTitle>
@@ -37,9 +37,11 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import AppLogo from '../app/AppLogo.vue'
+import AoiLogo from '../aoi/AoiLogo.vue'
 import { useRouter } from 'vue-router'
+import { withI18nTitle } from '@/utils/title'
 
 const { t } = useI18n()
 const router = useRouter()
+withI18nTitle('pages.not-found')
 </script>

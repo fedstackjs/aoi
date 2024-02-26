@@ -24,12 +24,13 @@ export const oauthRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const { userId, tags } = req.verifyToken(req.body.code)
+      const { code, client_id, client_secret } = req.body
+      const { userId, tags } = req.verifyToken(code)
       const tag = tags?.find((tag) => tag.startsWith(`.oauth.access_token.`))
       if (!tag) return rep.badRequest()
       const appId = tag.slice(20)
-      if (!UUID.isValid(appId)) return rep.badRequest()
-      const app = await apps.findOne({ _id: new UUID(appId) })
+      if (appId !== client_id || !UUID.isValid(appId)) return rep.badRequest()
+      const app = await apps.findOne({ _id: new UUID(appId), secret: client_secret })
       if (!app) return rep.badRequest()
       const scopes = app.settings.scopes ?? ['user.details']
       const fullAccess = scopes.some((scope) => scope === '*')

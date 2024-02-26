@@ -6,7 +6,7 @@
           <VCardTitle class="text-center">
             <div>
               <VAvatar size="180" rounded="0">
-                <AppLogo />
+                <AoiLogo />
               </VAvatar>
             </div>
             <div>
@@ -40,7 +40,7 @@ import { useAppState } from '@/stores/app'
 import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { withI18nTitle } from '@/utils/title'
-import AppLogo from '@/components/app/AppLogo.vue'
+import AoiLogo from '@/components/aoi/AoiLogo.vue'
 import { loginHint } from '@/utils/flags'
 
 const { t } = useI18n()

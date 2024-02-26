@@ -6,7 +6,13 @@ export const SAppSettings = Type.Partial(
     requireMfa: Type.Boolean(),
     scopes: Type.Array(
       Type.String({
-        pattern: '^[^.].+$'
+        pattern: '^[^.].?$'
+      })
+    ),
+    redirectUris: Type.Array(
+      Type.Object({
+        uri: Type.String(),
+        label: Type.String()
       })
     )
   })

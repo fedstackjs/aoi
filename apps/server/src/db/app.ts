@@ -17,6 +17,8 @@ export interface IApp extends IPrincipalControlable, IWithAccessLevel, IWithCont
 
   settings: IAppSettings
 
+  secret: string
+
   createdAt: number
 }
 

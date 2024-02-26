@@ -10,6 +10,8 @@ import vueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 const gitHash = execSync('git rev-parse --short HEAD').toString().trim()
 const gitBranch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim()
 
+process.env.VITE_EXTRA_HEAD ??= ''
+
 export default defineConfig({
   build: {
     target: 'esnext'

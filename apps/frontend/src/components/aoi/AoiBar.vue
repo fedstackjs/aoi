@@ -4,7 +4,7 @@
     <VToolbarItems>
       <VBtn to="/" rounded="lg" :active="false">
         <template #prepend>
-          <VIcon size="48"><AppLogo /></VIcon>
+          <VIcon size="48"><AoiLogo /></VIcon>
         </template>
         <div class="text-none u-pl-4 u-font-mono u-text-3xl">
           {{ appName }}
@@ -18,8 +18,8 @@
 
     <SearchBox v-if="appState.orgId" :org-id="appState.orgId" />
     <VToolbarItems v-if="appState.loggedIn">
-      <AppBarAddMenu />
-      <AppBarUserMenu />
+      <AoiBarAddMenu />
+      <AoiBarUserMenu />
     </VToolbarItems>
     <VToolbarItems v-else>
       <VBtn color="blue-darken-1" to="/auth/login" exact>
@@ -33,9 +33,9 @@
 import { useAppState } from '@/stores/app'
 import { useI18n } from 'vue-i18n'
 import { appName, showCountdown } from '@/utils/flags'
-import AppBarUserMenu from './AppBarUserMenu.vue'
-import AppBarAddMenu from './AppBarAddMenu.vue'
-import AppLogo from './AppLogo.vue'
+import AoiBarUserMenu from './AoiBarUserMenu.vue'
+import AoiBarAddMenu from './AoiBarAddMenu.vue'
+import AoiLogo from './AoiLogo.vue'
 import TimeLabel from '../homepage/TimeLabel.vue'
 import SearchBox from '../homepage/SearchBox.vue'
 

@@ -37,6 +37,12 @@ export function useAppAddMenu() {
         title: t('new-plan'),
         to: '/plan/new',
         show: orgAdmin.value
+      },
+      {
+        prependIcon: 'mdi-application-export',
+        title: t('new-app'),
+        to: '/app/new',
+        show: orgAdmin.value
       }
     ].map((item) => ({
       ...item,
@@ -92,6 +98,7 @@ export function useAppNavMenu() {
       { prependIcon: 'mdi-balloon', to: '/contest', title: t('pages.contests') },
       { prependIcon: 'mdi-timer-sand', to: '/solution', title: t('pages.solutions') },
       { prependIcon: 'mdi-clipboard-text-outline', to: '/plan', title: t('pages.plans') },
+      { prependIcon: 'mdi-application-export', to: '/app', title: t('pages.apps') },
       { prependIcon: 'mdi-account-multiple', to: '/group', title: t('pages.groups') }
     ].map((item) => ({
       ...item,

@@ -5,6 +5,7 @@ import { CAP_ALL, hasCapability } from '../../utils/index.js'
 import { kAppContext } from './inject.js'
 import { manageContent } from '../common/content.js'
 import { SAppSettings } from '../../schemas/index.js'
+import { appAdminRoutes } from './admin.js'
 
 export const appScopedRoutes = defineRoutes(async (s) => {
   s.addHook(
@@ -105,4 +106,6 @@ export const appScopedRoutes = defineRoutes(async (s) => {
       return { token }
     }
   )
+
+  s.register(appAdminRoutes, { prefix: '/admin' })
 })
