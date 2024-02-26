@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { ContestCapability, contests } from '../../../db/index.js'
+import { CONTEST_CAPS, contests } from '../../../db/index.js'
 import { hasCapability } from '../../../utils/index.js'
 import { defineRoutes } from '../../common/index.js'
 import { SContestRanklistSettings } from '../../../index.js'
@@ -8,7 +8,7 @@ import { kContestContext } from '../inject.js'
 export const ranklistAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
     const ctx = req.inject(kContestContext)
-    if (!hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) {
+    if (!hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {
       return rep.forbidden()
     }
   })

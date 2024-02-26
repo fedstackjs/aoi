@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox'
 import {
-  ContestCapability,
+  CONTEST_CAPS,
   ContestRanklistState,
   SolutionState,
   contests,
@@ -17,7 +17,7 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req) => {
     ensureCapability(
       req.inject(kContestContext)._contestCapability,
-      ContestCapability.CAP_ADMIN,
+      CONTEST_CAPS.CAP_ADMIN,
       s.httpErrors.forbidden()
     )
   })
@@ -25,7 +25,7 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
   s.register(manageACL, {
     collection: contests,
     resolve: async (req) => req.inject(kContestContext)._contestId,
-    defaultCapability: ContestCapability.CAP_ACCESS,
+    defaultCapability: CONTEST_CAPS.CAP_ACCESS,
     prefix: '/access'
   })
   s.register(manageAccessLevel, {

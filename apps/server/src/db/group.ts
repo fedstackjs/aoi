@@ -3,7 +3,7 @@ import { db } from './client.js'
 import { capabilityMask } from '../utils/capability.js'
 import { IGroupProfile } from '../schemas/index.js'
 
-export const GroupCapability = {
+export const GROUP_CAPS = {
   CAP_ACCESS: capabilityMask(0)
 }
 

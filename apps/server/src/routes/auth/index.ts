@@ -4,7 +4,7 @@ import { users } from '../../db/index.js'
 import { BSON } from 'mongodb'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { SUserProfile } from '../../schemas/index.js'
-import { infos, orgMemberships, OrgCapability } from '../../db/index.js'
+import { infos, orgMemberships, ORG_CAPS } from '../../db/index.js'
 import { authProviderList, authProviders } from '../../auth/index.js'
 import { loadEnv, parseBoolean } from '../../index.js'
 
@@ -163,7 +163,7 @@ export const authRoutes = defineRoutes(async (s) => {
           _id: new BSON.UUID(),
           userId: insertedId,
           orgId: doUUID,
-          capability: OrgCapability.CAP_ACCESS,
+          capability: ORG_CAPS.CAP_ACCESS,
           groups: []
         })
       }

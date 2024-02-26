@@ -3,7 +3,7 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { UUID } from 'mongodb'
 import { CAP_NONE, findPaginated, hasCapability } from '../../utils/index.js'
-import { OrgCapability, apps } from '../../db/index.js'
+import { ORG_CAPS, apps } from '../../db/index.js'
 import { filterMerge, searchToFilter } from '../../utils/search.js'
 import { AccessLevel } from '../../schemas/index.js'
 import { appScopedRoutes } from './scoped.js'
@@ -32,7 +32,7 @@ export const appRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const orgId = new UUID(req.body.orgId)
       const membership = await req.loadMembership(orgId)
-      if (!hasCapability(membership?.capability ?? CAP_NONE, OrgCapability.CAP_APP))
+      if (!hasCapability(membership?.capability ?? CAP_NONE, ORG_CAPS.CAP_APP))
         return rep.forbidden()
 
       const secret = randomBytes(32).toString('base64url')
@@ -88,7 +88,7 @@ export const appRoutes = defineRoutes(async (s) => {
 
       const membership = await req.loadMembership(orgId)
       const basicAccessLevel = membership
-        ? hasCapability(membership.capability, OrgCapability.CAP_CONTEST)
+        ? hasCapability(membership.capability, ORG_CAPS.CAP_CONTEST)
           ? AccessLevel.PRIVATE
           : AccessLevel.RESTRICED
         : AccessLevel.PUBLIC

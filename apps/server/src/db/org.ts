@@ -3,7 +3,7 @@ import { db } from './client.js'
 import { capabilityMask } from '../utils/capability.js'
 import { IOrgProfile, IOrgSettings } from '../schemas/index.js'
 
-export const OrgCapability = {
+export const ORG_CAPS = {
   CAP_ACCESS: capabilityMask(0),
   CAP_ADMIN: capabilityMask(1),
   CAP_PROBLEM: capabilityMask(2),

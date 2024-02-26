@@ -2,7 +2,7 @@ import { BSON } from 'mongodb'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
 import {
-  OrgCapability,
+  ORG_CAPS,
   SGroupProfile,
   ensureCapability,
   groups,
@@ -87,7 +87,7 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       if (!group) return rep.notFound()
       const membership = await req.loadMembership(group.orgId)
       if (!membership) return rep.forbidden()
-      ensureCapability(membership.capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
+      ensureCapability(membership.capability, ORG_CAPS.CAP_ADMIN, s.httpErrors.forbidden())
       await groups.updateOne({ _id: ctx.groupId }, { $set: { profile: req.body } })
       return {}
     }
@@ -106,7 +106,7 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       if (!group) return rep.notFound()
       const membership = await req.loadMembership(group.orgId)
       if (!membership) return rep.forbidden()
-      ensureCapability(membership.capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
+      ensureCapability(membership.capability, ORG_CAPS.CAP_ADMIN, s.httpErrors.forbidden())
       // Remove Dependencies
       await orgMemberships.updateMany({ orgId: group.orgId }, { $pull: { groups: ctx.groupId } })
       await problems.updateMany(
@@ -199,7 +199,7 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       if (!group) return rep.notFound()
       const membership = await req.loadMembership(group.orgId)
       if (!membership) return rep.forbidden()
-      ensureCapability(membership.capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
+      ensureCapability(membership.capability, ORG_CAPS.CAP_ADMIN, s.httpErrors.forbidden())
       const userId = loadUUID(req.body, 'userId', s.httpErrors.badRequest())
       const { modifiedCount } = await orgMemberships.updateOne(
         { userId, orgId: group.orgId },
@@ -226,7 +226,7 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       if (!group) return rep.notFound()
       const membership = await req.loadMembership(group.orgId)
       if (!membership) return rep.forbidden()
-      ensureCapability(membership.capability, OrgCapability.CAP_ADMIN, s.httpErrors.forbidden())
+      ensureCapability(membership.capability, ORG_CAPS.CAP_ADMIN, s.httpErrors.forbidden())
       const userId = loadUUID(req.params, 'userId', s.httpErrors.badRequest())
       const { modifiedCount } = await orgMemberships.updateOne(
         { userId, orgId: group.orgId },

@@ -1,4 +1,4 @@
-import { UserCapability, hasCapability } from '../../index.js'
+import { USER_CAPS, hasCapability } from '../../index.js'
 import { loadUserCapability } from '../common/access.js'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
@@ -31,7 +31,7 @@ export const announcementRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const capability = await loadUserCapability(req)
-      if (!hasCapability(capability, UserCapability.CAP_ADMIN)) return rep.forbidden()
+      if (!hasCapability(capability, USER_CAPS.CAP_ADMIN)) return rep.forbidden()
       const { insertedId } = await announcements.insertOne({
         _id: new BSON.UUID(),
         title: req.body.title,
@@ -73,7 +73,7 @@ export const announcementRoutes = defineRoutes(async (s) => {
       const cap = await (async () => {
         if (!req.user) return false
         const capability = await loadUserCapability(req)
-        return hasCapability(capability, UserCapability.CAP_ADMIN)
+        return hasCapability(capability, USER_CAPS.CAP_ADMIN)
       })()
       const filter: Document = cap ? {} : { public: true }
       let total = 0

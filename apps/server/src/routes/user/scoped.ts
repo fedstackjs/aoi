@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
-import { SUserProfile, UserCapability, hasCapability, users } from '../../index.js'
+import { SUserProfile, USER_CAPS, hasCapability, users } from '../../index.js'
 import { loadUserCapability } from '../common/access.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
 import { authProviders } from '../../auth/index.js'
@@ -69,7 +69,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       if (!user) return rep.notFound()
       const capability = await loadUserCapability(req)
       const allowSensitive =
-        req.user.userId.equals(ctx._userId) || hasCapability(capability, UserCapability.CAP_ADMIN)
+        req.user.userId.equals(ctx._userId) || hasCapability(capability, USER_CAPS.CAP_ADMIN)
       return allowSensitive
         ? user.profile
         : {
@@ -91,10 +91,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kUserContext)
 
       const capability = await loadUserCapability(req)
-      if (
-        !req.user.userId.equals(ctx._userId) &&
-        !hasCapability(capability, UserCapability.CAP_ADMIN)
-      )
+      if (!req.user.userId.equals(ctx._userId) && !hasCapability(capability, USER_CAPS.CAP_ADMIN))
         return rep.forbidden()
 
       const { verified, ...rest } = req.body
@@ -136,10 +133,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kUserContext)
 
       const capability = await loadUserCapability(req)
-      if (
-        !req.user.userId.equals(ctx._userId) &&
-        !hasCapability(capability, UserCapability.CAP_ADMIN)
-      )
+      if (!req.user.userId.equals(ctx._userId) && !hasCapability(capability, USER_CAPS.CAP_ADMIN))
         return rep.forbidden()
 
       const { provider, payload } = req.body
@@ -171,10 +165,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kUserContext)
 
       const capability = await loadUserCapability(req)
-      if (
-        !req.user.userId.equals(ctx._userId) &&
-        !hasCapability(capability, UserCapability.CAP_ADMIN)
-      )
+      if (!req.user.userId.equals(ctx._userId) && !hasCapability(capability, USER_CAPS.CAP_ADMIN))
         return rep.forbidden()
 
       const { provider, payload } = req.body

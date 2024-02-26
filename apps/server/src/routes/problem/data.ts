@@ -1,5 +1,5 @@
 import { problemConfigSchema } from '@aoi-js/common'
-import { ProblemCapability, problems } from '../../db/index.js'
+import { PROBLEM_CAPS, problems } from '../../db/index.js'
 import { problemDataKey } from '../../oss/index.js'
 import { ensureCapability } from '../../utils/index.js'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
@@ -32,11 +32,7 @@ const dataScopedRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const ctx = req.inject(kProblemContext)
 
-      ensureCapability(
-        ctx._problemCapability,
-        ProblemCapability.CAP_CONTENT,
-        s.httpErrors.forbidden()
-      )
+      ensureCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_CONTENT, s.httpErrors.forbidden())
       const hash = (req.params as { hash: string }).hash
       const { modifiedCount } = await problems.updateOne(
         { _id: ctx._problemId, currentDataHash: { $ne: hash } },
@@ -52,7 +48,7 @@ export const problemDataRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req) => {
     ensureCapability(
       req.inject(kProblemContext)._problemCapability,
-      ProblemCapability.CAP_DATA,
+      PROBLEM_CAPS.CAP_DATA,
       s.httpErrors.forbidden()
     )
   })

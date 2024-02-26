@@ -94,11 +94,16 @@ export const appScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const { app } = req.inject(kAppContext)
+      const { app, capability } = req.inject(kAppContext)
+      const { allowPublicLogin } = app.settings
+      if (!allowPublicLogin && !hasCapability(capability, APP_CAPS.CAP_LOGIN))
+        return rep.forbidden()
+
       if (app.settings.requireMfa) {
         if (!req.body.mfaToken) return rep.badRequest()
         req.verifyMfa(req.body.mfaToken)
       }
+
       const token = await rep.jwtSign(
         { userId: req.user.userId.toString(), tags: [`.oauth.access_token.${app._id}`] },
         { expiresIn: '1min' }

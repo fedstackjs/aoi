@@ -3,7 +3,7 @@ import { db } from './client.js'
 import { IUserProfile } from '../schemas/index.js'
 import { capabilityMask } from '../index.js'
 
-export const UserCapability = {
+export const USER_CAPS = {
   CAP_ADMIN: capabilityMask(0),
   CAP_CREATE_ORG: capabilityMask(1)
 }

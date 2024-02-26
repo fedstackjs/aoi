@@ -1,4 +1,4 @@
-import { UserCapability, hasCapability } from '../../index.js'
+import { USER_CAPS, hasCapability } from '../../index.js'
 import { loadUserCapability } from '../common/access.js'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
@@ -24,7 +24,7 @@ export const announcementScopedRoutes = defineRoutes(async (s) => {
     const article = await announcements.findOne({ _id: articleId })
     if (!article) throw s.httpErrors.notFound()
     const _cap = req.user
-      ? hasCapability(await loadUserCapability(req), UserCapability.CAP_ADMIN)
+      ? hasCapability(await loadUserCapability(req), USER_CAPS.CAP_ADMIN)
       : false
     if (!article.public && !_cap) return rep.forbidden()
     req.provide(kAnnouncementCtx, {

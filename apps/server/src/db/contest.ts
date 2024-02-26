@@ -11,7 +11,7 @@ import { ISolution } from './solution.js'
 import { IUser } from './user.js'
 import { IUserProfile } from '../index.js'
 
-export const ContestCapability = {
+export const CONTEST_CAPS = {
   CAP_ACCESS: capabilityMask(0),
   CAP_ADMIN: capabilityMask(1),
   CAP_CONTENT: capabilityMask(2),

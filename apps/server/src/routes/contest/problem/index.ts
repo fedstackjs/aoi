@@ -5,7 +5,7 @@ import { BSON, Document } from 'mongodb'
 import { problemConfigSchema } from '@aoi-js/common'
 import { getFileUrl, loadOrgOssSettings } from '../../common/files.js'
 import {
-  ContestCapability,
+  CONTEST_CAPS,
   SolutionState,
   contestParticipants,
   problems,
@@ -20,7 +20,7 @@ import { loadProblemSettings } from './common.js'
 const problemViewRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
     const ctx = req.inject(kContestContext)
-    if (hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) return
+    if (hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) return
     if (ctx._contestStage.settings.problemEnabled && ctx._contestParticipant) return
     return rep.forbidden()
   })
@@ -44,7 +44,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
     async (req) => {
       const ctx = req.inject(kContestContext)
       let config = ctx._contest.problems
-      if (!hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) {
+      if (!hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {
         config = config.filter(({ settings }) => (settings.showAfter ?? 0) <= req._now)
       }
       const $in = config.map(({ problemId }) => problemId)
@@ -92,7 +92,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
       if (!settings) return rep.notFound()
       const ctx = req.inject(kContestContext)
       if (
-        !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN) &&
+        !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN) &&
         settings.showAfter &&
         settings.showAfter > req._now
       )
@@ -130,7 +130,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
           const [problemId, settings] = loadProblemSettings(req)
           if (!settings) throw s.httpErrors.notFound()
           if (
-            !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN) &&
+            !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN) &&
             settings.showAfter &&
             settings.showAfter > req._now
           )
@@ -170,7 +170,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kContestContext)
       if (!ctx._contestParticipant) return rep.forbidden()
       const { solutionEnabled } = ctx._contestStage.settings
-      if (!solutionEnabled && !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN)) {
+      if (!solutionEnabled && !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {
         return rep.forbidden()
       }
 
@@ -180,7 +180,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
       const [problemId, settings] = loadProblemSettings(req)
       if (!settings) return rep.notFound()
       if (
-        !hasCapability(ctx._contestCapability, ContestCapability.CAP_ADMIN) &&
+        !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN) &&
         settings.showAfter &&
         settings.showAfter > req._now
       )

@@ -1,4 +1,4 @@
-import { UserCapability, hasCapability } from '../../index.js'
+import { USER_CAPS, hasCapability } from '../../index.js'
 import { loadUserCapability } from '../common/access.js'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
@@ -41,7 +41,7 @@ export const infoRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const capability = await loadUserCapability(req)
-      if (!hasCapability(capability, UserCapability.CAP_ADMIN)) return rep.forbidden()
+      if (!hasCapability(capability, USER_CAPS.CAP_ADMIN)) return rep.forbidden()
       const { csp, noip } = req.body
       const info = await infos.findOne()
       if (!info) return rep.notFound()
@@ -88,7 +88,7 @@ export const infoRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const capability = await loadUserCapability(req)
-      if (!hasCapability(capability, UserCapability.CAP_ADMIN)) return rep.forbidden()
+      if (!hasCapability(capability, USER_CAPS.CAP_ADMIN)) return rep.forbidden()
       const friends = req.body
       const info = await infos.findOne()
       if (!info) return rep.notFound()
@@ -135,7 +135,7 @@ export const infoRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const capability = await loadUserCapability(req)
-      if (!hasCapability(capability, UserCapability.CAP_ADMIN)) return rep.forbidden()
+      if (!hasCapability(capability, USER_CAPS.CAP_ADMIN)) return rep.forbidden()
       const posters = req.body
       const info = await infos.findOne()
       if (!info) return rep.notFound()
@@ -176,7 +176,7 @@ export const infoRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const capability = await loadUserCapability(req)
-      if (!hasCapability(capability, UserCapability.CAP_ADMIN)) return rep.forbidden()
+      if (!hasCapability(capability, USER_CAPS.CAP_ADMIN)) return rep.forbidden()
       const defaultOrg = req.body.defaultOrg
       const info = await infos.findOne()
       if (!info) return rep.notFound()
