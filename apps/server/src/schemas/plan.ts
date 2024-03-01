@@ -14,16 +14,17 @@ export const SPlanContestPrecondition = Type.Partial(
 
 export interface IPlanContestPrecondition extends Static<typeof SPlanContestPrecondition> {}
 
-export const SPlanContestSettings = Type.Partial(
-  Type.StrictObject({
-    preConditionContests: Type.Array(
+export const SPlanContestSettings = Type.StrictObject({
+  slug: Type.String(),
+  preConditionContests: Type.Optional(
+    Type.Array(
       Type.Object({
         contestId: Type.String(),
         conditions: SPlanContestPrecondition
       })
     )
-  })
-)
+  )
+})
 
 export interface IPlanContestSettings extends Static<typeof SPlanContestSettings> {}
 
