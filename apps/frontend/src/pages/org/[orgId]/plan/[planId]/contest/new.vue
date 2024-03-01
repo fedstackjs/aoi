@@ -16,7 +16,7 @@
 import PlanContestSettingsInput from '@/components/plan/PlanContestSettingsInput.vue'
 import type { IPlanDTO, IPlanContestDTO } from '@/components/plan/types'
 import { http } from '@/utils/http'
-import { reactive } from 'vue'
+import { nextTick, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
@@ -37,7 +37,9 @@ const toast = useToast()
 
 const payload = reactive({
   contestId: '',
-  settings: {}
+  settings: {
+    slug: ''
+  }
 })
 
 async function addContest() {
@@ -46,8 +48,9 @@ async function addContest() {
     await http.post(`plan/${planId}/contest`, {
       json: payload
     })
-    router.replace(`/org/${orgId}/plan/${planId}/contest/${payload.contestId}`)
     emit('updated')
+    await nextTick()
+    router.replace(`/org/${orgId}/plan/${planId}/contest/${payload.contestId}`)
   } catch (err) {
     toast.error(`Error: ${err}`)
   }

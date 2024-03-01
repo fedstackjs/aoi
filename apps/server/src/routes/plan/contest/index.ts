@@ -3,6 +3,7 @@ import { defineRoutes, tryLoadUUID } from '../../common/index.js'
 import {
   IContestParticipant,
   IPlanContestPrecondition,
+  SContestStage,
   SPlanContestSettings,
   contestParticipants,
   contests,
@@ -45,8 +46,11 @@ const planContestViewRoutes = defineRoutes(async (s) => {
             Type.Object({
               _id: Type.UUID(),
               title: Type.String(),
+              description: Type.String(),
               slug: Type.String(),
               tags: Type.Array(Type.String()),
+              stages: Type.Array(Type.Pick(SContestStage, ['name', 'start'] as const)),
+              currentStage: SContestStage,
               settings: SPlanContestSettings
             })
           )
@@ -59,10 +63,14 @@ const planContestViewRoutes = defineRoutes(async (s) => {
       const config = ctx._plan.contests
       const $in = config.map((contest) => contest.contestId)
       const list = await contests
-        .find({ _id: { $in } }, { projection: { title: 1, slug: 1, tags: 1 } })
+        .find(
+          { _id: { $in } },
+          { projection: { title: 1, slug: 1, description: 1, tags: 1, stages: 1 } }
+        )
         .toArray()
       return list.map((contest) => ({
         ...contest,
+        currentStage: getCurrentContestStage(req._now, contest),
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         settings: config.find(({ contestId }) => contestId.equals(contest._id))!.settings
       }))

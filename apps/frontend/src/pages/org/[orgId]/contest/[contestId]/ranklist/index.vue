@@ -11,9 +11,11 @@
 
 <script setup lang="ts">
 import type { IContestDTO } from '@/components/contest/types'
+import { enableOverview } from '@/utils/flags'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
-defineProps<{
+const props = defineProps<{
   orgId: string
   contestId: string
   contest: IContestDTO
@@ -21,6 +23,13 @@ defineProps<{
 }>()
 
 const { t } = useI18n()
+
+if (!enableOverview && props.ranklists.length) {
+  const router = useRouter()
+  router.replace(
+    `/org/${props.orgId}/contest/${props.contestId}/ranklist/${props.ranklists[0].key}`
+  )
+}
 </script>
 
 <i18n>

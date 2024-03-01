@@ -3,7 +3,7 @@
     <template v-slot="{ value }">
       <div class="d-flex flex-row">
         <VTabs direction="vertical" color="primary">
-          <VTab prepend-icon="mdi-home" :to="rel('')" exact>
+          <VTab v-if="enableOverview" prepend-icon="mdi-home" :to="rel('')" exact>
             {{ t('term.overview') }}
           </VTab>
           <VTab
@@ -38,6 +38,7 @@ import type { IContestDTO, IContestProblemListDTO } from '@/components/contest/t
 import { useI18n } from 'vue-i18n'
 import { useContestCapability } from '@/utils/contest/inject'
 import type { UseAsyncStateReturn } from '@vueuse/core'
+import { enableOverview } from '@/utils/flags'
 
 const props = defineProps<{
   orgId: string

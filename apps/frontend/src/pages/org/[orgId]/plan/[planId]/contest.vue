@@ -3,7 +3,7 @@
     <template v-slot="{ value }">
       <div class="d-flex flex-row">
         <VTabs direction="vertical" color="primary">
-          <VTab prepend-icon="mdi-home" :to="rel('')" exact>
+          <VTab v-if="enableOverview" prepend-icon="mdi-home" :to="rel('')" exact>
             {{ t('term.overview') }}
           </VTab>
           <VTab
@@ -13,7 +13,10 @@
             :to="rel(contest._id)"
             exact
           >
-            {{ contest.title }}
+            <span>
+              {{ contest.settings.slug }}.
+              {{ contest.title }}
+            </span>
           </VTab>
           <VTab prepend-icon="mdi-plus" :to="rel('new')">
             {{ t('action.new') }}
@@ -37,6 +40,7 @@ import type { IPlanDTO, IPlanContestDTO } from '@/components/plan/types'
 import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
+import { enableOverview } from '@/utils/flags'
 
 const props = defineProps<{
   orgId: string
@@ -49,7 +53,7 @@ const { t } = useI18n()
 const contests = useAsyncState(async () => {
   const resp = await http.get(`plan/${props.planId}/contest`)
   const data = await resp.json<IPlanContestDTO[]>()
-  return data
+  return data.sort((a, b) => a.settings.slug.localeCompare(b.settings.slug))
 }, [])
 
 const rel = (to: string) => `/org/${props.orgId}/plan/${props.planId}/contest/${to}`

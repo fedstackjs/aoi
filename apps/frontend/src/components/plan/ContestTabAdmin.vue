@@ -37,7 +37,7 @@ const emit = defineEmits<{
 
 async function deleteProblem() {
   await http.delete(`plan/${props.planId}/contest/${props.contest._id}`)
-  router.push(`/org/${route.params.orgId}/plan/${props.planId}/contest`)
+  router.replace(`/org/${route.params.orgId}/plan/${props.planId}/contest`)
   emit('updated')
 }
 </script>

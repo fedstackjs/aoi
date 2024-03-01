@@ -47,6 +47,7 @@ action:
   rejudge-all: Rejudge all solutions
   verify: Verify my identity
   login-into: Login into {app}
+  goto: Go to {page}
 
 term:
   content: Content

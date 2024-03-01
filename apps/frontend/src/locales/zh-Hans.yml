@@ -47,6 +47,7 @@ action:
   rejudge-all: 重测所有解答
   verify: 验证身份
   login-into: 登录到 {app}
+  goto: 转到{page}
 
 term:
   content: 内容
