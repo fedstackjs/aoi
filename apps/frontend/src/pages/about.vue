@@ -7,6 +7,10 @@
             <a class="u-flex u-flex-col u-items-center" href="https://aoi.fedstack.org">
               <AoiLogo width="128" />
               <q class="u-text-lg u-font-italic">The <b>AOI</b> Project</q>
+              <span class="text-black">
+                AOI V1.0 Release
+                <ruby>せかい <rt>Sekai</rt> </ruby>
+              </span>
             </a>
           </VCardText>
         </VCard>
