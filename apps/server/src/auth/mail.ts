@@ -103,7 +103,7 @@ export class MailAuthProvider extends BaseAuthProvider {
     const ttl = await cache.ttl(key)
     if (ttl > 0) throw httpErrors.tooManyRequests(`Wait for ${Math.ceil(ttl / 1000)} seconds`)
     const code = rnd.generate({ length: 6, charset: 'numeric' })
-    await cache.setx(key, { code, mail }, 5 * 60 * 1000)
+    await cache.setx(key, { code, mail, n: 5 }, 5 * 60 * 1000)
     const info = await this.transporter.sendMail({
       from: this.from,
       to: mail,
@@ -111,6 +111,20 @@ export class MailAuthProvider extends BaseAuthProvider {
       html: this.html.replace('{{PURPOSE}}', purpose).replace('{{CODE}}', code)
     })
     logger.info(info, `sent verification code to ${mail} for ${purpose}`)
+  }
+
+  private async checkCode(key: string, code: string) {
+    const ttl = await cache.ttl(key)
+    const value = await cache.getx<{ code: string; mail: string; n: number }>(key)
+    await cache.del(key)
+    if (!value) throw httpErrors.forbidden('Invalid code')
+    if (value.code !== code) {
+      if (ttl > 0 && value.n > 0) {
+        await cache.setx(key, { ...value, n: value.n - 1 }, ttl)
+      }
+      throw httpErrors.forbidden('Invalid code')
+    }
+    return value
   }
 
   override async preBind(userId: UUID, payload: unknown): Promise<unknown> {
@@ -125,10 +139,7 @@ export class MailAuthProvider extends BaseAuthProvider {
     if (!CodePayload.Check(payload)) throw httpErrors.badRequest('Invalid payload')
     const { code } = payload
     const key = this.userKey(userId)
-    const value = await cache.getx<{ code: string; mail: string }>(key)
-    if (!value) throw httpErrors.forbidden('Invalid code')
-    if (value.code !== code) throw httpErrors.forbidden('Invalid code')
-    await cache.del(key)
+    const value = await this.checkCode(key, code)
     await users.updateOne(
       { _id: userId },
       {
@@ -155,10 +166,7 @@ export class MailAuthProvider extends BaseAuthProvider {
     if (!CodePayload.Check(payload)) throw httpErrors.badRequest('Invalid payload')
     const { code } = payload
     const key = this.userKey(userId)
-    const value = await cache.getx<{ code: string; mail: string }>(key)
-    if (!value) throw httpErrors.forbidden('Invalid code')
-    if (value.code !== code) throw httpErrors.forbidden('Invalid code')
-    await cache.del(key)
+    await this.checkCode(key, code)
     return true
   }
 
@@ -180,10 +188,7 @@ export class MailAuthProvider extends BaseAuthProvider {
     const { email, code } = payload
     if (this.allowSignupFromLogin) {
       const key = this.mailKey(email)
-      const value = await cache.getx<{ code: string; mail: string }>(key)
-      if (!value) throw httpErrors.forbidden('Invalid code')
-      if (value.code !== code) throw httpErrors.forbidden('Invalid code')
-      await cache.del(key)
+      await this.checkCode(key, code)
       const user = await users.findOne({ 'authSources.mail': email }, { projection: { _id: 1 } })
       if (user) return [user._id]
       const { insertedId } = await users.insertOne({
@@ -203,10 +208,7 @@ export class MailAuthProvider extends BaseAuthProvider {
       const user = await users.findOne({ 'authSources.mail': email }, { projection: { _id: 1 } })
       if (!user) throw httpErrors.notFound('User not found')
       const key = this.userKey(user._id)
-      const value = await cache.getx<{ code: string; mail: string }>(key)
-      if (!value) throw httpErrors.forbidden('Invalid code')
-      if (value.code !== code) throw httpErrors.forbidden('Invalid code')
-      await cache.del(key)
+      await this.checkCode(key, code)
       return [user._id]
     }
   }
