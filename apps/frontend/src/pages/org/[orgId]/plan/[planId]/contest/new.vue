@@ -1,7 +1,12 @@
 <template>
   <VCard variant="flat" :title="t('add-contest')">
     <VCardText>
-      <VTextField :label="t('term.contest-id')" v-model="payload.contestId" />
+      <IdInput
+        :label="t('term.contest-id')"
+        v-model="payload.contestId"
+        endpoint="contest"
+        :search="{ orgId }"
+      />
       <PlanContestSettingsInput v-model="payload.settings" :contests="props.contests" />
     </VCardText>
     <VCardActions>
@@ -15,6 +20,7 @@
 <script setup lang="ts">
 import PlanContestSettingsInput from '@/components/plan/PlanContestSettingsInput.vue'
 import type { IPlanDTO, IPlanContestDTO } from '@/components/plan/types'
+import IdInput from '@/components/utils/IdInput.vue'
 import { http } from '@/utils/http'
 import { nextTick, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
