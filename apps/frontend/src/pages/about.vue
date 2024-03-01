@@ -6,7 +6,13 @@
           <VCardText>
             <a class="u-flex u-flex-col u-items-center" href="https://aoi.fedstack.org">
               <AoiLogo width="128" />
-              <q class="u-text-lg u-font-italic">The <b>AOI</b> Project</q>
+              <q class="u-text-2xl u-font-italic">The <b>AOI</b> Project</q>
+              <span class="text-black u-text-xl">
+                AOI V1.0
+                <ruby class="text-primary">せかい <rt>Sekai</rt> </ruby>
+              </span>
+              <span class="text-secondary">Released under the AGPL-3.0 License</span>
+              <span class="text-secondary">2024-02-20</span>
             </a>
           </VCardText>
         </VCard>

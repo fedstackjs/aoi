@@ -1,7 +1,7 @@
 <template>
   <VCard variant="flat" :title="t('add-problem')">
     <VCardText>
-      <VTextField label="ID" v-model="payload.problemId" />
+      <IdInput label="ID" v-model="payload.problemId" endpoint="problem" :search="{ orgId }" />
       <ContestProblemSettingsInput v-model="payload.settings" />
     </VCardText>
     <VCardActions>
@@ -15,6 +15,7 @@
 <script setup lang="ts">
 import ContestProblemSettingsInput from '@/components/contest/ContestProblemSettingsInput.vue'
 import type { IContestDTO, IContestProblemListDTO } from '@/components/contest/types'
+import IdInput from '@/components/utils/IdInput.vue'
 import { http } from '@/utils/http'
 import { reactive } from 'vue'
 import { useI18n } from 'vue-i18n'

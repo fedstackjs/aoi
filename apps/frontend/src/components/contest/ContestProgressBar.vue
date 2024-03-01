@@ -24,8 +24,9 @@ import type { IContestDTO } from '@/components/contest/types'
 import { ref } from 'vue'
 import { onBeforeUnmount } from 'vue'
 import ms from 'ms'
+import type { IPlanContestDTO } from '../plan/types'
 
-const props = defineProps<{ contest: IContestDTO }>()
+const props = defineProps<{ contest: IContestDTO | IPlanContestDTO }>()
 const emit = defineEmits<{
   (ev: 'updated'): void
 }>()

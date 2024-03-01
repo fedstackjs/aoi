@@ -1,0 +1,3 @@
+releases:
+  "@aoi-js/frontend": major
+  "@aoi-js/server": major

@@ -1,4 +1,5 @@
 <template>
+  <VTextField v-model="model.slug" :label="t('term.slug')" />
   <VCardSubtitle>{{ t('term.preconditions') }}</VCardSubtitle>
   <OptionalInput v-model="model.preConditionContests" :init="() => []">
     <template v-slot="scoped">
