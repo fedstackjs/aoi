@@ -4,7 +4,7 @@ import 'zx/globals'
 const workspace = path.resolve(__dirname, '..')
 cd(workspace)
 
-let { stdout } = await $`yarn version apply --json --all`
+const { stdout } = await $`yarn version apply --json --all`
 const items = stdout
   .split('\n')
   .map((line) => line.trim())
@@ -14,7 +14,14 @@ const items = stdout
 let shouldCommit = false
 for (const { ident } of items) {
   console.log(`Publishing ${chalk.greenBright(ident)}...`)
-  await $`yarn workspace ${ident} npm publish --access public`
+  try {
+    await $`yarn workspace ${ident} npm publish --access public`
+  } catch (err) {
+    const stdout = /** @type {ProcessOutput} */ (err).stdout
+    if (stdout.includes('You cannot publish over the previously published versions')) {
+      console.log(`${ident} already published, skip it.`)
+    }
+  }
   await $`yarn workspace ${ident} pack --out package.tgz`
   shouldCommit = true
   if (process.env.CI) {
