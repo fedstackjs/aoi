@@ -90,7 +90,7 @@ zh-Hans:
     participant-enabled: 启用参赛者
   contest-stage-settings-hint:
     registration-enabled: 开启后，选手才可以报名
-    registration-allow-public: 开启后，只允许分配了报名权限的用户报名
+    registration-allow-public: 关闭后，只允许分配了报名权限的用户报名
     problem-enabled: 开启后，选手才可查看题目
     problem-show-tags: 关闭后，题目隐藏标签
     solution-enabled: 开启后，选手才可提交或查看提交

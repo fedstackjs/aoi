@@ -29,6 +29,7 @@ export interface IContestParticipant {
   userId: BSON.UUID
   contestId: BSON.UUID
   results: Record<string, IContestParticipantResult>
+  createdAt: number
   updatedAt: number
   tags?: string[]
 }

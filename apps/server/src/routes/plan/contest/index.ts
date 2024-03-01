@@ -109,7 +109,8 @@ const planContestViewRoutes = defineRoutes(async (s) => {
           contestId: contestId,
           results: {},
           tags: await evalTagRules(stage, user),
-          updatedAt: Date.now()
+          createdAt: req._now,
+          updatedAt: req._now
         },
         { ignoreUndefined: true }
       )
