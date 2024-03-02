@@ -14,7 +14,7 @@ export const oauthGithubCompatRoutes = defineRoutes(async (s) => {
         }
       }
     },
-    () => {}
+    () => ({})
   )
 
   s.get(
@@ -128,7 +128,7 @@ export const oauthGithubCompatRoutes = defineRoutes(async (s) => {
             Type.Object({
               name: Type.String(),
               slug: Type.String(),
-              org: Type.Object({
+              organization: Type.Object({
                 login: Type.String()
               })
             })
@@ -169,7 +169,7 @@ export const oauthGithubCompatRoutes = defineRoutes(async (s) => {
       return groups.map((group) => ({
         name: group.profile.name,
         slug: group._id,
-        org: { login: group.org.profile.name }
+        organization: { login: group.org.profile.name }
       }))
     }
   )
