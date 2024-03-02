@@ -113,6 +113,10 @@ export const apiRoutes = defineRoutes(async (s) => {
     req._container = createInjectionContainer()
 
     if (req.headers.authorization) {
+      // Allow type token which is a alias of bearer
+      if (/^Token\s/i.test(req.headers.authorization)) {
+        req.headers.authorization = req.headers.authorization.replace(/^Token\s/i, 'Bearer ')
+      }
       await req.jwtVerify()
 
       // Only allow tagged routes
