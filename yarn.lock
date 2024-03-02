@@ -287,6 +287,7 @@ __metadata:
     "@aoi-js/common": "workspace:^"
     "@aws-sdk/client-s3": "npm:^3.385.0"
     "@aws-sdk/s3-request-presigner": "npm:^3.385.0"
+    "@fastify/formbody": "npm:^7.4.0"
     "@fastify/jwt": "npm:^7.2.0"
     "@fastify/sensible": "npm:^5.2.0"
     "@fastify/swagger": "npm:^8.12.1"
@@ -1725,6 +1726,16 @@ __metadata:
   dependencies:
     fast-json-stringify: "npm:^5.7.0"
   checksum: 10/9ad575907d44bbd371dbc23a51853fd349a459092340fe91c50317f92707961f2e6ca6c9d17707a8e4a087c635e09bce1166e082d54f191769a582339c94badd
+  languageName: node
+  linkType: hard
+
+"@fastify/formbody@npm:^7.4.0":
+  version: 7.4.0
+  resolution: "@fastify/formbody@npm:7.4.0"
+  dependencies:
+    fast-querystring: "npm:^1.0.0"
+    fastify-plugin: "npm:^4.0.0"
+  checksum: 10/976e2d33ec5dc447678a6b8572712fb956028b7c31feafb9e60eaf5311c8b5d710b975f72d4e9cdadc62e541db0887fc429656bb1797ad3078005b0f9cc8c39a
   languageName: node
   linkType: hard
 

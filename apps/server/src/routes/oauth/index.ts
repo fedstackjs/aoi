@@ -3,8 +3,12 @@ import { defineRoutes } from '../common/index.js'
 import { UUID } from 'mongodb'
 import { IOrgMembership, IUser, apps, orgMemberships, users } from '../../db/index.js'
 import { SUserProfile } from '../../schemas/index.js'
+import { oauthGithubCompatRoutes } from './github-compat.js'
+import fastifyFormbody from '@fastify/formbody'
 
 export const oauthRoutes = defineRoutes(async (s) => {
+  s.register(fastifyFormbody)
+
   s.post(
     '/access_token',
     {
@@ -77,4 +81,6 @@ export const oauthRoutes = defineRoutes(async (s) => {
       return { access_token: token, token_type: 'bearer', user, membership }
     }
   )
+
+  s.register(oauthGithubCompatRoutes, { prefix: '/github_compat' })
 })
