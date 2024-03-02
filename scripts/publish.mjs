@@ -20,6 +20,8 @@ for (const { ident } of items) {
     const stdout = /** @type {ProcessOutput} */ (err).stdout
     if (stdout.includes('You cannot publish over the previously published versions')) {
       console.log(`${ident} already published, skip it.`)
+    } else {
+      throw err
     }
   }
   await $`yarn workspace ${ident} pack --out package.tgz`
@@ -35,7 +37,7 @@ if (shouldCommit) {
     await $`git config user.name aoi-js-bot`
     await $`git config user.email aoi@fedstack.org`
     await $`git add .`
-    await $`git commit -m "chore: apply versions and publish"`
+    await $`git commit -m "chore: apply versions and publish [skip ci]"`
     await $`git push`
   } else {
     console.log(`Time to commit and push!`)
