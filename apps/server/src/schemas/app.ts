@@ -16,7 +16,8 @@ export const SAppSettings = Type.Partial(
       })
     ),
     attachUser: Type.Boolean(),
-    attachMembership: Type.Boolean()
+    attachMembership: Type.Boolean(),
+    allowDeviceFlow: Type.Boolean()
   })
 )
 

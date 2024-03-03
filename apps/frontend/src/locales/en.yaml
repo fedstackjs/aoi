@@ -160,6 +160,7 @@ msg:
   computing-hash: Computing Hash {progress}%...
   mfa-required: Multi-factor authentication required
   oauth-redirect: By clicking the login button, you will be redirected to login into {app}
+  app-provided-by: The App is provided by
 
 tabs:
   description: Description

@@ -97,7 +97,7 @@ export const apiRoutes = defineRoutes(async (s) => {
   s.decorateRequest('verifyToken', decoratedVerifyToken)
   s.decorateRequest('verifyMfa', decoratedVerifyMfa)
 
-  s.register(fastifyJwt, {
+  await s.register(fastifyJwt, {
     secret: loadEnv('JWT_SECRET', String),
     formatUser(payload) {
       if (userPayload.Check(payload)) {

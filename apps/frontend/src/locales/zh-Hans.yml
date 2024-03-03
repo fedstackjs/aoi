@@ -160,6 +160,7 @@ msg:
   computing-hash: 计算哈希值 {progress}%...
   mfa-required: 需要多因素认证
   oauth-redirect: 点击登录按钮，你将被重定向以登录 {app}
+  app-provided-by: 该应用的提供方为
 
 tabs:
   description: 描述
