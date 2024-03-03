@@ -84,7 +84,8 @@ export const appScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Authorize and login into an app',
         body: Type.Object({
-          mfaToken: Type.Optional(Type.String())
+          mfaToken: Type.Optional(Type.String()),
+          type: Type.Optional(Type.StringEnum(['web', 'device']))
         }),
         response: {
           200: Type.Object({
@@ -104,8 +105,11 @@ export const appScopedRoutes = defineRoutes(async (s) => {
         req.verifyMfa(req.body.mfaToken)
       }
 
+      const tags = [`.oauth.access_token.${app._id}`]
+      if (req.body.type === 'device') tags.push(`.oauth.bypass_secret`)
+
       const token = await rep.jwtSign(
-        { userId: req.user.userId.toString(), tags: [`.oauth.access_token.${app._id}`] },
+        { userId: req.user.userId.toString(), tags },
         { expiresIn: '1min' }
       )
       return { token }

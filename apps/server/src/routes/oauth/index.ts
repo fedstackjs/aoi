@@ -18,7 +18,7 @@ export const oauthRoutes = defineRoutes(async (s) => {
         security: [],
         body: Type.Object({
           client_id: Type.String(),
-          client_secret: Type.String(),
+          client_secret: Type.Optional(Type.String()),
           code: Type.String()
         }),
         response: {
@@ -50,10 +50,15 @@ export const oauthRoutes = defineRoutes(async (s) => {
       const { userId, tags } = req.verifyToken(code)
       const tag = tags?.find((tag) => tag.startsWith(`.oauth.access_token.`))
       if (!tag) return rep.badRequest()
+
       const appId = tag.slice(20)
       if (appId !== client_id || !UUID.isValid(appId)) return rep.badRequest()
-      const app = await apps.findOne({ _id: new UUID(appId), secret: client_secret })
+
+      const app = await apps.findOne({ _id: new UUID(appId) })
       if (!app) return rep.badRequest()
+      if (!tags?.includes('.oauth.bypass_secret') && app.secret !== client_secret)
+        return rep.badRequest()
+
       const scopes = app.settings.scopes ?? ['user.details']
       const fullAccess = scopes.some((scope) => scope === '*')
       const token = await rep.jwtSign(
