@@ -103,7 +103,10 @@ const loginTask = useAsyncTask(async () => {
   }
   const { token } = await http
     .post(`app/${appId}/authorize`, {
-      json: { mfaToken: mfaTokenValue.value }
+      json: {
+        mfaToken: mfaTokenValue.value,
+        type: secret.value ? 'device' : 'web'
+      }
     })
     .json<{ token: string }>()
   if (redirectUri.value) {
