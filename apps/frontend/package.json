@@ -56,7 +56,7 @@
     "pinia": "^2.1.7",
     "roboto-fontface": "*",
     "unocss": "^0.58.0",
-    "vite": "^5.0.10",
+    "vite": "^5.1.4",
     "vite-plugin-pages": "^0.32.0",
     "vite-plugin-vuetify": "^2.0.1",
     "vscode-oniguruma": "1",

@@ -32,14 +32,25 @@
                       </RouterLink>
                     </template>
                   </I18nT>
+                  <div class="pt-4">{{ t('msg.app-provided-by') }}</div>
+                  <div class="d-flex justify-center">
+                    <OrgProfile :org-id="value.orgId" />
+                  </div>
                 </VCardText>
-                <VBtn block @click="loginTask.execute()" :loading="loginTask.isLoading.value">
-                  <I18nT keypath="action.login-into">
-                    <template #app>
-                      {{ value.title }}
-                    </template>
-                  </I18nT>
-                </VBtn>
+                <VCardActions>
+                  <VBtn
+                    block
+                    variant="flat"
+                    @click="loginTask.execute()"
+                    :loading="loginTask.isLoading.value"
+                  >
+                    <I18nT keypath="action.login-into">
+                      <template #app>
+                        {{ value.title }}
+                      </template>
+                    </I18nT>
+                  </VBtn>
+                </VCardActions>
               </template>
             </template>
           </AsyncState>
@@ -60,6 +71,8 @@ import { useMfa } from '@/stores/app'
 import { useAsyncTask } from '@/utils/async'
 import { http, mfaTokenValue } from '@/utils/http'
 import { withI18nTitle } from '@/utils/title'
+import { useRouter } from 'vue-router'
+import OrgProfile from '@/components/utils/OrgProfile.vue'
 
 withI18nTitle('pages.authorize')
 
@@ -68,30 +81,45 @@ const login = useLogin()
 login.checkLogin()
 
 const { hasMfaToken, doVerify } = useMfa()
+const router = useRouter()
 
 const clientId = useRouteQuery('client_id', '')
 const redirectUri = useRouteQuery('redirect_uri', '')
 const state = useRouteQuery('state', '')
+const secret = useRouteQuery('secret', '')
 
 const app = useApp('', clientId)
 
 const loginTask = useAsyncTask(async () => {
   const appId = app.app.state.value._id
-  const { redirectUris } = app.app.state.value.settings
-  if (
-    !(redirectUris ?? []).some(({ uri }) => {
-      return uri === redirectUri.value
-    })
-  )
-    throw new Error('Invalid redirect_uri')
+  if (redirectUri.value) {
+    const { redirectUris } = app.app.state.value.settings
+    if (
+      !(redirectUris ?? []).some(({ uri }) => {
+        return uri === redirectUri.value
+      })
+    )
+      throw new Error('Invalid redirect_uri')
+  }
   const { token } = await http
     .post(`app/${appId}/authorize`, {
       json: { mfaToken: mfaTokenValue.value }
     })
     .json<{ token: string }>()
-  const redirect = new URL(redirectUri.value)
-  redirect.searchParams.set('code', token)
-  redirect.searchParams.set('state', state.value)
-  window.location.href = redirect.toString()
+  if (redirectUri.value) {
+    const redirect = new URL(redirectUri.value)
+    redirect.searchParams.set('code', token)
+    redirect.searchParams.set('state', state.value)
+    window.location.href = redirect.toString()
+  } else if (secret.value) {
+    await http.post('oauth/device/authorize', {
+      json: {
+        appId: clientId.value,
+        secret: secret.value,
+        code: token
+      }
+    })
+    router.replace('/')
+  }
 })
 </script>

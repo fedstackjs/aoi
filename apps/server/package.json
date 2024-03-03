@@ -19,6 +19,7 @@
     "@aws-sdk/s3-request-presigner": "^3.385.0",
     "@fastify/formbody": "^7.4.0",
     "@fastify/jwt": "^7.2.0",
+    "@fastify/rate-limit": "^9.1.0",
     "@fastify/sensible": "^5.2.0",
     "@fastify/type-provider-typebox": "^3.3.0",
     "@lcpu/iaaa": "^1.0.0",
@@ -27,7 +28,7 @@
     "bcrypt": "^5.1.1",
     "fastify": "^4.25.1",
     "mongodb": "^6.3.0",
-    "nodemailer": "^6.9.8",
+    "nodemailer": "^6.9.11",
     "pino": "^8.17.1",
     "randomstring": "^1.3.0"
   },
@@ -41,7 +42,7 @@
   },
   "optionalDependencies": {
     "@fastify/swagger": "^8.12.1",
-    "@fastify/swagger-ui": "^2.0.1"
+    "@fastify/swagger-ui": "^3.0.0"
   },
   "scripts": {
     "build": "run -T tsc",

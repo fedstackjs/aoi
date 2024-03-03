@@ -1,6 +1,7 @@
 <template>
   <div class="u-grid u-grid-cols-2">
     <VCheckbox v-model="model.allowPublicLogin" :label="t('allow-public-login')" />
+    <VCheckbox v-model="model.allowDeviceFlow" :label="t('allow-device-flow')" />
     <VCheckbox v-model="model.requireMfa" :label="t('require-mfa')" />
     <VCheckbox v-model="model.attachUser" :label="t('attach-user')" />
     <VCheckbox v-model="model.attachMembership" :label="t('attach-membership')" />
@@ -35,12 +36,14 @@ const { t } = useI18n()
 <i18n>
 en:
   allow-public-login: Allow public login
+  allow-device-flow: Allow device flow
   require-mfa: Require MFA
   attach-user: Attach user in response
   attach-membership: Attach membership in response
 
 zh-Hans:
   allow-public-login: 允许公共登录
+  allow-device-flow: 允许设备登录
   require-mfa: 需要多因素认证
   attach-user: 在响应中附加用户
   attach-membership: 在响应中附加成员信息

@@ -5,9 +5,10 @@ import { IOrgMembership, IUser, apps, orgMemberships, users } from '../../db/ind
 import { SUserProfile } from '../../schemas/index.js'
 import { oauthGithubCompatRoutes } from './github-compat.js'
 import fastifyFormbody from '@fastify/formbody'
+import { oauthDeviceRoutes } from './device.js'
 
 export const oauthRoutes = defineRoutes(async (s) => {
-  s.register(fastifyFormbody)
+  await s.register(fastifyFormbody)
 
   s.post(
     '/access_token',
@@ -83,4 +84,5 @@ export const oauthRoutes = defineRoutes(async (s) => {
   )
 
   s.register(oauthGithubCompatRoutes, { prefix: '/github_compat' })
+  s.register(oauthDeviceRoutes, { prefix: '/device' })
 })
