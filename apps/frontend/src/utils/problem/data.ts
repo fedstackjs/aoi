@@ -5,6 +5,23 @@ import { http } from '../http'
 import { useToast } from 'vue-toastification'
 import { useAsyncTask } from '../async'
 
+async function loadConfig(zip: zip) {
+  let content = await zip.file('problem.json')?.async('string')
+  if (content) return JSON.parse(content)
+  content = await zip.file('problem.yaml')?.async('string')
+  content ||= await zip.file('problem.yml')?.async('string')
+  if (content) {
+    try {
+      const { parse } = await import('yaml')
+      content = JSON.stringify(parse(content), null, 2)
+      return content
+    } catch (err) {
+      console.warn(err)
+    }
+  }
+  return ''
+}
+
 export function useDataUpload(problemId: string, updated: () => void) {
   const toast = useToast()
   const advanced = ref(false)
@@ -39,11 +56,11 @@ export function useDataUpload(problemId: string, updated: () => void) {
       } else {
         uploadInfo.hash = await computeSHA256(file)
         const result = await zip.loadAsync(file)
-        const content = await result.file('problem.json')?.async('string')
+        const content = await loadConfig(result)
         if (content) {
           uploadInfo.configJson = content
         } else {
-          toast.warning('problem.json not found in zip file, please check your file')
+          toast.warning('No valid problem config found in zip file')
         }
       }
     } catch (err) {
