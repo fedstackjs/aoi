@@ -4,7 +4,7 @@ import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
-import { shallowRef, type Ref, type ToRefs, onMounted, watch, onBeforeUnmount } from 'vue'
+import { shallowRef, type Ref, onMounted, watch, onBeforeUnmount } from 'vue'
 
 self.MonacoEnvironment = {
   getWorker(_, label) {
