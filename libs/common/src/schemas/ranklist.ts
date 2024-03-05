@@ -1,6 +1,6 @@
 import { Static, Type } from '@sinclair/typebox'
 
-export const ranklistTopstarSchema = Type.Object({
+export const SRanklistTopstarSchema = Type.Object({
   list: Type.Array(
     Type.Object({
       userId: Type.String(),
@@ -14,9 +14,9 @@ export const ranklistTopstarSchema = Type.Object({
   )
 })
 
-export type RanklistTopstar = Static<typeof ranklistTopstarSchema>
+export type RanklistTopstar = Static<typeof SRanklistTopstarSchema>
 
-export const ranklistParticipantSchema = Type.Object({
+export const SRanklistParticipantSchema = Type.Object({
   columns: Type.Array(
     Type.Object({
       name: Type.String(),
@@ -37,21 +37,21 @@ export const ranklistParticipantSchema = Type.Object({
   )
 })
 
-export type RanklistParticipant = Static<typeof ranklistParticipantSchema>
+export type RanklistParticipant = Static<typeof SRanklistParticipantSchema>
 
-export const ranklistMetadataSchema = Type.Partial(
+export const SRanklistMetadataSchema = Type.Partial(
   Type.Object({
     generatedAt: Type.Integer(),
     description: Type.String()
   })
 )
 
-export type RanklistMetadata = Static<typeof ranklistMetadataSchema>
+export type RanklistMetadata = Static<typeof SRanklistMetadataSchema>
 
-export const ranklistSchema = Type.Object({
-  topstar: Type.Optional(ranklistTopstarSchema),
-  participant: ranklistParticipantSchema,
-  metadata: ranklistMetadataSchema
+export const SRanklistSchema = Type.Object({
+  topstar: Type.Optional(SRanklistTopstarSchema),
+  participant: SRanklistParticipantSchema,
+  metadata: SRanklistMetadataSchema
 })
 
-export type Ranklist = Static<typeof ranklistSchema>
+export type Ranklist = Static<typeof SRanklistSchema>

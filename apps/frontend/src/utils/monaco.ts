@@ -34,66 +34,76 @@ export interface IMonacoEditorProps {
   language?: string
   theme?: string
   readonly?: boolean
+  uri?: string
+}
+
+function getModel(uri: string) {
+  return (
+    monaco.editor.getModel(monaco.Uri.parse(uri)) ??
+    monaco.editor.createModel('', 'plaintext', monaco.Uri.parse(uri))
+  )
 }
 
 export function useMonaco(
   container: Ref<HTMLElement | null>,
   model: Ref<string>,
-  props: ToRefs<IMonacoEditorProps>
+  props: IMonacoEditorProps
 ) {
   const editor = shallowRef<monaco.editor.IStandaloneCodeEditor>()
+
+  function syncValue(value: string) {
+    if (editor.value && editor.value.getValue() !== value) {
+      editor.value.setValue(value)
+    }
+  }
+
+  function syncLanguage(language?: string) {
+    if (editor.value && language) {
+      monaco.editor.setModelLanguage(editor.value.getModel()!, language)
+    }
+  }
+
+  function syncTheme(theme?: string) {
+    if (editor.value && theme) {
+      monaco.editor.setTheme(theme)
+    }
+  }
+
+  function syncReadonly(readOnly?: boolean) {
+    if (editor.value && readOnly) {
+      editor.value.updateOptions({ readOnly })
+    }
+  }
+
+  function syncUri(uri?: string) {
+    if (editor.value && uri) {
+      editor.value.setModel(getModel(uri))
+      syncValue(model.value)
+      syncLanguage(props.language)
+    }
+  }
 
   onMounted(() => {
     if (container.value) {
       const instance = (editor.value = monaco.editor.create(container.value, {
-        value: model.value,
-        language: props.language?.value,
-        theme: props.theme?.value,
+        theme: props.theme,
         automaticLayout: true,
-        readOnly: props.readonly?.value
+        readOnly: props.readonly,
+        model: props.uri ? getModel(props.uri) : undefined
       }))
+      syncValue(model.value)
+      syncLanguage(props.language)
       instance.onDidChangeModelContent(() => {
         model.value = instance.getValue() ?? ''
       })
     }
   })
 
-  watch(
-    () => model.value,
-    (value) => {
-      if (editor.value && editor.value.getValue() !== value) {
-        editor.value.setValue(value)
-      }
-    }
-  )
-
-  watch(
-    () => props.language,
-    (language) => {
-      if (editor.value && language?.value) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        monaco.editor.setModelLanguage(editor.value.getModel()!, language.value)
-      }
-    }
-  )
-
-  watch(
-    () => props.theme,
-    (theme) => {
-      if (editor.value && theme?.value) {
-        monaco.editor.setTheme(theme.value)
-      }
-    }
-  )
-
-  watch(
-    () => props.readonly,
-    (readonly) => {
-      if (editor.value && readonly?.value) {
-        editor.value.updateOptions({ readOnly: readonly.value })
-      }
-    }
-  )
+  watch(() => model.value, syncValue)
+  watch(() => props.language, syncLanguage)
+  watch(() => props.theme, syncTheme)
+  watch(() => props.readonly, syncReadonly)
+  watch(() => props.uri, syncUri)
 
   onBeforeUnmount(() => {
     editor.value?.dispose()

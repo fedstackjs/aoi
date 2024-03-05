@@ -9,13 +9,15 @@
               <!-- A Job named 'job' -->
               <VExpansionPanelTitle>
                 <VRow no-gutters>
-                  <VCol cols="6" class="justify-start">
+                  <VCol cols="6" class="d-flex justify-start align-center">
                     {{ job.name }}
                   </VCol>
                   <VCol cols="4">
-                    {{ job.status }}
+                    <SolutionStatusChip :status="job.status" />
                   </VCol>
-                  <VCol cols="2"> {{ job.score }}/{{ job.scoreScale }} </VCol>
+                  <VCol cols="2">
+                    <SolutionScoreDisplay :score="job.score" :score-scale="job.scoreScale" />
+                  </VCol>
                 </VRow>
               </VExpansionPanelTitle>
               <VExpansionPanelText>
@@ -25,14 +27,17 @@
                     <!-- A Subtask named 'subtask' -->
                     <VExpansionPanelTitle>
                       <VRow no-gutters>
-                        <VCol cols="6" class="justify-start">
+                        <VCol cols="6" class="d-flex justify-start align-center">
                           {{ test.name }}
                         </VCol>
                         <VCol cols="4">
-                          {{ test.status }}
+                          <SolutionStatusChip :status="test.status" />
                         </VCol>
                         <VCol cols="2">
-                          {{ test.score }}
+                          <SolutionScoreDisplay
+                            :score="test.score"
+                            :score-scale="test.scoreScale"
+                          />
                         </VCol>
                       </VRow>
                     </VExpansionPanelTitle>
@@ -61,6 +66,8 @@ import JsonViewer from '../utils/JsonViewer.vue'
 import { useI18n } from 'vue-i18n'
 import type { SolutionDetails } from '@aoi-js/common'
 import MarkdownRenderer from '../utils/MarkdownRenderer.vue'
+import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
+import SolutionStatusChip from './SolutionStatusChip.vue'
 
 const { t } = useI18n()
 

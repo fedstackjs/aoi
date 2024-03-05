@@ -12,7 +12,7 @@ import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { getDownloadUrl, problemDataKey, solutionDataKey, solutionDetailsKey } from '../../index.js'
 import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
 import { BSON } from 'mongodb'
-import { problemConfigSchema } from '@aoi-js/common'
+import { SProblemConfigSchema } from '@aoi-js/common'
 import { defineInjectionPoint } from '../../utils/inject.js'
 import { kRunnerContext } from './inject.js'
 
@@ -188,7 +188,7 @@ export const runnerSolutionRoutes = defineRoutes(async (s) => {
               orgId: Type.UUID(),
               userId: Type.UUID(),
               contestId: Type.UUID(),
-              problemConfig: problemConfigSchema,
+              problemConfig: SProblemConfigSchema,
               problemDataUrl: Type.String(),
               problemDataHash: Type.String(),
               solutionDataUrl: Type.String(),

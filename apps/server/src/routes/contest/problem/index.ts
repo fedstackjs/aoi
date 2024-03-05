@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, paramSchemaMerger } from '../../common/index.js'
 import { SContestProblemSettings } from '../../../schemas/contest.js'
 import { BSON, Document } from 'mongodb'
-import { problemConfigSchema } from '@aoi-js/common'
+import { SProblemConfigSchema } from '@aoi-js/common'
 import { getFileUrl, loadOrgOssSettings } from '../../common/files.js'
 import {
   CONTEST_CAPS,
@@ -82,7 +82,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
               })
             ),
             currentDataHash: Type.String(),
-            config: Type.Optional(problemConfigSchema)
+            config: Type.Optional(SProblemConfigSchema)
           })
         }
       }

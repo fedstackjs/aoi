@@ -1,9 +1,9 @@
-import { problemConfigSchema } from '@aoi-js/common'
+import { SProblemConfigSchema } from '@aoi-js/common'
 import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
 
 const schemas = Object.fromEntries(
   Object.entries({
-    'problem-config.json': problemConfigSchema
+    'problem-config.json': SProblemConfigSchema
   }).map(([name, schema]) => [name, JSON.stringify(schema)])
 )
 

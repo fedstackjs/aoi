@@ -202,7 +202,7 @@ const rejudge = useAsyncTask(async () => {
 const autoRefresh = useIntervalFn(
   () => {
     if (solution.state.value?.state !== 4 && solution.state.value?.state !== 0) {
-      solution.execute()
+      solution.isLoading.value || solution.execute()
     } else {
       autoRefresh.pause()
     }

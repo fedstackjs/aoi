@@ -4,6 +4,7 @@ import { computeSHA256 } from '../files'
 import { http } from '../http'
 import { useToast } from 'vue-toastification'
 import { useAsyncTask } from '../async'
+import type { ProblemConfig } from '@aoi-js/common'
 
 async function loadConfig(zip: zip) {
   let content = await zip.file('problem.json')?.async('string')
@@ -32,8 +33,13 @@ export function useDataUpload(problemId: string, updated: () => void) {
     description: '',
     configJson: JSON.stringify(
       {
-        $schema: 'local://schemas/problem_config.json'
-      },
+        label: 'label',
+        judge: {
+          adapter: 'adapter',
+          config: {}
+        },
+        submit: {}
+      } satisfies ProblemConfig,
       null,
       2
     )
