@@ -5,7 +5,7 @@
       <VTextField v-model="uploadInfo.hash" :readonly="!advanced" label="SHA256 Hash" />
       <VTextField v-model="uploadInfo.description" :label="t('term.description')" />
       <VCardSubtitle>{{ t('term.config') }}</VCardSubtitle>
-      <MonacoEditor v-model="uploadInfo.configJson" language="json" />
+      <MonacoEditor v-model="uploadInfo.configJson" language="json" uri="internal://problem.json" />
     </VCardText>
     <VCardActions>
       <VBtn
@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import type { IProblemDTO } from './types'
-import { problemConfigSchema } from '@aoi-js/common'
+import { SProblemConfigSchema } from '@aoi-js/common'
 import monaco from '@/utils/monaco'
 import { useDataUpload } from '@/utils/problem/data'
 import MonacoEditor from '../utils/MonacoEditor.vue'
@@ -40,8 +40,9 @@ import MonacoEditor from '../utils/MonacoEditor.vue'
 monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
   schemas: [
     {
-      uri: 'local://schemas/problem_config.json',
-      schema: problemConfigSchema
+      fileMatch: ['problem.json'],
+      uri: 'internal://problem.schema.json',
+      schema: SProblemConfigSchema
     }
   ]
 })

@@ -1,28 +1,29 @@
 import { type Static, Type } from '@sinclair/typebox'
 
-export const solutionDetailsTestSchema = Type.Object({
+export const SSolutionDetailsTestSchema = Type.Object({
   name: Type.String(),
   score: Type.Number(),
+  scoreScale: Type.Optional(Type.Number()),
   status: Type.String(),
   summary: Type.String()
 })
 
-export type SolutionDetailsTest = Static<typeof solutionDetailsTestSchema>
+export type SolutionDetailsTest = Static<typeof SSolutionDetailsTestSchema>
 
-export const solutionDetailsJobSchema = Type.Object({
+export const SSolutionDetailsJobSchema = Type.Object({
   name: Type.String(),
   score: Type.Number(),
-  scoreScale: Type.Number(),
+  scoreScale: Type.Optional(Type.Number()),
   status: Type.String(),
-  tests: Type.Array(solutionDetailsTestSchema),
+  tests: Type.Array(SSolutionDetailsTestSchema),
   summary: Type.String()
 })
 
-export type SolutionDetailsJob = Static<typeof solutionDetailsJobSchema>
+export type SolutionDetailsJob = Static<typeof SSolutionDetailsJobSchema>
 
-export const solutionDetailsSchema = Type.Object({
-  jobs: Type.Array(solutionDetailsJobSchema),
+export const SSolutionDetailsSchema = Type.Object({
+  jobs: Type.Array(SSolutionDetailsJobSchema),
   summary: Type.String()
 })
 
-export type SolutionDetails = Static<typeof solutionDetailsSchema>
+export type SolutionDetails = Static<typeof SSolutionDetailsSchema>

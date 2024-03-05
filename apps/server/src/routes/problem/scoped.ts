@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
-import { problemConfigSchema } from '@aoi-js/common'
+import { SProblemConfigSchema } from '@aoi-js/common'
 import {
   PROBLEM_CAPS,
   problems,
@@ -65,7 +65,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
             tags: Type.Array(Type.String()),
             capability: Type.String(),
             currentDataHash: Type.String(),
-            config: Type.Optional(problemConfigSchema)
+            config: Type.Optional(SProblemConfigSchema)
           })
         }
       }

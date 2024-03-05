@@ -1,4 +1,4 @@
-import { problemConfigSchema } from '@aoi-js/common'
+import { SProblemConfigSchema } from '@aoi-js/common'
 import { PROBLEM_CAPS, problems } from '../../db/index.js'
 import { problemDataKey } from '../../oss/index.js'
 import { ensureCapability } from '../../utils/index.js'
@@ -63,7 +63,7 @@ export const problemDataRoutes = defineRoutes(async (s) => {
             Type.Object({
               hash: Type.Hash(),
               createdAt: Type.Number(),
-              config: problemConfigSchema,
+              config: SProblemConfigSchema,
               description: Type.String()
             })
           )
@@ -82,7 +82,7 @@ export const problemDataRoutes = defineRoutes(async (s) => {
         description: 'Create problem data',
         body: Type.Object({
           hash: Type.Hash(),
-          config: problemConfigSchema,
+          config: SProblemConfigSchema,
           description: Type.String()
         })
       }

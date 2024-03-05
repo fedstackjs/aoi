@@ -1,6 +1,6 @@
 import { Static, Type } from '@sinclair/typebox'
 
-export const problemConfigSolutionSchema = Type.Partial(
+export const SProblemConfigSolutionSchema = Type.Partial(
   Type.Object(
     {
       maxSize: Type.Integer()
@@ -9,9 +9,9 @@ export const problemConfigSolutionSchema = Type.Partial(
   )
 )
 
-export type ProblemConfigSolution = Static<typeof problemConfigSolutionSchema>
+export type ProblemConfigSolution = Static<typeof SProblemConfigSolutionSchema>
 
-export const problemConfigJudgeSchema = Type.Object(
+export const SProblemConfigJudgeSchema = Type.Object(
   {
     adapter: Type.String(),
     config: Type.Record(Type.String(), Type.Any())
@@ -21,18 +21,18 @@ export const problemConfigJudgeSchema = Type.Object(
   }
 )
 
-export type ProblemConfigJudge = Static<typeof problemConfigJudgeSchema>
+export type ProblemConfigJudge = Static<typeof SProblemConfigJudgeSchema>
 
-export const problemConfigSubmitFormEditorSchema = Type.Object(
+export const SProblemConfigSubmitFormEditorSchema = Type.Object(
   {
     language: Type.String()
   },
   { description: 'Editor configuration' }
 )
 
-export type ProblemConfigSubmitFormEditor = Static<typeof problemConfigSubmitFormEditorSchema>
+export type ProblemConfigSubmitFormEditor = Static<typeof SProblemConfigSubmitFormEditorSchema>
 
-export const problemConfigSubmitFormMetadataSchema = Type.Object(
+export const SProblemConfigSubmitFormMetadataSchema = Type.Object(
   {
     items: Type.Array(
       Type.Object({
@@ -53,23 +53,23 @@ export const problemConfigSubmitFormMetadataSchema = Type.Object(
   { description: 'Metadata form configuration' }
 )
 
-export type ProblemConfigSubmitFormMetadata = Static<typeof problemConfigSubmitFormMetadataSchema>
+export type ProblemConfigSubmitFormMetadata = Static<typeof SProblemConfigSubmitFormMetadataSchema>
 
-export const problemConfigSubmitFormFileSchema = Type.Object({
+export const SProblemConfigSubmitFormFileSchema = Type.Object({
   path: Type.String(),
   label: Type.Optional(Type.String()),
   description: Type.Optional(Type.String()),
   type: Type.Partial(
     Type.Object({
-      editor: Type.Partial(problemConfigSubmitFormEditorSchema),
-      metadata: Type.Partial(problemConfigSubmitFormMetadataSchema)
+      editor: Type.Partial(SProblemConfigSubmitFormEditorSchema),
+      metadata: Type.Partial(SProblemConfigSubmitFormMetadataSchema)
     })
   )
 })
 
-export type ProblemConfigSubmitFormFile = Static<typeof problemConfigSubmitFormFileSchema>
+export type ProblemConfigSubmitFormFile = Static<typeof SProblemConfigSubmitFormFileSchema>
 
-export const problemConfigSubmitSchema = Type.Partial(
+export const SProblemConfigSubmitSchema = Type.Partial(
   Type.Object({
     upload: Type.Boolean({
       description: 'Direct upload solution file'
@@ -79,20 +79,20 @@ export const problemConfigSubmitSchema = Type.Partial(
     }),
     form: Type.Object(
       {
-        files: Type.Array(problemConfigSubmitFormFileSchema)
+        files: Type.Array(SProblemConfigSubmitFormFileSchema)
       },
       { description: 'Fill in form and generate zip file' }
     )
   })
 )
 
-export type ProblemConfigSubmit = Static<typeof problemConfigSubmitSchema>
+export type ProblemConfigSubmit = Static<typeof SProblemConfigSubmitSchema>
 
-export const problemConfigSchema = Type.Object({
+export const SProblemConfigSchema = Type.Object({
   label: Type.String(),
-  solution: Type.Optional(problemConfigSolutionSchema),
-  judge: problemConfigJudgeSchema,
-  submit: problemConfigSubmitSchema
+  solution: Type.Optional(SProblemConfigSolutionSchema),
+  judge: SProblemConfigJudgeSchema,
+  submit: SProblemConfigSubmitSchema
 })
 
-export type ProblemConfig = Static<typeof problemConfigSchema>
+export type ProblemConfig = Static<typeof SProblemConfigSchema>
