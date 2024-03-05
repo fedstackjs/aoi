@@ -7,7 +7,7 @@ import { useAsyncTask } from '../async'
 
 async function loadConfig(zip: zip) {
   let content = await zip.file('problem.json')?.async('string')
-  if (content) return JSON.parse(content)
+  if (content) return content
   content = await zip.file('problem.yaml')?.async('string')
   content ||= await zip.file('problem.yml')?.async('string')
   if (content) {
