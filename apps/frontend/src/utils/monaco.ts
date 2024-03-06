@@ -35,6 +35,7 @@ export interface IMonacoEditorProps {
   theme?: string
   readonly?: boolean
   uri?: string
+  eol?: keyof typeof monaco.editor.EndOfLineSequence
 }
 
 function getModel(uri: string) {
@@ -91,6 +92,7 @@ export function useMonaco(
         readOnly: props.readonly,
         model: props.uri ? getModel(props.uri) : undefined
       }))
+      instance.getModel()?.setEOL(monaco.editor.EndOfLineSequence[props.eol ?? 'LF'])
       syncValue(model.value)
       syncLanguage(props.language)
       instance.onDidChangeModelContent(() => {
