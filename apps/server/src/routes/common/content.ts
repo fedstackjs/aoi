@@ -14,12 +14,14 @@ export const manageContent: FastifyPluginAsyncTypebox<{
     {
       schema: {
         description: 'Update problem content',
-        body: Type.StrictObject({
-          title: Type.String(),
-          slug: Type.String(),
-          description: Type.String(),
-          tags: Type.Array(Type.String())
-        }),
+        body: Type.Partial(
+          Type.StrictObject({
+            title: Type.String(),
+            slug: Type.String(),
+            description: Type.String(),
+            tags: Type.Array(Type.String())
+          })
+        ),
         response: {
           200: Type.Object({})
         }
