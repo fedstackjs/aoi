@@ -93,7 +93,10 @@ export const SProblemConfigSchema = Type.Object({
   label: Type.String(),
   solution: Type.Optional(SProblemConfigSolutionSchema),
   judge: SProblemConfigJudgeSchema,
-  submit: SProblemConfigSubmitSchema
+  submit: SProblemConfigSubmitSchema,
+  variables: Type.Optional(
+    Type.Record(Type.String({ pattern: '^[a-zA-Z_][a-zA-Z0-9_]*$' }), Type.String())
+  )
 })
 
 export type ProblemConfig = Static<typeof SProblemConfigSchema>
