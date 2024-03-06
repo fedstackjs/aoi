@@ -1,5 +1,5 @@
 <template>
-  <VCardText>
+  <VCardText class="py-0">
     <div v-for="item of options.items ?? []" :key="item.key">
       <VTextField
         v-if="item.type.text"

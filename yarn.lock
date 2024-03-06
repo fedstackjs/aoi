@@ -240,6 +240,7 @@ __metadata:
     "@types/node": "npm:^18.15.0"
     "@types/webfontloader": "npm:^1.6.35"
     "@vitejs/plugin-vue": "npm:^4.2.3"
+    "@vscode/vscode-languagedetection": "npm:^1.0.22"
     "@vue/eslint-config-prettier": "npm:^7.1.0"
     "@vue/eslint-config-typescript": "npm:^12.0.0"
     "@vue/tsconfig": "npm:^0.4.0"
@@ -3562,6 +3563,15 @@ __metadata:
     "@volar/language-core": "npm:2.1.0"
     path-browserify: "npm:^1.0.1"
   checksum: 10/2bfc476bad4c55a1938d46ddc9fc101b9bad476e4dc5f9cd6b82c2c232427211aada8d8be4bf1bde5f483a3a83d21e1f513aca43a217d4fd78eec7a65fc8cfd7
+  languageName: node
+  linkType: hard
+
+"@vscode/vscode-languagedetection@npm:^1.0.22":
+  version: 1.0.22
+  resolution: "@vscode/vscode-languagedetection@npm:1.0.22"
+  bin:
+    vscode-languagedetection: cli/index.js
+  checksum: 10/f1de8471d9639bee709f0634539ba821799c648f711d9d5a42ce8fef1bcf26fff0d558a15cdfa5ea64ccae45f0ff67ef08c76a2e2c94c69284f69fa33bf45839
   languageName: node
   linkType: hard
 

@@ -27,7 +27,8 @@ const knownStatus: Record<string, [string, string]> = {
   'Compile Error': ['mdi-code-braces', 'error'],
   'Internal Error': ['mdi-help-circle-outline', ''],
   'Runtime Error': ['mdi-alert-decagram-outline', 'error'],
-  Running: ['mdi-play', 'indigo']
+  Running: ['mdi-play', 'indigo'],
+  Queued: ['mdi-timer-sand', 'indigo']
 }
 const display = computed(() => knownStatus[props.status] ?? ['mdi-circle-outline', 'warning'])
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <VCard variant="flat">
+  <VCard variant="flat" class="d-flex flex-column items-stretch">
     <VCardTitle class="d-flex align-center justify-space-between">
       <div>{{ file.name }}</div>
       <VAutocomplete
@@ -14,7 +14,12 @@
       />
     </VCardTitle>
     <VProgressLinear v-if="loading" indeterminate color="primary" />
-    <MonacoEditor readonly :model-value="content.state.value ?? ''" :language="language" />
+    <MonacoEditor
+      readonly
+      :model-value="content.state.value ?? ''"
+      :language="language"
+      class="u-flex-1"
+    />
   </VCard>
 </template>
 
@@ -25,16 +30,18 @@ import { watch } from 'vue'
 import MonacoEditor from '../MonacoEditor.vue'
 import { ref } from 'vue'
 import { getSupportedLanguages } from '@/utils/monaco'
+import { detectLanguage } from '@/utils/editor'
 
 const props = defineProps<{
   file: JSZip.JSZipObject
 }>()
 
-const language = ref('cpp')
+const language = ref('plaintext')
 const languages = getSupportedLanguages()
 
 const content = useAsyncState(async () => {
   const text = await props.file.async('string')
+  language.value = await detectLanguage(text, props.file.name)
   return text
 }, null as never)
 const loading = debouncedRef(content.isLoading)

@@ -24,6 +24,7 @@ export const publicRoutes = defineRoutes(async (s) => {
               principalType: Type.StringEnum(['user', 'group']),
               name: Type.String(),
               emailHash: Type.String(),
+              orgId: Type.Optional(Type.UUID()),
               namespace: Type.Optional(Type.String()),
               tags: Type.Optional(Type.Array(Type.String()))
             }),
@@ -52,6 +53,7 @@ export const publicRoutes = defineRoutes(async (s) => {
           { _id: { $in: principalIds } },
           {
             projection: {
+              orgId: 1,
               'profile.name': 1,
               'profile.email': 1
             }
@@ -67,11 +69,12 @@ export const publicRoutes = defineRoutes(async (s) => {
           namespace,
           tags
         })),
-        ...matchedGroups.map(({ _id, profile: { name, email } }) => ({
+        ...matchedGroups.map(({ _id, orgId, profile: { name, email } }) => ({
           principalId: _id,
           principalType: 'group' as const,
           name,
-          emailHash: md5(email)
+          emailHash: md5(email),
+          orgId
         }))
       ]
       return result
