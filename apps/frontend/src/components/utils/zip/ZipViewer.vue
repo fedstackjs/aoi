@@ -1,6 +1,6 @@
 <template>
-  <VCard variant="outlined">
-    <div class="u-flex u-items-stretch">
+  <VCard variant="outlined" class="u-resize-y d-flex items-stretch">
+    <div class="u-flex-1 u-flex u-items-stretch">
       <template v-if="showSideBar">
         <div>
           <VList density="compact">
@@ -15,6 +15,12 @@
         <VDivider vertical />
       </template>
       <ZipFileViewer class="u-flex-1" v-if="currentFile" :file="currentFile" />
+      <div class="u-flex-1 d-flex flex-column justify-center align-center py-8" v-else>
+        <VIcon size="128">
+          <AoiLogo />
+        </VIcon>
+        <div>{{ t('select-a-file-to-view') }}</div>
+      </div>
     </div>
   </VCard>
 </template>
@@ -23,6 +29,8 @@
 import type JSZip from 'jszip'
 import { shallowRef, computed } from 'vue'
 import ZipFileViewer from './ZipFileViewer.vue'
+import AoiLogo from '@/components/aoi/AoiLogo.vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   zip: JSZip
@@ -30,8 +38,10 @@ const props = defineProps<{
   showMetadata?: boolean
 }>()
 
+const { t } = useI18n()
+
 const files = computed(() => {
-  const keys = Object.keys(props.zip.files)
+  const keys = Object.keys(props.zip.files).filter((key) => props.zip.file(key)?.dir === false)
   if (props.showMetadata) return keys
   return keys.filter((fn) => fn !== '.metadata.json')
 })
@@ -43,8 +53,7 @@ const showSideBar = computed(() => {
 const currentFile = shallowRef<JSZip.JSZipObject>()
 
 function initialize() {
-  // Since the component is loaded after the zip is loaded,
-  // we need to set the default file here.
+  // TODO: enhance default file selection
   if (props.defaultFile) {
     currentFile.value = props.zip.file(props.defaultFile) ?? undefined
   }
@@ -54,3 +63,11 @@ function initialize() {
 }
 initialize()
 </script>
+
+<i18n>
+en:
+  select-a-file-to-view: "Select a file to view"
+
+zh-Hans:
+  select-a-file-to-view: "选择一个文件以查看"
+</i18n>

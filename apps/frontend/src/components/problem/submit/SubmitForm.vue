@@ -2,14 +2,20 @@
   <VCard variant="flat" v-if="form">
     <div v-for="(file, i) of form.files" :key="file.path">
       <VDivider v-if="i" />
-      <VCardSubtitle>{{ file.label ?? file.path }}</VCardSubtitle>
+      <div class="d-flex align-center px-6 py-2">
+        <b v-if="file.label" class="text-h5">{{ file.label }}</b>
+        <VSpacer />
+        <code class="pr-2 text-secondary">
+          {{ file.path }}
+        </code>
+      </div>
+      <VAlert v-if="file.description" type="info" color="" :text="file.description" />
       <FormEditor v-if="file.type.editor" v-model="files[file.path]" :options="file.type.editor" />
       <FormMetadata
         v-if="file.type.metadata"
         v-model="files[file.path]"
         :options="file.type.metadata"
       />
-      <VCardText v-if="file.description">{{ file.description }}</VCardText>
     </div>
     <VCardActions>
       <VBtn color="primary" @click="submit">{{ t('action.submit') }}</VBtn>

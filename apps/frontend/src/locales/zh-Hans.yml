@@ -9,7 +9,7 @@ pages:
   signup: 注册
   verify: 身份验证
   admin: 管理
-  plans: 计划
+  plans: 训练计划
   apps: 应用
   user-info: 用户信息
   user-settings: 用户设置
@@ -114,6 +114,7 @@ term:
   is-visible: 是否可见
   otp-code: 验证码
   runner-id: 评测机 ID
+  path: 路径
 
 common:
   created-at: 创建于

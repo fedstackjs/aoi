@@ -114,6 +114,7 @@ term:
   is-visible: Is Visible
   otp-code: OTP Code
   runner-id: Runner ID
+  path: Path
 
 common:
   created-at: Created at
