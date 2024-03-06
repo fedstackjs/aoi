@@ -43,7 +43,13 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
       CONTEST_CAPS.CAP_ACCESS,
       CAP_ALL
     )
-    ensureCapability(capability, CONTEST_CAPS.CAP_ACCESS, s.httpErrors.forbidden())
+    const participant = await contestParticipants.findOne({
+      contestId: contestId,
+      userId: req.user.userId
+    })
+    if (!participant) {
+      ensureCapability(capability, CONTEST_CAPS.CAP_ACCESS, s.httpErrors.forbidden())
+    }
     req.provide(kContestContext, {
       _contestId: contestId,
       _contest: contest,
