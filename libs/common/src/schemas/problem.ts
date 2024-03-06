@@ -59,6 +59,7 @@ export const SProblemConfigSubmitFormFileSchema = Type.Object({
   path: Type.String(),
   label: Type.Optional(Type.String()),
   description: Type.Optional(Type.String()),
+  default: Type.Optional(Type.String()),
   type: Type.Partial(
     Type.Object({
       editor: Type.Partial(SProblemConfigSubmitFormEditorSchema),

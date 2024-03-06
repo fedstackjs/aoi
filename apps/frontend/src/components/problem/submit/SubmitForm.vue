@@ -39,7 +39,7 @@ const props = defineProps<{
 
 const form = computed(() => props.config.submit.form)
 const files = reactive<Record<string, string>>(
-  Object.fromEntries(form.value?.files.map((file) => [file.path, '']) ?? [])
+  Object.fromEntries(form.value?.files.map((file) => [file.path, file.default ?? '']) ?? [])
 )
 
 const emit = defineEmits<{

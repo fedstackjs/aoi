@@ -28,7 +28,16 @@ defineProps<{
 }>()
 const model = defineModel<string>({ required: true })
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const value = reactive<Record<string, any>>({})
+const value = reactive(
+  (() => {
+    try {
+      return JSON.parse(model.value)
+    } catch (err) {
+      console.warn(err)
+      return {}
+    }
+  })()
+)
 
 watch(
   () => value,
