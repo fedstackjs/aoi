@@ -1,6 +1,0 @@
-releases:
-  "@aoi-js/common": patch
-
-declined:
-  - "@aoi-js/frontend"
-  - "@aoi-js/server"
