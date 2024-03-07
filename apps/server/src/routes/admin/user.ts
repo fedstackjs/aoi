@@ -8,9 +8,9 @@ export const adminUserRoutes = defineRoutes(async (s) => {
     '/',
     {
       schema: {
-        description: 'List org members',
+        description: 'List all system user',
         querystring: Type.Object({
-          page: Type.Integer({ minimum: 0, default: 0 }),
+          page: Type.Integer({ minimum: 1, default: 1 }),
           perPage: Type.Integer({ enum: [15, 30] }),
           count: Type.Boolean({ default: false }),
           search: Type.Optional(Type.String({ minLength: 1 }))
