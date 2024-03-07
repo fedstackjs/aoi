@@ -87,6 +87,9 @@ export const solutionRoutes = defineRoutes(async (s) => {
         .aggregate(
           [
             { $match: filter },
+            { $sort: { submittedAt: -1 } },
+            { $skip: skip },
+            { $limit: req.query.perPage },
             {
               $lookup: {
                 from: 'problems',
@@ -120,10 +123,7 @@ export const solutionRoutes = defineRoutes(async (s) => {
                 message: 1,
                 submittedAt: 1
               }
-            },
-            { $sort: { submittedAt: -1 } },
-            { $skip: skip },
-            { $limit: req.query.perPage }
+            }
           ],
           { ignoreUndefined: true }
         )
