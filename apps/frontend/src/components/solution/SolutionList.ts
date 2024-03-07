@@ -113,11 +113,16 @@ export function useSolutionList(props: ISolutionListProps) {
             : `/org/${props.orgId}/problem/${item.problemId}`
           : mode === SolutionListMode.CONTEST
             ? `/org/${props.orgId}/contest/${props.contestId}/problem/${item.problemId}`
-            : `/org/${props.orgId}/problem/${item.problemId}`,
+            : `/org/${props.orgId}/problem/${props.problemId}`,
       contestUrl: item.contestId && `/org/${props.orgId}/contest/${item.contestId}`,
-      solutionUrl: item.contestId
-        ? `/org/${props.orgId}/contest/${props.contestId}/solution/${item._id}`
-        : `/org/${props.orgId}/problem/${item.problemId}/solution/${item._id}`
+      solutionUrl:
+        mode === SolutionListMode.GLOBAL
+          ? item.contestId
+            ? `/org/${props.orgId}/contest/${item.contestId}/solution/${item._id}`
+            : `/org/${props.orgId}/problem/${item.problemId}/solution/${item._id}`
+          : props.contestId
+            ? `/org/${props.orgId}/contest/${props.contestId}/solution/${item._id}`
+            : `/org/${props.orgId}/problem/${props.problemId}/solution/${item._id}`
     }))
   )
 
