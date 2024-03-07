@@ -13,6 +13,15 @@
             <VTextField v-model="probSlug" :label="t('prob-slug')" :rules="probSlugRules" />
           </VCardText>
           <VCardActions>
+            <VBtn
+              v-if="enableSlugFinder"
+              color="info"
+              variant="elevated"
+              :loading="findSlug.isLoading.value"
+              @click="findSlug.execute()"
+            >
+              {{ t('action.generate-slug') }}
+            </VBtn>
             <VBtn color="primary" variant="elevated" @click="create">{{ t('action.create') }}</VBtn>
           </VCardActions>
         </VCard>
@@ -28,6 +37,13 @@ import { useI18n } from 'vue-i18n'
 import { http } from '@/utils/http'
 import { useRouter } from 'vue-router'
 import { useAppState } from '@/stores/app'
+import { enableSlugFinder } from '@/utils/flags'
+import { findNextSlug } from '@/utils/slug'
+import { noMessage, useAsyncTask } from '@/utils/async'
+
+const props = defineProps<{
+  orgId: string
+}>()
 
 const { t } = useI18n()
 const router = useRouter()
@@ -69,6 +85,11 @@ async function create() {
   const { problemId } = await resp.json<{ problemId: string }>()
   router.replace(`/org/${appState.orgId}/problem/${problemId}`)
 }
+
+const findSlug = useAsyncTask(async () => {
+  probSlug.value = await findNextSlug('problem', props.orgId, (n) => `${n}`.padStart(4, '0'))
+  return noMessage()
+})
 </script>
 
 <i18n>

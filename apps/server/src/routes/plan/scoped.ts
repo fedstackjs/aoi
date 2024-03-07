@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadCapability, paramSchemaMerger, tryLoadUUID } from '../common/index.js'
-import { PlanCapacity, planParticipants, plans } from '../../db/index.js'
+import { PLAN_CAPS, planParticipants, plans } from '../../db/index.js'
 import { CAP_ALL, hasCapability } from '../../utils/index.js'
 import { BSON } from 'mongodb'
 import { manageContent } from '../common/content.js'
@@ -27,11 +27,11 @@ export const planScopedRoutes = defineRoutes(async (s) => {
     const capability = loadCapability(
       plan,
       membership,
-      PlanCapacity.CAP_ADMIN,
-      PlanCapacity.CAP_ACCESS,
+      PLAN_CAPS.CAP_ADMIN,
+      PLAN_CAPS.CAP_ACCESS,
       CAP_ALL
     )
-    if (!hasCapability(capability, PlanCapacity.CAP_ACCESS)) return rep.forbidden()
+    if (!hasCapability(capability, PLAN_CAPS.CAP_ACCESS)) return rep.forbidden()
     req.provide(kPlanContext, {
       _plan: plan,
       _planCapability: capability,
@@ -84,12 +84,12 @@ export const planScopedRoutes = defineRoutes(async (s) => {
       const ctx = req.inject(kPlanContext)
 
       const { registrationEnabled, registrationAllowPublic } = ctx._plan.settings
-      if (!registrationEnabled && !hasCapability(ctx._planCapability, PlanCapacity.CAP_ADMIN)) {
+      if (!registrationEnabled && !hasCapability(ctx._planCapability, PLAN_CAPS.CAP_ADMIN)) {
         return rep.forbidden()
       }
       if (
         !registrationAllowPublic &&
-        !hasCapability(ctx._planCapability, PlanCapacity.CAP_REGISTRATION)
+        !hasCapability(ctx._planCapability, PLAN_CAPS.CAP_REGISTRATION)
       ) {
         return rep.forbidden()
       }
@@ -129,7 +129,7 @@ export const planScopedRoutes = defineRoutes(async (s) => {
     resolve: async (req) => {
       const ctx = req.inject(kPlanContext)
 
-      if (!hasCapability(ctx._planCapability, PlanCapacity.CAP_CONTENT)) return null
+      if (!hasCapability(ctx._planCapability, PLAN_CAPS.CAP_CONTENT)) return null
       return ctx._plan._id
     },
     prefix: '/content'

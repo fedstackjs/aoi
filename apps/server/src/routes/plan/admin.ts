@@ -1,4 +1,4 @@
-import { PlanCapacity, SPlanSettings, hasCapability, plans } from '../../index.js'
+import { PLAN_CAPS, SPlanSettings, hasCapability, plans } from '../../index.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
 import { defineRoutes } from '../common/index.js'
 import { manageSettings } from '../common/settings.js'
@@ -7,13 +7,13 @@ import { kPlanContext } from './inject.js'
 export const planAdminRoutes = defineRoutes(async (s) => {
   s.addHook('onRequest', async (req, rep) => {
     const ctx = req.inject(kPlanContext)
-    if (!hasCapability(ctx._planCapability, PlanCapacity.CAP_ADMIN)) return rep.forbidden()
+    if (!hasCapability(ctx._planCapability, PLAN_CAPS.CAP_ADMIN)) return rep.forbidden()
   })
 
   s.register(manageACL, {
     collection: plans,
     resolve: async (req) => req.inject(kPlanContext)._plan._id,
-    defaultCapability: PlanCapacity.CAP_ACCESS,
+    defaultCapability: PLAN_CAPS.CAP_ACCESS,
     prefix: '/access'
   })
   s.register(manageAccessLevel, {
