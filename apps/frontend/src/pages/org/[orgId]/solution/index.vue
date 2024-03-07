@@ -14,7 +14,7 @@
 import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import SolutionList from '@/components/solution/global/SolutionList.vue'
+import SolutionList from '@/components/solution/SolutionList.vue'
 import { useOrgCapability } from '@/utils/capability'
 
 defineProps<{

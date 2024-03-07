@@ -24,6 +24,7 @@ pages:
 action:
   reload: 重载
   reset: 重置
+  apply: 应用
   save: 保存
   delete: 删除
   cancel: 取消
@@ -52,6 +53,8 @@ action:
 term:
   content: 内容
   title: 标题
+  problem-title: 题目标题
+  contest-title: 比赛标题
   slug: 编号
   tags: 标签
   state: 状态
@@ -115,6 +118,7 @@ term:
   otp-code: 验证码
   runner-id: 评测机 ID
   path: 路径
+  filter: 过滤
 
 common:
   created-at: 创建于
@@ -189,3 +193,15 @@ stages:
   upcoming: 即将开始
   running: 正在进行
   end: 已结束
+
+solution:
+  state:
+    created: 已创建
+    pending: 等待中
+    queued: 排队中
+    running: 运行中
+    completed: 已完成
+  min-score: 最低分
+  max-score: 最高分
+  submitted-since: 提交晚于
+  submitted-before: 提交早于

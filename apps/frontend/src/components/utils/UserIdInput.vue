@@ -1,8 +1,7 @@
 <template>
   <VAutocomplete
-    v-model="model"
+    v-model.trim="model"
     v-model:search="query"
-    :label="label"
     :items="items.state.value"
     :loading="items.isLoading.value"
     item-value="_id"
@@ -12,18 +11,19 @@
   >
     <template #item="{ props, item }">
       <VListItem v-bind="props">
+        <template #prepend>
+          <VAvatar>
+            <AoiGravatar :email="item.raw.emailHash" />
+          </VAvatar>
+        </template>
         <template #title>
           <VListItemTitle>
-            {{ item.raw.title }}
-            <span class="text-secondary">{{ item.raw.slug }}</span>
+            {{ item.raw.name }}
           </VListItemTitle>
         </template>
         <VListItemSubtitle>
           <code>{{ item.raw._id }}</code>
         </VListItemSubtitle>
-        <template #append>
-          <AccessLevelBadge :access-level="item.raw.accessLevel" />
-        </template>
       </VListItem>
     </template>
   </VAutocomplete>
@@ -33,33 +33,46 @@
 import { http } from '@/utils/http'
 import { useAsyncState, watchDebounced } from '@vueuse/core'
 import { ref } from 'vue'
-import AccessLevelBadge from './AccessLevelBadge.vue'
+import { getProfile } from '@/utils/profile'
+import AoiGravatar from '../aoi/AoiGravatar.vue'
+import { useAppState } from '@/stores/app'
 
 const props = defineProps<{
-  label: string
-  endpoint: string
   search?: Record<string, string | number | boolean>
 }>()
 
 const model = defineModel<string>({ required: true })
+const app = useAppState()
 const query = ref('')
 let lastQuery = ''
 
 interface Item {
   _id: string
-  title: string
-  slug: string
-  accessLevel: number
+  name: string
+  emailHash: string
+  namespace?: string
+  tags?: string[]
 }
 
 const items = useAsyncState(async (search: string) => {
   if (!search) return []
   if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(search)) {
-    const item = await http.get(`${props.endpoint}/${search}`).json<Item>()
-    return [item]
+    const item = await getProfile(search)
+    if (item && item.principalType === 'user')
+      return [
+        {
+          _id: item.principalId,
+          name: item.name,
+          emailHash: item.emailHash,
+          namespace: item.namespace,
+          tags: item.tags
+        }
+      ]
+    return []
   }
+  if (!app.loggedIn) return []
   const { items } = await http
-    .get(props.endpoint, {
+    .get(`user`, {
       searchParams: {
         ...props.search,
         search,

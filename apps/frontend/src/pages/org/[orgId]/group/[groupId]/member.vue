@@ -3,7 +3,7 @@
     <VCardTitle class="d-flex justify-space-between align-center">
       <div>{{ t('term.members') }}</div>
       <div class="flex-grow-1 u-max-w-64">
-        <VTextField
+        <UserIdInput
           v-model="newMember"
           density="compact"
           :label="t('term.user-id')"
@@ -52,6 +52,7 @@ import { useI18n } from 'vue-i18n'
 import AoiGravatar from '@/components/aoi/AoiGravatar.vue'
 import CapabilityChips from '@/components/utils/CapabilityChips.vue'
 import { orgBits } from '@/utils/capability'
+import UserIdInput from '@/components/utils/UserIdInput.vue'
 
 const props = defineProps<{
   orgId: string

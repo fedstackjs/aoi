@@ -1,6 +1,9 @@
 export interface ISolutionDTO {
   _id: string
-  problemId: string
+  problemId?: string
+  problemTitle?: string
+  contestId?: string
+  contestTitle?: string
   userId: string
   problemDataHash: string
   label: string

@@ -22,6 +22,7 @@ export const SSolutionDetailsJobSchema = Type.Object({
 export type SolutionDetailsJob = Static<typeof SSolutionDetailsJobSchema>
 
 export const SSolutionDetailsSchema = Type.Object({
+  version: Type.Integer({ minimum: 1 }),
   jobs: Type.Array(SSolutionDetailsJobSchema),
   summary: Type.String()
 })

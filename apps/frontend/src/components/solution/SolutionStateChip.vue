@@ -21,22 +21,3 @@ const stateMap = {
 } as const
 const state = computed(() => stateMap[props.state as never] ?? ['unknown', 'mdi-help', 'grey'])
 </script>
-
-<i18n>
-en:
-  solution:
-    state:
-      created: Created
-      pending: Pending
-      queued: Queued
-      running: Running
-      completed: Completed
-zh-Hans:
-  solution:
-    state:
-      created: 已创建
-      pending: 等待中
-      queued: 排队中
-      running: 运行中
-      completed: 已完成
-</i18n>

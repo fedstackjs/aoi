@@ -1,8 +1,8 @@
 import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
+import { defineRoutes, generateRangeQuery, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { solutionScopedRoute } from './scoped.js'
-import { findPaginated, hasCapability } from '../../utils/index.js'
-import { ISolution, ORG_CAPS, problems, solutions } from '../../db/index.js'
+import { hasCapability, paginationSkip } from '../../utils/index.js'
+import { ISolution, ORG_CAPS, solutions } from '../../db/index.js'
 import { BSON } from 'mongodb'
 import { orgMemberships } from '../../db/index.js'
 
@@ -19,6 +19,14 @@ export const solutionRoutes = defineRoutes(async (s) => {
           userId: Type.Optional(Type.UUID()),
           problemId: Type.Optional(Type.UUID()),
           contestId: Type.Optional(Type.UUID()),
+
+          state: Type.Optional(Type.Integer({ minimum: 0, maximum: 4 })),
+          status: Type.Optional(Type.String()),
+          scoreL: Type.Optional(Type.Number()),
+          scoreR: Type.Optional(Type.Number()),
+          submittedAtL: Type.Optional(Type.Integer()),
+          submittedAtR: Type.Optional(Type.Integer()),
+
           page: Type.Integer({ minimum: 1, default: 1 }),
           perPage: Type.Integer({ enum: [15, 30] }),
           count: Type.Boolean({ default: false })
@@ -31,6 +39,7 @@ export const solutionRoutes = defineRoutes(async (s) => {
               contestId: Type.Optional(Type.UUID()),
               userId: Type.UUID(),
               problemTitle: Type.String(),
+              contestTitle: Type.Optional(Type.String()),
               state: Type.Integer(),
               score: Type.Number(),
               metrics: Type.Record(Type.String(), Type.Number()),
@@ -43,8 +52,6 @@ export const solutionRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const problemId = req.query.problemId ? new BSON.UUID(req.query.problemId) : undefined
-      const contestId = req.query.contestId ? new BSON.UUID(req.query.contestId) : undefined
       const userId = req.query.userId ? new BSON.UUID(req.query.userId) : undefined
       // check org auth, user should be in the org
       const orgId = loadUUID(req.query, 'orgId', s.httpErrors.badRequest())
@@ -63,49 +70,70 @@ export const solutionRoutes = defineRoutes(async (s) => {
       if (!isAdmin && !isCurrentUser) {
         return rep.forbidden()
       }
-      const result = await findPaginated<ISolution>(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        solutions as any,
-        req.query.page,
-        req.query.perPage,
-        req.query.count,
-        {
-          problemId: problemId,
-          contestId: contestId,
-          userId: userId
-        },
-        {
-          projection: {
-            problemId: 1,
-            contestId: 1,
-            userId: 1,
-            state: 1,
-            score: 1,
-            metrics: 1,
-            status: 1,
-            message: 1,
-            submittedAt: 1
-          },
-          sort: {
-            submittedAt: -1
-          },
-          ignoreUndefined: true
-        }
-      )
-      // add problem title into return result
-      const problemIds = result.items.map((s) => s.problemId)
-      const problemMap = new Map<string, string>()
-      const problemDocs = await problems.find({ _id: { $in: problemIds } }).toArray()
-      problemDocs.forEach((p) => problemMap.set(p._id.toString(), p.title))
-      return {
-        items: result.items.map((s) => {
-          return {
-            ...s,
-            problemTitle: problemMap.get(s.problemId.toString()) as string
-          }
-        }),
-        total: result.total
+      const filter = {
+        contestId: req.query.contestId ? new BSON.UUID(req.query.contestId) : undefined,
+        problemId: req.query.problemId ? new BSON.UUID(req.query.problemId) : undefined,
+        userId: req.query.userId ? new BSON.UUID(req.query.userId) : undefined,
+        state: req.query.state,
+        status: req.query.status,
+        score: generateRangeQuery(req.query.scoreL, req.query.scoreR),
+        submittedAt: generateRangeQuery(req.query.submittedAtL, req.query.submittedAtR)
       }
+      const skip = paginationSkip(req.query.page, req.query.perPage)
+      const total = req.query.count
+        ? await solutions.countDocuments(filter, { ignoreUndefined: true })
+        : undefined
+      const items = (await solutions
+        .aggregate(
+          [
+            { $match: filter },
+            {
+              $lookup: {
+                from: 'problems',
+                localField: 'problemId',
+                foreignField: '_id',
+                as: 'problem'
+              }
+            },
+            { $unwind: '$problem' },
+            {
+              $lookup: {
+                from: 'contests',
+                localField: 'contestId',
+                foreignField: '_id',
+                as: 'contest'
+              }
+            },
+            { $unwind: { path: '$contest', preserveNullAndEmptyArrays: true } },
+            {
+              $project: {
+                _id: 1,
+                problemId: 1,
+                contestId: 1,
+                userId: 1,
+                problemTitle: '$problem.title',
+                contestTitle: '$contest.title',
+                state: 1,
+                score: 1,
+                metrics: 1,
+                status: 1,
+                message: 1,
+                submittedAt: 1
+              }
+            },
+            { $sort: { submittedAt: -1 } },
+            { $skip: skip },
+            { $limit: req.query.perPage }
+          ],
+          { ignoreUndefined: true }
+        )
+        .toArray()) as Array<
+        ISolution & {
+          problemTitle: string
+          contestTitle?: string
+        }
+      >
+      return { items, total }
     }
   )
 

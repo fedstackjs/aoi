@@ -225,12 +225,14 @@ export const contestSolutionRoutes = defineRoutes(async (s) => {
         querystring: Type.Object({
           userId: Type.Optional(Type.String()),
           problemId: Type.Optional(Type.String()),
+
           state: Type.Optional(Type.Integer({ minimum: 0, maximum: 4 })),
           status: Type.Optional(Type.String()),
           scoreL: Type.Optional(Type.Number()),
           scoreR: Type.Optional(Type.Number()),
           submittedAtL: Type.Optional(Type.Integer()),
           submittedAtR: Type.Optional(Type.Integer()),
+
           page: Type.Integer({ minimum: 1, default: 1 }),
           perPage: Type.Integer({ enum: [15, 30] }),
           count: Type.Boolean({ default: false })

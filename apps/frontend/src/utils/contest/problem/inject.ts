@@ -3,7 +3,7 @@ import { toRef, type MaybeRef, type InjectionKey, provide, type Ref, inject, com
 import { http } from '@/utils/http'
 import type { IContestProblemListDTO } from '@/components/contest/types'
 
-const kContestProblemList: InjectionKey<Ref<IContestProblemListDTO[]>> =
+export const kContestProblemList: InjectionKey<Ref<IContestProblemListDTO[]>> =
   Symbol('contest-problem-list')
 
 export function useContestProblemList(contestId: MaybeRef<string>) {
