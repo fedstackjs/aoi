@@ -35,7 +35,7 @@
                 <PrincipalProfile :principal-id="value.userId" />
               </td>
               <td class="text-center" v-if="contestId">
-                <code>{{ useContestProblemTitle(value.problemId)?.value }}</code>
+                <code>{{ useContestProblemTitle(value.problemId ?? '')?.value }}</code>
               </td>
               <td class="text-center" v-text="new Date(value.createdAt).toLocaleString()" />
               <td

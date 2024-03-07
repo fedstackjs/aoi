@@ -24,6 +24,7 @@ pages:
 action:
   reload: Reload
   reset: Reset
+  apply: Apply
   save: Save
   delete: Delete
   cancel: Cancel
@@ -52,6 +53,8 @@ action:
 term:
   content: Content
   title: Title
+  problem-title: Problem Title
+  contest-title: Contest Title
   slug: Slug
   tags: Tags
   state: State
@@ -115,6 +118,7 @@ term:
   otp-code: OTP Code
   runner-id: Runner ID
   path: Path
+  filter: Filter
 
 common:
   created-at: Created at
@@ -189,3 +193,15 @@ stages:
   upcoming: Upcoming
   running: Running
   end: End
+
+solution:
+  state:
+    created: Created
+    pending: Pending
+    queued: Queued
+    running: Running
+    completed: Completed
+  min-score: Min Score
+  max-score: Max Score
+  submitted-since: Submitted Since
+  submitted-before: Submitted Before

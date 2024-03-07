@@ -10,6 +10,8 @@ export interface IPublicProfile {
   principalType: string
   name: string
   emailHash: string
+  namespace?: string
+  tags?: string[]
 }
 
 export interface IProfileCacheEntry {

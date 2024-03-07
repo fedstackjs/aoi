@@ -3,10 +3,10 @@
     <VCardTitle class="d-flex justify-space-between align-center">
       <div>{{ t('term.members') }}</div>
       <div class="flex-grow-1 u-max-w-64">
-        <VTextField
+        <UserIdInput
           v-model="newMember"
-          density="compact"
           :label="t('term.user-id')"
+          density="compact"
           append-icon="mdi-plus"
           @click:append="addMember"
         />
@@ -69,6 +69,7 @@ import { usePagination } from '@/utils/pagination'
 import AoiGravatar from '@/components/aoi/AoiGravatar.vue'
 import CapabilityInput from '@/components/utils/CapabilityInput.vue'
 import CapabilityChips from '@/components/utils/CapabilityChips.vue'
+import UserIdInput from '@/components/utils/UserIdInput.vue'
 
 const props = defineProps<{
   orgId: string
