@@ -48,6 +48,7 @@ action:
   verify: 验证身份
   login-into: 登录到 {app}
   goto: 转到{page}
+  generate-slug: 生成编号
 
 term:
   content: 内容

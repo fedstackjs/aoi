@@ -48,6 +48,7 @@ action:
   verify: Verify my identity
   login-into: Login into {app}
   goto: Go to {page}
+  generate-slug: Generate Slug
 
 term:
   content: Content

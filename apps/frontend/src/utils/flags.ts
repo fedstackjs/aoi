@@ -6,3 +6,4 @@ export const extraFooterText = import.meta.env.VITE_EXTRA_FOOTER_TEXT
 export const loginHint = import.meta.env.VITE_LOGIN_HINT
 export const verifyHint = import.meta.env.VITE_VERIFY_HINT
 export const enableOverview = !!import.meta.env.VITE_ENABLE_OVERVIEW
+export const enableSlugFinder = !!import.meta.env.VITE_ENABLE_SLUG_FINDER

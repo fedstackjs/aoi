@@ -9,6 +9,15 @@
             <AccessLevelInput v-model="payload.accessLevel" />
           </VCardText>
           <VCardActions>
+            <VBtn
+              v-if="enableSlugFinder"
+              color="info"
+              variant="elevated"
+              :loading="findSlug.isLoading.value"
+              @click="findSlug.execute()"
+            >
+              {{ t('action.generate-slug') }}
+            </VBtn>
             <VBtn color="primary" variant="elevated" @click="create">{{ t('action.create') }}</VBtn>
           </VCardActions>
         </VCard>
@@ -18,14 +27,15 @@
 </template>
 
 <script setup lang="ts">
-import AccessLevelInput from '@/components/utils/AccessLevelInput.vue'
+import { noMessage, useAsyncTask } from '@/utils/async'
 import { http } from '@/utils/http'
+import { findNextSlug } from '@/utils/slug'
 import { withTitle } from '@/utils/title'
-import { reactive } from 'vue'
-import { computed } from 'vue'
+import { computed, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
+import { enableSlugFinder } from '@/utils/flags'
 
 const props = defineProps<{
   orgId: string
@@ -55,4 +65,9 @@ async function create() {
   toast.success(t('success'))
   router.replace(`/org/${orgId}/app/${appId}`)
 }
+
+const findSlug = useAsyncTask(async () => {
+  payload.slug = await findNextSlug('app', props.orgId, (n) => `${n}`.padStart(4, '0'))
+  return noMessage()
+})
 </script>

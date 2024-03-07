@@ -8,7 +8,7 @@ import {
 } from '../index.js'
 import { IPlanContestSettings, IPlanSettings } from '../schemas/plan.js'
 
-export const PlanCapacity = {
+export const PLAN_CAPS = {
   CAP_ACCESS: capabilityMask(0),
   CAP_ADMIN: capabilityMask(1),
   CAP_CONTENT: capabilityMask(2),
