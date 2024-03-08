@@ -1,0 +1,6 @@
+releases:
+  "@aoi-js/common": patch
+  "@aoi-js/frontend": patch
+
+declined:
+  - "@aoi-js/server"
