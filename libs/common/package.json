@@ -1,6 +1,6 @@
 {
   "name": "@aoi-js/common",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "publishConfig": {
     "access": "public"
