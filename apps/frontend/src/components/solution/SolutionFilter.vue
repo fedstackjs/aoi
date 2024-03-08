@@ -68,8 +68,8 @@
           </VCol>
           <VCol cols="12" sm="6">
             <VTextField
-              :error="!!submittedLError"
-              v-model="submittedLModel"
+              :error="!!submittedAtLError"
+              v-model="submittedAtLModel"
               type="datetime-local"
               :label="t('solution.submitted-since')"
               clearable
@@ -77,8 +77,8 @@
           </VCol>
           <VCol cols="12" sm="6">
             <VTextField
-              :error="!!submittedRError"
-              v-model="submittedRModel"
+              :error="!!submittedAtRError"
+              v-model="submittedAtRModel"
               type="datetime-local"
               :label="t('solution.submitted-before')"
               clearable
@@ -136,8 +136,8 @@ const contestId = defineModel<string>('contestId', { default: '' })
 const problemId = defineModel<string>('problemId', { default: '' })
 const state = defineModel<string>('state', { default: '' })
 const status = defineModel<string>('status', { default: '' })
-const submittedL = defineModel<string>('submittedL', { default: '' })
-const submittedR = defineModel<string>('submittedR', { default: '' })
+const submittedAtL = defineModel<string>('submittedAtL', { default: '' })
+const submittedAtR = defineModel<string>('submittedAtR', { default: '' })
 const scoreL = defineModel<string>('scoreL', { default: '' })
 const scoreR = defineModel<string>('scoreR', { default: '' })
 
@@ -152,8 +152,8 @@ const { local, reset, apply, filterActive } = useSolutionFilter({
   problemId,
   state,
   status,
-  submittedL,
-  submittedR,
+  submittedAtL,
+  submittedAtR,
   scoreL,
   scoreR
 })
@@ -163,10 +163,10 @@ const _apply = () => {
   apply()
 }
 
-const { model: submittedLModel, error: submittedLError } = useDateTimeStrTextField(
-  toRef(local, 'submittedL')
+const { model: submittedAtLModel, error: submittedAtLError } = useDateTimeStrTextField(
+  toRef(local, 'submittedAtL')
 )
-const { model: submittedRModel, error: submittedRError } = useDateTimeStrTextField(
-  toRef(local, 'submittedR')
+const { model: submittedAtRModel, error: submittedAtRError } = useDateTimeStrTextField(
+  toRef(local, 'submittedAtR')
 )
 </script>

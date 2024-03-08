@@ -11,8 +11,8 @@
       v-model:problem-id="filter.problemId.value"
       v-model:state="filter.state.value"
       v-model:status="filter.status.value"
-      v-model:submitted-l="filter.submittedL.value"
-      v-model:submitted-r="filter.submittedR.value"
+      v-model:submitted-at-l="filter.submittedAtL.value"
+      v-model:submitted-at-r="filter.submittedAtR.value"
       v-model:score-l="filter.scoreL.value"
       v-model:score-r="filter.scoreR.value"
     />

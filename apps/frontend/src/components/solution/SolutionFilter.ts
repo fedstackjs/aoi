@@ -8,8 +8,8 @@ export function useSolutionFilter(filter: ReturnType<typeof useSolutionList>['fi
     problemId: '',
     state: '',
     status: '',
-    submittedL: '',
-    submittedR: '',
+    submittedAtL: '',
+    submittedAtR: '',
     scoreL: '',
     scoreR: ''
   })
@@ -20,8 +20,8 @@ export function useSolutionFilter(filter: ReturnType<typeof useSolutionList>['fi
     local.problemId = filter.problemId.value
     local.state = filter.state.value
     local.status = filter.status.value
-    local.submittedL = filter.submittedL.value
-    local.submittedR = filter.submittedR.value
+    local.submittedAtL = filter.submittedAtL.value
+    local.submittedAtR = filter.submittedAtR.value
     local.scoreL = filter.scoreL.value
     local.scoreR = filter.scoreR.value
   }
@@ -32,8 +32,8 @@ export function useSolutionFilter(filter: ReturnType<typeof useSolutionList>['fi
     filter.problemId.value = local.problemId ?? ''
     filter.state.value = local.state ?? ''
     filter.status.value = local.status ?? ''
-    filter.submittedL.value = local.submittedL ?? ''
-    filter.submittedR.value = local.submittedR ?? ''
+    filter.submittedAtL.value = local.submittedAtL ?? ''
+    filter.submittedAtR.value = local.submittedAtR ?? ''
     filter.scoreL.value = local.scoreL ?? ''
     filter.scoreR.value = local.scoreR ?? ''
   }

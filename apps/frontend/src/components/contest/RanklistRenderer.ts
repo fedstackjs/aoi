@@ -7,11 +7,17 @@ export function useRanklistRenderer() {
     const contest = useContestData()
     const participantUrl = (userId: string) =>
       `/org/${contest.value.orgId}/contest/${contest.value._id}/participant/${userId}`
-    return { admin, participantUrl }
+    const problemUrl = (problemId?: string) =>
+      `/org/${contest.value.orgId}/contest/${contest.value._id}/problem/${problemId}`
+    const solutionUrl = (solutionId?: string) =>
+      `/org/${contest.value.orgId}/contest/${contest.value._id}/solution/${solutionId}`
+    return { admin, participantUrl, problemUrl, solutionUrl }
   } catch {
     return {
       admin: ref(false),
-      participantUrl: () => ''
+      participantUrl: () => '',
+      problemUrl: () => '',
+      solutionUrl: () => ''
     }
   }
 }

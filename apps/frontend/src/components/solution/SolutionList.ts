@@ -75,8 +75,8 @@ export function useSolutionList(props: ISolutionListProps) {
     problemId: useRouteQuery('problemId', '', { transform: String }),
     state: useRouteQuery('state', '', { transform: String }),
     status: useRouteQuery('status', '', { transform: String }),
-    submittedL: useRouteQuery('submittedL', '', { transform: String }),
-    submittedR: useRouteQuery('submittedR', '', { transform: String }),
+    submittedAtL: useRouteQuery('submittedAtL', '', { transform: String }),
+    submittedAtR: useRouteQuery('submittedAtR', '', { transform: String }),
     scoreL: useRouteQuery('scoreL', '', { transform: String }),
     scoreR: useRouteQuery('scoreR', '', { transform: String })
   }

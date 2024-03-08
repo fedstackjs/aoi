@@ -12,7 +12,12 @@
         <th>{{ t('term.rank') }}</th>
         <th>{{ t('term.participant') }}</th>
         <th v-for="(header, i) in ranklist.participant.columns" :key="i">
-          {{ header.name }}
+          <component
+            :is="header.problemId ? RouterLink : 'span'"
+            :to="problemUrl(header.problemId)"
+          >
+            {{ header.name }}
+          </component>
         </th>
       </thead>
       <tbody>
@@ -38,7 +43,12 @@
             </div>
           </td>
           <td v-for="(column, i) in man.columns" :key="i">
-            <article v-html="renderMarkdown(column.content)"></article>
+            <component
+              :is="column.solutionId ? RouterLink : 'div'"
+              :to="solutionUrl(column.solutionId)"
+            >
+              <article v-html="renderMarkdown(column.content)"></article>
+            </component>
           </td>
         </tr>
       </tbody>
@@ -57,6 +67,7 @@ import RanklistTopstars from '../contest/RanklistTopstars.vue'
 import { ref } from 'vue'
 import { computed } from 'vue'
 import { useRanklistRenderer } from './RanklistRenderer'
+import { RouterLink } from 'vue-router'
 
 const props = defineProps<{
   ranklist: Ranklist
@@ -70,5 +81,5 @@ const length = computed(() =>
   Math.max(1, Math.ceil(props.ranklist.participant.list.length / perPage.value))
 )
 
-const { admin, participantUrl } = useRanklistRenderer()
+const { admin, participantUrl, problemUrl, solutionUrl } = useRanklistRenderer()
 </script>
