@@ -20,7 +20,8 @@ export const SRanklistParticipantSchema = Type.Object({
   columns: Type.Array(
     Type.Object({
       name: Type.String(),
-      description: Type.String()
+      description: Type.String(),
+      problemId: Type.Optional(Type.String())
     })
   ),
   list: Type.Array(
@@ -30,7 +31,8 @@ export const SRanklistParticipantSchema = Type.Object({
       tags: Type.Optional(Type.Array(Type.String())),
       columns: Type.Array(
         Type.Object({
-          content: Type.String()
+          content: Type.String(),
+          solutionId: Type.Optional(Type.String())
         })
       )
     })
@@ -49,6 +51,7 @@ export const SRanklistMetadataSchema = Type.Partial(
 export type RanklistMetadata = Static<typeof SRanklistMetadataSchema>
 
 export const SRanklistSchema = Type.Object({
+  version: Type.Integer({ minimum: 1 }),
   topstar: Type.Optional(SRanklistTopstarSchema),
   participant: SRanklistParticipantSchema,
   metadata: SRanklistMetadataSchema
