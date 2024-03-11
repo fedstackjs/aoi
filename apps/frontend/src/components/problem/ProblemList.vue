@@ -3,7 +3,7 @@
     :headers="headers"
     :items-length="problems.state.value.total"
     :items="problems.state.value.items"
-    :items-per-page-options="[{ title: '15', value: 15 }]"
+    :items-per-page-options="[15, 30, 50, 100]"
     :loading="problems.isLoading.value"
     v-model:page="page"
     v-model:items-per-page="itemsPerPage"

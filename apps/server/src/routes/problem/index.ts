@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { problemScopedRoutes } from './scoped.js'
 import { CAP_NONE, ensureCapability, hasCapability } from '../../utils/capability.js'
-import { BSON } from 'mongodb'
+import { UUID } from 'mongodb'
 import { ORG_CAPS, problems } from '../../db/index.js'
 import { paginationSkip } from '../../utils/pagination.js'
 import { AccessLevel } from '../../schemas/index.js'
@@ -40,7 +40,7 @@ export const problemRoutes = defineRoutes(async (s) => {
         s.httpErrors.forbidden()
       )
       const { insertedId } = await problems.insertOne({
-        _id: new BSON.UUID(),
+        _id: new UUID(),
         orgId,
         slug: req.body.slug,
         title: req.body.title,
@@ -61,14 +61,33 @@ export const problemRoutes = defineRoutes(async (s) => {
   )
 
   s.get(
+    '/tags',
+    {
+      schema: {
+        description: 'List problem tags',
+        querystring: Type.Object({
+          orgId: Type.UUID()
+        }),
+        response: {
+          200: Type.Array(Type.String())
+        }
+      }
+    },
+    async (req) => {
+      const tags = await problems.distinct('tags', { orgId: new UUID(req.query.orgId) })
+      return tags
+    }
+  )
+
+  s.get(
     '/',
     {
       schema: {
         description: 'List problems',
         querystring: Type.Object({
-          orgId: Type.String(),
+          orgId: Type.UUID(),
           page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30] }),
+          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
           count: Type.Boolean({ default: false }),
           search: Type.Optional(Type.String({ minLength: 1 })),
           tag: Type.Optional(Type.String())
@@ -98,7 +117,7 @@ export const problemRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const { orgId: rawOrgId, page, perPage, count, ...rest } = req.query
-      const orgId = new BSON.UUID(rawOrgId)
+      const orgId = new UUID(rawOrgId)
       const searchFilter = searchToFilter(rest)
       if (!searchFilter) return rep.badRequest('Bad search parameters')
 

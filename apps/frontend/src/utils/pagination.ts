@@ -24,7 +24,7 @@ export function usePagination<T>(
   const endpointRef = toRef(endpoint)
   const paramsRef = toRef(params)
   const page = useRouteQuery('page', '1', { transform: Number })
-  const itemsPerPage = ref(15)
+  const itemsPerPage = ref(50)
   let cachedCount = -1
   const result = useAsyncState(
     async (page, itemsPerPage) => {

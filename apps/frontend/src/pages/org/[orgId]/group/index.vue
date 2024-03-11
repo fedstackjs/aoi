@@ -8,7 +8,7 @@
             :items-length="groups.state.value.total"
             :items="groups.state.value.items"
             :items-per-page="15"
-            :items-per-page-options="[{ title: '15', value: 15 }]"
+            :items-per-page-options="[15, 30, 50, 100]"
             :loading="groups.isLoading.value"
             item-value="name"
             @update:options="({ page, itemsPerPage }) => groups.execute(0, page, itemsPerPage)"

@@ -18,7 +18,7 @@
       :items="members.state.value.items"
       v-model:page="page"
       v-model:items-per-page="itemsPerPage"
-      :items-per-page-options="[{ title: '15', value: 15 }]"
+      :items-per-page-options="[15, 30, 50, 100]"
       :loading="members.isLoading.value"
       item-value="_id"
       @update:options="({ page, itemsPerPage }) => members.execute(0, page, itemsPerPage)"

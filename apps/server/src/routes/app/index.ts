@@ -62,7 +62,7 @@ export const appRoutes = defineRoutes(async (s) => {
         querystring: Type.Object({
           orgId: Type.String(),
           page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30] }),
+          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
           count: Type.Boolean({ default: false }),
           search: Type.Optional(Type.String({ minLength: 1 })),
           tag: Type.Optional(Type.String())

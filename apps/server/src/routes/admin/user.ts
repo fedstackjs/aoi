@@ -11,7 +11,7 @@ export const adminUserRoutes = defineRoutes(async (s) => {
         description: 'List all system user',
         querystring: Type.Object({
           page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30] }),
+          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
           count: Type.Boolean({ default: false }),
           search: Type.Optional(Type.String({ minLength: 1 }))
         }),

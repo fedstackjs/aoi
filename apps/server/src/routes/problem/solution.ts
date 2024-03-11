@@ -185,7 +185,7 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
           submittedAtL: Type.Optional(Type.Integer()),
           submittedAtR: Type.Optional(Type.Integer()),
           page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30] }),
+          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
           count: Type.Boolean({ default: false })
         }),
         response: {

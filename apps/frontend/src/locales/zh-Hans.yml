@@ -50,6 +50,7 @@ action:
   login-into: 登录到 {app}
   goto: 转到{page}
   generate-slug: 生成编号
+  select-tag: 选择标签
 
 term:
   content: 内容
@@ -167,6 +168,7 @@ msg:
   mfa-required: 需要多因素认证
   oauth-redirect: 点击登录按钮，你将被重定向以登录 {app}
   app-provided-by: 该应用的提供方为
+  no-tags: 未找到标签。请在管理-内容页面添加标签。
 
 tabs:
   description: 描述

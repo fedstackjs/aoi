@@ -25,7 +25,7 @@
     :headers="headers"
     :items-length="submissions.state.value.total"
     :items="items"
-    :items-per-page-options="[{ title: '15', value: 15 }]"
+    :items-per-page-options="[15, 30, 50, 100]"
     :loading="submissions.isLoading.value"
     v-model:page="page"
     v-model:items-per-page="itemsPerPage"
