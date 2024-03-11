@@ -50,6 +50,7 @@ action:
   login-into: Login into {app}
   goto: Go to {page}
   generate-slug: Generate Slug
+  select-tag: Select Tag
 
 term:
   content: Content
@@ -167,6 +168,7 @@ msg:
   mfa-required: Multi-factor authentication required
   oauth-redirect: By clicking the login button, you will be redirected to login into {app}
   app-provided-by: The App is provided by
+  no-tags: No Tags Found
 
 tabs:
   description: Description

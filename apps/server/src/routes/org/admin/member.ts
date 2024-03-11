@@ -15,7 +15,7 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
         description: 'List org members',
         querystring: Type.Object({
           page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30] }),
+          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
           count: Type.Boolean({ default: false })
         }),
         response: {

@@ -4,7 +4,7 @@ import { CAP_NONE, ensureCapability, findPaginated, hasCapability } from '../../
 import { AccessLevel } from '../../schemas/index.js'
 import { ContestRanklistState, ORG_CAPS, contests } from '../../db/index.js'
 import { SContestStage } from '../../schemas/contest.js'
-import { BSON } from 'mongodb'
+import { UUID } from 'mongodb'
 import { contestScopedRoutes } from './scoped.js'
 import { searchToFilter, filterMerge } from '../../utils/search.js'
 
@@ -42,7 +42,7 @@ export const contestRoutes = defineRoutes(async (s) => {
         s.httpErrors.forbidden()
       )
       const { insertedId } = await contests.insertOne({
-        _id: new BSON.UUID(),
+        _id: new UUID(),
         orgId,
         slug: req.body.slug,
         title: req.body.title,
@@ -69,14 +69,33 @@ export const contestRoutes = defineRoutes(async (s) => {
   )
 
   s.get(
+    '/tags',
+    {
+      schema: {
+        description: 'List contest tags',
+        querystring: Type.Object({
+          orgId: Type.UUID()
+        }),
+        response: {
+          200: Type.Array(Type.String())
+        }
+      }
+    },
+    async (req) => {
+      const tags = await contests.distinct('tags', { orgId: new UUID(req.query.orgId) })
+      return tags
+    }
+  )
+
+  s.get(
     '/',
     {
       schema: {
         description: 'List contests',
         querystring: Type.Object({
-          orgId: Type.String(),
+          orgId: Type.UUID(),
           page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30] }),
+          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
           count: Type.Boolean({ default: false }),
           search: Type.Optional(Type.String({ minLength: 1 })),
           tag: Type.Optional(Type.String())
@@ -100,7 +119,7 @@ export const contestRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const { orgId: rawOrgId, page, perPage, count, ...rest } = req.query
-      const orgId = new BSON.UUID(rawOrgId)
+      const orgId = new UUID(rawOrgId)
       const searchFilter = searchToFilter(rest)
       if (!searchFilter) return rep.badRequest('Bad search parameters')
 
@@ -157,7 +176,7 @@ export const contestRoutes = defineRoutes(async (s) => {
         security: [],
         querystring: Type.Object({
           page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30] }),
+          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
           count: Type.Boolean({ default: false }),
           search: Type.Optional(Type.String({ minLength: 1 })),
           tag: Type.Optional(Type.String())
