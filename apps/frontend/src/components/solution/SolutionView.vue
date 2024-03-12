@@ -1,5 +1,5 @@
 <template>
-  <AsyncState :state="solution" :force-loading="autoRefresh.isActive.value">
+  <AsyncState :state="solution" :force-loading="autoRefreshRunning">
     <template v-slot="{ value }">
       <VCardText>
         <VTable>
@@ -82,7 +82,7 @@
   <VDivider />
   <VCardSubtitle>{{ t('term.actions') }}</VCardSubtitle>
   <VCardActions>
-    <DownloadBtn :endpoint="downloadEndpoint" />
+    <DownloadBtn v-if="showData" :endpoint="downloadEndpoint" />
     <VBtn
       v-if="admin || solution.state.value?.state === 0"
       :text="t('action.submit')"
@@ -98,7 +98,7 @@
     <VBtn
       :text="t('action.refresh')"
       @click="solution.execute()"
-      :loading="solution.isLoading.value || autoRefresh.isActive.value"
+      :loading="solution.isLoading.value || autoRefreshRunning"
     />
     <VBtn v-if="showData && !viewFile" :text="t('action.view')" @click="viewFile = true" />
   </VCardActions>
@@ -113,104 +113,34 @@
 </template>
 
 <script setup lang="ts">
-import type { ISolutionDTO } from '@/components/solution/types'
-import { http } from '@/utils/http'
-import { useAsyncState, useIntervalFn } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import DownloadBtn from '@/components/utils/DownloadBtn.vue'
-import { useAsyncTask } from '@/utils/async'
 import SolutionDetails from '@/components/solution/SolutionDetails.vue'
 import SolutionStateChip from '@/components/solution/SolutionStateChip.vue'
 import ZipAutoViewer from '../utils/zip/ZipAutoViewer.vue'
-import { ref } from 'vue'
 import SolutionStatusChip from './SolutionStatusChip.vue'
 import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
 import PrincipalProfile from '../utils/PrincipalProfile.vue'
-import { computed } from 'vue'
 import { useContestProblemTitle } from '@/utils/contest/problem/inject'
-import { useContestCapability, useContestSettings } from '@/utils/contest/inject'
-import { useAppState } from '@/stores/app'
+import { useSolutionView, type ISolutionViewProps } from './SolutionView'
 
-const props = defineProps<{
-  orgId: string
-  problemId?: string
-  contestId?: string
-  solutionId: string
-  admin?: boolean
-}>()
+const props = defineProps<ISolutionViewProps>()
 
 const { t } = useI18n()
 
-const app = useAppState()
-const contestSettings = props.contestId ? useContestSettings() : null
-const contestCapability = props.contestId ? useContestCapability('admin') : null
-const showDetails = computed(() => {
-  if (!contestSettings) return true // Problem
-  if (contestCapability?.value) return true
-  if (solution.state.value?.userId === app.userId) {
-    return !!contestSettings.value.solutionShowDetails
-  }
-  return !!contestSettings.value.solutionShowOtherDetails
-})
-const showData = computed(() => {
-  if (!contestSettings) return true // Problem
-  if (contestCapability?.value) return true
-  if (solution.state.value?.userId === app.userId) {
-    return true
-  }
-  return !!contestSettings.value.solutionShowOtherData
-})
-
-const downloadEndpoint = computed(() =>
-  props.contestId
-    ? `contest/${props.contestId}/solution/${props.solutionId}/data`
-    : `problem/${props.problemId}/solution/${props.solutionId}/data`
-)
-
-const viewFile = ref(true)
-
-const solution = useAsyncState(
-  async () => {
-    const url = props.contestId
-      ? `contest/${props.contestId}/solution/${props.solutionId}`
-      : `problem/${props.problemId}/solution/${props.solutionId}`
-    return await http.get(url).json<ISolutionDTO>()
-  },
-  null,
-  { resetOnExecute: false }
-)
-
-const submit = useAsyncTask(async () => {
-  const url = props.contestId
-    ? `contest/${props.contestId}/solution/${props.solutionId}/submit`
-    : `problem/${props.problemId}/solution/${props.solutionId}/submit`
-  await http.post(url)
-  solution.execute()
-  autoRefresh.resume()
-})
-
-const rejudge = useAsyncTask(async () => {
-  const url = props.contestId
-    ? `contest/${props.contestId}/solution/${props.solutionId}/rejudge`
-    : `problem/${props.problemId}/solution/${props.solutionId}/rejudge`
-  await http.post(url)
-  solution.execute()
-  autoRefresh.resume()
-})
-
-const autoRefresh = useIntervalFn(
-  () => {
-    if (solution.state.value?.state !== 4 && solution.state.value?.state !== 0) {
-      solution.isLoading.value || solution.execute()
-    } else {
-      autoRefresh.pause()
-    }
-  },
-  1500,
-  { immediate: true }
-)
+const {
+  solution,
+  showDetails,
+  showData,
+  viewFile,
+  downloadEndpoint,
+  submit,
+  rejudge,
+  autoRefreshRunning
+} = useSolutionView(props)
 </script>
+
 <i18n>
 en:
   solution:

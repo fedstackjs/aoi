@@ -107,11 +107,14 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const ctx = req.inject(kProblemContext)
       const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
+      const { solutionShowOther } = ctx._problem.settings
+      const admin = hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_ADMIN)
       const solution = await solutions.findOne(
         {
           _id: solutionId,
           contestId: { $exists: false },
-          problemId: ctx._problemId
+          problemId: ctx._problemId,
+          userId: admin || solutionShowOther ? undefined : req.user.userId
         },
         {
           projection: {
@@ -127,7 +130,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
             createdAt: 1,
             submittedAt: 1,
             completedAt: 1
-          }
+          },
+          ignoreUndefined: true
         }
       )
       if (!solution) return rep.notFound()
@@ -140,6 +144,11 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     resolve: async (type, query, req) => {
       const ctx = req.inject(kProblemContext)
 
+      const { solutionShowOtherDetails, solutionShowDetails } = ctx._problem.settings
+      const admin = hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_ADMIN)
+      if (!solutionShowDetails && !admin) {
+        throw s.httpErrors.forbidden()
+      }
       const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
       const solution = await solutions.findOne({
         _id: solutionId,
@@ -147,6 +156,9 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
         problemId: ctx._problemId
       })
       if (!solution) throw s.httpErrors.notFound()
+      if (!solutionShowOtherDetails && !admin && !solution.userId.equals(req.user.userId)) {
+        throw s.httpErrors.forbidden()
+      }
       return [await loadOrgOssSettings(ctx._problem.orgId), solutionDetailsKey(solution._id)]
     },
     allowedTypes: ['download']
@@ -157,6 +169,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     resolve: async (type, query, req) => {
       const ctx = req.inject(kProblemContext)
 
+      const { solutionShowOtherData } = ctx._problem.settings
+      const admin = hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_ADMIN)
       const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
       const solution = await solutions.findOne({
         _id: solutionId,
@@ -164,6 +178,9 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
         problemId: ctx._problemId
       })
       if (!solution) throw s.httpErrors.notFound()
+      if (!solutionShowOtherData && !admin && !solution.userId.equals(req.user.userId)) {
+        throw s.httpErrors.forbidden()
+      }
       return [await loadOrgOssSettings(ctx._problem.orgId), solutionDataKey(solution._id)]
     },
     allowedTypes: ['download']
@@ -177,7 +194,7 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get problem solutions',
         querystring: Type.Object({
-          userId: Type.Optional(Type.String()),
+          userId: Type.Optional(Type.UUID()),
           state: Type.Optional(Type.Integer({ minimum: 0, maximum: 4 })),
           status: Type.Optional(Type.String()),
           scoreL: Type.Optional(Type.Number()),
@@ -207,11 +224,11 @@ export const problemSolutionRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const ctx = req.inject(kProblemContext)
 
-      const userId = req.query.userId ? new BSON.UUID(req.query.userId) : undefined
-      // check auth
+      const { solutionShowOther } = ctx._problem.settings
+      const userId = req.query.userId && new BSON.UUID(req.query.userId)
       const isAdmin = hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_ADMIN)
-      const isCurrentUser = userId !== undefined && userId.equals(req.user.userId)
-      if (!isAdmin && !isCurrentUser) {
+      const isCurrentUser = userId && req.user.userId.equals(userId)
+      if (!isAdmin && !solutionShowOther && !isCurrentUser) {
         return rep.forbidden()
       }
       return await findPaginated<ISolution>(

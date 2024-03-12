@@ -37,3 +37,9 @@ export function useProblemCapability(type: keyof typeof problemBits) {
   if (!problem) throw new Error('No problem provided')
   return computed(() => hasCapability(problem?.value.capability, problemBits[type]))
 }
+
+export function useProblemSettings() {
+  const problem = inject(kProblem)
+  if (!problem) throw new Error('No problem provided')
+  return computed(() => problem?.value.settings)
+}
