@@ -1,4 +1,5 @@
 import type { ProblemConfig } from '@aoi-js/common'
+import type { IProblemSettings } from '@aoi-js/server'
 
 export interface IProblemDTO {
   _id: string
@@ -11,4 +12,5 @@ export interface IProblemDTO {
   tags: string[]
   currentDataHash: string
   config: ProblemConfig
+  settings: IProblemSettings
 }

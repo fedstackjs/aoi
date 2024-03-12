@@ -20,6 +20,7 @@ import { problemSolutionRoutes } from './solution.js'
 import { problemAdminRoutes } from './admin.js'
 import { manageContent } from '../common/content.js'
 import { kProblemContext } from './inject.js'
+import { SProblemSettings } from '../../schemas/index.js'
 
 const problemIdSchema = Type.Object({
   problemId: Type.String()
@@ -65,7 +66,8 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
             tags: Type.Array(Type.String()),
             capability: Type.String(),
             currentDataHash: Type.String(),
-            config: Type.Optional(SProblemConfigSchema)
+            config: Type.Optional(SProblemConfigSchema),
+            settings: SProblemSettings
           })
         }
       }

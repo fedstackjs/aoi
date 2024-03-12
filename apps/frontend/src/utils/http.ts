@@ -1,4 +1,4 @@
-import { useLocalStorage } from '@vueuse/core'
+import { useLocalStorage, useThrottleFn } from '@vueuse/core'
 import ky, { HTTPError } from 'ky'
 import { computed } from 'vue'
 import { useToast } from 'vue-toastification'
@@ -17,6 +17,11 @@ export const isMfaAlive = computed(
 )
 export const mfaTokenValue = computed(() => mfaToken.value)
 
+const throttledLogout = useThrottleFn(() => {
+  toast.error('Session expired')
+  logout()
+}, 500)
+
 export const http: typeof ky = ky.create({
   prefixUrl: '/api',
   hooks: {
@@ -30,8 +35,7 @@ export const http: typeof ky = ky.create({
         if (err.response.status === 401 && token.value) {
           const { code } = await err.response.json()
           if (code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
-            toast.error('Session expired')
-            logout()
+            throttledLogout()
           }
         }
         return err
