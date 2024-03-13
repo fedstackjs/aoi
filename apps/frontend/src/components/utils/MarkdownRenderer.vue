@@ -14,3 +14,9 @@ const props = defineProps<{
 
 const rendered = computed(() => renderMarkdown(props.md))
 </script>
+
+<style scoped>
+.markdown-body {
+  background: unset;
+}
+</style>

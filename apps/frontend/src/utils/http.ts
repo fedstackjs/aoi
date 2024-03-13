@@ -1,3 +1,4 @@
+import router from '@/router'
 import { useLocalStorage, useThrottleFn } from '@vueuse/core'
 import ky, { HTTPError } from 'ky'
 import { computed } from 'vue'
@@ -20,6 +21,10 @@ export const mfaTokenValue = computed(() => mfaToken.value)
 const throttledLogout = useThrottleFn(() => {
   toast.error('Session expired')
   logout()
+  router.push({
+    path: '/auth/login',
+    query: { redirect: router.currentRoute.value.fullPath }
+  })
 }, 500)
 
 export const http: typeof ky = ky.create({
