@@ -9,7 +9,9 @@
           {{ file.path }}
         </code>
       </div>
-      <VAlert v-if="file.description" type="info" color="" :text="file.description" />
+      <VAlert v-if="file.description" type="info" color="transparent">
+        <MarkdownRenderer :md="file.description" />
+      </VAlert>
       <FormEditor v-if="file.type.editor" v-model="files[file.path]" :options="file.type.editor" />
       <FormMetadata
         v-if="file.type.metadata"
@@ -30,6 +32,7 @@ import { computed, reactive } from 'vue'
 import Zip from 'jszip'
 import FormEditor from './form/FormEditor.vue'
 import FormMetadata from './form/FormMetadata.vue'
+import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
 
 const { t } = useI18n()
 
