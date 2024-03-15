@@ -1,6 +1,6 @@
 import zip from 'jszip'
 import { reactive, ref, watch } from 'vue'
-import { computeSHA256 } from '../files'
+import { computeSHA256Progress } from '../files'
 import { http } from '../http'
 import { useToast } from 'vue-toastification'
 import { useAsyncTask } from '../async'
@@ -60,7 +60,7 @@ export function useDataUpload(problemId: string, updated: () => void) {
       if (advanced.value) {
         toast.warning('Advanced mode is on, you need to manually fill in the hash and config')
       } else {
-        uploadInfo.hash = await computeSHA256(file)
+        uploadInfo.hash = await computeSHA256Progress(file)
         const result = await zip.loadAsync(file)
         const content = await loadConfig(result)
         if (content) {

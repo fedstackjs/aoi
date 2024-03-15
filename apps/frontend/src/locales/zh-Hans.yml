@@ -169,6 +169,13 @@ msg:
   oauth-redirect: 点击登录按钮，你将被重定向以登录 {app}
   app-provided-by: 该应用的提供方为
   no-tags: 未找到标签。请在管理-内容页面添加标签。
+  platform-issue-detected: 不支持的浏览器
+  platform-issue-detected-detail: |
+    我们检测到您的浏览器存在以下问题：
+    {issues}
+    请升级您的浏览器到最新版本，或者切换到另一种现代的浏览器。
+    否则，您可能无法正常使用本网站的所有功能。
+  recommended-browsers: 推荐的浏览器
 
 tabs:
   description: 描述
@@ -208,3 +215,9 @@ solution:
   max-score: 最高分
   submitted-since: 提交晚于
   submitted-before: 提交早于
+
+platform-issue:
+  web-worker: 不支持 Web Worker API
+  file: 不支持 File API
+  file-stream: 不支持文件上的 Web Stream API
+  transferable-stream: 不支持 Transferable Streams

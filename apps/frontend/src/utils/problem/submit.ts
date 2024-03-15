@@ -36,12 +36,9 @@ export function useProblemSubmit(
     try {
       indeterminate.value = false
       submitMsg.value = t('msg.computing-hash', { progress: 0 })
-      const hash = await new Promise<string>((resolve) => {
-        computeSHA256Progress(file, (p, hash) => {
-          progress.value = p * 100
-          submitMsg.value = t('msg.computing-hash', { progress: progress.value.toFixed(1) })
-          if (hash) resolve(hash)
-        })
+      const hash = await computeSHA256Progress(file, (p) => {
+        progress.value = p * 100
+        submitMsg.value = t('msg.computing-hash', { progress: progress.value.toFixed(1) })
       })
       indeterminate.value = true
       submitMsg.value = t('msg.submitting')
