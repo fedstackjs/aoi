@@ -169,6 +169,14 @@ msg:
   oauth-redirect: By clicking the login button, you will be redirected to login into {app}
   app-provided-by: The App is provided by
   no-tags: No Tags Found
+  platform-issue-detected: Platform issue detected
+  platform-issue-detected-detail: |
+    We have detected following issues with your web browser:
+    {issues}
+    Please upgrade your web browser to the latest version,
+    or switch to a modern web browser.
+    Otherwise you may encounter unexpected issues.
+  recommended-browsers: Recommended web browsers
 
 tabs:
   description: Description
@@ -208,3 +216,9 @@ solution:
   max-score: Max Score
   submitted-since: Submitted Since
   submitted-before: Submitted Before
+
+platform-issue:
+  web-worker: Web Worker not supported
+  file: File API not supported
+  file-stream: Web Stream API for File not supported
+  transferable-stream: Transferable Streams not supported
