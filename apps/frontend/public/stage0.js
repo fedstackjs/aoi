@@ -10,6 +10,8 @@
     var script = document.querySelector('script[type="module"]')
     script.remove()
     var overlay = document.createElement('div')
+    overlay.style.zIndex = '9999'
+    overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.9)'
     overlay.style.position = 'fixed'
     overlay.style.top = '0'
     overlay.style.left = '0'
