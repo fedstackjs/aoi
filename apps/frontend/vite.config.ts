@@ -11,6 +11,7 @@ const gitHash = execSync('git rev-parse --short HEAD').toString().trim()
 const gitBranch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim()
 
 process.env.VITE_EXTRA_HEAD ??= ''
+process.env.VITE_EXTRA_BODY ??= ''
 
 export default defineConfig({
   build: {
