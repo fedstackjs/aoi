@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 const PLATFORM_DETECTOR_VERSION = '0'
 const CACHE_KEY = 'aoi-platform-issues'
@@ -19,9 +19,22 @@ export async function getPlatformIssues(): Promise<string[]> {
 
 export function usePlatformIssues() {
   const issues = ref<string[]>([])
-  const hasIssue = computed(() => issues.value.length > 0)
-  getPlatformIssues().then((i) => (issues.value = i))
-  return { issues, hasIssue }
+  const hasIssue = ref(false)
+
+  getPlatformIssues().then((i) => {
+    issues.value = i
+    hasIssue.value = i.length > 0
+  })
+
+  function ignore() {
+    localStorage.setItem(
+      CACHE_KEY,
+      JSON.stringify({ version: PLATFORM_DETECTOR_VERSION, ua: navigator.userAgent, issues: [] })
+    )
+    hasIssue.value = false
+  }
+
+  return { issues, hasIssue, ignore }
 }
 
 export function useRecommendedBrowsers() {

@@ -51,6 +51,7 @@ action:
   goto: Go to {page}
   generate-slug: Generate Slug
   select-tag: Select Tag
+  dismiss: Dismiss
 
 term:
   content: Content

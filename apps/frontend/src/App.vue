@@ -22,22 +22,27 @@
         <VDivider />
         <VCardTitle class="text-center">{{ t('msg.recommended-browsers') }}</VCardTitle>
         <VCardText class="pt-0">
-          <div class="u-grid u-grid-flow-col u-grid-rows-1 u-grid-cols-subgrid u-gap-2">
-            <VBtn
-              v-for="(browser, i) in browsers"
-              :key="i"
-              :href="browser.href"
-              :prepend-icon="browser.icon"
-              :color="browser.color"
-              size="large"
-              variant="outlined"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ browser.name }}
-            </VBtn>
-          </div>
+          <VRow no-gutters>
+            <VCol v-for="(browser, i) in browsers" :key="i" cols="6" sm="3" class="pa-1">
+              <VBtn
+                :href="browser.href"
+                :text="browser.name"
+                :prepend-icon="browser.icon"
+                :color="browser.color"
+                size="large"
+                variant="tonal"
+                rounded="sm"
+                target="_blank"
+                rel="noopener noreferrer"
+                block
+              />
+            </VCol>
+          </VRow>
         </VCardText>
+        <VDivider />
+        <VCardActions>
+          <VBtn block :text="t('action.dismiss')" color="error" @click="ignore" />
+        </VCardActions>
       </VCard>
     </VDialog>
   </VApp>
@@ -52,6 +57,6 @@ import { usePlatformIssues, useRecommendedBrowsers } from '@/utils/platform'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
-const { issues, hasIssue } = usePlatformIssues()
+const { issues, hasIssue, ignore } = usePlatformIssues()
 const browsers = useRecommendedBrowsers()
 </script>
