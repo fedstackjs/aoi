@@ -174,8 +174,7 @@ msg:
   platform-issue-detected-detail: |
     我们检测到您的浏览器存在以下问题：
     {issues}
-    请升级您的浏览器到最新版本，或者切换到另一种现代的浏览器。
-    否则，您可能无法正常使用本网站的所有功能。
+    建议您升级浏览器到最新版本，或者切换为另一种现代浏览器。
   recommended-browsers: 推荐的浏览器
 
 tabs:

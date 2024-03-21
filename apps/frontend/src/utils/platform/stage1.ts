@@ -16,10 +16,11 @@ export async function detectPlatformIssues(): Promise<string[]> {
   } catch {
     issues.push('file-stream')
   }
-  try {
-    worker!.postMessage(stream!, [stream!])
-  } catch {
-    issues.push('transferable-stream')
-  }
+  // Disabled due to Safari shamefully not supporting transferable streams
+  // try {
+  //   worker!.postMessage(stream!, [stream!])
+  // } catch {
+  //   issues.push('transferable-stream')
+  // }
   return issues
 }

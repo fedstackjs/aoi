@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 
-const PLATFORM_DETECTOR_VERSION = '0'
+const PLATFORM_DETECTOR_VERSION = '1'
 const CACHE_KEY = 'aoi-platform-issues'
 
 export async function getPlatformIssues(): Promise<string[]> {
