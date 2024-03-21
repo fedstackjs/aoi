@@ -9,8 +9,10 @@ function Uint8ArrayToHex(u8a: Uint8Array) {
   return result
 }
 
-self.addEventListener('message', async (ev) => {
-  const stream: ReadableStream = ev.data
+export async function calculateHashCallback(
+  stream: ReadableStream,
+  callback: (data: { read: number; digest?: string }) => void | Promise<void>
+) {
   const hash = new Sha256()
   const reader = stream.getReader()
   let done = false
@@ -20,8 +22,9 @@ self.addEventListener('message', async (ev) => {
     if (value) hash.update(value)
     done = _done
     read += value?.length || 0
-    self.postMessage({ read })
+    await callback({ read })
   } while (!done)
   const digest = Uint8ArrayToHex(await hash.digest())
-  self.postMessage({ digest, read })
-})
+  await callback({ digest, read })
+  return digest
+}
