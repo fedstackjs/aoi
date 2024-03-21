@@ -51,6 +51,7 @@ action:
   goto: Go to {page}
   generate-slug: Generate Slug
   select-tag: Select Tag
+  dismiss: Dismiss
 
 term:
   content: Content
@@ -175,7 +176,6 @@ msg:
     {issues}
     Please upgrade your web browser to the latest version,
     or switch to a modern web browser.
-    Otherwise you may encounter unexpected issues.
   recommended-browsers: Recommended web browsers
 
 tabs:
