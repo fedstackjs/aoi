@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadCapability, paramSchemaMerger, tryLoadUUID } from '../common/index.js'
-import { PLAN_CAPS, planParticipants, plans } from '../../db/index.js'
+import { PLAN_CAPS } from '../../db/index.js'
 import { CAP_ALL, hasCapability } from '../../utils/index.js'
 import { BSON } from 'mongodb'
 import { manageContent } from '../common/content.js'
@@ -9,6 +9,8 @@ import { planContestRoutes } from './contest/index.js'
 import { kPlanContext } from './inject.js'
 
 export const planScopedRoutes = defineRoutes(async (s) => {
+  const { plans, planParticipants } = s.db
+
   s.addHook(
     'onRoute',
     paramSchemaMerger(

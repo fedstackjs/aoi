@@ -1,16 +1,11 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, tryLoadUUID } from '../../common/index.js'
+import { IContestParticipant, evalTagRules, getCurrentContestStage } from '../../../db/index.js'
 import {
-  IContestParticipant,
   IPlanContestPrecondition,
   SContestStage,
-  SPlanContestSettings,
-  contestParticipants,
-  contests,
-  evalTagRules,
-  getCurrentContestStage,
-  users
-} from '../../../index.js'
+  SPlanContestSettings
+} from '../../../schemas/index.js'
 import { contestAdminRoutes } from './admin.js'
 import { BSON } from 'mongodb'
 import { kPlanContext } from '../inject.js'
@@ -36,6 +31,8 @@ export async function testPrecondition(
 }
 
 const planContestViewRoutes = defineRoutes(async (s) => {
+  const { contests, contestParticipants, users } = s.db
+
   s.get(
     '/',
     {

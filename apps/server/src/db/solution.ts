@@ -1,5 +1,5 @@
-import { BSON } from 'mongodb'
-import { db } from './client.js'
+import { fastifyPlugin } from 'fastify-plugin'
+import { BSON, Collection } from 'mongodb'
 
 export enum SolutionState {
   CREATED = 0,
@@ -33,23 +33,32 @@ export interface ISolution {
   completedAt?: number
 }
 
-export const solutions = db.collection<ISolution>('solutions')
-await solutions.createIndex(
-  { taskId: 1 },
-  {
-    unique: true,
-    partialFilterExpression: {
-      taskId: { $exists: true }
-    }
+declare module './index.js' {
+  interface IDbContainer {
+    solutions: Collection<ISolution>
   }
-)
-await solutions.createIndex({ problemId: 1, submittedAt: -1 })
-await solutions.createIndex({ contestId: 1, submittedAt: -1 })
-await solutions.createIndex(
-  { contestId: 1, completedAt: 1, _id: 1 },
-  {
-    partialFilterExpression: {
-      state: SolutionState.COMPLETED
+}
+
+export const dbSolutionPlugin = fastifyPlugin(async (s) => {
+  const col = s.db.db.collection<ISolution>('solutions')
+  await col.createIndex(
+    { taskId: 1 },
+    {
+      unique: true,
+      partialFilterExpression: {
+        taskId: { $exists: true }
+      }
     }
-  }
-)
+  )
+  await col.createIndex({ problemId: 1, submittedAt: -1 })
+  await col.createIndex({ contestId: 1, submittedAt: -1 })
+  await col.createIndex(
+    { contestId: 1, completedAt: 1, _id: 1 },
+    {
+      partialFilterExpression: {
+        state: SolutionState.COMPLETED
+      }
+    }
+  )
+  s.db.solutions = col
+})

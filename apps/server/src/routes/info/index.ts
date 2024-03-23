@@ -2,9 +2,10 @@ import { USER_CAPS, hasCapability } from '../../index.js'
 import { loadUserCapability } from '../common/access.js'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
-import { infos } from '../../db/index.js'
 
 export const infoRoutes = defineRoutes(async (s) => {
+  const { infos } = s.db
+
   s.addHook('onRoute', swaggerTagMerger('info'))
 
   s.get(

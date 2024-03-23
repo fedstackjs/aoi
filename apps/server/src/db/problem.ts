@@ -1,9 +1,9 @@
-import { BSON } from 'mongodb'
-import { db } from './client.js'
+import { BSON, Collection } from 'mongodb'
 import { IPrincipalControlable, IWithAccessLevel, IWithAttachment, IWithContent } from './common.js'
 import { capabilityMask } from '../utils/capability.js'
 import { ProblemConfig } from '@aoi-js/common'
 import { IProblemSettings } from '../schemas/problem.js'
+import { fastifyPlugin } from 'fastify-plugin'
 
 export const PROBLEM_CAPS = {
   CAP_ACCESS: capabilityMask(0), // Can access(view) this problem
@@ -22,9 +22,6 @@ export interface IProblemStatus {
   lastSolutionScore: number
   lastSolutionStatus: string
 }
-
-export const problemStatuses = db.collection<IProblemStatus>('problemStatuses')
-await problemStatuses.createIndex({ problemId: 1, userId: 1 }, { unique: true })
 
 export interface IProblemData {
   hash: string
@@ -53,7 +50,21 @@ export interface IProblem
   createdAt: number
 }
 
-export const problems = db.collection<IProblem>('problems')
-await problems.createIndex({ orgId: 1, slug: 1 }, { unique: true })
-await problems.createIndex({ orgId: 1, tags: 1 })
-await problems.createIndex({ [`associations.principalId`]: 1 })
+declare module './index.js' {
+  interface IDbContainer {
+    problems: Collection<IProblem>
+    problemStatuses: Collection<IProblemStatus>
+  }
+}
+
+export const dbProblemPlugin = fastifyPlugin(async (s) => {
+  const problems = s.db.db.collection<IProblem>('problems')
+  await problems.createIndex({ orgId: 1, slug: 1 }, { unique: true })
+  await problems.createIndex({ orgId: 1, tags: 1 })
+  await problems.createIndex({ [`associations.principalId`]: 1 })
+  s.db.problems = problems
+
+  const problemStatuses = s.db.db.collection<IProblemStatus>('problemStatuses')
+  await problemStatuses.createIndex({ problemId: 1, userId: 1 }, { unique: true })
+  s.db.problemStatuses = problemStatuses
+})

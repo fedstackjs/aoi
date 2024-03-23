@@ -1,15 +1,6 @@
 import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
-import {
-  IGroup,
-  IOrgMembership,
-  IUser,
-  ORG_CAPS,
-  groups,
-  orgMemberships,
-  orgs,
-  users
-} from '../../db/index.js'
+import { IGroup, IOrgMembership, IUser, ORG_CAPS } from '../../db/index.js'
 import { defineRoutes, paramSchemaMerger, loadUUID, md5 } from '../common/index.js'
 import { orgAdminRoutes } from './admin/index.js'
 import { SOrgProfile } from '../../schemas/index.js'
@@ -21,8 +12,7 @@ const orgIdSchema = Type.Object({
 })
 
 export const orgScopedRoutes = defineRoutes(async (s) => {
-  s.decorateRequest('orgId', null)
-  s.decorateRequest('orgMembership', null)
+  const { orgs, orgMemberships, users, groups } = s.db
 
   s.addHook('onRoute', paramSchemaMerger(orgIdSchema))
 

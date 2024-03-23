@@ -1,7 +1,7 @@
-import { BSON } from 'mongodb'
-import { db } from './client.js'
+import { BSON, Collection } from 'mongodb'
 import { capabilityMask } from '../utils/capability.js'
 import { IOrgProfile, IOrgSettings } from '../schemas/index.js'
+import { fastifyPlugin } from 'fastify-plugin'
 
 export const ORG_CAPS = {
   CAP_ACCESS: capabilityMask(0),
@@ -20,9 +20,6 @@ export interface IOrg {
   settings: IOrgSettings
 }
 
-export const orgs = db.collection<IOrg>('orgs')
-await orgs.createIndex({ 'profile.name': 1 }, { unique: true })
-
 export interface IOrgMembership {
   _id: BSON.UUID
   userId: BSON.UUID
@@ -32,5 +29,19 @@ export interface IOrgMembership {
   tags?: string[]
 }
 
-export const orgMemberships = db.collection<IOrgMembership>('orgMemberships')
-await orgMemberships.createIndex({ userId: 1, orgId: 1 }, { unique: true })
+declare module './index.js' {
+  interface IDbContainer {
+    orgs: Collection<IOrg>
+    orgMemberships: Collection<IOrgMembership>
+  }
+}
+
+export const dbOrgPlugin = fastifyPlugin(async (s) => {
+  const orgs = s.db.db.collection<IOrg>('orgs')
+  await orgs.createIndex({ 'profile.name': 1 }, { unique: true })
+  s.db.orgs = orgs
+
+  const orgMemberships = s.db.db.collection<IOrgMembership>('orgMemberships')
+  await orgMemberships.createIndex({ userId: 1, orgId: 1 }, { unique: true })
+  s.db.orgMemberships = orgMemberships
+})

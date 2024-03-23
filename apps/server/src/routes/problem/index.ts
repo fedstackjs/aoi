@@ -3,12 +3,14 @@ import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { problemScopedRoutes } from './scoped.js'
 import { CAP_NONE, ensureCapability, hasCapability } from '../../utils/capability.js'
 import { UUID } from 'mongodb'
-import { ORG_CAPS, problems } from '../../db/index.js'
+import { ORG_CAPS } from '../../db/index.js'
 import { paginationSkip } from '../../utils/pagination.js'
 import { AccessLevel } from '../../schemas/index.js'
 import { searchToFilter, filterMerge } from '../../utils/search.js'
 
 export const problemRoutes = defineRoutes(async (s) => {
+  const { problems } = s.db
+
   s.addHook('onRoute', swaggerTagMerger('problem'))
 
   s.register(problemScopedRoutes, { prefix: '/:problemId' })

@@ -6,10 +6,10 @@ import {
   paramSchemaMerger
 } from '../../common/index.js'
 import { findPaginated, hasCapability } from '../../../utils/index.js'
-import { CONTEST_CAPS, ISolution, SolutionState, solutions } from '../../../db/index.js'
+import { CONTEST_CAPS, ISolution, SolutionState } from '../../../db/index.js'
 import { BSON } from 'mongodb'
-import { getFileUrl, loadOrgOssSettings } from '../../common/files.js'
-import { solutionDataKey, solutionDetailsKey } from '../../../index.js'
+import { getFileUrl } from '../../common/files.js'
+import { solutionDataKey, solutionDetailsKey } from '../../../oss/index.js'
 import { FastifyRequest } from 'fastify'
 import { kContestContext } from '../inject.js'
 
@@ -28,6 +28,8 @@ function checkUser(
 }
 
 const solutionScopedRoutes = defineRoutes(async (s) => {
+  const { solutions } = s.db
+
   s.addHook(
     'onRoute',
     paramSchemaMerger(
@@ -181,7 +183,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
       if (!checkUser(req, solution.userId, solutionShowOtherDetails)) {
         throw s.httpErrors.forbidden()
       }
-      return [await loadOrgOssSettings(ctx._contest.orgId), solutionDetailsKey(solution._id)]
+      return [ctx._contest.orgId, solutionDetailsKey(solution._id)]
     },
     allowedTypes: ['download']
   })
@@ -201,13 +203,15 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
       if (!checkUser(req, solution.userId, solutionShowOtherData)) {
         throw s.httpErrors.forbidden()
       }
-      return [await loadOrgOssSettings(ctx._contest.orgId), solutionDataKey(solution._id)]
+      return [ctx._contest.orgId, solutionDataKey(solution._id)]
     },
     allowedTypes: ['download']
   })
 })
 
 export const contestSolutionRoutes = defineRoutes(async (s) => {
+  const { solutions } = s.db
+
   s.addHook('onRequest', async (req, rep) => {
     const ctx = req.inject(kContestContext)
 

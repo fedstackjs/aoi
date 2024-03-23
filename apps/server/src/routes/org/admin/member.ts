@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox'
 import bcrypt from 'bcrypt'
-import { IUser, ORG_CAPS, orgMemberships, users } from '../../../db/index.js'
+import { IUser, ORG_CAPS } from '../../../db/index.js'
 import { paginationSkip } from '../../../utils/index.js'
 import { defineRoutes, loadUUID } from '../../common/index.js'
 import { BSON } from 'mongodb'
@@ -8,6 +8,8 @@ import { SUserProfile } from '../../../index.js'
 import { kOrgContext } from '../inject.js'
 
 export const orgAdminMemberRoutes = defineRoutes(async (s) => {
+  const { users, orgMemberships } = s.db
+
   s.get(
     '/',
     {

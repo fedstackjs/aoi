@@ -1,18 +1,10 @@
 import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
 import { SProblemConfigSchema } from '@aoi-js/common'
-import {
-  PROBLEM_CAPS,
-  problems,
-  ORG_CAPS,
-  SolutionState,
-  solutions,
-  problemStatuses
-} from '../../db/index.js'
+import { PROBLEM_CAPS, ORG_CAPS, SolutionState } from '../../db/index.js'
 import { defineRoutes, loadCapability, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/capability.js'
 import { getUploadUrl } from '../../oss/index.js'
-import { loadOrgOssSettings } from '../common/files.js'
 import { solutionDataKey } from '../../oss/index.js'
 import { problemAttachmentRoutes } from './attachment.js'
 import { problemDataRoutes } from './data.js'
@@ -27,6 +19,8 @@ const problemIdSchema = Type.Object({
 })
 
 export const problemScopedRoutes = defineRoutes(async (s) => {
+  const { problems, solutions, problemStatuses, orgs } = s.db
+
   s.addHook('onRoute', paramSchemaMerger(problemIdSchema))
 
   s.addHook('onRequest', async (req) => {
@@ -108,7 +102,11 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
         return rep.preconditionFailed()
       }
 
-      const oss = await loadOrgOssSettings(ctx._problem.orgId)
+      const org = await orgs.findOne(
+        { _id: ctx._problem.orgId },
+        { projection: { 'settings.oss': 1 } }
+      )
+      const oss = org?.settings.oss
       if (!oss) return rep.preconditionFailed('OSS not configured')
 
       const { data, currentDataHash } = ctx._problem

@@ -2,7 +2,6 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { UUID } from 'mongodb'
 import { CAP_NONE, findPaginated, hasCapability } from '../../utils/index.js'
-import { plans } from '../../db/plan.js'
 import { ORG_CAPS } from '../../db/index.js'
 import { AccessLevel } from '../../schemas/index.js'
 import { planScopedRoutes } from './scoped.js'
@@ -35,7 +34,7 @@ export const planRoutes = defineRoutes(async (s) => {
       if (!hasCapability(membership?.capability ?? CAP_NONE, ORG_CAPS.CAP_PLAN))
         return rep.forbidden()
 
-      const { insertedId } = await plans.insertOne({
+      const { insertedId } = await s.db.plans.insertOne({
         _id: new UUID(),
         orgId,
         slug: req.body.slug,
@@ -66,7 +65,7 @@ export const planRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      const tags = await plans.distinct('tags', { orgId: new UUID(req.query.orgId) })
+      const tags = await s.db.plans.distinct('tags', { orgId: new UUID(req.query.orgId) })
       return tags
     }
   )
@@ -120,7 +119,7 @@ export const planRoutes = defineRoutes(async (s) => {
         },
         searchFilter
       )
-      const result = await findPaginated(plans, page, perPage, count, filter, {
+      const result = await findPaginated(s.db.plans, page, perPage, count, filter, {
         projection: {
           _id: 1,
           accessLevel: 1,
@@ -161,7 +160,7 @@ export const planRoutes = defineRoutes(async (s) => {
           : AccessLevel.RESTRICED
         : AccessLevel.PUBLIC
       const principalIds = [req.user.userId, ...(membership?.groups ?? [])]
-      const result = await plans
+      const result = await s.db.plans
         .find(
           {
             orgId,

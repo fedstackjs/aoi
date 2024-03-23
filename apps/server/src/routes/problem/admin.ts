@@ -1,4 +1,4 @@
-import { PROBLEM_CAPS, SolutionState, problems, solutions } from '../../db/index.js'
+import { PROBLEM_CAPS, SolutionState } from '../../db/index.js'
 import { defineRoutes } from '../common/index.js'
 import { ensureCapability } from '../../utils/capability.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
@@ -8,6 +8,8 @@ import { kProblemContext } from './inject.js'
 import { Type } from '@sinclair/typebox'
 
 export const problemAdminRoutes = defineRoutes(async (s) => {
+  const { problems, solutions } = s.db
+
   s.addHook('onRequest', async (req) => {
     ensureCapability(
       req.inject(kProblemContext)._problemCapability,

@@ -1,11 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import {
-  CONTEST_CAPS,
-  ContestRanklistState,
-  SolutionState,
-  contests,
-  solutions
-} from '../../index.js'
+import { CONTEST_CAPS, ContestRanklistState, SolutionState } from '../../index.js'
 import { ensureCapability } from '../../utils/index.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
 import { defineRoutes, generateRangeQuery } from '../common/index.js'
@@ -14,6 +8,8 @@ import { kContestContext } from './inject.js'
 import { UUID } from 'mongodb'
 
 export const contestAdminRoutes = defineRoutes(async (s) => {
+  const { contests, solutions } = s.db
+
   s.addHook('onRequest', async (req) => {
     ensureCapability(
       req.inject(kContestContext)._contestCapability,

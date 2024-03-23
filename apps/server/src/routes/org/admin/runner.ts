@@ -1,10 +1,11 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes } from '../../common/index.js'
 import { BSON } from 'mongodb'
-import { runners } from '../../../index.js'
 import { kOrgContext } from '../inject.js'
 
 export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
+  const { runners } = s.db
+
   s.post(
     '/register',
     {

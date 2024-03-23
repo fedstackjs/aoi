@@ -1,6 +1,6 @@
 import { CAP_NONE, ensureCapability } from '../../../utils/capability.js'
 import { defineRoutes } from '../../common/index.js'
-import { ORG_CAPS, orgs } from '../../../db/index.js'
+import { ORG_CAPS } from '../../../db/index.js'
 import { Type } from '@sinclair/typebox'
 import { IOrgOssSettings, SOrgProfile, SOrgSettings } from '../../../index.js'
 import { orgAdminMemberRoutes } from './member.js'
@@ -14,6 +14,8 @@ function ossSettingsToUpdate(oss: IOrgOssSettings) {
 }
 
 export const orgAdminRoutes = defineRoutes(async (s) => {
+  const { orgs } = s.db
+
   s.addHook('onRequest', async (req) => {
     const ctx = req.inject(kOrgContext)
     const capability = ctx._orgMembership?.capability ?? CAP_NONE

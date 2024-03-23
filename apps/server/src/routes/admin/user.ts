@@ -1,9 +1,11 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes } from '../common/index.js'
 import { BSON, Document, UUID } from 'mongodb'
-import { SUserProfile, findPaginated, users } from '../../index.js'
+import { SUserProfile, findPaginated } from '../../index.js'
 
 export const adminUserRoutes = defineRoutes(async (s) => {
+  const { users } = s.db
+
   s.get(
     '/',
     {

@@ -1,10 +1,11 @@
-import { UUID } from 'mongodb'
-import { BaseAuthProvider } from './base.js'
+import { Collection, UUID } from 'mongodb'
 import { Type } from '@sinclair/typebox'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
 import bcrypt from 'bcrypt'
-import { users } from '../index.js'
 import { httpErrors } from '@fastify/sensible'
+
+import { BaseAuthProvider } from './base.js'
+import { IUser } from '../db/index.js'
 
 const SPasswordBindPayload = Type.Object({
   oldPassword: Type.Optional(Type.String()),
@@ -27,7 +28,7 @@ const SPasswordLoginPayload = Type.Object({
 const PasswordLoginPayload = TypeCompiler.Compile(SPasswordLoginPayload)
 
 export class PasswordAuthProvider extends BaseAuthProvider {
-  constructor() {
+  constructor(private users: Collection<IUser>) {
     super()
   }
 
@@ -38,7 +39,7 @@ export class PasswordAuthProvider extends BaseAuthProvider {
     if (!this.enableMfaBind) {
       const { oldPassword } = payload
       if (!oldPassword) throw httpErrors.badRequest('oldPassword is required')
-      const user = await users.findOne(
+      const user = await this.users.findOne(
         { _id: userId },
         { projection: { 'authSources.password': 1 } }
       )
@@ -49,14 +50,17 @@ export class PasswordAuthProvider extends BaseAuthProvider {
     }
     const { password } = payload
     const hash = await bcrypt.hash(password, 10)
-    await users.updateOne({ _id: userId }, { $set: { 'authSources.password': hash } })
+    await this.users.updateOne({ _id: userId }, { $set: { 'authSources.password': hash } })
     return {}
   }
 
   override async verify(userId: UUID, payload: unknown): Promise<boolean> {
     if (!PasswordVerifyPayload.Check(payload)) throw new Error('invalid payload')
     const { password } = payload
-    const user = await users.findOne({ _id: userId }, { projection: { 'authSources.password': 1 } })
+    const user = await this.users.findOne(
+      { _id: userId },
+      { projection: { 'authSources.password': 1 } }
+    )
     if (!user) throw new Error('user not found')
     if (!user.authSources.password) throw new Error('user has no password')
     return bcrypt.compare(password, user.authSources.password)
@@ -65,7 +69,7 @@ export class PasswordAuthProvider extends BaseAuthProvider {
   override async login(payload: unknown): Promise<[userId: UUID, tags?: string[]]> {
     if (!PasswordLoginPayload.Check(payload)) throw new Error('invalid payload')
     const { username, password } = payload
-    const user = await users.findOne(
+    const user = await this.users.findOne(
       { namespace: { $exists: false }, 'profile.name': username },
       { projection: { _id: 1, authSources: 1 } }
     )

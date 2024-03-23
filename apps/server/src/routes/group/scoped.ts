@@ -1,15 +1,7 @@
 import { BSON } from 'mongodb'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
-import {
-  ORG_CAPS,
-  SGroupProfile,
-  ensureCapability,
-  groups,
-  orgMemberships,
-  paginationSkip,
-  problems
-} from '../../index.js'
+import { ORG_CAPS, SGroupProfile, ensureCapability, paginationSkip } from '../../index.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
 
 const kGroupContext = defineInjectionPoint<{
@@ -17,6 +9,8 @@ const kGroupContext = defineInjectionPoint<{
 }>('group')
 
 export const groupScopedRoutes = defineRoutes(async (s) => {
+  const { groups, orgMemberships, problems } = s.db
+
   s.addHook(
     'onRoute',
     paramSchemaMerger(

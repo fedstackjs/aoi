@@ -3,7 +3,6 @@ import { Document } from 'mongodb'
 import { defineRoutes, md5, swaggerTagMerger } from '../common/index.js'
 import { userScopedRoutes } from './scoped.js'
 import { findPaginated } from '../../utils/index.js'
-import { users } from '../../db/index.js'
 import { escapeSearch } from '../../utils/search.js'
 
 export const userRoutes = defineRoutes(async (s) => {
@@ -39,7 +38,7 @@ export const userRoutes = defineRoutes(async (s) => {
         filter['profile.name'] = { $regex: escapeSearch(req.query.search) }
       }
       const { items, total } = await findPaginated(
-        users,
+        s.db.users,
         req.query.page,
         req.query.perPage,
         req.query.count,

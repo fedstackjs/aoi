@@ -1,8 +1,9 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
-import { orgMemberships, users } from '../../index.js'
 
 export const oauthGithubCompatRoutes = defineRoutes(async (s) => {
+  const { users, orgMemberships } = s.db
+
   s.addHook('onRoute', swaggerTagMerger('github-compat'))
 
   s.get(

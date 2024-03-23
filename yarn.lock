@@ -305,6 +305,7 @@ __metadata:
     concurrently: "npm:^8.2.2"
     dotenv: "npm:^16.3.1"
     fastify: "npm:^4.25.1"
+    fastify-plugin: "npm:^4.5.1"
     mongodb: "npm:^6.3.0"
     nodemailer: "npm:^6.9.11"
     nodemon: "npm:^3.0.2"
@@ -5689,7 +5690,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify-plugin@npm:^4.0.0":
+"fastify-plugin@npm:^4.0.0, fastify-plugin@npm:^4.5.1":
   version: 4.5.1
   resolution: "fastify-plugin@npm:4.5.1"
   checksum: 10/7c6d777ada0f01c8a1166a2a669cccfd6074c7764121f07cce997745f198227a271c7a317aaf0da273b329f24307f0eba3f093d872d29b839b33deb525bbafe2

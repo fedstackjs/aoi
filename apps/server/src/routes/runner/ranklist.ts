@@ -1,15 +1,7 @@
 import { BSON, UUID } from 'mongodb'
-import {
-  ContestRanklistState,
-  SolutionState,
-  contestParticipants,
-  contests,
-  problems,
-  solutions
-} from '../../db/index.js'
+import { ContestRanklistState, SolutionState } from '../../db/index.js'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
-import { loadOrgOssSettings } from '../common/files.js'
 import {
   SContestProblemSettings,
   SContestRanklistSettings,
@@ -25,6 +17,8 @@ const kRunnerRanklistContext = defineInjectionPoint<{
 }>('runnerRanklist')
 
 const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
+  const { contests, problems, contestParticipants, solutions, orgs } = s.db
+
   s.addHook(
     'onRoute',
     paramSchemaMerger(
@@ -253,7 +247,8 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
         { projection: { ranklists: 1, orgId: 1 } }
       )
       if (!contest) return rep.notFound()
-      const oss = await loadOrgOssSettings(contest.orgId)
+      const org = await orgs.findOne({ _id: contest.orgId })
+      const oss = org?.settings.oss
       if (!oss) return rep.preconditionFailed()
       const urls = contest.ranklists.map(async ({ key }) => ({
         key,
@@ -265,6 +260,8 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
 })
 
 export const runnerRanklistRoutes = defineRoutes(async (s) => {
+  const { contests } = s.db
+
   s.addHook('onRequest', async (req, rep) => {
     if (!req.inject(kRunnerContext)._runner.labels.includes('ranker')) {
       return rep.forbidden()

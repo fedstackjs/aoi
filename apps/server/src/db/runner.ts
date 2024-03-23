@@ -1,5 +1,5 @@
-import { BSON } from 'mongodb'
-import { db } from './client.js'
+import { fastifyPlugin } from 'fastify-plugin'
+import { BSON, Collection } from 'mongodb'
 
 export interface IRunner {
   _id: BSON.UUID
@@ -14,4 +14,14 @@ export interface IRunner {
   accessedAt: number
 }
 
-export const runners = db.collection<IRunner>('runners')
+declare module './index.js' {
+  interface IDbContainer {
+    runners: Collection<IRunner>
+  }
+}
+
+export const dbRunnerPlugin = fastifyPlugin(async (s) => {
+  const col = s.db.db.collection<IRunner>('runners')
+  await col.createIndex({ orgId: 1, key: 1 }, { unique: true })
+  s.db.runners = col
+})

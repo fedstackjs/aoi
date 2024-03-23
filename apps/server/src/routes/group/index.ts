@@ -2,10 +2,12 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { groupScopedRoutes } from './scoped.js'
 import { ensureCapability, findPaginated } from '../../utils/index.js'
-import { ORG_CAPS, SGroupProfile, groups } from '../../index.js'
+import { ORG_CAPS, SGroupProfile } from '../../index.js'
 import { BSON } from 'mongodb'
 
 export const groupRoutes = defineRoutes(async (s) => {
+  const { groups } = s.db
+
   s.addHook('onRoute', swaggerTagMerger('group'))
 
   s.register(groupScopedRoutes, { prefix: '/:groupId' })

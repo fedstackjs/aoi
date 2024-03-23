@@ -1,12 +1,13 @@
 import { Type } from '@sinclair/typebox'
-import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
-import { defineRoutes, paramSchemaMerger } from '../common/index.js'
+import { getFileUrl, defineRoutes, paramSchemaMerger } from '../common/index.js'
 import { ensureCapability } from '../../utils/index.js'
 import { contestAttachmentKey } from '../../oss/index.js'
-import { CONTEST_CAPS, contests } from '../../index.js'
+import { CONTEST_CAPS } from '../../index.js'
 import { kContestContext } from './inject.js'
 
 const attachmentScopedRoutes = defineRoutes(async (s) => {
+  const { contests } = s.db
+
   s.addHook('onRoute', paramSchemaMerger(Type.Object({ key: Type.String() })))
   s.register(getFileUrl, {
     prefix: '/url',
@@ -15,9 +16,8 @@ const attachmentScopedRoutes = defineRoutes(async (s) => {
       if (type !== 'download') {
         ensureCapability(ctx._contestCapability, CONTEST_CAPS.CAP_CONTENT, s.httpErrors.forbidden())
       }
-      const oss = await loadOrgOssSettings(ctx._contest.orgId)
       const key = (req.params as { key: string }).key
-      return [oss, contestAttachmentKey(ctx._contestId, key), query]
+      return [ctx._contest.orgId, contestAttachmentKey(ctx._contestId, key), query]
     }
   })
 
@@ -47,6 +47,8 @@ const attachmentScopedRoutes = defineRoutes(async (s) => {
 })
 
 export const contestAttachmentRoutes = defineRoutes(async (s) => {
+  const { contests } = s.db
+
   s.get(
     '/',
     {

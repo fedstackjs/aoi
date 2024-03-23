@@ -1,11 +1,13 @@
 import { Type } from '@sinclair/typebox'
-import { CONTEST_CAPS, contests } from '../../../db/index.js'
+import { CONTEST_CAPS } from '../../../db/index.js'
 import { hasCapability } from '../../../utils/index.js'
 import { defineRoutes } from '../../common/index.js'
-import { SContestRanklistSettings } from '../../../index.js'
+import { SContestRanklistSettings } from '../../../schemas/index.js'
 import { kContestContext } from '../inject.js'
 
 export const ranklistAdminRoutes = defineRoutes(async (s) => {
+  const { contests } = s.db
+
   s.addHook('onRequest', async (req, rep) => {
     const ctx = req.inject(kContestContext)
     if (!hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {

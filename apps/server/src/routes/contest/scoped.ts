@@ -2,15 +2,7 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadCapability, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
 import { SContestStage } from '../../schemas/contest.js'
-import {
-  CONTEST_CAPS,
-  ORG_CAPS,
-  contestParticipants,
-  contests,
-  evalTagRules,
-  getCurrentContestStage,
-  users
-} from '../../db/index.js'
+import { CONTEST_CAPS, ORG_CAPS, evalTagRules, getCurrentContestStage } from '../../db/index.js'
 import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/index.js'
 import { contestAttachmentRoutes } from './attachment.js'
 import { contestAdminRoutes } from './admin.js'
@@ -22,6 +14,8 @@ import { manageContent } from '../common/content.js'
 import { kContestContext } from './inject.js'
 
 export const contestScopedRoutes = defineRoutes(async (s) => {
+  const { contests, contestParticipants, users } = s.db
+
   s.addHook(
     'onRoute',
     paramSchemaMerger(
@@ -135,28 +129,6 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
       await contests.updateOne({ _id: ctx._contestId }, { $inc: { participantCount: 1 } })
 
       return {}
-    }
-  )
-
-  s.get(
-    '/participant-count',
-    {
-      schema: {
-        description: 'Get number of participants',
-        response: {
-          200: Type.Object({
-            count: Type.Number()
-          })
-        }
-      }
-    },
-    async (req) => {
-      // TODO: Optimize this route
-      const ctx = req.inject(kContestContext)
-      console.log(ctx._contest.participantCount)
-      return {
-        count: ctx._contest.participantCount
-      }
     }
   )
 

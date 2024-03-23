@@ -1,3 +1,9 @@
+import type { FastifyRequest } from 'fastify'
+import fastifyJwt from '@fastify/jwt'
+import { Type, Static } from '@sinclair/typebox'
+import { TypeCompiler } from '@sinclair/typebox/compiler'
+import { UUID } from 'mongodb'
+
 import { authRoutes } from './auth/index.js'
 import { userRoutes } from './user/index.js'
 import { orgRoutes } from './org/index.js'
@@ -5,11 +11,7 @@ import { adminRoutes } from './admin/index.js'
 import { defineRoutes } from './common/index.js'
 import { problemRoutes } from './problem/index.js'
 import { solutionRoutes } from './solution/index.js'
-import { UUID } from 'mongodb'
 import { runnerRoutes } from './runner/index.js'
-import fastifyJwt from '@fastify/jwt'
-import { Type, Static } from '@sinclair/typebox'
-import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { loadEnv } from '../utils/config.js'
 import { groupRoutes } from './group/index.js'
 import { contestRoutes } from './contest/index.js'
@@ -24,12 +26,11 @@ import {
   inject,
   provide
 } from '../utils/inject.js'
-import type { FastifyRequest } from 'fastify'
 import { publicRoutes } from './public/index.js'
-import { IOrgMembership, orgMemberships } from '../db/index.js'
-import { authProviders } from '../auth/index.js'
+import { IOrgMembership } from '../db/index.js'
 import { appRoutes } from './app/index.js'
 import { oauthRoutes } from './oauth/index.js'
+import { IOrgOssSettings } from '../schemas/index.js'
 
 const SUserPayload = Type.Object({
   userId: Type.UUID(),
@@ -51,6 +52,7 @@ declare module 'fastify' {
     provide<T>(point: InjectionPoint<T>, value: T): void
     inject<T>(point: InjectionPoint<T>): T
     loadMembership(orgId: UUID): Promise<IOrgMembership | null>
+    loadOss(orgId: UUID): Promise<IOrgOssSettings>
     verifyToken(token: string): UserPayload
     verifyMfa(token: string): string
   }
@@ -69,7 +71,7 @@ async function decoratedLoadMembership(
   orgId: UUID
 ): Promise<IOrgMembership | null> {
   if (!this.user) return null
-  return orgMemberships.findOne({ userId: this.user.userId, orgId })
+  return this.server.db.orgMemberships.findOne({ userId: this.user.userId, orgId })
 }
 
 function decoratedVerifyToken(this: FastifyRequest, token: string): UserPayload {
@@ -85,7 +87,7 @@ function decoratedVerifyMfa(this: FastifyRequest, token: string): string {
   const tag = payload.tags?.find((tag) => tag.startsWith('.mfa.'))
   if (!tag) throw this.server.httpErrors.forbidden()
   const type = tag.slice(5)
-  if (!Object.hasOwn(authProviders, type)) throw this.server.httpErrors.badRequest()
+  if (!Object.hasOwn(this.server.authProviders, type)) throw this.server.httpErrors.badRequest()
   return type
 }
 

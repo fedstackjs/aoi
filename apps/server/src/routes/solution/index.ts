@@ -2,9 +2,8 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, generateRangeQuery, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { solutionScopedRoute } from './scoped.js'
 import { hasCapability, paginationSkip } from '../../utils/index.js'
-import { ISolution, ORG_CAPS, solutions } from '../../db/index.js'
+import { ISolution, ORG_CAPS } from '../../db/index.js'
 import { BSON } from 'mongodb'
-import { orgMemberships } from '../../db/index.js'
 
 export const solutionRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('solution'))
@@ -13,7 +12,7 @@ export const solutionRoutes = defineRoutes(async (s) => {
     '/',
     {
       schema: {
-        description: 'Get solutions list',
+        description: 'Get s.db.solutions list',
         querystring: Type.Object({
           orgId: Type.UUID(),
           userId: Type.Optional(Type.UUID()),
@@ -55,7 +54,7 @@ export const solutionRoutes = defineRoutes(async (s) => {
       const userId = req.query.userId ? new BSON.UUID(req.query.userId) : undefined
       // check org auth, user should be in the org
       const orgId = loadUUID(req.query, 'orgId', s.httpErrors.badRequest())
-      const membership = await orgMemberships.findOne({
+      const membership = await s.db.orgMemberships.findOne({
         orgId: orgId,
         userId: req.user.userId
       })
@@ -81,9 +80,9 @@ export const solutionRoutes = defineRoutes(async (s) => {
       }
       const skip = paginationSkip(req.query.page, req.query.perPage)
       const total = req.query.count
-        ? await solutions.countDocuments(filter, { ignoreUndefined: true })
+        ? await s.db.solutions.countDocuments(filter, { ignoreUndefined: true })
         : undefined
-      const items = (await solutions
+      const items = (await s.db.solutions
         .aggregate(
           [
             { $match: filter },

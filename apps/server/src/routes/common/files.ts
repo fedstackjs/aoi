@@ -1,6 +1,5 @@
 import { FastifyPluginAsyncTypebox, Static, Type } from '@fastify/type-provider-typebox'
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { IOrgOssSettings } from '../../schemas/index.js'
 import {
   IUrlOptions,
   getDeleteUrl,
@@ -8,8 +7,7 @@ import {
   getHeadUrl,
   getUploadUrl
 } from '../../oss/index.js'
-import { BSON } from 'mongodb'
-import { orgs } from '../../db/index.js'
+import { UUID } from 'mongodb'
 
 const types = Object.freeze({
   upload: getUploadUrl,
@@ -32,9 +30,11 @@ export const getFileUrl: FastifyPluginAsyncTypebox<{
     options: Static<typeof SGetUrlOptions>,
     req: FastifyRequest,
     rep: FastifyReply
-  ) => Promise<[IOrgOssSettings | undefined, string, IUrlOptions?]>
+  ) => Promise<[UUID, string, IUrlOptions?]>
 }> = async (s, options) => {
+  const { orgs } = s.db
   const allowedTypes = options.allowedTypes ?? ['upload', 'download', 'head', 'delete']
+
   s.get(
     '/:type',
     {
@@ -51,16 +51,13 @@ export const getFileUrl: FastifyPluginAsyncTypebox<{
       }
     },
     async (req, rep) => {
-      const [settings, key, opt] = await options.resolve(req.params.type, req.query, req, rep)
+      const [orgId, key, opt] = await options.resolve(req.params.type, req.query, req, rep)
+      const org = await orgs.findOne({ _id: orgId }, { projection: { settings: 1 } })
+      const settings = org?.settings.oss
       if (!settings) return rep.preconditionFailed('OSS not configured')
       return {
         url: await types[req.params.type](settings, key, opt)
       }
     }
   )
-}
-
-export async function loadOrgOssSettings(orgId: BSON.UUID) {
-  const org = await orgs.findOne({ _id: orgId }, { projection: { settings: 1 } })
-  return org?.settings.oss
 }

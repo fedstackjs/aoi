@@ -27,6 +27,7 @@
     "@types/nodemailer": "^6.4.14",
     "bcrypt": "^5.1.1",
     "fastify": "^4.25.1",
+    "fastify-plugin": "^4.5.1",
     "mongodb": "^6.3.0",
     "nodemailer": "^6.9.11",
     "pino": "^8.17.1",

@@ -2,7 +2,7 @@ import { USER_CAPS, hasCapability } from '../../index.js'
 import { loadUserCapability } from '../common/access.js'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
-import { announcements, IAnnouncement } from '../../db/index.js'
+import { IAnnouncement } from '../../db/index.js'
 import { BSON } from 'mongodb'
 import { defineInjectionPoint } from '../../utils/inject.js'
 
@@ -17,6 +17,8 @@ const kAnnouncementCtx = defineInjectionPoint<{
 }>('announcement')
 
 export const announcementScopedRoutes = defineRoutes(async (s) => {
+  const { announcements } = s.db
+
   s.addHook('onRoute', paramSchemaMerger(articleIdSchema))
 
   s.addHook('onRequest', async (req, rep) => {

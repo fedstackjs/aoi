@@ -2,12 +2,13 @@ import { USER_CAPS, hasCapability } from '../../index.js'
 import { loadUserCapability } from '../common/access.js'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
-import { announcements } from '../../db/index.js'
 import { paginationSkip } from '../../utils/pagination.js'
 import { announcementScopedRoutes } from './scoped.js'
 import { BSON, Document } from 'mongodb'
 
 export const announcementRoutes = defineRoutes(async (s) => {
+  const { announcements } = s.db
+
   s.addHook('onRoute', swaggerTagMerger('announcement'))
 
   s.register(announcementScopedRoutes, { prefix: '/:articleId' })

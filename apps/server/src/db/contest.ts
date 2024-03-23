@@ -1,7 +1,6 @@
-import { BSON } from 'mongodb'
+import { BSON, Collection } from 'mongodb'
 import { capabilityMask } from '../utils/capability.js'
 import { IPrincipalControlable, IWithAccessLevel, IWithAttachment, IWithContent } from './common.js'
-import { db } from './client.js'
 import {
   IContestProblemSettings,
   IContestRanklistSettings,
@@ -10,6 +9,7 @@ import {
 import { ISolution } from './solution.js'
 import { IUser } from './user.js'
 import { IUserProfile } from '../index.js'
+import { fastifyPlugin } from 'fastify-plugin'
 
 export const CONTEST_CAPS = {
   CAP_ACCESS: capabilityMask(0),
@@ -33,10 +33,6 @@ export interface IContestParticipant {
   updatedAt: number
   tags?: string[]
 }
-
-export const contestParticipants = db.collection<IContestParticipant>('contestParticipants')
-await contestParticipants.createIndex({ userId: 1, contestId: 1 }, { unique: true })
-await contestParticipants.createIndex({ contestId: 1, updatedAt: 1, _id: 1 })
 
 export interface IContestProblem {
   problemId: BSON.UUID
@@ -77,11 +73,6 @@ export interface IContest
   participantCount: number
 }
 
-export const contests = db.collection<IContest>('contests')
-await contests.createIndex({ orgId: 1, slug: 1 }, { unique: true })
-await contests.createIndex({ orgId: 1, tags: 1 })
-await contests.createIndex({ [`associations.principalId`]: 1 })
-
 export function getCurrentContestStage(now: number, { stages }: IContest) {
   for (let i = stages.length - 1; i >= 0; i--) {
     if (stages[i].start <= now) return stages[i]
@@ -106,3 +97,22 @@ export async function evalTagRules(
   }
   return tags
 }
+
+declare module './index.js' {
+  interface IDbContainer {
+    contests: Collection<IContest>
+    contestParticipants: Collection<IContestParticipant>
+  }
+}
+
+export const dbContestPlugin = fastifyPlugin(async (s) => {
+  const contests = s.db.db.collection<IContest>('contests')
+  await contests.createIndex({ orgId: 1, slug: 1 }, { unique: true })
+  await contests.createIndex({ orgId: 1, tags: 1 })
+  await contests.createIndex({ [`associations.principalId`]: 1 })
+  s.db.contests = contests
+  const contestParticipants = s.db.db.collection<IContestParticipant>('contestParticipants')
+  await contestParticipants.createIndex({ userId: 1, contestId: 1 }, { unique: true })
+  await contestParticipants.createIndex({ contestId: 1, updatedAt: 1, _id: 1 })
+  s.db.contestParticipants = contestParticipants
+})

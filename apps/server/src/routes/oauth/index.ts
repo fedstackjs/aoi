@@ -1,13 +1,15 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes } from '../common/index.js'
 import { UUID } from 'mongodb'
-import { IOrgMembership, IUser, apps, orgMemberships, users } from '../../db/index.js'
+import { IOrgMembership, IUser } from '../../db/index.js'
 import { SUserProfile } from '../../schemas/index.js'
 import { oauthGithubCompatRoutes } from './github-compat.js'
 import fastifyFormbody from '@fastify/formbody'
 import { oauthDeviceRoutes } from './device.js'
 
 export const oauthRoutes = defineRoutes(async (s) => {
+  const { apps, users, orgMemberships } = s.db
+
   await s.register(fastifyFormbody)
 
   s.post(
