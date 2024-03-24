@@ -1,7 +1,7 @@
 import { fastifyPlugin } from 'fastify-plugin'
 import { MongoClient, Db, BSON } from 'mongodb'
 
-import { loadEnv } from '../utils/index.js'
+import { loadEnv, logger } from '../utils/index.js'
 import { dbAnnouncementPlugin } from './announcement.js'
 import { dbAppPlugin } from './app.js'
 import { dbContestPlugin } from './contest.js'
@@ -66,4 +66,5 @@ export const dbPlugin = fastifyPlugin(async (s) => {
   await s.register(dbRunnerPlugin)
   await s.register(dbSolutionPlugin)
   await s.register(dbUserPlugin)
+  logger.info('Database ready')
 })

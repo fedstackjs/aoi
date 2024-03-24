@@ -1,5 +1,4 @@
 import rnd from 'randomstring'
-import { fastifyRateLimit } from '@fastify/rate-limit'
 import { Type } from '@sinclair/typebox'
 import { UUID } from 'mongodb'
 
@@ -18,11 +17,6 @@ export const oauthDeviceRoutes = defineRoutes(async (s) => {
   const cache = s.cache
 
   s.addHook('onRoute', swaggerTagMerger('oauth.device'))
-
-  await s.register(fastifyRateLimit, {
-    max: 100,
-    timeWindow: '1 minute'
-  })
 
   s.post(
     '/login',

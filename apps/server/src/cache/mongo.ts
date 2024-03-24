@@ -16,7 +16,7 @@ export class MongoCache extends BaseCache {
 
   async init(): Promise<void> {
     this.col = this.db.collection<ICacheEntry>('cache')
-    this.col.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 })
+    await this.col.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 })
   }
 
   override async set(key: string, value: string, expiresIn: number): Promise<void> {

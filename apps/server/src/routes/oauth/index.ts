@@ -3,7 +3,7 @@ import { defineRoutes } from '../common/index.js'
 import { UUID } from 'mongodb'
 import { IOrgMembership, IUser } from '../../db/index.js'
 import { SUserProfile } from '../../schemas/index.js'
-import { oauthGithubCompatRoutes } from './github-compat.js'
+import { oauthGithubCompatRoutes } from './githubCompat.js'
 import fastifyFormbody from '@fastify/formbody'
 import { oauthDeviceRoutes } from './device.js'
 
