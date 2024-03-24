@@ -1,6 +1,6 @@
 {
   "name": "@aoi-js/server",
-  "version": "1.0.13",
+  "version": "1.1.0-alpha.0",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -54,5 +54,6 @@
     "dev-build": "run build -w --preserveWatchOutput",
     "dev-serve": "nodemon -r dotenv/config lib/cli/index.js | pino-pretty",
     "dev": "concurrently -i --default-input-target serve \"yarn:dev-*\""
-  }
+  },
+  "stableVersion": "1.0.13"
 }
