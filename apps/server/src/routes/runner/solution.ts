@@ -1,16 +1,8 @@
 import { Type } from '@sinclair/typebox'
-import {
-  ContestRanklistState,
-  SolutionState,
-  contestParticipants,
-  contests,
-  problemStatuses,
-  problems,
-  solutions
-} from '../../db/index.js'
+import { ContestRanklistState, SolutionState } from '../../db/index.js'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { getDownloadUrl, problemDataKey, solutionDataKey, solutionDetailsKey } from '../../index.js'
-import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
+import { getFileUrl } from '../common/files.js'
 import { BSON } from 'mongodb'
 import { SProblemConfigSchema } from '@aoi-js/common'
 import { defineInjectionPoint } from '../../utils/inject.js'
@@ -62,7 +54,7 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const ctx = req.inject(kRunnerSolutionContext)
-      const { matchedCount } = await solutions.updateOne(
+      const { matchedCount } = await s.db.solutions.updateOne(
         {
           _id: ctx._solutionId,
           taskId: ctx._taskId,
@@ -79,14 +71,12 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
     prefix: '/details',
     resolve: async (type, query, req) => {
       const ctx = req.inject(kRunnerSolutionContext)
-      const solution = await solutions.findOne(
+      const solution = await s.db.solutions.findOne(
         { _id: ctx._solutionId, taskId: ctx._taskId },
         { projection: { orgId: 1 } }
       )
       if (!solution) throw s.httpErrors.notFound()
-      const oss = await loadOrgOssSettings(solution.orgId)
-      if (!oss) throw s.httpErrors.notFound()
-      return [await loadOrgOssSettings(solution.orgId), solutionDetailsKey(solution._id)]
+      return [solution.orgId, solutionDetailsKey(solution._id)]
     }
   })
 
@@ -102,7 +92,7 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const ctx = req.inject(kRunnerSolutionContext)
-      const value = await solutions.findOneAndUpdate(
+      const value = await s.db.solutions.findOneAndUpdate(
         {
           _id: ctx._solutionId,
           taskId: ctx._taskId,
@@ -115,7 +105,7 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
       )
       if (!value) return rep.conflict()
       if (value.contestId) {
-        const { modifiedCount } = await contestParticipants.updateOne(
+        const { modifiedCount } = await s.db.contestParticipants.updateOne(
           {
             userId: value.userId,
             contestId: value.contestId,
@@ -137,7 +127,7 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
         )
         if (modifiedCount) {
           // update contest ranklist state
-          await contests.updateOne(
+          await s.db.contests.updateOne(
             {
               _id: value.contestId,
               ranklists: { $exists: true, $ne: [] }
@@ -154,7 +144,7 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
         }
       } else {
         // update problem status
-        await problemStatuses.updateOne(
+        await s.db.problemStatuses.updateOne(
           {
             userId: value.userId,
             problemId: value.problemId,
@@ -202,7 +192,7 @@ export const runnerSolutionRoutes = defineRoutes(async (s) => {
     async (req) => {
       const runnerCtx = req.inject(kRunnerContext)
       const taskId = new BSON.UUID()
-      const solution = await solutions.findOneAndUpdate(
+      const solution = await s.db.solutions.findOneAndUpdate(
         {
           orgId: runnerCtx._runner.orgId,
           state: SolutionState.PENDING,
@@ -220,9 +210,13 @@ export const runnerSolutionRoutes = defineRoutes(async (s) => {
         contestId: solution.contestId
       }
 
-      const oss = await loadOrgOssSettings(runnerCtx._runner.orgId)
+      const org = await s.db.orgs.findOne(
+        { _id: runnerCtx._runner.orgId },
+        { projection: { 'settings.oss': 1 } }
+      )
+      const oss = org?.settings.oss
       if (!oss) return { ...info, errMsg: 'OSS not enabled' }
-      const problem = await problems.findOne({ _id: solution.problemId })
+      const problem = await s.db.problems.findOne({ _id: solution.problemId })
       if (!problem) return { ...info, errMsg: 'Problem not found' }
       const currentData = problem.data.find(({ hash }) => hash === problem.currentDataHash)
       if (!currentData) return { ...info, errMsg: 'Problem data not found' }

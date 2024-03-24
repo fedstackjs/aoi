@@ -1,21 +1,22 @@
 import { SProblemConfigSchema } from '@aoi-js/common'
-import { PROBLEM_CAPS, problems } from '../../db/index.js'
+import { PROBLEM_CAPS } from '../../db/index.js'
 import { problemDataKey } from '../../oss/index.js'
 import { ensureCapability } from '../../utils/index.js'
-import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
+import { getFileUrl } from '../common/files.js'
 import { defineRoutes, paramSchemaMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
 import { kProblemContext } from './inject.js'
 
 const dataScopedRoutes = defineRoutes(async (s) => {
+  const { problems } = s.db
+
   s.addHook('onRoute', paramSchemaMerger(Type.Object({ hash: Type.Hash() })))
   s.register(getFileUrl, {
     prefix: '/url',
     resolve: async (_type, query, req) => {
       const ctx = req.inject(kProblemContext)
-      const oss = await loadOrgOssSettings(ctx._problem.orgId)
       const hash = (req.params as { hash: string }).hash
-      return [oss, problemDataKey(ctx._problemId, hash), query]
+      return [ctx._problem.orgId, problemDataKey(ctx._problemId, hash), query]
     }
   })
 
@@ -45,6 +46,8 @@ const dataScopedRoutes = defineRoutes(async (s) => {
 })
 
 export const problemDataRoutes = defineRoutes(async (s) => {
+  const { problems } = s.db
+
   s.addHook('onRequest', async (req) => {
     ensureCapability(
       req.inject(kProblemContext)._problemCapability,

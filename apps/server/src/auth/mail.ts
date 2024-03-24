@@ -1,13 +1,14 @@
 import mailer from 'nodemailer'
 
 import { BaseAuthProvider } from './base.js'
-import { loadEnv, logger, parseBoolean, users } from '../index.js'
-import { UUID } from 'mongodb'
+import { loadEnv, logger, parseBoolean } from '../utils/index.js'
+import { Collection, UUID } from 'mongodb'
 import { Type } from '@sinclair/typebox'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
 import rnd from 'randomstring'
-import { cache } from '../cache/index.js'
 import { httpErrors } from '@fastify/sensible'
+import { BaseCache } from '../cache/index.js'
+import { IUser } from '../db/index.js'
 
 const SEmailPayload = Type.Object({
   email: Type.String({
@@ -45,7 +46,10 @@ export class MailAuthProvider extends BaseAuthProvider {
   allowSignupFromLogin = false
   whitelist?: Array<string | RegExp>
 
-  constructor() {
+  constructor(
+    private users: Collection<IUser>,
+    private cache: BaseCache
+  ) {
     super()
   }
 
@@ -71,7 +75,7 @@ export class MailAuthProvider extends BaseAuthProvider {
       }
     }
 
-    await users.createIndex(
+    await this.users.createIndex(
       { 'authSources.mail': 1 },
       { unique: true, partialFilterExpression: { 'authSources.mail': { $exists: true } } }
     )
@@ -100,10 +104,10 @@ export class MailAuthProvider extends BaseAuthProvider {
 
   private async sendCode(key: string, mail: string, purpose: string) {
     if (!this.checkWhitelist(mail)) throw httpErrors.badRequest('Email address not allowed')
-    const ttl = await cache.ttl(key)
+    const ttl = await this.cache.ttl(key)
     if (ttl > 0) throw httpErrors.tooManyRequests(`Wait for ${Math.ceil(ttl / 1000)} seconds`)
     const code = rnd.generate({ length: 6, charset: 'numeric' })
-    await cache.setx(key, { code, mail, n: 5 }, 5 * 60 * 1000)
+    await this.cache.setx(key, { code, mail, n: 5 }, 5 * 60 * 1000)
     const info = await this.transporter.sendMail({
       from: this.from,
       to: mail,
@@ -114,13 +118,13 @@ export class MailAuthProvider extends BaseAuthProvider {
   }
 
   private async checkCode(key: string, code: string) {
-    const ttl = await cache.ttl(key)
-    const value = await cache.getx<{ code: string; mail: string; n: number }>(key)
-    await cache.del(key)
+    const ttl = await this.cache.ttl(key)
+    const value = await this.cache.getx<{ code: string; mail: string; n: number }>(key)
+    await this.cache.del(key)
     if (!value) throw httpErrors.forbidden('Invalid code')
     if (value.code !== code) {
       if (ttl > 0 && value.n > 0) {
-        await cache.setx(key, { ...value, n: value.n - 1 }, ttl)
+        await this.cache.setx(key, { ...value, n: value.n - 1 }, ttl)
       }
       throw httpErrors.forbidden('Invalid code')
     }
@@ -140,7 +144,7 @@ export class MailAuthProvider extends BaseAuthProvider {
     const { code } = payload
     const key = this.userKey(userId)
     const value = await this.checkCode(key, code)
-    await users.updateOne(
+    await this.users.updateOne(
       { _id: userId },
       {
         $set: { 'profile.email': value.mail, 'authSources.mail': value.mail },
@@ -153,7 +157,10 @@ export class MailAuthProvider extends BaseAuthProvider {
   override async preVerify(userId: UUID, payload: unknown): Promise<unknown> {
     if (!EmailPayload.Check(payload)) throw httpErrors.badRequest('Invalid payload')
     const { email } = payload
-    const user = await users.findOne({ _id: userId }, { projection: { 'authSources.mail': 1 } })
+    const user = await this.users.findOne(
+      { _id: userId },
+      { projection: { 'authSources.mail': 1 } }
+    )
     if (!user) throw httpErrors.notFound('User not found')
     if (!user.authSources.mail) throw new Error('user has no email')
     if (user.authSources.mail !== email) throw httpErrors.forbidden('Invalid email')
@@ -175,7 +182,10 @@ export class MailAuthProvider extends BaseAuthProvider {
     const { email } = payload
     let key = this.mailKey(email)
     if (!this.allowSignupFromLogin) {
-      const user = await users.findOne({ 'authSources.mail': email }, { projection: { _id: 1 } })
+      const user = await this.users.findOne(
+        { 'authSources.mail': email },
+        { projection: { _id: 1 } }
+      )
       if (!user) throw httpErrors.notFound('User not found')
       key = this.userKey(user._id)
     }
@@ -189,9 +199,12 @@ export class MailAuthProvider extends BaseAuthProvider {
     if (this.allowSignupFromLogin) {
       const key = this.mailKey(email)
       await this.checkCode(key, code)
-      const user = await users.findOne({ 'authSources.mail': email }, { projection: { _id: 1 } })
+      const user = await this.users.findOne(
+        { 'authSources.mail': email },
+        { projection: { _id: 1 } }
+      )
       if (user) return [user._id]
-      const { insertedId } = await users.insertOne({
+      const { insertedId } = await this.users.insertOne({
         _id: new UUID(),
         profile: {
           name: email.split('@')[0],
@@ -205,7 +218,10 @@ export class MailAuthProvider extends BaseAuthProvider {
       })
       return [insertedId]
     } else {
-      const user = await users.findOne({ 'authSources.mail': email }, { projection: { _id: 1 } })
+      const user = await this.users.findOne(
+        { 'authSources.mail': email },
+        { projection: { _id: 1 } }
+      )
       if (!user) throw httpErrors.notFound('User not found')
       const key = this.userKey(user._id)
       await this.checkCode(key, code)

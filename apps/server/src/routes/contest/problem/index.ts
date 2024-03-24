@@ -3,14 +3,8 @@ import { defineRoutes, paramSchemaMerger } from '../../common/index.js'
 import { SContestProblemSettings } from '../../../schemas/contest.js'
 import { BSON, Document } from 'mongodb'
 import { SProblemConfigSchema } from '@aoi-js/common'
-import { getFileUrl, loadOrgOssSettings } from '../../common/files.js'
-import {
-  CONTEST_CAPS,
-  SolutionState,
-  contestParticipants,
-  problems,
-  solutions
-} from '../../../db/index.js'
+import { getFileUrl } from '../../common/files.js'
+import { CONTEST_CAPS, SolutionState } from '../../../db/index.js'
 import { getUploadUrl, problemAttachmentKey, solutionDataKey } from '../../../oss/index.js'
 import { hasCapability } from '../../../utils/index.js'
 import { problemAdminRoutes } from './admin.js'
@@ -18,6 +12,8 @@ import { kContestContext } from '../inject.js'
 import { loadProblemSettings } from './common.js'
 
 const problemViewRoutes = defineRoutes(async (s) => {
+  const { contestParticipants, problems, solutions, orgs } = s.db
+
   s.addHook('onRequest', async (req, rep) => {
     const ctx = req.inject(kContestContext)
     if (hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) return
@@ -136,9 +132,8 @@ const problemViewRoutes = defineRoutes(async (s) => {
           )
             throw s.httpErrors.notFound()
 
-          const oss = await loadOrgOssSettings(ctx._contest.orgId)
           const key = (req.params as { key: string }).key
-          return [oss, problemAttachmentKey(problemId, key), query]
+          return [ctx._contest.orgId, problemAttachmentKey(problemId, key), query]
         },
         allowedTypes: ['download']
       })
@@ -174,7 +169,11 @@ const problemViewRoutes = defineRoutes(async (s) => {
         return rep.forbidden()
       }
 
-      const oss = await loadOrgOssSettings(ctx._contest.orgId)
+      const org = await orgs.findOne(
+        { _id: ctx._contest.orgId },
+        { projection: { 'settings.oss': 1 } }
+      )
+      const oss = org?.settings.oss
       if (!oss) return rep.preconditionFailed('OSS not configured')
 
       const [problemId, settings] = loadProblemSettings(req)

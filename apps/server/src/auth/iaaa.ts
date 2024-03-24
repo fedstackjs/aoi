@@ -1,11 +1,13 @@
 import { Type } from '@sinclair/typebox'
-import { IUser, loadEnv, parseBoolean, users } from '../index.js'
 import { BaseAuthProvider } from './base.js'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
-import { Filter, UUID } from 'mongodb'
+import { Collection, Filter, UUID } from 'mongodb'
 import { httpErrors } from '@fastify/sensible'
 import { validate } from '@lcpu/iaaa'
 import { FastifyRequest } from 'fastify'
+
+import { IUser } from '../db/index.js'
+import { loadEnv, parseBoolean } from '../utils/index.js'
 
 const STokenPayload = Type.Object({
   token: Type.String()
@@ -19,7 +21,7 @@ export class IaaaAuthProvider extends BaseAuthProvider {
   private allowSignupFromLogin = false
   private allowRebind = false
 
-  constructor() {
+  constructor(private users: Collection<IUser>) {
     super()
   }
 
@@ -31,7 +33,7 @@ export class IaaaAuthProvider extends BaseAuthProvider {
     this.allowSignupFromLogin = loadEnv('IAAA_ALLOW_SIGNUP_FROM_LOGIN', parseBoolean, false)
     this.allowRebind = loadEnv('IAAA_ALLOW_REBIND', parseBoolean, false)
 
-    await users.createIndex(
+    await this.users.createIndex(
       { 'authSources.iaaaId': 1 },
       { unique: true, partialFilterExpression: { 'authSources.iaaaId': { $exists: true } } }
     )
@@ -45,7 +47,7 @@ export class IaaaAuthProvider extends BaseAuthProvider {
     if (!this.allowRebind) {
       filter['authSources.iaaaId'] = { $exists: false }
     }
-    const { matchedCount } = await users.updateOne(filter, {
+    const { matchedCount } = await this.users.updateOne(filter, {
       $set: {
         'profile.realname': resp.userInfo.name,
         'profile.school': '北京大学',
@@ -62,7 +64,10 @@ export class IaaaAuthProvider extends BaseAuthProvider {
     if (!TokenPayload.Check(payload)) throw httpErrors.badRequest()
     const resp = await validate(req.ip, this.iaaaId, this.iaaaKey, payload.token)
     if (!resp.success) throw httpErrors.forbidden(resp.errMsg)
-    const user = await users.findOne({ _id: userId }, { projection: { 'authSources.iaaaId': 1 } })
+    const user = await this.users.findOne(
+      { _id: userId },
+      { projection: { 'authSources.iaaaId': 1 } }
+    )
     if (!user) throw httpErrors.notFound('User not found')
     if (!user.authSources.iaaaId) throw httpErrors.forbidden('User has no IAAA ID')
     if (user.authSources.iaaaId !== resp.userInfo.identityId)
@@ -78,7 +83,7 @@ export class IaaaAuthProvider extends BaseAuthProvider {
     const resp = await validate(req.ip, this.iaaaId, this.iaaaKey, payload.token)
     if (!resp.success) throw httpErrors.forbidden(resp.errMsg)
     let userId: UUID
-    const user = await users.findOne(
+    const user = await this.users.findOne(
       { 'authSources.iaaaId': resp.userInfo.identityId },
       { projection: { _id: 1 } }
     )
@@ -86,7 +91,7 @@ export class IaaaAuthProvider extends BaseAuthProvider {
       userId = user._id
     } else {
       if (!this.allowSignupFromLogin) throw httpErrors.notFound('User not found')
-      const { insertedId } = await users.insertOne({
+      const { insertedId } = await this.users.insertOne({
         _id: new UUID(),
         profile: {
           name: resp.userInfo.identityId,

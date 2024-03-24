@@ -3,12 +3,14 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { UUID } from 'mongodb'
 import { CAP_NONE, findPaginated, hasCapability } from '../../utils/index.js'
-import { ORG_CAPS, apps } from '../../db/index.js'
+import { ORG_CAPS } from '../../db/index.js'
 import { filterMerge, searchToFilter } from '../../utils/search.js'
 import { AccessLevel } from '../../schemas/index.js'
 import { appScopedRoutes } from './scoped.js'
 
 export const appRoutes = defineRoutes(async (s) => {
+  const { apps } = s.db
+
   s.addHook('onRoute', swaggerTagMerger('app'))
 
   s.post(

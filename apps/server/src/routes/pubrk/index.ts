@@ -1,10 +1,12 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { CAP_NONE, ensureCapability } from '../../utils/index.js'
-import { ORG_CAPS, pubrk } from '../../db/index.js'
+import { ORG_CAPS } from '../../db/index.js'
 import { pubrkScopedRoutes } from './scoped.js'
 
 export const pubrkRoutes = defineRoutes(async (s) => {
+  const { pubrk } = s.db
+
   s.addHook('onRoute', swaggerTagMerger('pubrk'))
 
   s.register(pubrkScopedRoutes, { prefix: '/:ranklistId' })

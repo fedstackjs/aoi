@@ -4,7 +4,9 @@ import { apiRoutes } from '../routes/index.js'
 import { logger } from '../utils/logger.js'
 import { schemaRoutes } from './schemas.js'
 import { hasModule } from '../utils/module.js'
-import { loadEnv } from '../index.js'
+import { dbPlugin, loadEnv } from '../index.js'
+import { cachePlugin } from '../cache/index.js'
+import { authProviderPlugin } from '../auth/index.js'
 
 const trustProxy = loadEnv('TRUST_PROXY', JSON.parse, false)
 
@@ -64,6 +66,9 @@ if (hasModule('@fastify/swagger') && hasModule('@fastify/swagger-ui')) {
   })
 }
 
+await server.register(dbPlugin)
+await server.register(cachePlugin)
+await server.register(authProviderPlugin)
 await server.register(apiRoutes, { prefix: '/api' })
 
 export { server }

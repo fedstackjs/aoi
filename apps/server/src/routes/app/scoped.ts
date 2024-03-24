@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadCapability, paramSchemaMerger, tryLoadUUID } from '../common/index.js'
-import { APP_CAPS, apps } from '../../db/index.js'
+import { APP_CAPS } from '../../db/index.js'
 import { CAP_ALL, hasCapability } from '../../utils/index.js'
 import { kAppContext } from './inject.js'
 import { manageContent } from '../common/content.js'
@@ -8,6 +8,8 @@ import { SAppSettings } from '../../schemas/index.js'
 import { appAdminRoutes } from './admin.js'
 
 export const appScopedRoutes = defineRoutes(async (s) => {
+  const { apps } = s.db
+
   s.addHook(
     'onRoute',
     paramSchemaMerger(

@@ -1,5 +1,5 @@
-import { BSON } from 'mongodb'
-import { db } from './client.js'
+import { fastifyPlugin } from 'fastify-plugin'
+import { BSON, Collection } from 'mongodb'
 
 export interface IInfoMilestone {
   csp: string
@@ -26,18 +26,27 @@ export interface IInfo {
   regDefaultOrg?: string
 }
 
-export const infos = db.collection<IInfo>('info')
-// initialize
-const count = await infos.countDocuments()
-if (count === 0) {
-  // insert one if none exists
-  await infos.insertOne({
-    _id: new BSON.UUID(),
-    milestone: {
-      csp: '2024-12-02',
-      noip: '2024-12-02'
-    },
-    friends: [],
-    posters: []
-  })
+declare module './index.js' {
+  interface IDbContainer {
+    infos: Collection<IInfo>
+  }
 }
+
+export const dbInfoPlugin = fastifyPlugin(async (s) => {
+  const infos = s.db.db.collection<IInfo>('info')
+  // initialize
+  const count = await infos.countDocuments()
+  if (count === 0) {
+    // insert one if none exists
+    await infos.insertOne({
+      _id: new BSON.UUID(),
+      milestone: {
+        csp: '2024-12-02',
+        noip: '2024-12-02'
+      },
+      friends: [],
+      posters: []
+    })
+  }
+  s.db.infos = infos
+})

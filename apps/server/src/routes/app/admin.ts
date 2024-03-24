@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto'
-import { APP_CAPS, apps } from '../../db/index.js'
+import { APP_CAPS } from '../../db/index.js'
 import { SAppSettings } from '../../index.js'
 import { hasCapability } from '../../utils/index.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
@@ -9,6 +9,8 @@ import { kAppContext } from './inject.js'
 import { Type } from '@sinclair/typebox'
 
 export const appAdminRoutes = defineRoutes(async (s) => {
+  const { apps } = s.db
+
   s.addHook('onRequest', async (req, rep) => {
     const ctx = req.inject(kAppContext)
     if (!hasCapability(ctx.capability, APP_CAPS.CAP_ADMIN)) return rep.forbidden()

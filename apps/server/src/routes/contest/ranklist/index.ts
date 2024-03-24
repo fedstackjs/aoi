@@ -6,7 +6,7 @@ import {
   hasCapability
 } from '../../../index.js'
 import { Type } from '@sinclair/typebox'
-import { getFileUrl, loadOrgOssSettings } from '../../common/files.js'
+import { getFileUrl } from '../../common/files.js'
 import { ranklistAdminRoutes } from './admin.js'
 import { kContestContext } from '../inject.js'
 
@@ -65,9 +65,8 @@ const ranklistViewRoutes = defineRoutes(async (s) => {
           if (!isAdmin && !shouldShow(Date.now(), ranklist.settings)) throw s.httpErrors.notFound()
           if (!isAdmin && type !== 'download') throw s.httpErrors.forbidden()
 
-          const oss = await loadOrgOssSettings(ctx._contest.orgId)
           const key = (req.params as { key: string }).key
-          return [oss, contestRanklistKey(ctx._contestId, key), query]
+          return [ctx._contest.orgId, contestRanklistKey(ctx._contestId, key), query]
         },
         allowedTypes: ['download']
       })

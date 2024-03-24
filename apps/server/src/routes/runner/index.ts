@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { IRunner, runners } from '../../db/index.js'
+import { IRunner } from '../../db/index.js'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { randomBytes } from 'node:crypto'
@@ -22,7 +22,7 @@ const RELATIME_DELAY = 60 * 1000 // 1 minute
 function updateAccessedAt(req: FastifyRequest, runner: IRunner) {
   const now = Date.now()
   if (runner.accessedAt < now - RELATIME_DELAY) {
-    runners
+    req.server.db.runners
       .updateOne(
         { _id: runner._id },
         {
@@ -40,6 +40,8 @@ function updateAccessedAt(req: FastifyRequest, runner: IRunner) {
 }
 
 export const runnerRoutes = defineRoutes(async (s) => {
+  const { runners } = s.db
+
   s.addHook('onRoute', swaggerTagMerger('runner'))
   s.addHook('onRoute', (route) => {
     const schema = (route.schema ??= {})

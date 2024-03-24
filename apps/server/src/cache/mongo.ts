@@ -1,6 +1,5 @@
-import { Collection } from 'mongodb'
+import { Collection, Db } from 'mongodb'
 import { BaseCache } from './base.js'
-import { db } from '../db/index.js'
 
 export interface ICacheEntry {
   _id: string
@@ -11,13 +10,13 @@ export interface ICacheEntry {
 export class MongoCache extends BaseCache {
   col!: Collection<ICacheEntry>
 
-  constructor() {
+  constructor(public db: Db) {
     super()
   }
 
   async init(): Promise<void> {
-    this.col = db.collection<ICacheEntry>('cache')
-    this.col.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 })
+    this.col = this.db.collection<ICacheEntry>('cache')
+    await this.col.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 })
   }
 
   override async set(key: string, value: string, expiresIn: number): Promise<void> {

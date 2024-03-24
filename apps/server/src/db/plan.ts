@@ -1,12 +1,8 @@
-import { BSON } from 'mongodb'
-import {
-  IPrincipalControlable,
-  IWithAccessLevel,
-  IWithContent,
-  capabilityMask,
-  db
-} from '../index.js'
-import { IPlanContestSettings, IPlanSettings } from '../schemas/plan.js'
+import { BSON, Collection } from 'mongodb'
+import { IPrincipalControlable, IWithAccessLevel, IWithContent } from './common.js'
+import { capabilityMask } from '../utils/index.js'
+import { IPlanContestSettings, IPlanSettings } from '../schemas/index.js'
+import { fastifyPlugin } from 'fastify-plugin'
 
 export const PLAN_CAPS = {
   CAP_ACCESS: capabilityMask(0),
@@ -24,8 +20,6 @@ export interface IPlanParticipant {
   updatedAt: number
 }
 
-export const planParticipants = db.collection<IPlanParticipant>('planParticipants')
-
 export interface IPlanContest {
   contestId: BSON.UUID
   settings: IPlanContestSettings
@@ -41,7 +35,20 @@ export interface IPlan extends IPrincipalControlable, IWithAccessLevel, IWithCon
   createdAt: number
 }
 
-export const plans = db.collection<IPlan>('plan')
-await plans.createIndex({ orgId: 1, slug: 1 }, { unique: true })
-await plans.createIndex({ orgId: 1, tags: 1 })
-await plans.createIndex({ [`associations.principalId`]: 1 })
+declare module './index.js' {
+  interface IDbContainer {
+    plans: Collection<IPlan>
+    planParticipants: Collection<IPlanParticipant>
+  }
+}
+
+export const dbPlanPlugin = fastifyPlugin(async (s) => {
+  const plans = s.db.db.collection<IPlan>('plan')
+  await plans.createIndex({ orgId: 1, slug: 1 }, { unique: true })
+  await plans.createIndex({ orgId: 1, tags: 1 })
+  s.db.plans = plans
+
+  const planParticipants = s.db.db.collection<IPlanParticipant>('planParticipants')
+  await planParticipants.createIndex({ userId: 1, planId: 1 }, { unique: true })
+  s.db.planParticipants = planParticipants
+})

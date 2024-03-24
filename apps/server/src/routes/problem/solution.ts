@@ -1,13 +1,15 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, generateRangeQuery, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { findPaginated, hasCapability } from '../../utils/index.js'
-import { ISolution, PROBLEM_CAPS, SolutionState, solutions } from '../../db/index.js'
+import { ISolution, PROBLEM_CAPS, SolutionState } from '../../db/index.js'
 import { BSON } from 'mongodb'
-import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
+import { getFileUrl } from '../common/files.js'
 import { solutionDataKey, solutionDetailsKey } from '../../index.js'
 import { kProblemContext } from './inject.js'
 
 const solutionScopedRoutes = defineRoutes(async (s) => {
+  const { solutions } = s.db
+
   s.addHook(
     'onRoute',
     paramSchemaMerger(
@@ -159,7 +161,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
       if (!solutionShowOtherDetails && !admin && !solution.userId.equals(req.user.userId)) {
         throw s.httpErrors.forbidden()
       }
-      return [await loadOrgOssSettings(ctx._problem.orgId), solutionDetailsKey(solution._id)]
+      return [ctx._problem.orgId, solutionDetailsKey(solution._id)]
     },
     allowedTypes: ['download']
   })
@@ -181,13 +183,15 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
       if (!solutionShowOtherData && !admin && !solution.userId.equals(req.user.userId)) {
         throw s.httpErrors.forbidden()
       }
-      return [await loadOrgOssSettings(ctx._problem.orgId), solutionDataKey(solution._id)]
+      return [ctx._problem.orgId, solutionDataKey(solution._id)]
     },
     allowedTypes: ['download']
   })
 })
 
 export const problemSolutionRoutes = defineRoutes(async (s) => {
+  const { solutions } = s.db
+
   s.get(
     '/',
     {

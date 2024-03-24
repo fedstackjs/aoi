@@ -1,12 +1,14 @@
 import { Type } from '@sinclair/typebox'
-import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
+import { getFileUrl } from '../common/files.js'
 import { defineRoutes, paramSchemaMerger } from '../common/index.js'
 import { ensureCapability } from '../../utils/index.js'
-import { PROBLEM_CAPS, problems } from '../../db/index.js'
+import { PROBLEM_CAPS } from '../../db/index.js'
 import { problemAttachmentKey } from '../../oss/index.js'
 import { kProblemContext } from './inject.js'
 
 const attachmentScopedRoutes = defineRoutes(async (s) => {
+  const { problems } = s.db
+
   s.addHook('onRoute', paramSchemaMerger(Type.Object({ key: Type.String() })))
   s.register(getFileUrl, {
     prefix: '/url',
@@ -16,9 +18,8 @@ const attachmentScopedRoutes = defineRoutes(async (s) => {
       if (type !== 'download') {
         ensureCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_CONTENT, s.httpErrors.forbidden())
       }
-      const oss = await loadOrgOssSettings(ctx._problem.orgId)
       const key = (req.params as { key: string }).key
-      return [oss, problemAttachmentKey(ctx._problemId, key), query]
+      return [ctx._problem.orgId, problemAttachmentKey(ctx._problemId, key), query]
     }
   })
 
@@ -49,6 +50,8 @@ const attachmentScopedRoutes = defineRoutes(async (s) => {
 })
 
 export const problemAttachmentRoutes = defineRoutes(async (s) => {
+  const { problems } = s.db
+
   s.get(
     '/',
     {

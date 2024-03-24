@@ -1,5 +1,5 @@
-import { BSON } from 'mongodb'
-import { db } from './client.js'
+import { BSON, Collection } from 'mongodb'
+import { fastifyPlugin } from 'fastify-plugin'
 
 export interface IAnnouncement {
   _id: BSON.UUID
@@ -10,6 +10,15 @@ export interface IAnnouncement {
   public: boolean
 }
 
-export const announcements = db.collection<IAnnouncement>('announcements')
-await announcements.createIndex({ date: -1 })
-await announcements.createIndex({ title: 1 })
+declare module './index.js' {
+  interface IDbContainer {
+    announcements: Collection<IAnnouncement>
+  }
+}
+
+export const dbAnnouncementPlugin = fastifyPlugin(async (s) => {
+  const col = s.db.db.collection<IAnnouncement>('announcements')
+  await col.createIndex({ date: -1 })
+  await col.createIndex({ title: 1 })
+  s.db.announcements = col
+})

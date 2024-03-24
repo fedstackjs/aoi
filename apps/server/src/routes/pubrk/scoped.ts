@@ -1,8 +1,8 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, paramSchemaMerger, loadCapability } from '../common/index.js'
 import { contestRanklistKey } from '../../index.js'
-import { getFileUrl, loadOrgOssSettings } from '../common/files.js'
-import { ORG_CAPS, CONTEST_CAPS, IPublicRanklist, pubrk, contests } from '../../db/index.js'
+import { getFileUrl } from '../common/files.js'
+import { ORG_CAPS, CONTEST_CAPS, IPublicRanklist } from '../../db/index.js'
 import { CAP_ALL, hasCapability } from '../../utils/index.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
 
@@ -12,6 +12,8 @@ const kPubrkContext = defineInjectionPoint<{
 }>('pubrk')
 
 export const pubrkScopedRoutes = defineRoutes(async (s) => {
+  const { pubrk, contests } = s.db
+
   s.addHook(
     'onRoute',
     paramSchemaMerger(
@@ -41,9 +43,8 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
       resolve: async (type, query, req) => {
         const ctx = req.inject(kPubrkContext)
         if (!ctx._pubranklist.visible) throw s.httpErrors.notFound()
-        const oss = await loadOrgOssSettings(ctx._pubranklist.orgId)
         const key = ctx._pubranklist.ranklistKey
-        return [oss, contestRanklistKey(ctx._pubranklist.contestId, key), query]
+        return [ctx._pubranklist.orgId, contestRanklistKey(ctx._pubranklist.contestId, key), query]
       },
       allowedTypes: ['download']
     })

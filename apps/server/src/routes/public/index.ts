@@ -9,12 +9,6 @@ import {
   ORG_CAPS,
   PROBLEM_CAPS,
   PLAN_CAPS,
-  apps,
-  contests,
-  groups,
-  plans,
-  problems,
-  users,
   IWithAccessLevel
 } from '../../db/index.js'
 import { CAP_ALL, hasCapability } from '../../index.js'
@@ -26,29 +20,32 @@ interface IResolver {
   capAccess: BSON.Long
   capAdmin: BSON.Long
 }
-const slugResolvers: Record<string, IResolver> = Object.create(null)
-function addResolver<T extends Resolvable>(
-  name: string,
-  collection: Collection<T>,
-  adminMask: BSON.Long,
-  capAccess: BSON.Long,
-  capAdmin: BSON.Long
-) {
-  slugResolvers[name] = {
-    collection: collection as unknown as Collection<Resolvable>,
-    adminMask,
-    capAccess,
-    capAdmin
-  }
-}
-
-addResolver('app', apps, ORG_CAPS.CAP_APP, APP_CAPS.CAP_ACCESS, CAP_ALL)
-addResolver('contest', contests, ORG_CAPS.CAP_CONTEST, CONTEST_CAPS.CAP_ACCESS, CAP_ALL)
-addResolver('plan', plans, ORG_CAPS.CAP_PLAN, PLAN_CAPS.CAP_ACCESS, CAP_ALL)
-addResolver('problem', problems, ORG_CAPS.CAP_PROBLEM, PROBLEM_CAPS.CAP_ACCESS, CAP_ALL)
-const slugTypes = Object.keys(slugResolvers)
 
 export const publicRoutes = defineRoutes(async (s) => {
+  const slugResolvers: Record<string, IResolver> = Object.create(null)
+  function addResolver<T extends Resolvable>(
+    name: string,
+    collection: Collection<T>,
+    adminMask: BSON.Long,
+    capAccess: BSON.Long,
+    capAdmin: BSON.Long
+  ) {
+    slugResolvers[name] = {
+      collection: collection as unknown as Collection<Resolvable>,
+      adminMask,
+      capAccess,
+      capAdmin
+    }
+  }
+
+  addResolver('app', s.db.apps, ORG_CAPS.CAP_APP, APP_CAPS.CAP_ACCESS, CAP_ALL)
+  addResolver('contest', s.db.contests, ORG_CAPS.CAP_CONTEST, CONTEST_CAPS.CAP_ACCESS, CAP_ALL)
+  addResolver('plan', s.db.plans, ORG_CAPS.CAP_PLAN, PLAN_CAPS.CAP_ACCESS, CAP_ALL)
+  addResolver('problem', s.db.problems, ORG_CAPS.CAP_PROBLEM, PROBLEM_CAPS.CAP_ACCESS, CAP_ALL)
+  const slugTypes = Object.keys(slugResolvers)
+
+  const { users, groups } = s.db
+
   s.addHook('onRoute', swaggerTagMerger('public'))
   s.addHook('onRoute', (route) => {
     ;(route.schema ??= {}).security = []

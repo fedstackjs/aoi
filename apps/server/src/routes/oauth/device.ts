@@ -1,10 +1,9 @@
 import rnd from 'randomstring'
-import { fastifyRateLimit } from '@fastify/rate-limit'
-import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { Type } from '@sinclair/typebox'
-import { apps, loadEnv } from '../../index.js'
 import { UUID } from 'mongodb'
-import { cache } from '../../cache/index.js'
+
+import { defineRoutes, swaggerTagMerger } from '../common/index.js'
+import { loadEnv } from '../../utils/index.js'
 
 const DEVICE_VERIFICATION_URI = loadEnv(
   'DEVICE_VERIFICATION_URI',
@@ -14,12 +13,10 @@ const DEVICE_VERIFICATION_URI = loadEnv(
 const EXPIRES_IN_SEC = 900
 
 export const oauthDeviceRoutes = defineRoutes(async (s) => {
-  s.addHook('onRoute', swaggerTagMerger('oauth.device'))
+  const { apps } = s.db
+  const cache = s.cache
 
-  await s.register(fastifyRateLimit, {
-    max: 100,
-    timeWindow: '1 minute'
-  })
+  s.addHook('onRoute', swaggerTagMerger('oauth.device'))
 
   s.post(
     '/login',

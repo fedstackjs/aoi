@@ -1,7 +1,7 @@
-import { BSON } from 'mongodb'
-import { db } from './client.js'
+import { BSON, Collection } from 'mongodb'
 import { IUserProfile } from '../schemas/index.js'
 import { capabilityMask } from '../index.js'
+import { fastifyPlugin } from 'fastify-plugin'
 
 export const USER_CAPS = {
   CAP_ADMIN: capabilityMask(0),
@@ -25,5 +25,14 @@ export interface IUser {
   tags?: string[]
 }
 
-export const users = db.collection<IUser>('users')
-await users.createIndex({ namespace: 1, 'profile.name': 1 }, { unique: true })
+declare module './index.js' {
+  interface IDbContainer {
+    users: Collection<IUser>
+  }
+}
+
+export const dbUserPlugin = fastifyPlugin(async (s) => {
+  const col = s.db.db.collection<IUser>('users')
+  await col.createIndex({ namespace: 1, 'profile.name': 1 }, { unique: true })
+  s.db.users = col
+})

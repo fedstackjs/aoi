@@ -1,16 +1,17 @@
 import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
-import { SUserProfile, USER_CAPS, hasCapability, users } from '../../index.js'
+import { SUserProfile, USER_CAPS, hasCapability } from '../../index.js'
 import { loadUserCapability } from '../common/access.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
-import { authProviders } from '../../auth/index.js'
 
 const kUserContext = defineInjectionPoint<{
   _userId: BSON.UUID
 }>('user')
 
 export const userScopedRoutes = defineRoutes(async (s) => {
+  const authProviders = s.authProviders
+
   s.addHook(
     'onRoute',
     paramSchemaMerger(
@@ -42,7 +43,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const user = await users.findOne(
+      const user = await s.db.users.findOne(
         { _id: req.inject(kUserContext)._userId },
         { projection: { profile: 1, capability: 1, namespace: 1, tags: 1 } }
       )
@@ -65,7 +66,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const ctx = req.inject(kUserContext)
-      const user = await users.findOne({ _id: ctx._userId }, { projection: { profile: 1 } })
+      const user = await s.db.users.findOne({ _id: ctx._userId }, { projection: { profile: 1 } })
       if (!user) return rep.notFound()
       const capability = await loadUserCapability(req)
       const allowSensitive =
@@ -104,7 +105,7 @@ export const userScopedRoutes = defineRoutes(async (s) => {
       if (!fields.length) return {}
 
       const $set = Object.fromEntries(fields.map(([k, v]) => [`profile.${k}`, v]))
-      const { matchedCount } = await users.updateOne(
+      const { matchedCount } = await s.db.users.updateOne(
         { _id: ctx._userId, [`profile.verified`]: verified },
         { $set },
         { ignoreUndefined: true }

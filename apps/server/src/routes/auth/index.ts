@@ -1,16 +1,18 @@
 import { Type } from '@fastify/type-provider-typebox'
 import bcrypt from 'bcrypt'
-import { users } from '../../db/index.js'
 import { BSON } from 'mongodb'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { SUserProfile } from '../../schemas/index.js'
-import { infos, orgMemberships, ORG_CAPS } from '../../db/index.js'
-import { authProviderList, authProviders } from '../../auth/index.js'
+import { ORG_CAPS } from '../../db/index.js'
 import { loadEnv, parseBoolean } from '../../index.js'
 
 const signupEnabled = loadEnv('SIGNUP_ENABLED', parseBoolean, true)
 
 export const authRoutes = defineRoutes(async (s) => {
+  const { users, orgMemberships, infos } = s.db
+  const authProviders = s.authProviders
+  const providerNames = Object.keys(authProviders)
+
   s.addHook('onRoute', (route) => {
     ;(route.schema ??= {}).security ??= []
   })
@@ -29,7 +31,7 @@ export const authRoutes = defineRoutes(async (s) => {
       }
     },
     async () => {
-      return { providers: authProviderList.map((p) => p.name), signup: signupEnabled }
+      return { providers: providerNames, signup: signupEnabled }
     }
   )
 

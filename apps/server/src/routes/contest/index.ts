@@ -2,13 +2,15 @@ import { Type } from '@sinclair/typebox'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 import { CAP_NONE, ensureCapability, findPaginated, hasCapability } from '../../utils/index.js'
 import { AccessLevel } from '../../schemas/index.js'
-import { ContestRanklistState, ORG_CAPS, contests } from '../../db/index.js'
+import { ContestRanklistState, ORG_CAPS } from '../../db/index.js'
 import { SContestStage } from '../../schemas/contest.js'
 import { UUID } from 'mongodb'
 import { contestScopedRoutes } from './scoped.js'
 import { searchToFilter, filterMerge } from '../../utils/search.js'
 
 export const contestRoutes = defineRoutes(async (s) => {
+  const { contests } = s.db
+
   s.addHook('onRoute', swaggerTagMerger('contest'))
 
   s.register(contestScopedRoutes, { prefix: '/:contestId' })

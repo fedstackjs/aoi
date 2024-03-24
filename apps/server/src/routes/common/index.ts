@@ -6,6 +6,11 @@ import { IOrgMembership, IPrincipalControlable, IWithAccessLevel } from '../../d
 import { CAP_NONE, computeCapability } from '../../utils/capability.js'
 import { AccessLevel } from '../../schemas/index.js'
 
+export * from './access.js'
+export * from './content.js'
+export * from './files.js'
+export * from './settings.js'
+
 export function defineRoutes(plugin: FastifyPluginAsyncTypebox) {
   return plugin
 }

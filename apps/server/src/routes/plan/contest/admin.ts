@@ -1,10 +1,15 @@
 import { Type } from '@sinclair/typebox'
-import { PLAN_CAPS, SPlanContestSettings, contests, hasCapability, plans } from '../../../index.js'
-import { defineRoutes } from '../../common/index.js'
 import { BSON } from 'mongodb'
+
+import { PLAN_CAPS } from '../../../db/index.js'
+import { SPlanContestSettings } from '../../../schemas/index.js'
+import { hasCapability } from '../../../utils/index.js'
+import { defineRoutes } from '../../common/index.js'
 import { kPlanContext } from '../inject.js'
 
 export const contestAdminRoutes = defineRoutes(async (s) => {
+  const { plans, contests } = s.db
+
   s.addHook('onRequest', async (req, rep) => {
     const ctx = req.inject(kPlanContext)
     if (!hasCapability(ctx._planCapability, PLAN_CAPS.CAP_ADMIN)) {
