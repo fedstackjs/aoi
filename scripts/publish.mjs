@@ -26,7 +26,16 @@ const items = stdout
 for (const { ident } of items) {
   console.log(`Publishing ${chalk.greenBright(ident)}...`)
   await $`yarn workspace ${ident} pack --out package.tgz`
-  await $`cd ${packages[ident]} && npm publish package.tgz --provenance`.nothrow()
+  try {
+    await $`cd ${packages[ident]} && npm publish package.tgz --provenance`
+  } catch (err) {
+    const stdout = /** @type {ProcessOutput} */ (err).stdout
+    if (stdout.includes('You cannot publish over the previously published versions')) {
+      console.log(`${ident} already published, skip it.`)
+    } else {
+      throw err
+    }
+  }
   if (process.env.CI) {
     const name = ident.split('/')[1]
     await $`echo "${name}_updated=true" >> "$GITHUB_OUTPUT"`
