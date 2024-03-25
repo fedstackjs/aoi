@@ -28,9 +28,10 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
+
 import MarkdownEditor from '@/components/utils/MarkdownEditor.vue'
 import { useAppData } from '@/utils/app/inject'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   orgId: string

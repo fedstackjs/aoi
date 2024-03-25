@@ -28,9 +28,11 @@
 <script setup lang="ts">
 import type JSZip from 'jszip'
 import { shallowRef, computed } from 'vue'
-import ZipFileViewer from './ZipFileViewer.vue'
-import AoiLogo from '@/components/aoi/AoiLogo.vue'
 import { useI18n } from 'vue-i18n'
+
+import ZipFileViewer from './ZipFileViewer.vue'
+
+import AoiLogo from '@/components/aoi/AoiLogo.vue'
 
 const props = defineProps<{
   zip: JSZip

@@ -25,13 +25,14 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+
 import PlanSettingsInput from '@/components/plan/PlanSettingsInput.vue'
 import type { IPlanDTO } from '@/components/plan/types'
 import AccessLevelEditor from '@/components/utils/AccessLevelEditor.vue'
 import SettingsEditor from '@/components/utils/SettingsEditor.vue'
-import { useI18n } from 'vue-i18n'
 import { http } from '@/utils/http'
-import { useRouter } from 'vue-router'
 
 const props = defineProps<{
   orgId: string

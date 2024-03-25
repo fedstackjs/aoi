@@ -1,10 +1,12 @@
+import { useAsyncState, useIntervalFn } from '@vueuse/core'
+import { computed, ref } from 'vue'
+
+import type { ISolutionDTO } from './types'
+
 import { useAppState } from '@/stores/app'
 import { useAsyncTask } from '@/utils/async'
 import { useContestSettings, useContestCapability } from '@/utils/contest/inject'
 import { http } from '@/utils/http'
-import { useAsyncState, useIntervalFn } from '@vueuse/core'
-import { computed, ref } from 'vue'
-import type { ISolutionDTO } from './types'
 import { useProblemSettings } from '@/utils/problem/inject'
 
 export interface ISolutionViewProps {

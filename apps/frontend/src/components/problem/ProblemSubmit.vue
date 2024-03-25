@@ -47,16 +47,17 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ref } from 'vue'
-import type { IProblemDTO } from './types'
-import SubmitForm from './submit/SubmitForm.vue'
-import SubmitFile from './submit/SubmitFile.vue'
-import SubmitDir from './submit/SubmitDir.vue'
-import { useProblemSubmit } from '@/utils/problem/submit'
+
 import type { IContestProblemDTO } from '../contest/types'
-import { computed } from 'vue'
-import { toRef } from 'vue'
+
+import SubmitDir from './submit/SubmitDir.vue'
+import SubmitFile from './submit/SubmitFile.vue'
+import SubmitForm from './submit/SubmitForm.vue'
+import type { IProblemDTO } from './types'
+
+import { useProblemSubmit } from '@/utils/problem/submit'
 
 const props = defineProps<{
   contestId?: string

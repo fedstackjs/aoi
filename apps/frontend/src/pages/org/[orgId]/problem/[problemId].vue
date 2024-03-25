@@ -46,13 +46,13 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
-import { computed } from 'vue'
+import { computed, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import ProblemTagGroup from '@/components/problem/ProblemTagGroup.vue'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import { useProblem } from '@/utils/problem/inject'
-import { toRef } from 'vue'
-import ProblemTagGroup from '@/components/problem/ProblemTagGroup.vue'
+import { withTitle } from '@/utils/title'
 
 const props = defineProps<{
   orgId: string

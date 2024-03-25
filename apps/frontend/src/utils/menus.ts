@@ -1,8 +1,10 @@
-import { useAppState } from '@/stores/app'
 import { computed } from 'vue'
-import { hasCapability, orgBits, useOrgCapability, useUserCapability, userBits } from './capability'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+
+import { hasCapability, orgBits, useOrgCapability, useUserCapability, userBits } from './capability'
+
+import { useAppState } from '@/stores/app'
 import { logout } from '@/utils/http'
 
 export function useAppAddMenu() {

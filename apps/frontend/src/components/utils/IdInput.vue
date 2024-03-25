@@ -30,10 +30,12 @@
 </template>
 
 <script setup lang="ts">
-import { http } from '@/utils/http'
 import { useAsyncState, watchDebounced } from '@vueuse/core'
 import { ref } from 'vue'
+
 import AccessLevelBadge from './AccessLevelBadge.vue'
+
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   label: string

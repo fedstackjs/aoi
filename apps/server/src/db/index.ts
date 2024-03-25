@@ -2,6 +2,7 @@ import { fastifyPlugin } from 'fastify-plugin'
 import { MongoClient, Db, BSON } from 'mongodb'
 
 import { loadEnv, logger } from '../utils/index.js'
+
 import { dbAnnouncementPlugin } from './announcement.js'
 import { dbAppPlugin } from './app.js'
 import { dbContestPlugin } from './contest.js'

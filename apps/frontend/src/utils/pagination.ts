@@ -1,6 +1,7 @@
 import { useAsyncState } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { ref, type MaybeRef, watch, toRef, computed } from 'vue'
+
 import { http } from './http'
 
 function shallowEqual(a: Record<string, unknown>, b: Record<string, unknown>) {

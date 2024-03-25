@@ -1,14 +1,16 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, tryLoadUUID } from '../../common/index.js'
+import { BSON } from 'mongodb'
+
 import { IContestParticipant, evalTagRules, getCurrentContestStage } from '../../../db/index.js'
 import {
   IPlanContestPrecondition,
   SContestStage,
-  SPlanContestSettings
+  SPlanContestSettings,
+  T
 } from '../../../schemas/index.js'
-import { contestAdminRoutes } from './admin.js'
-import { BSON } from 'mongodb'
+import { defineRoutes, tryLoadUUID } from '../../common/index.js'
 import { kPlanContext } from '../inject.js'
+
+import { contestAdminRoutes } from './admin.js'
 
 export async function testPrecondition(
   cond: IPlanContestPrecondition,
@@ -39,14 +41,14 @@ const planContestViewRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get contest list',
         response: {
-          200: Type.Array(
-            Type.Object({
-              _id: Type.UUID(),
-              title: Type.String(),
-              description: Type.String(),
-              slug: Type.String(),
-              tags: Type.Array(Type.String()),
-              stages: Type.Array(Type.Pick(SContestStage, ['name', 'start'] as const)),
+          200: T.Array(
+            T.Object({
+              _id: T.UUID(),
+              title: T.String(),
+              description: T.String(),
+              slug: T.String(),
+              tags: T.Array(T.String()),
+              stages: T.Array(T.Pick(SContestStage, ['name', 'start'] as const)),
               currentStage: SContestStage,
               settings: SPlanContestSettings
             })
@@ -80,7 +82,7 @@ const planContestViewRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Register to contest',
         response: {
-          200: Type.Object({})
+          200: T.Object({})
         }
       }
     },

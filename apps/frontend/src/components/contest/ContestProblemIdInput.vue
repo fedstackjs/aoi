@@ -25,6 +25,7 @@
 
 <script setup lang="ts">
 import { inject } from 'vue'
+
 import { kContestProblemList } from '@/utils/contest/problem/inject'
 
 const model = defineModel<string>({ required: true })

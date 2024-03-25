@@ -1,14 +1,15 @@
-import { defineRoutes, paramSchemaMerger } from '../../common/index.js'
 import {
   CONTEST_CAPS,
   IContestRanklistSettings,
   contestRanklistKey,
   hasCapability
 } from '../../../index.js'
-import { Type } from '@sinclair/typebox'
+import { T } from '../../../schemas/index.js'
 import { getFileUrl } from '../../common/files.js'
-import { ranklistAdminRoutes } from './admin.js'
+import { defineRoutes, paramSchemaMerger } from '../../common/index.js'
 import { kContestContext } from '../inject.js'
+
+import { ranklistAdminRoutes } from './admin.js'
 
 function shouldShow(now: number, settings: IContestRanklistSettings) {
   return (settings.showAfter ?? 0) <= now && now <= (settings.showBefore ?? Infinity)
@@ -28,10 +29,10 @@ const ranklistViewRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: Type.Array(
-            Type.Object({
-              key: Type.String(),
-              name: Type.String()
+          200: T.Array(
+            T.Object({
+              key: T.String(),
+              name: T.String()
             })
           )
         }
@@ -51,7 +52,7 @@ const ranklistViewRoutes = defineRoutes(async (s) => {
 
   s.register(
     async (s) => {
-      s.addHook('onRoute', paramSchemaMerger(Type.Object({ key: Type.String() })))
+      s.addHook('onRoute', paramSchemaMerger(T.Object({ key: T.String() })))
       s.register(getFileUrl, {
         prefix: '/url',
         resolve: async (type, query, req) => {

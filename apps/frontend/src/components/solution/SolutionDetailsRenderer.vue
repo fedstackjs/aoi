@@ -58,12 +58,14 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import type { SolutionDetails } from '@aoi-js/common'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import MarkdownRenderer from '../utils/MarkdownRenderer.vue'
+
 import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
 import SolutionStatusChip from './SolutionStatusChip.vue'
-import { computed } from 'vue'
 
 const { t } = useI18n()
 

@@ -22,9 +22,10 @@
 </template>
 
 <script setup lang="ts">
-import { useChangeEmail } from '@/utils/user/email'
 import { toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import { useChangeEmail } from '@/utils/user/email'
 
 const props = defineProps<{
   userId: string

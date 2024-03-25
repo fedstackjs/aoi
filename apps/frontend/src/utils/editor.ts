@@ -1,5 +1,6 @@
 import { ModelOperations } from '@vscode/vscode-languagedetection'
 import modelBin from '@vscode/vscode-languagedetection/model/group1-shard1of1.bin?url'
+
 import monaco from './monaco'
 
 const languages = monaco.languages.getLanguages()

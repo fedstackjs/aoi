@@ -26,12 +26,14 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import type { ProblemConfig } from '@aoi-js/common'
-import { computed, reactive } from 'vue'
 import Zip from 'jszip'
+import { computed, reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import FormEditor from './form/FormEditor.vue'
 import FormMetadata from './form/FormMetadata.vue'
+
 import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
 
 const { t } = useI18n()

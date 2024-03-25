@@ -30,14 +30,17 @@
 </template>
 
 <script setup lang="ts">
-import { useAppState } from '@/stores/app'
 import { useI18n } from 'vue-i18n'
-import { appName, showCountdown } from '@/utils/flags'
-import AoiBarUserMenu from './AoiBarUserMenu.vue'
-import AoiBarAddMenu from './AoiBarAddMenu.vue'
-import AoiLogo from './AoiLogo.vue'
-import TimeLabel from '../homepage/TimeLabel.vue'
+
 import SearchBox from '../homepage/SearchBox.vue'
+import TimeLabel from '../homepage/TimeLabel.vue'
+
+import AoiBarAddMenu from './AoiBarAddMenu.vue'
+import AoiBarUserMenu from './AoiBarUserMenu.vue'
+import AoiLogo from './AoiLogo.vue'
+
+import { useAppState } from '@/stores/app'
+import { appName, showCountdown } from '@/utils/flags'
 
 const { t } = useI18n()
 const appState = useAppState()

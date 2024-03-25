@@ -18,15 +18,17 @@
 </template>
 
 <script setup lang="ts">
-import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
-import UserAuthPassword from './UserAuthPassword.vue'
-import UserAuthMail from './UserAuthMail.vue'
 import type { Component } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import UserAuthIaaa from './UserAuthIaaa.vue'
+import UserAuthMail from './UserAuthMail.vue'
+import UserAuthPassword from './UserAuthPassword.vue'
+
 import { useMfa } from '@/stores/app'
 import { enableMfa } from '@/utils/flags'
+import { http } from '@/utils/http'
 
 defineProps<{
   userId: string

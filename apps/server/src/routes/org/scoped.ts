@@ -1,14 +1,15 @@
-import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
+
 import { IGroup, IOrgMembership, IUser, ORG_CAPS } from '../../db/index.js'
-import { defineRoutes, paramSchemaMerger, loadUUID, md5 } from '../common/index.js'
-import { orgAdminRoutes } from './admin/index.js'
-import { SOrgProfile } from '../../schemas/index.js'
 import { CAP_NONE, hasCapability } from '../../index.js'
+import { T, SOrgProfile } from '../../schemas/index.js'
+import { defineRoutes, paramSchemaMerger, loadUUID, md5 } from '../common/index.js'
+
+import { orgAdminRoutes } from './admin/index.js'
 import { kOrgContext } from './inject.js'
 
-const orgIdSchema = Type.Object({
-  orgId: Type.String()
+const orgIdSchema = T.Object({
+  orgId: T.String()
 })
 
 export const orgScopedRoutes = defineRoutes(async (s) => {
@@ -32,10 +33,10 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get organization details',
         response: {
-          200: Type.Object({
+          200: T.Object({
             profile: SOrgProfile,
-            membership: Type.Object({
-              capability: Type.String()
+            membership: T.Object({
+              capability: T.String()
             })
           })
         }
@@ -76,19 +77,19 @@ export const orgScopedRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Search for principals in the organization',
-        body: Type.Partial(
-          Type.Object({
-            principalId: Type.UUID(),
-            name: Type.String()
+        body: T.Partial(
+          T.Object({
+            principalId: T.UUID(),
+            name: T.String()
           })
         ),
         response: {
-          200: Type.Array(
-            Type.Object({
-              principalId: Type.UUID(),
-              principalType: Type.StringEnum(['guest', 'member', 'group']),
-              name: Type.String(),
-              emailHash: Type.String()
+          200: T.Array(
+            T.Object({
+              principalId: T.UUID(),
+              principalType: T.StringEnum(['guest', 'member', 'group']),
+              name: T.String(),
+              emailHash: T.String()
             }),
             { maxItems: 50 }
           )

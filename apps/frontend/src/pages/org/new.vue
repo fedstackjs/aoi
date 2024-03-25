@@ -17,11 +17,12 @@
 </template>
 
 <script setup lang="ts">
-import { http } from '@/utils/http'
-import { withTitle } from '@/utils/title'
 import { reactive, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+
+import { http } from '@/utils/http'
+import { withTitle } from '@/utils/title'
 
 const router = useRouter()
 const { t } = useI18n()

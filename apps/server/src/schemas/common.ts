@@ -1,6 +1,8 @@
-import { Type, ExtendedTypeBuilder, TSchema, ObjectOptions, TProperties } from '@sinclair/typebox'
+import { JavaScriptTypeBuilder, TSchema, ObjectOptions, TProperties } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
 import './formats.js'
+
+export { Static } from '@sinclair/typebox'
 
 export enum AccessLevel {
   PUBLIC = 0,
@@ -8,71 +10,52 @@ export enum AccessLevel {
   PRIVATE = 2
 }
 
-declare module '@sinclair/typebox' {
-  interface ExtendedTypeBuilder {
-    UUID(): TUnsafe<BSON.UUID | string>
-    Hash(): TString
-    AccessLevel(): TUnsafe<AccessLevel>
-    StringEnum<T extends string[]>(values: [...T]): TUnsafe<T[number]>
-    IntegerEnum<T extends Record<string, string | number>>(obj: T): TUnsafe<T[keyof T]>
-    NoAdditionalProperties<S extends TSchema>(schema: S): S
-    StrictObject<T extends TProperties>(properties: T, options?: ObjectOptions): TObject<T>
-    PaginationResult<T extends TSchema>(
-      itemType: T
-    ): TObject<{
-      items: TArray<T>
-      total: TOptional<TInteger>
-    }>
+export class ServerTypeBuilder extends JavaScriptTypeBuilder {
+  UUID() {
+    return this.Unsafe<BSON.UUID | string>(this.String({ format: 'uuid' }))
+  }
+
+  Hash() {
+    return this.String({ pattern: '^[0-9a-f]{64}$' })
+  }
+
+  StringEnum<T extends string[]>(values: [...T]) {
+    return this.Unsafe<T[number]>({ type: 'string', enum: values })
+  }
+
+  IntegerEnum<T extends Record<string, string | number>>(obj: T) {
+    const values = Object.getOwnPropertyNames(obj)
+      .filter((key) => isNaN(key as unknown as number))
+      .map((key) => obj[key]) as T[keyof T][]
+    return this.Unsafe<T[keyof T]>(this.Integer({ enum: values }))
+  }
+
+  AccessLevel() {
+    return this.IntegerEnum(AccessLevel)
+  }
+
+  NoAdditionalProperties<S extends TSchema>(schema: S) {
+    return {
+      ...schema,
+      additionalProperties: false
+    }
+  }
+
+  StrictObject<T extends TProperties>(properties: T, options?: ObjectOptions) {
+    return this.Object(properties, { ...options, additionalProperties: false })
+  }
+
+  PaginationResult<T extends TSchema>(itemType: T) {
+    return this.Object({
+      items: this.Array(itemType),
+      total: this.Optional(this.Integer())
+    })
   }
 }
 
-ExtendedTypeBuilder.prototype.UUID = function () {
-  return Type.Unsafe<BSON.UUID | string>(Type.String({ format: 'uuid' }))
-}
+export const T = new ServerTypeBuilder()
 
-ExtendedTypeBuilder.prototype.Hash = function () {
-  return Type.String({ pattern: '^[0-9a-f]{64}$' })
-}
-
-ExtendedTypeBuilder.prototype.StringEnum = function <T extends string[]>(values: [...T]) {
-  return Type.Unsafe<T[number]>({ type: 'string', enum: values })
-}
-
-ExtendedTypeBuilder.prototype.IntegerEnum = function <T extends Record<string, string | number>>(
-  obj: T
-) {
-  const values = Object.getOwnPropertyNames(obj)
-    .filter((key) => isNaN(key as unknown as number))
-    .map((key) => obj[key]) as T[keyof T][]
-  return Type.Unsafe<T[keyof T]>(Type.Integer({ enum: values }))
-}
-
-ExtendedTypeBuilder.prototype.AccessLevel = function () {
-  return this.IntegerEnum(AccessLevel)
-}
-
-ExtendedTypeBuilder.prototype.NoAdditionalProperties = function <S extends TSchema>(schema: S) {
-  return {
-    ...schema,
-    additionalProperties: false
-  }
-}
-
-ExtendedTypeBuilder.prototype.StrictObject = function <T extends TProperties>(
-  properties: T,
-  options?: ObjectOptions
-) {
-  return Type.Object(properties, { ...options, additionalProperties: false })
-}
-
-ExtendedTypeBuilder.prototype.PaginationResult = function <T extends TSchema>(itemType: T) {
-  return Type.Object({
-    items: Type.Array(itemType),
-    total: Type.Optional(Type.Integer())
-  })
-}
-
-export const SBaseProfile = Type.StrictObject({
-  name: Type.String(),
-  email: Type.String()
+export const SBaseProfile = T.StrictObject({
+  name: T.String(),
+  email: T.String()
 })

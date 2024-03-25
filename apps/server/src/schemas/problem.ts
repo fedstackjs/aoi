@@ -1,17 +1,17 @@
-import { Static, Type } from '@sinclair/typebox'
+import { Static, T } from './common.js'
 
-export const SProblemSettings = Type.Partial(
-  Type.Object({
-    allowPublicSubmit: Type.Boolean(),
-    maxSolutionCount: Type.Number(),
+export const SProblemSettings = T.Partial(
+  T.Object({
+    allowPublicSubmit: T.Boolean(),
+    maxSolutionCount: T.Number(),
     // Allow participant see other's solution's status
-    solutionShowOther: Type.Boolean(),
+    solutionShowOther: T.Boolean(),
     // Allow participant see self solution's details (control OSS result json file)
-    solutionShowDetails: Type.Boolean(),
+    solutionShowDetails: T.Boolean(),
     // Allow participant see other's solution's details (control OSS result json file)
-    solutionShowOtherDetails: Type.Boolean(),
+    solutionShowOtherDetails: T.Boolean(),
     // Allow participant see other's solution's data (control OSS data file)
-    solutionShowOtherData: Type.Boolean()
+    solutionShowOtherData: T.Boolean()
   })
 )
 

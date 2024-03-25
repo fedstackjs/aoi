@@ -68,14 +68,17 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import SolutionStateChip from '@/components/solution/SolutionStateChip.vue'
+import { RouterLink } from 'vue-router'
+
 import PrincipalProfile from '../utils/PrincipalProfile.vue'
+
+import SolutionFilter from './SolutionFilter.vue'
+import { useSolutionList } from './SolutionList'
 import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
 import SolutionStatusChip from './SolutionStatusChip.vue'
+
+import SolutionStateChip from '@/components/solution/SolutionStateChip.vue'
 import { useAppState } from '@/stores/app'
-import { useSolutionList } from './SolutionList'
-import { RouterLink } from 'vue-router'
-import SolutionFilter from './SolutionFilter.vue'
 
 const { t } = useI18n()
 const app = useAppState()

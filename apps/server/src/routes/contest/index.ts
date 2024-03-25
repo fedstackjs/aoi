@@ -1,12 +1,13 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
-import { CAP_NONE, ensureCapability, findPaginated, hasCapability } from '../../utils/index.js'
-import { AccessLevel } from '../../schemas/index.js'
+import { UUID } from 'mongodb'
+
 import { ContestRanklistState, ORG_CAPS } from '../../db/index.js'
 import { SContestStage } from '../../schemas/contest.js'
-import { UUID } from 'mongodb'
-import { contestScopedRoutes } from './scoped.js'
+import { T, AccessLevel } from '../../schemas/index.js'
+import { CAP_NONE, ensureCapability, findPaginated, hasCapability } from '../../utils/index.js'
 import { searchToFilter, filterMerge } from '../../utils/search.js'
+import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
+
+import { contestScopedRoutes } from './scoped.js'
 
 export const contestRoutes = defineRoutes(async (s) => {
   const { contests } = s.db
@@ -20,17 +21,17 @@ export const contestRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create a new contest',
-        body: Type.Object({
-          orgId: Type.String(),
-          slug: Type.String(),
-          title: Type.String(),
-          accessLevel: Type.AccessLevel(),
-          start: Type.Integer(),
-          duration: Type.Integer()
+        body: T.Object({
+          orgId: T.String(),
+          slug: T.String(),
+          title: T.String(),
+          accessLevel: T.AccessLevel(),
+          start: T.Integer(),
+          duration: T.Integer()
         }),
         response: {
-          200: Type.Object({
-            contestId: Type.UUID()
+          200: T.Object({
+            contestId: T.UUID()
           })
         }
       }
@@ -75,11 +76,11 @@ export const contestRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List contest tags',
-        querystring: Type.Object({
-          orgId: Type.UUID()
+        querystring: T.Object({
+          orgId: T.UUID()
         }),
         response: {
-          200: Type.Array(Type.String())
+          200: T.Array(T.String())
         }
       }
     },
@@ -94,26 +95,26 @@ export const contestRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List contests',
-        querystring: Type.Object({
-          orgId: Type.UUID(),
-          page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
-          count: Type.Boolean({ default: false }),
-          search: Type.Optional(Type.String({ minLength: 1 })),
-          tag: Type.Optional(Type.String())
+        querystring: T.Object({
+          orgId: T.UUID(),
+          page: T.Integer({ minimum: 1, default: 1 }),
+          perPage: T.Integer({ enum: [15, 30, 50, 100] }),
+          count: T.Boolean({ default: false }),
+          search: T.Optional(T.String({ minLength: 1 })),
+          tag: T.Optional(T.String())
         }),
         response: {
-          200: Type.PaginationResult(
-            Type.Object({
-              _id: Type.UUID(),
-              accessLevel: Type.AccessLevel(),
-              slug: Type.String(),
-              title: Type.String(),
-              tags: Type.Array(Type.String()),
-              start: Type.Integer(),
-              end: Type.Integer(),
-              stages: Type.Array(Type.Pick(SContestStage, ['name', 'start'] as const)),
-              participantCount: Type.Integer()
+          200: T.PaginationResult(
+            T.Object({
+              _id: T.UUID(),
+              accessLevel: T.AccessLevel(),
+              slug: T.String(),
+              title: T.String(),
+              tags: T.Array(T.String()),
+              start: T.Integer(),
+              end: T.Integer(),
+              stages: T.Array(T.Pick(SContestStage, ['name', 'start'] as const)),
+              participantCount: T.Integer()
             })
           )
         }
@@ -176,23 +177,23 @@ export const contestRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'List public contests',
         security: [],
-        querystring: Type.Object({
-          page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
-          count: Type.Boolean({ default: false }),
-          search: Type.Optional(Type.String({ minLength: 1 })),
-          tag: Type.Optional(Type.String())
+        querystring: T.Object({
+          page: T.Integer({ minimum: 1, default: 1 }),
+          perPage: T.Integer({ enum: [15, 30, 50, 100] }),
+          count: T.Boolean({ default: false }),
+          search: T.Optional(T.String({ minLength: 1 })),
+          tag: T.Optional(T.String())
         }),
         response: {
-          200: Type.PaginationResult(
-            Type.Object({
-              _id: Type.UUID(),
-              orgId: Type.UUID(),
-              slug: Type.String(),
-              title: Type.String(),
-              tags: Type.Array(Type.String()),
-              stages: Type.Array(Type.Pick(SContestStage, ['name', 'start'] as const)),
-              participantCount: Type.Integer()
+          200: T.PaginationResult(
+            T.Object({
+              _id: T.UUID(),
+              orgId: T.UUID(),
+              slug: T.String(),
+              title: T.String(),
+              tags: T.Array(T.String()),
+              stages: T.Array(T.Pick(SContestStage, ['name', 'start'] as const)),
+              participantCount: T.Integer()
             })
           )
         }

@@ -14,9 +14,11 @@
 </template>
 
 <script setup lang="ts">
-import type { IContestStage } from '@/types'
 import { useI18n } from 'vue-i18n'
+
 import ContestStageTagRulesInput from './ContestStageTagRulesInput.vue'
+
+import type { IContestStage } from '@/types'
 
 const { t } = useI18n()
 

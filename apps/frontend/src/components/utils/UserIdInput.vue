@@ -30,12 +30,14 @@
 </template>
 
 <script setup lang="ts">
-import { http } from '@/utils/http'
 import { useAsyncState, watchDebounced } from '@vueuse/core'
 import { ref } from 'vue'
-import { getProfile } from '@/utils/profile'
+
 import AoiGravatar from '../aoi/AoiGravatar.vue'
+
 import { useAppState } from '@/stores/app'
+import { http } from '@/utils/http'
+import { getProfile } from '@/utils/profile'
 
 const props = defineProps<{
   search?: Record<string, string | number | boolean>

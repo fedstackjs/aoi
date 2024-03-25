@@ -10,10 +10,12 @@
 </template>
 
 <script setup lang="ts">
-import JsonViewer from '@/components/utils/JsonViewer.vue'
 import type { Ranklist } from '@aoi-js/common'
 import { useI18n } from 'vue-i18n'
+
 import RanklistRenderer from '../contest/RanklistRenderer.vue'
+
+import JsonViewer from '@/components/utils/JsonViewer.vue'
 
 const { t } = useI18n()
 const props = defineProps<{

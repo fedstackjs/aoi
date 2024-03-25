@@ -1,8 +1,9 @@
 import { BSON } from 'mongodb'
-import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
-import { Type } from '@sinclair/typebox'
+
 import { ORG_CAPS, SGroupProfile, ensureCapability, paginationSkip } from '../../index.js'
+import { T } from '../../schemas/index.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
+import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 
 const kGroupContext = defineInjectionPoint<{
   groupId: BSON.UUID
@@ -14,8 +15,8 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
   s.addHook(
     'onRoute',
     paramSchemaMerger(
-      Type.Object({
-        groupId: Type.String()
+      T.Object({
+        groupId: T.String()
       })
     )
   )
@@ -32,9 +33,9 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get group details',
         response: {
-          200: Type.Object({
-            _id: Type.UUID(),
-            orgId: Type.UUID(),
+          200: T.Object({
+            _id: T.UUID(),
+            orgId: T.UUID(),
             profile: SGroupProfile
           })
         }
@@ -117,13 +118,13 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List members in a group',
-        querystring: Type.Object({
-          page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
-          count: Type.Boolean({ default: false })
+        querystring: T.Object({
+          page: T.Integer({ minimum: 1, default: 1 }),
+          perPage: T.Integer({ enum: [15, 30, 50, 100] }),
+          count: T.Boolean({ default: false })
         }),
         response: {
-          200: Type.PaginationResult(Type.Any())
+          200: T.PaginationResult(T.Any())
         }
       }
     },
@@ -182,8 +183,8 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Add member to group',
-        body: Type.Object({
-          userId: Type.String()
+        body: T.Object({
+          userId: T.String()
         })
       }
     },
@@ -209,8 +210,8 @@ export const groupScopedRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Remove member from group',
-        params: Type.Object({
-          userId: Type.UUID()
+        params: T.Object({
+          userId: T.UUID()
         })
       }
     },

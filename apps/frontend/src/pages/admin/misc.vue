@@ -32,10 +32,11 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import SettingsEditor from '@/components/utils/SettingsEditor.vue'
+
+import DefaultOrgInput from '@/components/admin/misc/DefaultOrgInput.vue'
 import MilestoneSettingsInput from '@/components/admin/misc/MilestoneSettingsInput.vue'
 import TitleURLInput from '@/components/admin/misc/TitleURLInput.vue'
-import DefaultOrgInput from '@/components/admin/misc/DefaultOrgInput.vue'
+import SettingsEditor from '@/components/utils/SettingsEditor.vue'
 
 const { t } = useI18n()
 </script>

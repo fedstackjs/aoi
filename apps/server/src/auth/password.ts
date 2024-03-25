@@ -1,28 +1,29 @@
-import { Collection, UUID } from 'mongodb'
-import { Type } from '@sinclair/typebox'
-import { TypeCompiler } from '@sinclair/typebox/compiler'
-import bcrypt from 'bcrypt'
 import { httpErrors } from '@fastify/sensible'
+import { TypeCompiler } from '@sinclair/typebox/compiler'
+import * as bcrypt from 'bcrypt'
+import { Collection, UUID } from 'mongodb'
+
+import { IUser } from '../db/index.js'
+import { T } from '../schemas/index.js'
 
 import { BaseAuthProvider } from './base.js'
-import { IUser } from '../db/index.js'
 
-const SPasswordBindPayload = Type.Object({
-  oldPassword: Type.Optional(Type.String()),
-  password: Type.String()
+const SPasswordBindPayload = T.Object({
+  oldPassword: T.Optional(T.String()),
+  password: T.String()
 })
 
 const PasswordBindPayload = TypeCompiler.Compile(SPasswordBindPayload)
 
-const SPasswordVerifyPayload = Type.Object({
-  password: Type.String()
+const SPasswordVerifyPayload = T.Object({
+  password: T.String()
 })
 
 const PasswordVerifyPayload = TypeCompiler.Compile(SPasswordVerifyPayload)
 
-const SPasswordLoginPayload = Type.Object({
-  username: Type.String(),
-  password: Type.String()
+const SPasswordLoginPayload = T.Object({
+  username: T.String(),
+  password: T.String()
 })
 
 const PasswordLoginPayload = TypeCompiler.Compile(SPasswordLoginPayload)

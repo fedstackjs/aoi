@@ -10,10 +10,11 @@
 </template>
 
 <script setup lang="ts">
-import type { IContestDTO } from '@/components/contest/types'
-import { enableOverview } from '@/utils/flags'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+
+import type { IContestDTO } from '@/components/contest/types'
+import { enableOverview } from '@/utils/flags'
 
 const props = defineProps<{
   orgId: string

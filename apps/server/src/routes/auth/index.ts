@@ -1,10 +1,10 @@
-import { Type } from '@fastify/type-provider-typebox'
-import bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt'
 import { BSON } from 'mongodb'
-import { defineRoutes, swaggerTagMerger } from '../common/index.js'
-import { SUserProfile } from '../../schemas/index.js'
+
 import { ORG_CAPS } from '../../db/index.js'
 import { loadEnv, parseBoolean } from '../../index.js'
+import { T, SUserProfile } from '../../schemas/index.js'
+import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 
 const signupEnabled = loadEnv('SIGNUP_ENABLED', parseBoolean, true)
 
@@ -23,9 +23,9 @@ export const authRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: Type.Object({
-            providers: Type.Array(Type.String()),
-            signup: Type.Boolean()
+          200: T.Object({
+            providers: T.Array(T.String()),
+            signup: T.Boolean()
           })
         }
       }
@@ -39,12 +39,12 @@ export const authRoutes = defineRoutes(async (s) => {
     '/preLogin',
     {
       schema: {
-        body: Type.Object({
-          provider: Type.String(),
-          payload: Type.Unknown()
+        body: T.Object({
+          provider: T.String(),
+          payload: T.Unknown()
         }),
         response: {
-          200: Type.Unknown()
+          200: T.Unknown()
         }
       }
     },
@@ -59,13 +59,13 @@ export const authRoutes = defineRoutes(async (s) => {
     '/login',
     {
       schema: {
-        body: Type.Object({
-          provider: Type.String(),
-          payload: Type.Unknown()
+        body: T.Object({
+          provider: T.String(),
+          payload: T.Unknown()
         }),
         response: {
-          200: Type.Object({
-            token: Type.String()
+          200: T.Object({
+            token: T.String()
           })
         }
       }
@@ -84,12 +84,12 @@ export const authRoutes = defineRoutes(async (s) => {
     {
       schema: {
         security: [{ bearerAuth: [] }],
-        body: Type.Object({
-          provider: Type.String(),
-          payload: Type.Unknown()
+        body: T.Object({
+          provider: T.String(),
+          payload: T.Unknown()
         }),
         response: {
-          200: Type.Unknown()
+          200: T.Unknown()
         }
       }
     },
@@ -105,13 +105,13 @@ export const authRoutes = defineRoutes(async (s) => {
     {
       schema: {
         security: [{ bearerAuth: [] }],
-        body: Type.Object({
-          provider: Type.String(),
-          payload: Type.Unknown()
+        body: T.Object({
+          provider: T.String(),
+          payload: T.Unknown()
         }),
         response: {
-          200: Type.Object({
-            token: Type.String()
+          200: T.Object({
+            token: T.String()
           })
         }
       }
@@ -133,9 +133,9 @@ export const authRoutes = defineRoutes(async (s) => {
     '/signup',
     {
       schema: {
-        body: Type.Object({
+        body: T.Object({
           profile: SUserProfile,
-          password: Type.String()
+          password: T.String()
         })
       }
     },

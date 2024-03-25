@@ -16,11 +16,14 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
-import type { IPlanContestDTO } from './types'
 import { useRoute, useRouter } from 'vue-router'
+
 import SettingsEditor from '../utils/SettingsEditor.vue'
+
 import PlanContestSettingsInput from './PlanContestSettingsInput.vue'
+import type { IPlanContestDTO } from './types'
+
+import { http } from '@/utils/http'
 
 const { t } = useI18n()
 const router = useRouter()

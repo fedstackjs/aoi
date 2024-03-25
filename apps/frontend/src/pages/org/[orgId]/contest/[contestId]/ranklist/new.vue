@@ -13,12 +13,13 @@
 </template>
 
 <script setup lang="ts">
-import type { IContestDTO } from '@/components/contest/types'
-import { http } from '@/utils/http'
 import { reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
+
+import type { IContestDTO } from '@/components/contest/types'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   orgId: string

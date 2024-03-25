@@ -3,12 +3,12 @@ name: Publish
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
     outputs:
       server_updated: ${{ steps.publish.outputs.server_updated }}
     steps:
@@ -48,12 +48,11 @@ jobs:
       - name: Build packages
         run: corepack yarn workspaces foreach -Ap --topological-dev run build
 
-      - name: Setup Yarn
-        run: corepack yarn config set -H 'npmAuthToken' "${{ secrets.NPM_TOKEN }}"
-
       - name: Publish and commit
         id: publish
         run: corepack yarn zx scripts/publish.mjs
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Upload server tgz
         uses: actions/upload-artifact@v4

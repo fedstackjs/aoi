@@ -11,15 +11,16 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
-import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
 import { useAsyncState } from '@vueuse/core'
-import { http } from '@/utils/http'
-import { useAppState } from '@/stores/app'
-import AsyncState from '@/components/utils/AsyncState.vue'
-import UserInfoBoard from '@/components/user/UserInfoBoard.vue'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import type { userInfoProfile } from '@/components/user/types'
+import UserInfoBoard from '@/components/user/UserInfoBoard.vue'
+import AsyncState from '@/components/utils/AsyncState.vue'
+import { useAppState } from '@/stores/app'
+import { http } from '@/utils/http'
+import { withTitle } from '@/utils/title'
 
 const { t } = useI18n()
 const appState = useAppState()

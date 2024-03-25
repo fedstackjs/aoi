@@ -19,12 +19,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import type { IContestDTO } from '@/components/contest/types'
-import { ref } from 'vue'
-import { onBeforeUnmount } from 'vue'
 import ms from 'ms'
+import { computed, ref, onBeforeUnmount } from 'vue'
+
 import type { IPlanContestDTO } from '../plan/types'
+
+import type { IContestDTO } from '@/components/contest/types'
 
 const props = defineProps<{ contest: IContestDTO | IPlanContestDTO }>()
 const emit = defineEmits<{

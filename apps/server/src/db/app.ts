@@ -1,8 +1,10 @@
+import { fastifyPlugin } from 'fastify-plugin'
 import { Collection, UUID } from 'mongodb'
-import { IPrincipalControlable, IWithAccessLevel, IWithContent } from './common.js'
+
 import { IAppSettings } from '../schemas/app.js'
 import { capabilityMask } from '../utils/index.js'
-import { fastifyPlugin } from 'fastify-plugin'
+
+import { IPrincipalControlable, IWithAccessLevel, IWithContent } from './common.js'
 
 export const APP_CAPS = {
   CAP_ACCESS: capabilityMask(0),

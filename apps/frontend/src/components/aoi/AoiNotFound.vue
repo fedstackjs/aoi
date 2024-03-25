@@ -11,8 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import { withI18nTitle } from '@/utils/title'
 import { useI18n } from 'vue-i18n'
+
+import { withI18nTitle } from '@/utils/title'
 
 const { t } = useI18n()
 withI18nTitle('pages.not-found')

@@ -1,9 +1,10 @@
 import { common, createStarryNight } from '@wooorm/starry-night'
+import DOMPurify from 'dompurify'
 import { toHtml } from 'hast-util-to-html'
 import markdownIt from 'markdown-it'
 import onigurumaUrl from 'vscode-oniguruma/release/onig.wasm?url'
+
 import markdownItKatex from './katex'
-import DOMPurify from 'dompurify'
 
 const starryNight = await createStarryNight(common, {
   getOnigurumaUrlFetch() {

@@ -14,8 +14,9 @@
 </template>
 
 <script setup lang="ts">
-import type { IProblemSettings } from '@/types'
 import { useI18n } from 'vue-i18n'
+
+import type { IProblemSettings } from '@/types'
 
 const model = defineModel<IProblemSettings>({ required: true })
 const { t } = useI18n()

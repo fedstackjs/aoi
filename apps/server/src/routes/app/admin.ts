@@ -1,12 +1,14 @@
 import { randomBytes } from 'node:crypto'
+
 import { APP_CAPS } from '../../db/index.js'
 import { SAppSettings } from '../../index.js'
+import { T } from '../../schemas/index.js'
 import { hasCapability } from '../../utils/index.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
 import { defineRoutes } from '../common/index.js'
 import { manageSettings } from '../common/settings.js'
+
 import { kAppContext } from './inject.js'
-import { Type } from '@sinclair/typebox'
 
 export const appAdminRoutes = defineRoutes(async (s) => {
   const { apps } = s.db
@@ -55,8 +57,8 @@ export const appAdminRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Revoke app secret',
         response: {
-          200: Type.Object({
-            secret: Type.String()
+          200: T.Object({
+            secret: T.String()
           })
         }
       }

@@ -1,10 +1,11 @@
-import { Type } from '@sinclair/typebox'
-import bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt'
+import { BSON } from 'mongodb'
+
 import { IUser, ORG_CAPS } from '../../../db/index.js'
+import { SUserProfile } from '../../../index.js'
+import { T } from '../../../schemas/index.js'
 import { paginationSkip } from '../../../utils/index.js'
 import { defineRoutes, loadUUID } from '../../common/index.js'
-import { BSON } from 'mongodb'
-import { SUserProfile } from '../../../index.js'
 import { kOrgContext } from '../inject.js'
 
 export const orgAdminMemberRoutes = defineRoutes(async (s) => {
@@ -15,13 +16,13 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List org members',
-        querystring: Type.Object({
-          page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
-          count: Type.Boolean({ default: false })
+        querystring: T.Object({
+          page: T.Integer({ minimum: 1, default: 1 }),
+          perPage: T.Integer({ enum: [15, 30, 50, 100] }),
+          count: T.Boolean({ default: false })
         }),
         response: {
-          200: Type.PaginationResult(Type.Any())
+          200: T.PaginationResult(T.Any())
         }
       }
     },
@@ -94,12 +95,12 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Add member to org',
-        body: Type.Object({
-          userId: Type.String()
+        body: T.Object({
+          userId: T.String()
         }),
         response: {
-          200: Type.Object({
-            membershipId: Type.UUID()
+          200: T.Object({
+            membershipId: T.UUID()
           })
         }
       }
@@ -125,11 +126,11 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Update member capability',
-        params: Type.Object({
-          userId: Type.String()
+        params: T.Object({
+          userId: T.String()
         }),
-        body: Type.Object({
-          capability: Type.String()
+        body: T.Object({
+          capability: T.String()
         })
       }
     },
@@ -151,8 +152,8 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Remove member from org',
-        params: Type.Object({
-          userId: Type.String()
+        params: T.Object({
+          userId: T.String()
         })
       }
     },
@@ -175,17 +176,17 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Batch import members',
-        body: Type.Object({
-          users: Type.Array(
-            Type.Object({
+        body: T.Object({
+          users: T.Array(
+            T.Object({
               profile: SUserProfile,
-              password: Type.String(),
-              passwordResetDue: Type.Boolean({ default: false }),
-              orgCapability: Type.String({ default: ORG_CAPS.CAP_ACCESS.toString() }),
-              orgGroups: Type.Array(Type.UUID(), { default: [] })
+              password: T.String(),
+              passwordResetDue: T.Boolean({ default: false }),
+              orgCapability: T.String({ default: ORG_CAPS.CAP_ACCESS.toString() }),
+              orgGroups: T.Array(T.UUID(), { default: [] })
             })
           ),
-          ignoreDuplicates: Type.Boolean({ default: false })
+          ignoreDuplicates: T.Boolean({ default: false })
         })
       }
     },

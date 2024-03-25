@@ -114,16 +114,19 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import AsyncState from '@/components/utils/AsyncState.vue'
-import DownloadBtn from '@/components/utils/DownloadBtn.vue'
+
+import PrincipalProfile from '../utils/PrincipalProfile.vue'
+import ZipAutoViewer from '../utils/zip/ZipAutoViewer.vue'
+
+import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
+import SolutionStatusChip from './SolutionStatusChip.vue'
+import { useSolutionView, type ISolutionViewProps } from './SolutionView'
+
 import SolutionDetails from '@/components/solution/SolutionDetails.vue'
 import SolutionStateChip from '@/components/solution/SolutionStateChip.vue'
-import ZipAutoViewer from '../utils/zip/ZipAutoViewer.vue'
-import SolutionStatusChip from './SolutionStatusChip.vue'
-import SolutionScoreDisplay from './SolutionScoreDisplay.vue'
-import PrincipalProfile from '../utils/PrincipalProfile.vue'
+import AsyncState from '@/components/utils/AsyncState.vue'
+import DownloadBtn from '@/components/utils/DownloadBtn.vue'
 import { useContestProblemTitle } from '@/utils/contest/problem/inject'
-import { useSolutionView, type ISolutionViewProps } from './SolutionView'
 
 const props = defineProps<ISolutionViewProps>()
 

@@ -82,19 +82,20 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
+import { useAsyncState } from '@vueuse/core'
 import { computed, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAsyncState } from '@vueuse/core'
-import { http } from '@/utils/http'
-import AsyncState from '@/components/utils/AsyncState.vue'
+
+import ContestProgressBar from '@/components/contest/ContestProgressBar.vue'
 import type { IContestParticipantDTO } from '@/components/contest/types'
 import AccessLevelChip from '@/components/utils/AccessLevelChip.vue'
-import ContestProgressBar from '@/components/contest/ContestProgressBar.vue'
+import AsyncState from '@/components/utils/AsyncState.vue'
 import RegisterBtn from '@/components/utils/RegisterBtn.vue'
+import { useAppState } from '@/stores/app'
 import { useContest } from '@/utils/contest/inject'
 import { useContestProblemList } from '@/utils/contest/problem/inject'
-import { useAppState } from '@/stores/app'
+import { http } from '@/utils/http'
+import { withTitle } from '@/utils/title'
 
 const { t } = useI18n()
 const app = useAppState()

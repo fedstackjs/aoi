@@ -26,8 +26,10 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
+
 import type { IContestProblemDTO } from './types'
+
+import { http } from '@/utils/http'
 
 const { t } = useI18n()
 

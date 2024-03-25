@@ -26,14 +26,16 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { usePagination } from '@/utils/pagination'
-import { watch } from 'vue'
-import ProblemTagGroup from './ProblemTagGroup.vue'
+
 import AccessLevelBadge from '../utils/AccessLevelBadge.vue'
+
+import ProblemTagGroup from './ProblemTagGroup.vue'
 import type { IProblemDTO } from './types'
+
+import { usePagination } from '@/utils/pagination'
+import { withTitle } from '@/utils/title'
 
 const props = defineProps<{
   orgId: string

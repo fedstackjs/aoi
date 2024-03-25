@@ -1,15 +1,16 @@
-import { Type } from '@sinclair/typebox'
-import { getFileUrl } from '../common/files.js'
-import { defineRoutes, paramSchemaMerger } from '../common/index.js'
-import { ensureCapability } from '../../utils/index.js'
 import { PROBLEM_CAPS } from '../../db/index.js'
 import { problemAttachmentKey } from '../../oss/index.js'
+import { T } from '../../schemas/index.js'
+import { ensureCapability } from '../../utils/index.js'
+import { getFileUrl } from '../common/files.js'
+import { defineRoutes, paramSchemaMerger } from '../common/index.js'
+
 import { kProblemContext } from './inject.js'
 
 const attachmentScopedRoutes = defineRoutes(async (s) => {
   const { problems } = s.db
 
-  s.addHook('onRoute', paramSchemaMerger(Type.Object({ key: Type.String() })))
+  s.addHook('onRoute', paramSchemaMerger(T.Object({ key: T.String() })))
   s.register(getFileUrl, {
     prefix: '/url',
     resolve: async (type, query, req) => {
@@ -29,7 +30,7 @@ const attachmentScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Delete problem attachment',
         response: {
-          200: Type.Object({})
+          200: T.Object({})
         }
       }
     },
@@ -58,11 +59,11 @@ export const problemAttachmentRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get problem attachments',
         response: {
-          200: Type.Array(
-            Type.Object({
-              key: Type.String(),
-              name: Type.String(),
-              description: Type.String()
+          200: T.Array(
+            T.Object({
+              key: T.String(),
+              name: T.String(),
+              description: T.String()
             })
           )
         }
@@ -80,10 +81,10 @@ export const problemAttachmentRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create problem attachment',
-        body: Type.Object({
-          key: Type.String(),
-          name: Type.String(),
-          description: Type.String()
+        body: T.Object({
+          key: T.String(),
+          name: T.String(),
+          description: T.String()
         })
       }
     },

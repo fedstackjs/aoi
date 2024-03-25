@@ -26,11 +26,12 @@
 <script setup lang="ts">
 import { debouncedRef, useAsyncState } from '@vueuse/core'
 import type JSZip from 'jszip'
-import { watch } from 'vue'
+import { watch, ref } from 'vue'
+
 import MonacoEditor from '../MonacoEditor.vue'
-import { ref } from 'vue'
-import { getSupportedLanguages } from '@/utils/monaco'
+
 import { detectLanguage } from '@/utils/editor'
+import { getSupportedLanguages } from '@/utils/monaco'
 
 const props = defineProps<{
   file: JSZip.JSZipObject

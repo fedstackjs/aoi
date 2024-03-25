@@ -1,10 +1,12 @@
-import { FastifyPluginAsyncTypebox, TSchema, Type } from '@fastify/type-provider-typebox'
+import { createHash } from 'node:crypto'
+
+import { FastifyPluginAsyncTypebox, TSchema } from '@fastify/type-provider-typebox'
 import { RouteOptions } from 'fastify'
 import { BSON } from 'mongodb'
-import { createHash } from 'node:crypto'
+
 import { IOrgMembership, IPrincipalControlable, IWithAccessLevel } from '../../db/index.js'
+import { AccessLevel, T } from '../../schemas/index.js'
 import { CAP_NONE, computeCapability } from '../../utils/capability.js'
-import { AccessLevel } from '../../schemas/index.js'
 
 export * from './access.js'
 export * from './content.js'
@@ -19,7 +21,7 @@ export function paramSchemaMerger(schema: TSchema) {
   return (route: RouteOptions) => {
     const routeSchema = (route.schema ??= {})
     if (routeSchema.params) {
-      routeSchema.params = Type.Intersect([routeSchema.params as TSchema, schema])
+      routeSchema.params = T.Intersect([routeSchema.params as TSchema, schema])
     } else {
       routeSchema.params = schema
     }

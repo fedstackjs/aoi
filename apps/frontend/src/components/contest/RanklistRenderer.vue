@@ -60,14 +60,16 @@
 
 <script setup lang="ts">
 import type { Ranklist } from '@aoi-js/common'
-import { renderMarkdown } from '@/utils/md'
-import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import RanklistTopstars from '../contest/RanklistTopstars.vue'
-import { ref } from 'vue'
-import { computed } from 'vue'
-import { useRanklistRenderer } from './RanklistRenderer'
 import { RouterLink } from 'vue-router'
+
+import RanklistTopstars from '../contest/RanklistTopstars.vue'
+
+import { useRanklistRenderer } from './RanklistRenderer'
+
+import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
+import { renderMarkdown } from '@/utils/md'
 
 const props = defineProps<{
   ranklist: Ranklist

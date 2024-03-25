@@ -35,13 +35,14 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { useAppState } from '@/stores/app'
-import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
-import { withI18nTitle } from '@/utils/title'
+import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
+
 import AoiLogo from '@/components/aoi/AoiLogo.vue'
+import { useAppState } from '@/stores/app'
 import { loginHint } from '@/utils/flags'
+import { withI18nTitle } from '@/utils/title'
 
 const { t } = useI18n()
 const router = useRouter()

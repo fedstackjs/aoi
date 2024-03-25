@@ -1,10 +1,11 @@
+import type { ProblemConfig } from '@aoi-js/common'
 import zip from 'jszip'
 import { reactive, ref, watch } from 'vue'
+import { useToast } from 'vue-toastification'
+
+import { useAsyncTask } from '../async'
 import { computeSHA256Progress } from '../files'
 import { http } from '../http'
-import { useToast } from 'vue-toastification'
-import { useAsyncTask } from '../async'
-import type { ProblemConfig } from '@aoi-js/common'
 
 async function loadConfig(zip: zip) {
   let content = await zip.file('problem.json')?.async('string')

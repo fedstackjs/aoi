@@ -1,4 +1,5 @@
 import { computed, reactive, watch } from 'vue'
+
 import type { useSolutionList } from './SolutionList'
 
 export function useSolutionFilter(filter: ReturnType<typeof useSolutionList>['filter']) {

@@ -30,12 +30,15 @@
   </AsyncState>
 </template>
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
-import AsyncState from '@/components/utils/AsyncState.vue'
+import { useI18n } from 'vue-i18n'
+
 import SettingsEditor from '../utils/SettingsEditor.vue'
+
 import RanklistPublicSettingsInput from './RanklistPublicSettingsInput.vue'
+
+import AsyncState from '@/components/utils/AsyncState.vue'
+import { http } from '@/utils/http'
 
 const { t } = useI18n()
 const props = defineProps<{

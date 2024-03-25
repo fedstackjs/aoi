@@ -39,12 +39,13 @@
 </template>
 
 <script setup lang="ts">
-import { withI18nTitle } from '@/utils/title'
-import { useI18n } from 'vue-i18n'
-import AsyncState from '@/components/utils/AsyncState.vue'
-import AccessLevelChip from '@/components/utils/AccessLevelChip.vue'
-import { useApp } from '@/utils/app/inject'
 import { toRef } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import AccessLevelChip from '@/components/utils/AccessLevelChip.vue'
+import AsyncState from '@/components/utils/AsyncState.vue'
+import { useApp } from '@/utils/app/inject'
+import { withI18nTitle } from '@/utils/title'
 
 const { t } = useI18n()
 const props = defineProps<{

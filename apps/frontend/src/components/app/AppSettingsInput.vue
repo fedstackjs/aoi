@@ -25,10 +25,12 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 import ListInput from '../utils/ListInput.vue'
 import OptionalInput from '../utils/OptionalInput.vue'
+
 import type { IAppSettingsDTO } from './types'
-import { useI18n } from 'vue-i18n'
 
 const model = defineModel<IAppSettingsDTO>({ required: true })
 const { t } = useI18n()

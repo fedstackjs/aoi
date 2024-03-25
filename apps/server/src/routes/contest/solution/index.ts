@@ -1,16 +1,17 @@
-import { Type } from '@sinclair/typebox'
+import { FastifyRequest } from 'fastify'
+import { BSON } from 'mongodb'
+
+import { CONTEST_CAPS, ISolution, SolutionState } from '../../../db/index.js'
+import { solutionDataKey, solutionDetailsKey } from '../../../oss/index.js'
+import { T } from '../../../schemas/index.js'
+import { findPaginated, hasCapability } from '../../../utils/index.js'
+import { getFileUrl } from '../../common/files.js'
 import {
   defineRoutes,
   generateRangeQuery,
   loadUUID,
   paramSchemaMerger
 } from '../../common/index.js'
-import { findPaginated, hasCapability } from '../../../utils/index.js'
-import { CONTEST_CAPS, ISolution, SolutionState } from '../../../db/index.js'
-import { BSON } from 'mongodb'
-import { getFileUrl } from '../../common/files.js'
-import { solutionDataKey, solutionDetailsKey } from '../../../oss/index.js'
-import { FastifyRequest } from 'fastify'
 import { kContestContext } from '../inject.js'
 
 function checkUser(
@@ -33,8 +34,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
   s.addHook(
     'onRoute',
     paramSchemaMerger(
-      Type.Object({
-        solutionId: Type.String()
+      T.Object({
+        solutionId: T.String()
       })
     )
   )
@@ -111,20 +112,20 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: Type.Object({
-            _id: Type.UUID(),
-            label: Type.String(),
-            problemId: Type.UUID(),
-            userId: Type.UUID(),
-            problemDataHash: Type.String(),
-            state: Type.Integer(),
-            score: Type.Number(),
-            metrics: Type.Record(Type.String(), Type.Number()),
-            status: Type.String(),
-            message: Type.String(),
-            createdAt: Type.Number(),
-            submittedAt: Type.Optional(Type.Number()),
-            completedAt: Type.Optional(Type.Number())
+          200: T.Object({
+            _id: T.UUID(),
+            label: T.String(),
+            problemId: T.UUID(),
+            userId: T.UUID(),
+            problemDataHash: T.String(),
+            state: T.Integer(),
+            score: T.Number(),
+            metrics: T.Record(T.String(), T.Number()),
+            status: T.String(),
+            message: T.String(),
+            createdAt: T.Number(),
+            submittedAt: T.Optional(T.Number()),
+            completedAt: T.Optional(T.Number())
           })
         }
       }
@@ -226,33 +227,33 @@ export const contestSolutionRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Get contest solutions',
-        querystring: Type.Object({
-          userId: Type.Optional(Type.String()),
-          problemId: Type.Optional(Type.String()),
+        querystring: T.Object({
+          userId: T.Optional(T.String()),
+          problemId: T.Optional(T.String()),
 
-          state: Type.Optional(Type.Integer({ minimum: 0, maximum: 4 })),
-          status: Type.Optional(Type.String()),
-          scoreL: Type.Optional(Type.Number()),
-          scoreR: Type.Optional(Type.Number()),
-          submittedAtL: Type.Optional(Type.Integer()),
-          submittedAtR: Type.Optional(Type.Integer()),
+          state: T.Optional(T.Integer({ minimum: 0, maximum: 4 })),
+          status: T.Optional(T.String()),
+          scoreL: T.Optional(T.Number()),
+          scoreR: T.Optional(T.Number()),
+          submittedAtL: T.Optional(T.Integer()),
+          submittedAtR: T.Optional(T.Integer()),
 
-          page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
-          count: Type.Boolean({ default: false })
+          page: T.Integer({ minimum: 1, default: 1 }),
+          perPage: T.Integer({ enum: [15, 30, 50, 100] }),
+          count: T.Boolean({ default: false })
         }),
         response: {
-          200: Type.PaginationResult(
-            Type.Object({
-              _id: Type.UUID(),
-              problemId: Type.UUID(),
-              userId: Type.UUID(),
-              state: Type.Integer(),
-              score: Type.Number(),
-              metrics: Type.Record(Type.String(), Type.Number()),
-              status: Type.String(),
-              message: Type.String(),
-              submittedAt: Type.Optional(Type.Number())
+          200: T.PaginationResult(
+            T.Object({
+              _id: T.UUID(),
+              problemId: T.UUID(),
+              userId: T.UUID(),
+              state: T.Integer(),
+              score: T.Number(),
+              metrics: T.Record(T.String(), T.Number()),
+              status: T.String(),
+              message: T.String(),
+              submittedAt: T.Optional(T.Number())
             })
           )
         }

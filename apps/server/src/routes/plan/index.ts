@@ -1,11 +1,12 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 import { UUID } from 'mongodb'
-import { CAP_NONE, findPaginated, hasCapability } from '../../utils/index.js'
+
 import { ORG_CAPS } from '../../db/index.js'
-import { AccessLevel } from '../../schemas/index.js'
-import { planScopedRoutes } from './scoped.js'
+import { T, AccessLevel } from '../../schemas/index.js'
+import { CAP_NONE, findPaginated, hasCapability } from '../../utils/index.js'
 import { searchToFilter, filterMerge } from '../../utils/search.js'
+import { defineRoutes, swaggerTagMerger } from '../common/index.js'
+
+import { planScopedRoutes } from './scoped.js'
 
 export const planRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('plan'))
@@ -15,15 +16,15 @@ export const planRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create a new plan',
-        body: Type.Object({
-          orgId: Type.String(),
-          slug: Type.String(),
-          title: Type.String(),
-          accessLevel: Type.AccessLevel()
+        body: T.Object({
+          orgId: T.String(),
+          slug: T.String(),
+          title: T.String(),
+          accessLevel: T.AccessLevel()
         }),
         response: {
-          200: Type.Object({
-            planId: Type.UUID()
+          200: T.Object({
+            planId: T.UUID()
           })
         }
       }
@@ -56,11 +57,11 @@ export const planRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List plan tags',
-        querystring: Type.Object({
-          orgId: Type.UUID()
+        querystring: T.Object({
+          orgId: T.UUID()
         }),
         response: {
-          200: Type.Array(Type.String())
+          200: T.Array(T.String())
         }
       }
     },
@@ -75,22 +76,22 @@ export const planRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List plans',
-        querystring: Type.Object({
-          orgId: Type.UUID(),
-          page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
-          count: Type.Boolean({ default: false }),
-          search: Type.Optional(Type.String({ minLength: 1 })),
-          tag: Type.Optional(Type.String())
+        querystring: T.Object({
+          orgId: T.UUID(),
+          page: T.Integer({ minimum: 1, default: 1 }),
+          perPage: T.Integer({ enum: [15, 30, 50, 100] }),
+          count: T.Boolean({ default: false }),
+          search: T.Optional(T.String({ minLength: 1 })),
+          tag: T.Optional(T.String())
         }),
         response: {
-          200: Type.PaginationResult(
-            Type.Object({
-              _id: Type.UUID(),
-              accessLevel: Type.AccessLevel(),
-              slug: Type.String(),
-              title: Type.String(),
-              tags: Type.Array(Type.String())
+          200: T.PaginationResult(
+            T.Object({
+              _id: T.UUID(),
+              accessLevel: T.AccessLevel(),
+              slug: T.String(),
+              title: T.String(),
+              tags: T.Array(T.String())
             })
           )
         }
@@ -137,13 +138,13 @@ export const planRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List plans to be demonstrated on the homepage',
-        querystring: Type.Object({
-          orgId: Type.String()
+        querystring: T.Object({
+          orgId: T.String()
         }),
         response: {
-          200: Type.Array(
-            Type.Object({
-              _id: Type.UUID()
+          200: T.Array(
+            T.Object({
+              _id: T.UUID()
             })
           )
         }

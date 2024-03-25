@@ -88,25 +88,24 @@
 </template>
 
 <script setup lang="ts">
-import AsyncState from '@/components/utils/AsyncState.vue'
-import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
-import ProblemSubmit from '@/components/problem/ProblemSubmit.vue'
+import { useAsyncState } from '@vueuse/core'
+import { ref, watch, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import ProblemJumpBtn from '@/components/contest/ProblemJumpBtn.vue'
+import ProblemTabAdmin from '@/components/contest/ProblemTabAdmin.vue'
+import ProblemTabAttachments from '@/components/contest/ProblemTabAttachments.vue'
 import type {
   IContestDTO,
   IContestProblemDTO,
   IContestProblemListDTO
 } from '@/components/contest/types'
-import { http } from '@/utils/http'
-import { useAsyncState } from '@vueuse/core'
-import { useI18n } from 'vue-i18n'
-import { ref } from 'vue'
-import ProblemTabAttachments from '@/components/contest/ProblemTabAttachments.vue'
-import ProblemTabAdmin from '@/components/contest/ProblemTabAdmin.vue'
-import ProblemJumpBtn from '@/components/contest/ProblemJumpBtn.vue'
-import { useContestCapability, useContestSettings } from '@/utils/contest/inject'
-import { watch } from 'vue'
-import { computed } from 'vue'
+import ProblemSubmit from '@/components/problem/ProblemSubmit.vue'
+import AsyncState from '@/components/utils/AsyncState.vue'
+import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
 import { useAppState } from '@/stores/app'
+import { useContestCapability, useContestSettings } from '@/utils/contest/inject'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   orgId: string

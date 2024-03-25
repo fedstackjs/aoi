@@ -1,7 +1,8 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
-import { CAP_NONE, ensureCapability } from '../../utils/index.js'
 import { ORG_CAPS } from '../../db/index.js'
+import { T } from '../../schemas/index.js'
+import { CAP_NONE, ensureCapability } from '../../utils/index.js'
+import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
+
 import { pubrkScopedRoutes } from './scoped.js'
 
 export const pubrkRoutes = defineRoutes(async (s) => {
@@ -16,14 +17,14 @@ export const pubrkRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create a new public ranklist',
-        body: Type.Object({
-          contestId: Type.UUID(),
-          orgId: Type.UUID(),
-          ranklistKey: Type.String()
+        body: T.Object({
+          contestId: T.UUID(),
+          orgId: T.UUID(),
+          ranklistKey: T.String()
         }),
         response: {
-          200: Type.Object({
-            ranklistId: Type.Number()
+          200: T.Object({
+            ranklistId: T.Number()
           })
         }
       }
@@ -58,14 +59,14 @@ export const pubrkRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Check ranklistKey',
-        querystring: Type.Object({
-          contestId: Type.UUID(),
-          ranklistKey: Type.String()
+        querystring: T.Object({
+          contestId: T.UUID(),
+          ranklistKey: T.String()
         }),
         response: {
-          200: Type.Object({
-            ranklistId: Type.Number(),
-            status: Type.String()
+          200: T.Object({
+            ranklistId: T.Number(),
+            status: T.String()
           })
         }
       }

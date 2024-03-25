@@ -1,26 +1,21 @@
 import type { FastifyRequest } from 'fastify'
 import { UUID } from 'mongodb'
 
-import { authRoutes } from './auth/index.js'
-import { userRoutes } from './user/index.js'
-import { orgRoutes } from './org/index.js'
-import { adminRoutes } from './admin/index.js'
-import { defineRoutes } from './common/index.js'
-import { problemRoutes } from './problem/index.js'
-import { solutionRoutes } from './solution/index.js'
-import { runnerRoutes } from './runner/index.js'
-import { groupRoutes } from './group/index.js'
-import { contestRoutes } from './contest/index.js'
-import { planRoutes } from './plan/index.js'
-import { infoRoutes } from './info/index.js'
-import { announcementRoutes } from './announcement/index.js'
-import { pubrkRoutes } from './pubrk/index.js'
-import { IContainer, InjectionPoint, inject, provide, logger, loadEnv } from '../utils/index.js'
-import { publicRoutes } from './public/index.js'
 import { IOrgMembership } from '../db/index.js'
-import { appRoutes } from './app/index.js'
-import { oauthRoutes } from './oauth/index.js'
 import { IOrgOssSettings } from '../schemas/index.js'
+import { IContainer, InjectionPoint, inject, provide, logger, loadEnv } from '../utils/index.js'
+
+import { adminRoutes } from './admin/index.js'
+import { announcementRoutes } from './announcement/index.js'
+import { appRoutes } from './app/index.js'
+import { authRoutes } from './auth/index.js'
+import { defineRoutes } from './common/index.js'
+import { contestRoutes } from './contest/index.js'
+import { groupRoutes } from './group/index.js'
+import { infoRoutes } from './info/index.js'
+import { oauthRoutes } from './oauth/index.js'
+import { orgRoutes } from './org/index.js'
+import { planRoutes } from './plan/index.js'
 import {
   apiHealthPlugin,
   apiInjectPlugin,
@@ -28,6 +23,12 @@ import {
   apiRatelimitPlugin,
   apiUserAuthPlugin
 } from './plugins/index.js'
+import { problemRoutes } from './problem/index.js'
+import { publicRoutes } from './public/index.js'
+import { pubrkRoutes } from './pubrk/index.js'
+import { runnerRoutes } from './runner/index.js'
+import { solutionRoutes } from './solution/index.js'
+import { userRoutes } from './user/index.js'
 
 declare module 'fastify' {
   interface FastifyRequest {

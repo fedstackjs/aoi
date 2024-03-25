@@ -1,9 +1,11 @@
-import { BSON, Collection } from 'mongodb'
-import { IPrincipalControlable, IWithAccessLevel, IWithAttachment, IWithContent } from './common.js'
-import { capabilityMask } from '../utils/capability.js'
 import { ProblemConfig } from '@aoi-js/common'
-import { IProblemSettings } from '../schemas/problem.js'
 import { fastifyPlugin } from 'fastify-plugin'
+import { BSON, Collection } from 'mongodb'
+
+import { IProblemSettings } from '../schemas/problem.js'
+import { capabilityMask } from '../utils/capability.js'
+
+import { IPrincipalControlable, IWithAccessLevel, IWithAttachment, IWithContent } from './common.js'
 
 export const PROBLEM_CAPS = {
   CAP_ACCESS: capabilityMask(0), // Can access(view) this problem

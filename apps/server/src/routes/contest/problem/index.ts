@@ -1,14 +1,16 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, paramSchemaMerger } from '../../common/index.js'
-import { SContestProblemSettings } from '../../../schemas/contest.js'
-import { BSON, Document } from 'mongodb'
 import { SProblemConfigSchema } from '@aoi-js/common'
-import { getFileUrl } from '../../common/files.js'
+import { BSON, Document } from 'mongodb'
+
 import { CONTEST_CAPS, SolutionState } from '../../../db/index.js'
 import { getUploadUrl, problemAttachmentKey, solutionDataKey } from '../../../oss/index.js'
+import { SContestProblemSettings } from '../../../schemas/contest.js'
+import { T } from '../../../schemas/index.js'
 import { hasCapability } from '../../../utils/index.js'
-import { problemAdminRoutes } from './admin.js'
+import { getFileUrl } from '../../common/files.js'
+import { defineRoutes, paramSchemaMerger } from '../../common/index.js'
 import { kContestContext } from '../inject.js'
+
+import { problemAdminRoutes } from './admin.js'
 import { loadProblemSettings } from './common.js'
 
 const problemViewRoutes = defineRoutes(async (s) => {
@@ -26,11 +28,11 @@ const problemViewRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: Type.Array(
-            Type.Object({
-              _id: Type.UUID(),
-              title: Type.String(),
-              tags: Type.Optional(Type.Array(Type.String())),
+          200: T.Array(
+            T.Object({
+              _id: T.UUID(),
+              title: T.String(),
+              tags: T.Optional(T.Array(T.String())),
               settings: SContestProblemSettings
             })
           )
@@ -61,24 +63,24 @@ const problemViewRoutes = defineRoutes(async (s) => {
     '/:problemId',
     {
       schema: {
-        params: Type.Object({
-          problemId: Type.String()
+        params: T.Object({
+          problemId: T.String()
         }),
         response: {
-          200: Type.Object({
-            _id: Type.UUID(),
-            title: Type.String(),
-            description: Type.String(),
-            tags: Type.Optional(Type.Array(Type.String())),
-            attachments: Type.Array(
-              Type.Object({
-                key: Type.String(),
-                name: Type.String(),
-                description: Type.String()
+          200: T.Object({
+            _id: T.UUID(),
+            title: T.String(),
+            description: T.String(),
+            tags: T.Optional(T.Array(T.String())),
+            attachments: T.Array(
+              T.Object({
+                key: T.String(),
+                name: T.String(),
+                description: T.String()
               })
             ),
-            currentDataHash: Type.String(),
-            config: Type.Optional(SProblemConfigSchema)
+            currentDataHash: T.String(),
+            config: T.Optional(SProblemConfigSchema)
           })
         }
       }
@@ -115,10 +117,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
 
   s.register(
     async (s) => {
-      s.addHook(
-        'onRoute',
-        paramSchemaMerger(Type.Object({ problemId: Type.String(), key: Type.String() }))
-      )
+      s.addHook('onRoute', paramSchemaMerger(T.Object({ problemId: T.String(), key: T.String() })))
       s.register(getFileUrl, {
         prefix: '/url',
         resolve: async (type, query, req) => {
@@ -146,17 +145,17 @@ const problemViewRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create a solution',
-        params: Type.Object({
-          problemId: Type.String()
+        params: T.Object({
+          problemId: T.String()
         }),
-        body: Type.Object({
-          hash: Type.Hash(),
-          size: Type.Integer()
+        body: T.Object({
+          hash: T.Hash(),
+          size: T.Integer()
         }),
         response: {
-          200: Type.Object({
-            solutionId: Type.UUID(),
-            uploadUrl: Type.String()
+          200: T.Object({
+            solutionId: T.UUID(),
+            uploadUrl: T.String()
           })
         }
       }

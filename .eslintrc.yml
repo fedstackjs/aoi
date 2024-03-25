@@ -5,6 +5,8 @@ env:
 extends:
   - eslint:recommended
   - plugin:@typescript-eslint/recommended
+  - plugin:import/recommended
+  - plugin:import/typescript
   - prettier
 parser: '@typescript-eslint/parser'
 parserOptions:
@@ -13,4 +15,17 @@ parserOptions:
 plugins:
   - '@typescript-eslint'
 rules:
-  '@typescript-eslint/no-empty-interface': ['error', { allowSingleExtends: true }]
+  '@typescript-eslint/no-empty-interface':
+    - 'error'
+    - allowSingleExtends: true
+  'import/order':
+    - 'error'
+    - alphabetize:
+        order: 'asc'
+        caseInsensitive: true
+      newlines-between: always
+  'import/no-unresolved': 'off'
+settings:
+  import/resolver:
+    typescript: true
+    node: true

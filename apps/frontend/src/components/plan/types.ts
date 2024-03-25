@@ -1,5 +1,6 @@
-import type { MapEntity } from '@/types/server'
 import type { IPlan, IPlanContest } from '@aoi-js/server'
+
+import type { MapEntity } from '@/types/server'
 
 export interface IPlanDTO extends MapEntity<IPlan> {
   capability: string

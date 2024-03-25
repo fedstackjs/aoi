@@ -1,6 +1,8 @@
 import { ref, type MaybeRef, toRef } from 'vue'
+
 import { useAsyncTask } from '../async'
 import { http } from '../http'
+
 import { useAppState } from '@/stores/app'
 
 export function useChangeEmail(userId: MaybeRef<string>) {

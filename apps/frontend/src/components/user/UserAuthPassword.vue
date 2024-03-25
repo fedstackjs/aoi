@@ -16,10 +16,11 @@
 </template>
 
 <script setup lang="ts">
-import { enableMfa } from '@/utils/flags'
-import { useChangePassword } from '@/utils/user/password'
 import { toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import { enableMfa } from '@/utils/flags'
+import { useChangePassword } from '@/utils/user/password'
 
 const props = defineProps<{
   userId: string

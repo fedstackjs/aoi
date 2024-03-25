@@ -23,10 +23,11 @@
 </template>
 
 <script setup lang="ts">
-import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+
+import { http } from '@/utils/http'
 
 const { t } = useI18n()
 

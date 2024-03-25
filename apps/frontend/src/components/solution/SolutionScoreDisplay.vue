@@ -10,8 +10,9 @@
 </template>
 
 <script setup lang="ts">
-import { palette } from '@/utils/colors'
 import { RouterLink } from 'vue-router'
+
+import { palette } from '@/utils/colors'
 
 defineProps<{
   score: number

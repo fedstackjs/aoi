@@ -43,16 +43,16 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useAsyncState } from '@vueuse/core'
-import { http } from '@/utils/http'
-import AsyncState from '@/components/utils/AsyncState.vue'
+import { computed, toRef } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AccessLevelChip from '@/components/utils/AccessLevelChip.vue'
+import AsyncState from '@/components/utils/AsyncState.vue'
 import RegisterBtn from '@/components/utils/RegisterBtn.vue'
+import { http } from '@/utils/http'
 import { usePlan } from '@/utils/plan/inject'
-import { toRef } from 'vue'
+import { withTitle } from '@/utils/title'
 
 const { t } = useI18n()
 const props = defineProps<{

@@ -1,11 +1,11 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadCapability, paramSchemaMerger, tryLoadUUID } from '../common/index.js'
 import { APP_CAPS } from '../../db/index.js'
+import { T, SAppSettings } from '../../schemas/index.js'
 import { CAP_ALL, hasCapability } from '../../utils/index.js'
-import { kAppContext } from './inject.js'
 import { manageContent } from '../common/content.js'
-import { SAppSettings } from '../../schemas/index.js'
+import { defineRoutes, loadCapability, paramSchemaMerger, tryLoadUUID } from '../common/index.js'
+
 import { appAdminRoutes } from './admin.js'
+import { kAppContext } from './inject.js'
 
 export const appScopedRoutes = defineRoutes(async (s) => {
   const { apps } = s.db
@@ -13,8 +13,8 @@ export const appScopedRoutes = defineRoutes(async (s) => {
   s.addHook(
     'onRoute',
     paramSchemaMerger(
-      Type.Object({
-        appId: Type.UUID()
+      T.Object({
+        appId: T.UUID()
       })
     )
   )
@@ -46,16 +46,16 @@ export const appScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get app details',
         response: {
-          200: Type.Object({
-            _id: Type.UUID(),
-            orgId: Type.UUID(),
-            accessLevel: Type.AccessLevel(),
-            slug: Type.String(),
-            title: Type.String(),
-            description: Type.String(),
-            tags: Type.Array(Type.String()),
+          200: T.Object({
+            _id: T.UUID(),
+            orgId: T.UUID(),
+            accessLevel: T.AccessLevel(),
+            slug: T.String(),
+            title: T.String(),
+            description: T.String(),
+            tags: T.Array(T.String()),
             settings: SAppSettings,
-            capability: Type.String()
+            capability: T.String()
           })
         }
       }
@@ -85,13 +85,13 @@ export const appScopedRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Authorize and login into an app',
-        body: Type.Object({
-          mfaToken: Type.Optional(Type.String()),
-          type: Type.Optional(Type.StringEnum(['web', 'device']))
+        body: T.Object({
+          mfaToken: T.Optional(T.String()),
+          type: T.Optional(T.StringEnum(['web', 'device']))
         }),
         response: {
-          200: Type.Object({
-            token: Type.String()
+          200: T.Object({
+            token: T.String()
           })
         }
       }

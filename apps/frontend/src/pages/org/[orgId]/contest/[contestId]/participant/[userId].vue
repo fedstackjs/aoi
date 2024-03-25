@@ -22,10 +22,11 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+
 import type { IContestDTO } from '@/components/contest/types'
-import { useContestCapability, useContestSettings } from '@/utils/contest/inject'
 import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
 import SettingsEditor from '@/components/utils/SettingsEditor.vue'
+import { useContestCapability, useContestSettings } from '@/utils/contest/inject'
 
 defineProps<{
   orgId: string

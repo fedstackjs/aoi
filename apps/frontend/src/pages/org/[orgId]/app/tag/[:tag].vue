@@ -11,9 +11,10 @@
 </template>
 
 <script setup lang="ts">
-import { withI18nTitle, withTitle } from '@/utils/title'
 import { useI18n } from 'vue-i18n'
+
 import AppList from '@/components/app/AppList.vue'
+import { withI18nTitle, withTitle } from '@/utils/title'
 
 defineProps<{
   orgId: string

@@ -1,9 +1,10 @@
-import { Type } from '@sinclair/typebox'
 import { Document } from 'mongodb'
+
+import { T } from '../../schemas/index.js'
+import { findPaginated, escapeSearch } from '../../utils/index.js'
 import { defineRoutes, md5, swaggerTagMerger } from '../common/index.js'
+
 import { userScopedRoutes } from './scoped.js'
-import { findPaginated } from '../../utils/index.js'
-import { escapeSearch } from '../../utils/search.js'
 
 export const userRoutes = defineRoutes(async (s) => {
   s.addHook('onRoute', swaggerTagMerger('user'))
@@ -13,20 +14,20 @@ export const userRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List users',
-        querystring: Type.Object({
-          page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
-          count: Type.Boolean({ default: false }),
-          search: Type.Optional(Type.String({ minLength: 1 }))
+        querystring: T.Object({
+          page: T.Integer({ minimum: 1, default: 1 }),
+          perPage: T.Integer({ enum: [15, 30, 50, 100] }),
+          count: T.Boolean({ default: false }),
+          search: T.Optional(T.String({ minLength: 1 }))
         }),
         response: {
-          200: Type.PaginationResult(
-            Type.Object({
-              _id: Type.UUID(),
-              name: Type.String(),
-              emailHash: Type.String(),
-              namespace: Type.Optional(Type.String()),
-              tags: Type.Optional(Type.Array(Type.String()))
+          200: T.PaginationResult(
+            T.Object({
+              _id: T.UUID(),
+              name: T.String(),
+              emailHash: T.String(),
+              namespace: T.Optional(T.String()),
+              tags: T.Optional(T.Array(T.String()))
             })
           )
         }

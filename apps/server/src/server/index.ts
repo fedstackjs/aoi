@@ -1,12 +1,14 @@
-import fastify from 'fastify'
-import fastifySensible from '@fastify/sensible'
+import { fastifySensible } from '@fastify/sensible'
+import { fastify } from 'fastify'
+
+import { authProviderPlugin } from '../auth/index.js'
+import { cachePlugin } from '../cache/index.js'
+import { dbPlugin, loadEnv } from '../index.js'
 import { apiRoutes } from '../routes/index.js'
 import { logger } from '../utils/logger.js'
-import { schemaRoutes } from './schemas.js'
 import { hasModule } from '../utils/module.js'
-import { dbPlugin, loadEnv } from '../index.js'
-import { cachePlugin } from '../cache/index.js'
-import { authProviderPlugin } from '../auth/index.js'
+
+import { schemaRoutes } from './schemas.js'
 
 const trustProxy = loadEnv('TRUST_PROXY', JSON.parse, false)
 

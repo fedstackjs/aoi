@@ -1,6 +1,7 @@
 import { computed, ref, type Ref } from 'vue'
-import { http } from '../http'
+
 import { appBuildInfo } from '../build'
+import { http } from '../http'
 
 export interface IServerInfo {
   serverVersion: string

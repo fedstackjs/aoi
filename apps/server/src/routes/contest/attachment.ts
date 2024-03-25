@@ -1,14 +1,15 @@
-import { Type } from '@sinclair/typebox'
-import { getFileUrl, defineRoutes, paramSchemaMerger } from '../common/index.js'
-import { ensureCapability } from '../../utils/index.js'
-import { contestAttachmentKey } from '../../oss/index.js'
 import { CONTEST_CAPS } from '../../index.js'
+import { contestAttachmentKey } from '../../oss/index.js'
+import { T } from '../../schemas/index.js'
+import { ensureCapability } from '../../utils/index.js'
+import { getFileUrl, defineRoutes, paramSchemaMerger } from '../common/index.js'
+
 import { kContestContext } from './inject.js'
 
 const attachmentScopedRoutes = defineRoutes(async (s) => {
   const { contests } = s.db
 
-  s.addHook('onRoute', paramSchemaMerger(Type.Object({ key: Type.String() })))
+  s.addHook('onRoute', paramSchemaMerger(T.Object({ key: T.String() })))
   s.register(getFileUrl, {
     prefix: '/url',
     resolve: async (type, query, req) => {
@@ -27,7 +28,7 @@ const attachmentScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Delete contest attachment',
         response: {
-          200: Type.Object({})
+          200: T.Object({})
         }
       }
     },
@@ -55,11 +56,11 @@ export const contestAttachmentRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get contest attachments',
         response: {
-          200: Type.Array(
-            Type.Object({
-              key: Type.String(),
-              name: Type.String(),
-              description: Type.String()
+          200: T.Array(
+            T.Object({
+              key: T.String(),
+              name: T.String(),
+              description: T.String()
             })
           )
         }
@@ -76,10 +77,10 @@ export const contestAttachmentRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create contest attachment',
-        body: Type.Object({
-          key: Type.String(),
-          name: Type.String(),
-          description: Type.String()
+        body: T.Object({
+          key: T.String(),
+          name: T.String(),
+          description: T.String()
         })
       }
     },

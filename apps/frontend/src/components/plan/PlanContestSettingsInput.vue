@@ -55,11 +55,14 @@
 </template>
 
 <script setup lang="ts">
-import type { IPlanContestSettings } from '@/types'
-import OptionalInput from '../utils/OptionalInput.vue'
-import ListInput from '../utils/ListInput.vue'
 import { useI18n } from 'vue-i18n'
+
+import ListInput from '../utils/ListInput.vue'
+import OptionalInput from '../utils/OptionalInput.vue'
+
 import type { IPlanContestDTO } from './types'
+
+import type { IPlanContestSettings } from '@/types'
 
 const model = defineModel<IPlanContestSettings>({ required: true })
 defineProps<{

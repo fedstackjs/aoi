@@ -1,5 +1,7 @@
 import { SProblemConfigSchema } from '@aoi-js/common'
-import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
+import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
+
+import { T } from '../index.js'
 
 const schemas = Object.fromEntries(
   Object.entries({
@@ -12,7 +14,7 @@ export const schemaRoutes: FastifyPluginAsyncTypebox = async (s) => {
     '/:name',
     {
       schema: {
-        params: Type.Object({ name: Type.String() })
+        params: T.Object({ name: T.String() })
       }
     },
     (req, rep) => {

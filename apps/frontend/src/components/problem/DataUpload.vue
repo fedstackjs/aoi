@@ -30,12 +30,15 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import type { IProblemDTO } from './types'
 import { SProblemConfigSchema } from '@aoi-js/common'
+import { useI18n } from 'vue-i18n'
+
+import MonacoEditor from '../utils/MonacoEditor.vue'
+
+import type { IProblemDTO } from './types'
+
 import monaco from '@/utils/monaco'
 import { useDataUpload } from '@/utils/problem/data'
-import MonacoEditor from '../utils/MonacoEditor.vue'
 
 monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
   schemas: [

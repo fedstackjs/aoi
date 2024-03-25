@@ -27,10 +27,12 @@
 
 <script setup lang="ts">
 import type { VListItem } from 'vuetify/components'
-import { useAppState } from '@/stores/app'
-import LocaleSelectBtn from '@/components/locale/LocaleSelectBtn.vue'
-import { appBuildInfo } from '@/utils/build'
+
 import AoiNavOrgSelector from './AoiNavOrgSelector.vue'
+
+import LocaleSelectBtn from '@/components/locale/LocaleSelectBtn.vue'
+import { useAppState } from '@/stores/app'
+import { appBuildInfo } from '@/utils/build'
 import { useAppNavMenu } from '@/utils/menus'
 
 const appState = useAppState()

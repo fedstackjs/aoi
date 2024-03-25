@@ -70,13 +70,14 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAppState } from '@/stores/app'
 import { useRouter } from 'vue-router'
-import { http, login } from '@/utils/http'
 import { useToast } from 'vue-toastification'
+
+import { useAppState } from '@/stores/app'
+import { http, login } from '@/utils/http'
+import { withTitle } from '@/utils/title'
 
 const { t } = useI18n()
 const router = useRouter()

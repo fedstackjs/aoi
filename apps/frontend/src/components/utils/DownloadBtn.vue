@@ -5,9 +5,10 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 import { useAsyncTask } from '@/utils/async'
 import { http } from '@/utils/http'
-import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   endpoint: string

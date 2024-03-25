@@ -63,15 +63,15 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
-import type { IProblemDTO } from '@/components/problem/types'
 import { useAsyncState } from '@vueuse/core'
-import AsyncState from '@/components/utils/AsyncState.vue'
+import { ref, shallowRef } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import DataUpload from '@/components/problem/DataUpload.vue'
-import { ref } from 'vue'
-import { shallowRef } from 'vue'
+import type { IProblemDTO } from '@/components/problem/types'
+import AsyncState from '@/components/utils/AsyncState.vue'
 import JsonViewer from '@/components/utils/JsonViewer.vue'
+import { http } from '@/utils/http'
 
 const { t } = useI18n()
 

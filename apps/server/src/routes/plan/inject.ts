@@ -1,4 +1,5 @@
 import { BSON } from 'mongodb'
+
 import { IPlan, IPlanParticipant } from '../../index.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
 

@@ -10,10 +10,11 @@
 
 <script setup lang="ts" generic="Data, Shallow extends boolean = true">
 import { type UseAsyncStateReturn } from '@vueuse/core'
-import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useAsyncTask } from '@/utils/async'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   endpoint: string

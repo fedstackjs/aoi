@@ -1,7 +1,8 @@
-import { useAppState } from '@/stores/app'
 import { syncRef } from '@vueuse/core'
 import { toRef, type Ref, onBeforeUnmount, type MaybeRef, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import { useAppState } from '@/stores/app'
 
 export const withTitle = (title: string | Ref<string>) => {
   const appState = useAppState()

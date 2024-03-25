@@ -1,9 +1,11 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadCapability, paramSchemaMerger, tryLoadUUID } from '../common/index.js'
-import { PLAN_CAPS } from '../../db/index.js'
-import { CAP_ALL, hasCapability } from '../../utils/index.js'
 import { BSON } from 'mongodb'
+
+import { PLAN_CAPS } from '../../db/index.js'
+import { T } from '../../schemas/index.js'
+import { CAP_ALL, hasCapability } from '../../utils/index.js'
 import { manageContent } from '../common/content.js'
+import { defineRoutes, loadCapability, paramSchemaMerger, tryLoadUUID } from '../common/index.js'
+
 import { planAdminRoutes } from './admin.js'
 import { planContestRoutes } from './contest/index.js'
 import { kPlanContext } from './inject.js'
@@ -14,8 +16,8 @@ export const planScopedRoutes = defineRoutes(async (s) => {
   s.addHook(
     'onRoute',
     paramSchemaMerger(
-      Type.Object({
-        planId: Type.UUID()
+      T.Object({
+        planId: T.UUID()
       })
     )
   )
@@ -50,15 +52,15 @@ export const planScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get plan details',
         response: {
-          200: Type.Object({
-            _id: Type.UUID(),
-            orgId: Type.UUID(),
-            accessLevel: Type.AccessLevel(),
-            slug: Type.String(),
-            title: Type.String(),
-            description: Type.String(),
-            tags: Type.Array(Type.String()),
-            capability: Type.String()
+          200: T.Object({
+            _id: T.UUID(),
+            orgId: T.UUID(),
+            accessLevel: T.AccessLevel(),
+            slug: T.String(),
+            title: T.String(),
+            description: T.String(),
+            tags: T.Array(T.String()),
+            capability: T.String()
           })
         }
       }
@@ -78,7 +80,7 @@ export const planScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Register for a plan',
         response: {
-          200: Type.Object({})
+          200: T.Object({})
         }
       }
     },
@@ -114,7 +116,7 @@ export const planScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get participant details of self',
         response: {
-          200: Type.Object({})
+          200: T.Object({})
         }
       }
     },

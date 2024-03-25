@@ -36,12 +36,14 @@
 </template>
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
-import SettingsEditor from '@/components/utils/SettingsEditor.vue'
-import RanklistSettingsInput from './RanklistSettingsInput.vue'
 import { useRouter } from 'vue-router'
-import RanklistPublicSettings from './RanklistPublicSettings.vue'
+
 import RanklistExportBtn from './RanklistExportBtn.vue'
+import RanklistPublicSettings from './RanklistPublicSettings.vue'
+import RanklistSettingsInput from './RanklistSettingsInput.vue'
+
+import SettingsEditor from '@/components/utils/SettingsEditor.vue'
+import { http } from '@/utils/http'
 
 const router = useRouter()
 

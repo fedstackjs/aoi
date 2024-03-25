@@ -1,16 +1,17 @@
-import { Type } from '@sinclair/typebox'
-import { BaseAuthProvider } from './base.js'
-import { TypeCompiler } from '@sinclair/typebox/compiler'
-import { Collection, Filter, UUID } from 'mongodb'
 import { httpErrors } from '@fastify/sensible'
 import { validate } from '@lcpu/iaaa'
+import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { FastifyRequest } from 'fastify'
+import { Collection, Filter, UUID } from 'mongodb'
 
 import { IUser } from '../db/index.js'
+import { T } from '../schemas/index.js'
 import { loadEnv, parseBoolean } from '../utils/index.js'
 
-const STokenPayload = Type.Object({
-  token: Type.String()
+import { BaseAuthProvider } from './base.js'
+
+const STokenPayload = T.Object({
+  token: T.String()
 })
 
 const TokenPayload = TypeCompiler.Compile(STokenPayload)

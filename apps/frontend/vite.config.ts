@@ -1,11 +1,12 @@
-import { fileURLToPath, URL } from 'node:url'
 import { execSync } from 'node:child_process'
+import { fileURLToPath, URL } from 'node:url'
+
+import vueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import vue from '@vitejs/plugin-vue'
-import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import uno from 'unocss/vite'
 import { defineConfig } from 'vite'
 import pages from 'vite-plugin-pages'
-import uno from 'unocss/vite'
-import vueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
+import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 const gitHash = execSync('git rev-parse --short HEAD').toString().trim()
 const gitBranch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim()

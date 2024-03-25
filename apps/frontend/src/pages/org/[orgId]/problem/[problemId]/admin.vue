@@ -24,6 +24,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import type { IProblemDTO } from '@/components/problem/types'
 
 const props = defineProps<{

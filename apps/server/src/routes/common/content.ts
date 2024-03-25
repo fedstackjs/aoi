@@ -1,7 +1,9 @@
-import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
+import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
 import { FastifyRequest } from 'fastify'
 import { BSON, Collection } from 'mongodb'
+
 import { IWithContent } from '../../db/index.js'
+import { T } from '../../schemas/index.js'
 
 export const manageContent: FastifyPluginAsyncTypebox<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,16 +16,16 @@ export const manageContent: FastifyPluginAsyncTypebox<{
     {
       schema: {
         description: 'Update problem content',
-        body: Type.Partial(
-          Type.StrictObject({
-            title: Type.String(),
-            slug: Type.String(),
-            description: Type.String(),
-            tags: Type.Array(Type.String())
+        body: T.Partial(
+          T.StrictObject({
+            title: T.String(),
+            slug: T.String(),
+            description: T.String(),
+            tags: T.Array(T.String())
           })
         ),
         response: {
-          200: Type.Object({})
+          200: T.Object({})
         }
       }
     },

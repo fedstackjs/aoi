@@ -1,15 +1,17 @@
+import { fastifyPlugin } from 'fastify-plugin'
 import { BSON, Collection } from 'mongodb'
-import { capabilityMask } from '../utils/capability.js'
-import { IPrincipalControlable, IWithAccessLevel, IWithAttachment, IWithContent } from './common.js'
+
+import { IUserProfile } from '../index.js'
 import {
   IContestProblemSettings,
   IContestRanklistSettings,
   IContestStage
 } from '../schemas/contest.js'
+import { capabilityMask } from '../utils/capability.js'
+
+import { IPrincipalControlable, IWithAccessLevel, IWithAttachment, IWithContent } from './common.js'
 import { ISolution } from './solution.js'
 import { IUser } from './user.js'
-import { IUserProfile } from '../index.js'
-import { fastifyPlugin } from 'fastify-plugin'
 
 export const CONTEST_CAPS = {
   CAP_ACCESS: capabilityMask(0),

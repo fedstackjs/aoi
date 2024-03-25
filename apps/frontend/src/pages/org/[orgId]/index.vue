@@ -28,14 +28,15 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAppState } from '@/stores/app'
-import PosterCarousel from '@/components/homepage/PosterCarousel.vue'
-import RecentContestsCard from '@/components/homepage/RecentContestsCard.vue'
+
 import AnnouncementsCard from '@/components/homepage/AnnouncementsCard.vue'
 import FriendLinksCard from '@/components/homepage/FriendLinksCard.vue'
+import PosterCarousel from '@/components/homepage/PosterCarousel.vue'
+import RecentContestsCard from '@/components/homepage/RecentContestsCard.vue'
+import { useAppState } from '@/stores/app'
+import { withTitle } from '@/utils/title'
 
 const { t } = useI18n()
 const appState = useAppState()

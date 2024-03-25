@@ -11,10 +11,11 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import PlanList from '@/components/plan/PlanList.vue'
+import { withTitle } from '@/utils/title'
 
 defineProps<{
   orgId: string

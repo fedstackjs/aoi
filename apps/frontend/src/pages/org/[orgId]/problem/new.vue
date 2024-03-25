@@ -31,15 +31,16 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
 import { useRouter } from 'vue-router'
+
 import { useAppState } from '@/stores/app'
-import { enableSlugFinder } from '@/utils/flags'
-import { findNextSlug } from '@/utils/slug'
 import { noMessage, useAsyncTask } from '@/utils/async'
+import { enableSlugFinder } from '@/utils/flags'
+import { http } from '@/utils/http'
+import { findNextSlug } from '@/utils/slug'
+import { withTitle } from '@/utils/title'
 
 const props = defineProps<{
   orgId: string

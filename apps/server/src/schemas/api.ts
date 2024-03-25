@@ -1,3 +1,3 @@
-import { Type } from '@sinclair/typebox'
+import { T } from './common.js'
 
-export const SAPIResponseVoid = Type.Object({})
+export const SAPIResponseVoid = T.Object({})

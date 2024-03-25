@@ -38,14 +38,16 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
-import type { IContestProblemDTO } from './types'
-import { useRoute, useRouter } from 'vue-router'
-import SettingsEditor from '@/components/utils/SettingsEditor.vue'
-import ContestProblemSettingsInput from './ContestProblemSettingsInput.vue'
-import { useAsyncTask, withMessage } from '@/utils/async'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
+
+import ContestProblemSettingsInput from './ContestProblemSettingsInput.vue'
+import type { IContestProblemDTO } from './types'
+
+import SettingsEditor from '@/components/utils/SettingsEditor.vue'
+import { useAsyncTask, withMessage } from '@/utils/async'
+import { http } from '@/utils/http'
 
 const { t } = useI18n()
 const router = useRouter()

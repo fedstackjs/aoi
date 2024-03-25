@@ -1,5 +1,6 @@
-import type { MapEntity } from '@/types/server'
 import type { IApp, IAppSettings } from '@aoi-js/server'
+
+import type { MapEntity } from '@/types/server'
 
 export interface IAppDTO extends MapEntity<IApp> {
   capability: string

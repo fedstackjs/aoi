@@ -22,6 +22,7 @@
 
 <script setup lang="ts">
 import { useAsyncState } from '@vueuse/core'
+
 import AoiGravatar from '@/components/aoi/AoiGravatar.vue'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import { http } from '@/utils/http'

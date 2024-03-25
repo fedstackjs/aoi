@@ -1,7 +1,8 @@
-import { BSON, Collection } from 'mongodb'
-import { capabilityMask } from '../utils/capability.js'
-import { IOrgProfile, IOrgSettings } from '../schemas/index.js'
 import { fastifyPlugin } from 'fastify-plugin'
+import { BSON, Collection } from 'mongodb'
+
+import { IOrgProfile, IOrgSettings } from '../schemas/index.js'
+import { capabilityMask } from '../utils/capability.js'
 
 export const ORG_CAPS = {
   CAP_ACCESS: capabilityMask(0),

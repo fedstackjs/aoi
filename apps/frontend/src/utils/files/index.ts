@@ -1,6 +1,8 @@
 import { nextTick } from 'vue'
-import FileWorker from './hash.worker?worker'
+
 import { sleep } from '../async'
+
+import FileWorker from './hash.worker?worker'
 
 export type ProgressCallback = (progress: number, digest?: string) => void
 

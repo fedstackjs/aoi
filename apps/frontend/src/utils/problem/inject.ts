@@ -1,8 +1,10 @@
-import type { IProblemDTO } from '@/components/problem/types'
 import { useAsyncState } from '@vueuse/core'
 import { toRef, type MaybeRef, type InjectionKey, provide, type Ref, inject, computed } from 'vue'
-import { http } from '../http'
+
 import { hasCapability, problemBits } from '../capability'
+import { http } from '../http'
+
+import type { IProblemDTO } from '@/components/problem/types'
 
 const kProblem: InjectionKey<Ref<IProblemDTO>> = Symbol('problem')
 

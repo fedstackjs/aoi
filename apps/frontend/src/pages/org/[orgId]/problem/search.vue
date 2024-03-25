@@ -11,11 +11,12 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
+import { useRouteQuery } from '@vueuse/router'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import ProblemList from '@/components/problem/ProblemList.vue'
-import { useRouteQuery } from '@vueuse/router'
+import { withTitle } from '@/utils/title'
 
 defineProps<{
   orgId: string

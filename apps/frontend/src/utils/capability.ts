@@ -1,5 +1,6 @@
-import { useAppState } from '@/stores/app'
 import { computed } from 'vue'
+
+import { useAppState } from '@/stores/app'
 
 export function hasCapability(cap: string, bitPos: number) {
   return !!(BigInt(cap) & (1n << BigInt(bitPos)))
