@@ -6,6 +6,11 @@
     "access": "public"
   },
   "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fedstackjs/aoi.git",
+    "directory": "libs/common"
+  },
   "main": "lib/index.js",
   "files": [
     "lib"
