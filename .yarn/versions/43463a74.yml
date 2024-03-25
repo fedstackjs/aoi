@@ -1,4 +1,0 @@
-releases:
-  "@aoi-js/common": patch
-  "@aoi-js/frontend": 1.1.0-alpha.3
-  "@aoi-js/server": 1.1.0-alpha.3
