@@ -17,11 +17,13 @@
 </template>
 
 <script setup lang="ts">
-import type { IOrgProfile } from '@/types'
-import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
 import { watch } from 'vue'
+
 import AoiGravatar from '../aoi/AoiGravatar.vue'
+
+import type { IOrgProfile } from '@/types'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   orgId: string

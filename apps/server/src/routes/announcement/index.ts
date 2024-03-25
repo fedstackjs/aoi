@@ -1,10 +1,11 @@
-import { USER_CAPS, hasCapability } from '../../index.js'
-import { loadUserCapability } from '../common/access.js'
-import { defineRoutes, swaggerTagMerger } from '../common/index.js'
-import { Type } from '@sinclair/typebox'
-import { paginationSkip } from '../../utils/pagination.js'
-import { announcementScopedRoutes } from './scoped.js'
 import { BSON, Document } from 'mongodb'
+
+import { USER_CAPS } from '../../db/index.js'
+import { T } from '../../schemas/index.js'
+import { paginationSkip, hasCapability } from '../../utils/index.js'
+import { loadUserCapability, defineRoutes, swaggerTagMerger } from '../common/index.js'
+
+import { announcementScopedRoutes } from './scoped.js'
 
 export const announcementRoutes = defineRoutes(async (s) => {
   const { announcements } = s.db
@@ -18,14 +19,14 @@ export const announcementRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create a new announcement',
-        body: Type.Object({
-          title: Type.String(),
-          date: Type.String(),
-          public: Type.Boolean()
+        body: T.Object({
+          title: T.String(),
+          date: T.String(),
+          public: T.Boolean()
         }),
         response: {
-          200: Type.Object({
-            articleId: Type.UUID()
+          200: T.Object({
+            articleId: T.UUID()
           })
         }
       }
@@ -51,18 +52,18 @@ export const announcementRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Get all announcements',
-        querystring: Type.Object({
-          page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
-          count: Type.Boolean({ default: false })
+        querystring: T.Object({
+          page: T.Integer({ minimum: 1, default: 1 }),
+          perPage: T.Integer({ enum: [15, 30, 50, 100] }),
+          count: T.Boolean({ default: false })
         }),
         response: {
-          200: Type.PaginationResult(
-            Type.Object({
-              _id: Type.UUID(),
-              title: Type.String(),
-              date: Type.String(),
-              public: Type.Boolean()
+          200: T.PaginationResult(
+            T.Object({
+              _id: T.UUID(),
+              title: T.String(),
+              date: T.String(),
+              public: T.Boolean()
             })
           )
         },

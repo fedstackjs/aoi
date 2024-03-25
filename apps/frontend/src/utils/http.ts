@@ -1,8 +1,9 @@
-import router from '@/router'
 import { useLocalStorage, useThrottleFn } from '@vueuse/core'
 import ky, { HTTPError } from 'ky'
 import { computed } from 'vue'
 import { useToast } from 'vue-toastification'
+
+import router from '@/router'
 
 const toast = useToast()
 

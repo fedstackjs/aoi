@@ -1,8 +1,7 @@
-import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
 
 import { PLAN_CAPS } from '../../../db/index.js'
-import { SPlanContestSettings } from '../../../schemas/index.js'
+import { SPlanContestSettings, T } from '../../../schemas/index.js'
 import { hasCapability } from '../../../utils/index.js'
 import { defineRoutes } from '../../common/index.js'
 import { kPlanContext } from '../inject.js'
@@ -21,8 +20,8 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     '/',
     {
       schema: {
-        body: Type.Object({
-          contestId: Type.String(),
+        body: T.Object({
+          contestId: T.String(),
           settings: SPlanContestSettings
         })
       }
@@ -49,8 +48,8 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     '/:contestId/settings',
     {
       schema: {
-        params: Type.Object({
-          contestId: Type.String()
+        params: T.Object({
+          contestId: T.String()
         }),
         response: { 200: SPlanContestSettings }
       }
@@ -70,8 +69,8 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     '/:contestId/settings',
     {
       schema: {
-        params: Type.Object({
-          contestId: Type.String()
+        params: T.Object({
+          contestId: T.String()
         }),
         body: SPlanContestSettings
       }
@@ -93,8 +92,8 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     '/:contestId',
     {
       schema: {
-        params: Type.Object({
-          contestId: Type.String()
+        params: T.Object({
+          contestId: T.String()
         })
       }
     },

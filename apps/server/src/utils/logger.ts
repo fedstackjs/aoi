@@ -1,4 +1,5 @@
 import { pino } from 'pino'
+
 import { loadEnv } from './config.js'
 
 export const logger = pino({

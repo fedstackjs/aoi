@@ -23,13 +23,13 @@
 </template>
 
 <script setup lang="ts">
-import { getAvatarUrl } from '@/utils/avatar'
-import { http } from '@/utils/http'
 import { useAsyncState, useDebounce } from '@vueuse/core'
-import { watch } from 'vue'
-import { ref } from 'vue'
+import { watch, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'vue-toastification'
+
+import { getAvatarUrl } from '@/utils/avatar'
+import { http } from '@/utils/http'
 
 interface ISearchResultItem {
   principalId: string

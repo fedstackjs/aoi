@@ -9,8 +9,9 @@
 </template>
 
 <script setup lang="ts">
-import { getAvatarUrl } from '@/utils/avatar'
 import { computed } from 'vue'
+
+import { getAvatarUrl } from '@/utils/avatar'
 
 const props = defineProps<{
   email: string

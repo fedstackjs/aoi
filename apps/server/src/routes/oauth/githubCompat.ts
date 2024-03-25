@@ -1,4 +1,4 @@
-import { Type } from '@sinclair/typebox'
+import { T } from '../../schemas/index.js'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 
 export const oauthGithubCompatRoutes = defineRoutes(async (s) => {
@@ -11,7 +11,7 @@ export const oauthGithubCompatRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: Type.Object({})
+          200: T.Object({})
         }
       }
     },
@@ -23,9 +23,9 @@ export const oauthGithubCompatRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: Type.Object({
-            login: Type.String(),
-            email: Type.String()
+          200: T.Object({
+            login: T.String(),
+            email: T.String()
           })
         }
       }
@@ -48,11 +48,11 @@ export const oauthGithubCompatRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: Type.Array(
-            Type.Object({
-              email: Type.String(),
-              primary: Type.Boolean(),
-              verified: Type.Boolean()
+          200: T.Array(
+            T.Object({
+              email: T.String(),
+              primary: T.Boolean(),
+              verified: T.Boolean()
             })
           )
         }
@@ -78,14 +78,14 @@ export const oauthGithubCompatRoutes = defineRoutes(async (s) => {
     '/user/orgs',
     {
       schema: {
-        querystring: Type.Object({
-          per_page: Type.Integer({ maximum: 100, minimum: 100 }),
-          page: Type.Integer()
+        querystring: T.Object({
+          per_page: T.Integer({ maximum: 100, minimum: 100 }),
+          page: T.Integer()
         }),
         response: {
-          200: Type.Array(
-            Type.Object({
-              login: Type.String()
+          200: T.Array(
+            T.Object({
+              login: T.String()
             })
           )
         }
@@ -120,17 +120,17 @@ export const oauthGithubCompatRoutes = defineRoutes(async (s) => {
     '/user/teams',
     {
       schema: {
-        querystring: Type.Object({
-          per_page: Type.Integer(),
-          page: Type.Integer()
+        querystring: T.Object({
+          per_page: T.Integer(),
+          page: T.Integer()
         }),
         response: {
-          200: Type.Array(
-            Type.Object({
-              name: Type.String(),
-              slug: Type.String(),
-              organization: Type.Object({
-                login: Type.String()
+          200: T.Array(
+            T.Object({
+              name: T.String(),
+              slug: T.String(),
+              organization: T.Object({
+                login: T.String()
               })
             })
           )

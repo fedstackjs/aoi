@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import AccessLevelChip from '@/components/utils/AccessLevelChip.vue'
 
 const { t } = useI18n()

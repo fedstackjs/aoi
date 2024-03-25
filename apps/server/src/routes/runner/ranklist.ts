@@ -1,14 +1,16 @@
 import { BSON, UUID } from 'mongodb'
+
 import { ContestRanklistState, SolutionState } from '../../db/index.js'
-import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
-import { Type } from '@sinclair/typebox'
 import {
   SContestProblemSettings,
   SContestRanklistSettings,
   contestRanklistKey,
   getUploadUrl
 } from '../../index.js'
+import { T } from '../../schemas/index.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
+import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
+
 import { kRunnerContext } from './inject.js'
 
 const kRunnerRanklistContext = defineInjectionPoint<{
@@ -22,9 +24,9 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
   s.addHook(
     'onRoute',
     paramSchemaMerger(
-      Type.Object({
-        contestId: Type.String({ format: 'uuid' }),
-        taskId: Type.String({ format: 'uuid' })
+      T.Object({
+        contestId: T.String({ format: 'uuid' }),
+        taskId: T.String({ format: 'uuid' })
       })
     )
   )
@@ -41,8 +43,8 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Mark task as completed',
-        body: Type.Object({
-          ranklistUpdatedAt: Type.Integer()
+        body: T.Object({
+          ranklistUpdatedAt: T.Integer()
         })
       }
     },
@@ -77,11 +79,11 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: Type.Array(
-            Type.Object({
-              _id: Type.UUID(),
-              title: Type.String(),
-              tags: Type.Array(Type.String()),
+          200: T.Array(
+            T.Object({
+              _id: T.UUID(),
+              title: T.String(),
+              tags: T.Array(T.String()),
               settings: SContestProblemSettings
             })
           )
@@ -114,30 +116,30 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Get participants for contest',
-        querystring: Type.Object({
-          since: Type.Number(),
-          lastId: Type.UUID()
+        querystring: T.Object({
+          since: T.Number(),
+          lastId: T.UUID()
         }),
         response: {
-          200: Type.Array(
-            Type.Object({
-              _id: Type.UUID(),
-              userId: Type.UUID(),
-              contestId: Type.UUID(),
-              tags: Type.Optional(Type.Array(Type.String())),
-              results: Type.Record(
-                Type.String(),
-                Type.Object({
-                  solutionCount: Type.Integer(),
-                  lastSolutionId: Type.UUID(),
-                  lastSolution: Type.Object({
-                    score: Type.Number(),
-                    status: Type.String(),
-                    completedAt: Type.Integer()
+          200: T.Array(
+            T.Object({
+              _id: T.UUID(),
+              userId: T.UUID(),
+              contestId: T.UUID(),
+              tags: T.Optional(T.Array(T.String())),
+              results: T.Record(
+                T.String(),
+                T.Object({
+                  solutionCount: T.Integer(),
+                  lastSolutionId: T.UUID(),
+                  lastSolution: T.Object({
+                    score: T.Number(),
+                    status: T.String(),
+                    completedAt: T.Integer()
                   })
                 })
               ),
-              updatedAt: Type.Integer()
+              updatedAt: T.Integer()
             })
           )
         }
@@ -172,27 +174,27 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Get solutions for contest',
-        querystring: Type.Object({
-          since: Type.Number(),
-          lastId: Type.UUID()
+        querystring: T.Object({
+          since: T.Number(),
+          lastId: T.UUID()
         }),
         response: {
-          200: Type.Array(
-            Type.Object({
-              _id: Type.UUID(),
-              problemId: Type.UUID(),
-              userId: Type.UUID(),
-              label: Type.String(),
-              problemDataHash: Type.String(),
-              state: Type.Integer(),
-              solutionDataHash: Type.String(),
-              score: Type.Number(),
-              metrics: Type.Record(Type.String(), Type.Number()),
-              status: Type.String(),
-              message: Type.String(),
-              createdAt: Type.Integer(),
-              submittedAt: Type.Integer(),
-              completedAt: Type.Integer()
+          200: T.Array(
+            T.Object({
+              _id: T.UUID(),
+              problemId: T.UUID(),
+              userId: T.UUID(),
+              label: T.String(),
+              problemDataHash: T.String(),
+              state: T.Integer(),
+              solutionDataHash: T.String(),
+              score: T.Number(),
+              metrics: T.Record(T.String(), T.Number()),
+              status: T.String(),
+              message: T.String(),
+              createdAt: T.Integer(),
+              submittedAt: T.Integer(),
+              completedAt: T.Integer()
             })
           )
         }
@@ -230,10 +232,10 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get upload urls for ranklist',
         response: {
-          200: Type.Array(
-            Type.Object({
-              key: Type.String(),
-              url: Type.String({ format: 'uri' })
+          200: T.Array(
+            T.Object({
+              key: T.String(),
+              url: T.String({ format: 'uri' })
             })
           )
         }
@@ -275,18 +277,18 @@ export const runnerRanklistRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: Type.Partial(
-            Type.Object({
-              taskId: Type.UUID(),
-              contestId: Type.UUID(),
-              ranklists: Type.Array(
-                Type.Object({
-                  key: Type.String(),
-                  name: Type.String(),
+          200: T.Partial(
+            T.Object({
+              taskId: T.UUID(),
+              contestId: T.UUID(),
+              ranklists: T.Array(
+                T.Object({
+                  key: T.String(),
+                  name: T.String(),
                   settings: SContestRanklistSettings
                 })
               ),
-              ranklistUpdatedAt: Type.Integer()
+              ranklistUpdatedAt: T.Integer()
             })
           )
         }

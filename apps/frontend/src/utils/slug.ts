@@ -1,4 +1,5 @@
 import { HTTPError } from 'ky'
+
 import { http } from './http'
 
 async function findNext(current: number, check: (n: number) => Promise<boolean>) {

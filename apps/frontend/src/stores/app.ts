@@ -1,6 +1,9 @@
+import { useAsyncState, useLocalStorage, useTitle, watchDebounced } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
-import { useAsyncState, useLocalStorage, useTitle, watchDebounced } from '@vueuse/core'
+import { useRoute, useRouter } from 'vue-router'
+
+import type { IOrgProfile, IUserProfile } from '@/types'
 import {
   http,
   isLoggedIn,
@@ -10,8 +13,6 @@ import {
   setMfaToken,
   userId
 } from '@/utils/http'
-import { useRoute, useRouter } from 'vue-router'
-import type { IOrgProfile, IUserProfile } from '@/types'
 
 export const useAppState = defineStore('app_state', () => {
   const route = useRoute()

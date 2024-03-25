@@ -18,6 +18,7 @@
 
 <script setup lang="ts">
 import AoiGravatar from './AoiGravatar.vue'
+
 import { useAppState } from '@/stores/app'
 import { useAppUserMenu } from '@/utils/menus'
 

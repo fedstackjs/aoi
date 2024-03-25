@@ -1,10 +1,10 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, paramSchemaMerger, loadCapability } from '../common/index.js'
-import { contestRanklistKey } from '../../index.js'
-import { getFileUrl } from '../common/files.js'
 import { ORG_CAPS, CONTEST_CAPS, IPublicRanklist } from '../../db/index.js'
+import { contestRanklistKey } from '../../index.js'
+import { T } from '../../schemas/index.js'
 import { CAP_ALL, hasCapability } from '../../utils/index.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
+import { getFileUrl } from '../common/files.js'
+import { defineRoutes, paramSchemaMerger, loadCapability } from '../common/index.js'
 
 const kPubrkContext = defineInjectionPoint<{
   _ranklistId: number
@@ -17,8 +17,8 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
   s.addHook(
     'onRoute',
     paramSchemaMerger(
-      Type.Object({
-        ranklistId: Type.Number()
+      T.Object({
+        ranklistId: T.Number()
       })
     )
   )
@@ -55,8 +55,8 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: Type.Object({
-            visible: Type.Boolean()
+          200: T.Object({
+            visible: T.Boolean()
           })
         }
       }
@@ -70,12 +70,12 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
     '/visible',
     {
       schema: {
-        body: Type.Object({
-          visible: Type.Boolean()
+        body: T.Object({
+          visible: T.Boolean()
         }),
         response: {
-          200: Type.Object({
-            ok: Type.Boolean()
+          200: T.Object({
+            ok: T.Boolean()
           })
         }
       }
@@ -108,8 +108,8 @@ export const pubrkScopedRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: Type.Object({
-            ok: Type.Boolean()
+          200: T.Object({
+            ok: T.Boolean()
           })
         }
       }

@@ -1,7 +1,8 @@
 import { useAsyncState } from '@vueuse/core'
 import { toRef, type MaybeRef, type InjectionKey, provide, type Ref, inject, computed } from 'vue'
-import { http } from '@/utils/http'
+
 import type { IContestProblemListDTO } from '@/components/contest/types'
+import { http } from '@/utils/http'
 
 export const kContestProblemList: InjectionKey<Ref<IContestProblemListDTO[]>> =
   Symbol('contest-problem-list')

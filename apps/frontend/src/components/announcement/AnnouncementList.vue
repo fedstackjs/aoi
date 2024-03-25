@@ -22,11 +22,13 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { usePagination } from '@/utils/pagination'
+
 import { fmtDate } from './fmtdate'
+
+import { usePagination } from '@/utils/pagination'
+import { withTitle } from '@/utils/title'
 
 const { t } = useI18n()
 

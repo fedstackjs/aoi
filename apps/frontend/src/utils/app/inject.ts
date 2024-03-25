@@ -1,8 +1,10 @@
-import type { IAppDTO } from '@/components/app/types'
-import { toRef, type InjectionKey, provide, computed, inject, type MaybeRef, type Ref } from 'vue'
-import { hasCapability, appBits } from '../capability'
 import { useAsyncState } from '@vueuse/core'
+import { toRef, type InjectionKey, provide, computed, inject, type MaybeRef, type Ref } from 'vue'
+
+import { hasCapability, appBits } from '../capability'
 import { http } from '../http'
+
+import type { IAppDTO } from '@/components/app/types'
 
 const kApp: InjectionKey<Ref<IAppDTO>> = Symbol('app')
 

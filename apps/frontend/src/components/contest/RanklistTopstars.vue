@@ -7,16 +7,18 @@
 </template>
 
 <script setup lang="ts">
-import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
-import { LineChart } from 'echarts/charts'
-import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components'
-import VChart from 'vue-echarts'
 import type { RanklistTopstar } from '@aoi-js/common'
 import { useAsyncState } from '@vueuse/core'
-import { getProfile } from '@/utils/profile'
+import { LineChart } from 'echarts/charts'
+import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components'
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import VChart from 'vue-echarts'
+
 import AsyncState from '../utils/AsyncState.vue'
+
 import { useContestData } from '@/utils/contest/inject'
+import { getProfile } from '@/utils/profile'
 
 const props = defineProps<{
   topstar: RanklistTopstar

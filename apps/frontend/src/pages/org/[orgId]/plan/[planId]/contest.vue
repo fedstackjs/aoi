@@ -35,12 +35,13 @@
 </template>
 
 <script setup lang="ts">
-import AsyncState from '@/components/utils/AsyncState.vue'
-import type { IPlanDTO, IPlanContestDTO } from '@/components/plan/types'
-import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
+
+import type { IPlanDTO, IPlanContestDTO } from '@/components/plan/types'
+import AsyncState from '@/components/utils/AsyncState.vue'
 import { enableOverview } from '@/utils/flags'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   orgId: string

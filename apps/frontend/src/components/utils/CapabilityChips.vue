@@ -7,9 +7,10 @@
 </template>
 
 <script setup lang="ts">
-import { hasCapability } from '@/utils/capability'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import { hasCapability } from '@/utils/capability'
 
 const props = defineProps<{
   capability: string

@@ -17,13 +17,14 @@
 </template>
 
 <script setup lang="ts" generic="T = any">
+import { useAsyncState } from '@vueuse/core'
+import { nextTick, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import AsyncState from './AsyncState.vue'
+
 import { useAsyncTask } from '@/utils/async'
 import { http } from '@/utils/http'
-import { useAsyncState } from '@vueuse/core'
-import { useI18n } from 'vue-i18n'
-import AsyncState from './AsyncState.vue'
-import { nextTick } from 'vue'
-import { watch } from 'vue'
 
 const props = defineProps<{
   endpoint: string

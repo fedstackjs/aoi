@@ -151,17 +151,17 @@
 </template>
 
 <script setup lang="ts">
+import { useAsyncState } from '@vueuse/core'
+import { reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+import type { SubmitEventPromise } from 'vuetify'
+
 import type { IContestDTO } from '@/components/contest/types'
 import AccessLevelEditor from '@/components/utils/AccessLevelEditor.vue'
 import DateTimeInput from '@/components/utils/DateTimeInput.vue'
 import { useAsyncTask, withMessage, noMessage } from '@/utils/async'
 import { http } from '@/utils/http'
-import { useAsyncState } from '@vueuse/core'
-import { reactive } from 'vue'
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
-import type { SubmitEventPromise } from 'vuetify'
 
 const props = defineProps<{
   orgId: string

@@ -6,13 +6,14 @@
 </template>
 
 <script setup lang="ts">
-import { useAsyncTask } from '@/utils/async'
-import { http, prettyHTTPError } from '@/utils/http'
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { getToken } from '@/utils/user/iaaa'
+
 import { useLogin } from '@/stores/app'
+import { useAsyncTask } from '@/utils/async'
+import { http, prettyHTTPError } from '@/utils/http'
+import { getToken } from '@/utils/user/iaaa'
 
 const { t } = useI18n()
 const router = useRouter()

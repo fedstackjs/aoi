@@ -32,11 +32,12 @@
 </template>
 
 <script setup lang="ts">
-import { http } from '@/utils/http'
-import type { IOrgSettings } from '@/types'
 import { useAsyncState } from '@vueuse/core'
-import AsyncState from '@/components/utils/AsyncState.vue'
 import { useI18n } from 'vue-i18n'
+
+import AsyncState from '@/components/utils/AsyncState.vue'
+import type { IOrgSettings } from '@/types'
+import { http } from '@/utils/http'
 
 const { t } = useI18n()
 

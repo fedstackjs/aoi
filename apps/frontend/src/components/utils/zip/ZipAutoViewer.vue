@@ -10,12 +10,14 @@
 </template>
 
 <script setup lang="ts">
+import JSZip from 'jszip'
+import { ref, shallowRef } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import ZipViewer from './ZipViewer.vue'
+
 import { noMessage, useAsyncTask } from '@/utils/async'
 import { http } from '@/utils/http'
-import { ref, shallowRef } from 'vue'
-import JSZip from 'jszip'
-import ZipViewer from './ZipViewer.vue'
-import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   endpoint: string

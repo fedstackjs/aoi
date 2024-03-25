@@ -21,8 +21,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import MonacoEditor from './MonacoEditor.vue'
+
 import MarkdownRenderer from './MarkdownRenderer.vue'
+import MonacoEditor from './MonacoEditor.vue'
 
 defineProps<{
   label?: string

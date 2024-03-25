@@ -1,7 +1,9 @@
 import { fastifyPlugin } from 'fastify-plugin'
+
+import { loadEnv, logger } from '../utils/index.js'
+
 import { BaseCache } from './base.js'
 import { MongoCache } from './mongo.js'
-import { loadEnv, logger } from '../utils/index.js'
 import { RedisCache } from './redis.js'
 
 export * from './base.js'

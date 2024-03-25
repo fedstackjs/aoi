@@ -1,17 +1,18 @@
-import mailer from 'nodemailer'
-
-import { BaseAuthProvider } from './base.js'
-import { loadEnv, logger, parseBoolean } from '../utils/index.js'
-import { Collection, UUID } from 'mongodb'
-import { Type } from '@sinclair/typebox'
-import { TypeCompiler } from '@sinclair/typebox/compiler'
-import rnd from 'randomstring'
 import { httpErrors } from '@fastify/sensible'
+import { TypeCompiler } from '@sinclair/typebox/compiler'
+import { Collection, UUID } from 'mongodb'
+import * as mailer from 'nodemailer'
+import rnd from 'randomstring'
+
 import { BaseCache } from '../cache/index.js'
 import { IUser } from '../db/index.js'
+import { T } from '../schemas/index.js'
+import { loadEnv, logger, parseBoolean } from '../utils/index.js'
 
-const SEmailPayload = Type.Object({
-  email: Type.String({
+import { BaseAuthProvider } from './base.js'
+
+const SEmailPayload = T.Object({
+  email: T.String({
     maxLength: 128,
     pattern: '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$'
   })
@@ -19,18 +20,18 @@ const SEmailPayload = Type.Object({
 
 const EmailPayload = TypeCompiler.Compile(SEmailPayload)
 
-const SCodePayload = Type.Object({
-  code: Type.String({ pattern: '^[0-9]{6}$' })
+const SCodePayload = T.Object({
+  code: T.String({ pattern: '^[0-9]{6}$' })
 })
 
 const CodePayload = TypeCompiler.Compile(SCodePayload)
 
-const SLoginPayload = Type.Object({
-  email: Type.String({
+const SLoginPayload = T.Object({
+  email: T.String({
     maxLength: 128,
     pattern: '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$'
   }),
-  code: Type.String({ pattern: '^[0-9]{6}$' })
+  code: T.String({ pattern: '^[0-9]{6}$' })
 })
 
 const LoginPayload = TypeCompiler.Compile(SLoginPayload)

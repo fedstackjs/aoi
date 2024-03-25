@@ -1,23 +1,23 @@
-import { Static, Type } from '@sinclair/typebox'
+import { T, Static } from './common.js'
 
-export const SAppSettings = Type.Partial(
-  Type.Object({
-    allowPublicLogin: Type.Boolean(),
-    requireMfa: Type.Boolean(),
-    scopes: Type.Array(
-      Type.String({
+export const SAppSettings = T.Partial(
+  T.Object({
+    allowPublicLogin: T.Boolean(),
+    requireMfa: T.Boolean(),
+    scopes: T.Array(
+      T.String({
         pattern: '^[^.].?$'
       })
     ),
-    redirectUris: Type.Array(
-      Type.Object({
-        uri: Type.String(),
-        label: Type.String()
+    redirectUris: T.Array(
+      T.Object({
+        uri: T.String(),
+        label: T.String()
       })
     ),
-    attachUser: Type.Boolean(),
-    attachMembership: Type.Boolean(),
-    allowDeviceFlow: Type.Boolean()
+    attachUser: T.Boolean(),
+    attachMembership: T.Boolean(),
+    allowDeviceFlow: T.Boolean()
   })
 )
 

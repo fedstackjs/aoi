@@ -1,7 +1,7 @@
-import { Type } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
 
 import { CONTEST_CAPS } from '../../../db/index.js'
+import { T } from '../../../schemas/index.js'
 import { findPaginated, hasCapability } from '../../../utils/index.js'
 import { defineRoutes } from '../../common/index.js'
 import { kContestContext } from '../inject.js'
@@ -22,17 +22,17 @@ export const contestParticipantRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List contest participants',
-        querystring: Type.Object({
-          page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
-          count: Type.Boolean({ default: false })
+        querystring: T.Object({
+          page: T.Integer({ minimum: 1, default: 1 }),
+          perPage: T.Integer({ enum: [15, 30, 50, 100] }),
+          count: T.Boolean({ default: false })
         }),
         response: {
-          200: Type.PaginationResult(
-            Type.Object({
-              _id: Type.UUID(),
-              userId: Type.UUID(),
-              tags: Type.Optional(Type.Array(Type.String()))
+          200: T.PaginationResult(
+            T.Object({
+              _id: T.UUID(),
+              userId: T.UUID(),
+              tags: T.Optional(T.Array(T.String()))
             })
           )
         }
@@ -90,12 +90,12 @@ const contestParticipantAdminRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Get participant',
-        params: Type.Object({
-          userId: Type.UUID()
+        params: T.Object({
+          userId: T.UUID()
         }),
         response: {
-          200: Type.Object({
-            tags: Type.Optional(Type.Array(Type.String()))
+          200: T.Object({
+            tags: T.Optional(T.Array(T.String()))
           })
         }
       }
@@ -117,11 +117,11 @@ const contestParticipantAdminRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Update participant',
-        params: Type.Object({
-          userId: Type.UUID()
+        params: T.Object({
+          userId: T.UUID()
         }),
-        body: Type.Object({
-          tags: Type.Optional(Type.Array(Type.String()))
+        body: T.Object({
+          tags: T.Optional(T.Array(T.String()))
         })
       }
     },

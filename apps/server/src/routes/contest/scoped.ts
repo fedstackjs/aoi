@@ -1,17 +1,19 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadCapability, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
-import { SContestStage } from '../../schemas/contest.js'
+
 import { CONTEST_CAPS, ORG_CAPS, evalTagRules, getCurrentContestStage } from '../../db/index.js'
+import { SContestStage } from '../../schemas/contest.js'
+import { T } from '../../schemas/index.js'
 import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/index.js'
-import { contestAttachmentRoutes } from './attachment.js'
-import { contestAdminRoutes } from './admin.js'
-import { contestProblemRoutes } from './problem/index.js'
-import { contestSolutionRoutes } from './solution/index.js'
-import { contestRanklistRoutes } from './ranklist/index.js'
-import { contestParticipantRoutes } from './participant/index.js'
 import { manageContent } from '../common/content.js'
+import { defineRoutes, loadCapability, loadUUID, paramSchemaMerger } from '../common/index.js'
+
+import { contestAdminRoutes } from './admin.js'
+import { contestAttachmentRoutes } from './attachment.js'
 import { kContestContext } from './inject.js'
+import { contestParticipantRoutes } from './participant/index.js'
+import { contestProblemRoutes } from './problem/index.js'
+import { contestRanklistRoutes } from './ranklist/index.js'
+import { contestSolutionRoutes } from './solution/index.js'
 
 export const contestScopedRoutes = defineRoutes(async (s) => {
   const { contests, contestParticipants, users } = s.db
@@ -19,8 +21,8 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
   s.addHook(
     'onRoute',
     paramSchemaMerger(
-      Type.Object({
-        contestId: Type.String({ format: 'uuid' })
+      T.Object({
+        contestId: T.String({ format: 'uuid' })
       })
     )
   )
@@ -62,16 +64,16 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get contest details',
         response: {
-          200: Type.Object({
-            _id: Type.UUID(),
-            orgId: Type.UUID(),
-            accessLevel: Type.AccessLevel(),
-            slug: Type.String(),
-            title: Type.String(),
-            description: Type.String(),
-            tags: Type.Array(Type.String()),
-            capability: Type.String(),
-            stages: Type.Array(Type.Pick(SContestStage, ['name', 'start'] as const)),
+          200: T.Object({
+            _id: T.UUID(),
+            orgId: T.UUID(),
+            accessLevel: T.AccessLevel(),
+            slug: T.String(),
+            title: T.String(),
+            description: T.String(),
+            tags: T.Array(T.String()),
+            capability: T.String(),
+            stages: T.Array(T.Pick(SContestStage, ['name', 'start'] as const)),
             currentStage: SContestStage
           })
         }
@@ -93,7 +95,7 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Register for a contest',
         response: {
-          200: Type.Object({})
+          200: T.Object({})
         }
       }
     },
@@ -138,11 +140,11 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get participant details of self',
         response: {
-          200: Type.Object({
-            results: Type.Record(
-              Type.String(),
-              Type.Object({
-                solutionCount: Type.Number()
+          200: T.Object({
+            results: T.Record(
+              T.String(),
+              T.Object({
+                solutionCount: T.Number()
               })
             )
           })

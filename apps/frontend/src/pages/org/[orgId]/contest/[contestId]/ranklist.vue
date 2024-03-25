@@ -32,13 +32,14 @@
 </template>
 
 <script setup lang="ts">
-import AsyncState from '@/components/utils/AsyncState.vue'
 import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
+
 import type { IContestDTO } from '@/components/contest/types'
+import AsyncState from '@/components/utils/AsyncState.vue'
 import { useContestCapability } from '@/utils/contest/inject'
 import { enableOverview } from '@/utils/flags'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   orgId: string

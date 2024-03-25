@@ -18,14 +18,15 @@
 </template>
 
 <script setup lang="ts">
-import PlanContestSettingsInput from '@/components/plan/PlanContestSettingsInput.vue'
-import type { IPlanDTO, IPlanContestDTO } from '@/components/plan/types'
-import IdInput from '@/components/utils/IdInput.vue'
-import { http } from '@/utils/http'
 import { nextTick, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
+
+import PlanContestSettingsInput from '@/components/plan/PlanContestSettingsInput.vue'
+import type { IPlanDTO, IPlanContestDTO } from '@/components/plan/types'
+import IdInput from '@/components/utils/IdInput.vue'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   orgId: string

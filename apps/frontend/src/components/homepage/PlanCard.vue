@@ -35,10 +35,11 @@
 
 <script setup lang="ts">
 import { useAsyncState } from '@vueuse/core'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import AsyncState from '@/components/utils/AsyncState.vue'
 import { http } from '@/utils/http'
-import { computed } from 'vue'
 
 const props = defineProps<{
   title?: string

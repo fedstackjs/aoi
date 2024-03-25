@@ -20,12 +20,13 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
-import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
-import { useUserCapability } from '@/utils/capability'
-import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
+import { useI18n } from 'vue-i18n'
+
 import { fmtDate } from '@/components/announcement/fmtdate'
+import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
+import { useUserCapability } from '@/utils/capability'
+import { withTitle } from '@/utils/title'
 
 const { t } = useI18n()
 const props = defineProps<{

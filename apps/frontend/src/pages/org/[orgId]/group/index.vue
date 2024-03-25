@@ -32,12 +32,13 @@
 </template>
 
 <script setup lang="ts">
-import { http } from '@/utils/http'
-import { withTitle } from '@/utils/title'
 import { useAsyncState } from '@vueuse/core'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import AoiGravatar from '@/components/aoi/AoiGravatar.vue'
+import { http } from '@/utils/http'
+import { withTitle } from '@/utils/title'
 
 const props = defineProps<{
   orgId: string

@@ -67,18 +67,17 @@
 </template>
 
 <script setup lang="ts">
-import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
-import type { IPlanDTO, IPlanContestDTO } from '@/components/plan/types'
-import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ref } from 'vue'
-import ContestTabAdmin from '@/components/plan/ContestTabAdmin.vue'
-import type { IContestParticipantDTO } from '@/components/contest/types'
-import { computed } from 'vue'
+
 import ContestProgressBar from '@/components/contest/ContestProgressBar.vue'
+import type { IContestParticipantDTO } from '@/components/contest/types'
+import ContestTabAdmin from '@/components/plan/ContestTabAdmin.vue'
+import type { IPlanDTO, IPlanContestDTO } from '@/components/plan/types'
+import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
 import RegisterBtn from '@/components/utils/RegisterBtn.vue'
-import { watch } from 'vue'
+import { http } from '@/utils/http'
 import { usePlanCapability } from '@/utils/plan/inject'
 
 const props = defineProps<{

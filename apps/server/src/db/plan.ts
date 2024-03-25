@@ -1,8 +1,10 @@
-import { BSON, Collection } from 'mongodb'
-import { IPrincipalControlable, IWithAccessLevel, IWithContent } from './common.js'
-import { capabilityMask } from '../utils/index.js'
-import { IPlanContestSettings, IPlanSettings } from '../schemas/index.js'
 import { fastifyPlugin } from 'fastify-plugin'
+import { BSON, Collection } from 'mongodb'
+
+import { IPlanContestSettings, IPlanSettings } from '../schemas/index.js'
+import { capabilityMask } from '../utils/index.js'
+
+import { IPrincipalControlable, IWithAccessLevel, IWithContent } from './common.js'
 
 export const PLAN_CAPS = {
   CAP_ACCESS: capabilityMask(0),

@@ -51,16 +51,15 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
-import { reactive } from 'vue'
-import { computed } from 'vue'
-import { hasCapability } from '@/utils/capability'
 import { useAsyncState } from '@vueuse/core'
-import AsyncState from '@/components/utils/AsyncState.vue'
-import type { IContestDTO } from '@/components/contest/types'
+import { reactive, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useToast } from 'vue-toastification'
-import { watch } from 'vue'
+
+import type { IContestDTO } from '@/components/contest/types'
+import AsyncState from '@/components/utils/AsyncState.vue'
+import { hasCapability } from '@/utils/capability'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   orgId: string

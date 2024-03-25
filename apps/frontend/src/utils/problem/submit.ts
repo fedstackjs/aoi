@@ -1,9 +1,10 @@
 import { toRef, type MaybeRef, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
+import { useToast } from 'vue-toastification'
+
 import { computeSHA256Progress } from '../files'
 import { http, prettyHTTPError } from '../http'
-import { useToast } from 'vue-toastification'
-import { useRoute, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 
 export function useProblemSubmit(
   problemId: MaybeRef<string>,

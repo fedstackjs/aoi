@@ -1,8 +1,10 @@
-import type { IPlanDTO } from '@/components/plan/types'
-import { toRef, type InjectionKey, provide, computed, inject, type MaybeRef, type Ref } from 'vue'
-import { hasCapability, planBits } from '../capability'
 import { useAsyncState } from '@vueuse/core'
+import { toRef, type InjectionKey, provide, computed, inject, type MaybeRef, type Ref } from 'vue'
+
+import { hasCapability, planBits } from '../capability'
 import { http } from '../http'
+
+import type { IPlanDTO } from '@/components/plan/types'
 
 const kPlan: InjectionKey<Ref<IPlanDTO>> = Symbol('plan')
 

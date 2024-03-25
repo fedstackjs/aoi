@@ -54,9 +54,11 @@
 </template>
 
 <script setup lang="ts">
-import AoiGravatar from '../aoi/AoiGravatar.vue'
-import { useAppState } from '@/stores/app'
 import { useI18n } from 'vue-i18n'
+
+import AoiGravatar from '../aoi/AoiGravatar.vue'
+
+import { useAppState } from '@/stores/app'
 
 const appState = useAppState()
 const { t } = useI18n()

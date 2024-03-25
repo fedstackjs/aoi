@@ -1,11 +1,12 @@
 import { PROBLEM_CAPS, SolutionState } from '../../db/index.js'
-import { defineRoutes } from '../common/index.js'
+import { SProblemSettings } from '../../index.js'
+import { T } from '../../schemas/index.js'
 import { ensureCapability } from '../../utils/capability.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
-import { SProblemSettings } from '../../index.js'
+import { defineRoutes } from '../common/index.js'
 import { manageSettings } from '../common/settings.js'
+
 import { kProblemContext } from './inject.js'
-import { Type } from '@sinclair/typebox'
 
 export const problemAdminRoutes = defineRoutes(async (s) => {
   const { problems, solutions } = s.db
@@ -43,8 +44,8 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Submit all solutions',
         response: {
-          200: Type.Object({
-            modifiedCount: Type.Number()
+          200: T.Object({
+            modifiedCount: T.Number()
           })
         }
       }
@@ -79,12 +80,12 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Rejudge all solutions',
-        body: Type.Object({
-          pull: Type.Optional(Type.Boolean())
+        body: T.Object({
+          pull: T.Optional(T.Boolean())
         }),
         response: {
-          200: Type.Object({
-            modifiedCount: Type.Number()
+          200: T.Object({
+            modifiedCount: T.Number()
           })
         }
       }

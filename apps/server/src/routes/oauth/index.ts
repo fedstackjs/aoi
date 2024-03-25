@@ -1,11 +1,12 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes } from '../common/index.js'
+import { fastifyFormbody } from '@fastify/formbody'
 import { UUID } from 'mongodb'
+
 import { IOrgMembership, IUser } from '../../db/index.js'
-import { SUserProfile } from '../../schemas/index.js'
-import { oauthGithubCompatRoutes } from './githubCompat.js'
-import fastifyFormbody from '@fastify/formbody'
+import { T, SUserProfile } from '../../schemas/index.js'
+import { defineRoutes } from '../common/index.js'
+
 import { oauthDeviceRoutes } from './device.js'
+import { oauthGithubCompatRoutes } from './githubCompat.js'
 
 export const oauthRoutes = defineRoutes(async (s) => {
   const { apps, users, orgMemberships } = s.db
@@ -18,29 +19,29 @@ export const oauthRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get access token',
         security: [],
-        body: Type.Object({
-          client_id: Type.String(),
-          client_secret: Type.Optional(Type.String()),
-          code: Type.String()
+        body: T.Object({
+          client_id: T.String(),
+          client_secret: T.Optional(T.String()),
+          code: T.String()
         }),
         response: {
-          200: Type.Object({
-            access_token: Type.String(),
-            token_type: Type.String(),
-            user: Type.Optional(
-              Type.Object({
+          200: T.Object({
+            access_token: T.String(),
+            token_type: T.String(),
+            user: T.Optional(
+              T.Object({
                 profile: SUserProfile,
-                capability: Type.Optional(Type.String()),
-                namespace: Type.Optional(Type.String()),
-                tags: Type.Optional(Type.Array(Type.String()))
+                capability: T.Optional(T.String()),
+                namespace: T.Optional(T.String()),
+                tags: T.Optional(T.Array(T.String()))
               })
             ),
-            membership: Type.Optional(
-              Type.Object({
-                orgId: Type.UUID(),
-                capability: Type.String(),
-                groups: Type.Array(Type.UUID()),
-                tags: Type.Optional(Type.Array(Type.String()))
+            membership: T.Optional(
+              T.Object({
+                orgId: T.UUID(),
+                capability: T.String(),
+                groups: T.Array(T.UUID()),
+                tags: T.Optional(T.Array(T.String()))
               })
             )
           })

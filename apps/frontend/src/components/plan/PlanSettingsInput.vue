@@ -7,8 +7,9 @@
 </template>
 
 <script setup lang="ts">
-import type { IPlanSettings } from '@/types'
 import { useI18n } from 'vue-i18n'
+
+import type { IPlanSettings } from '@/types'
 
 const model = defineModel<IPlanSettings>({ required: true })
 const { t } = useI18n()

@@ -20,8 +20,7 @@
 
 <script setup lang="ts">
 import type { ProblemConfigSubmitFormMetadata } from '@aoi-js/common'
-import { watch } from 'vue'
-import { reactive } from 'vue'
+import { watch, reactive } from 'vue'
 
 defineProps<{
   options: Partial<ProblemConfigSubmitFormMetadata>

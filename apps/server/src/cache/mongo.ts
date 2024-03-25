@@ -1,4 +1,5 @@
 import { Collection, Db } from 'mongodb'
+
 import { BaseCache } from './base.js'
 
 export interface ICacheEntry {

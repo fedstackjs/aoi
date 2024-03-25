@@ -3,8 +3,9 @@
 </template>
 
 <script setup lang="ts">
-import MonacoEditor from '@/components/utils/MonacoEditor.vue'
 import type { ProblemConfigSubmitFormEditor } from '@aoi-js/common'
+
+import MonacoEditor from '@/components/utils/MonacoEditor.vue'
 
 defineProps<{
   options: Partial<ProblemConfigSubmitFormEditor>

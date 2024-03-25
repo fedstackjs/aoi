@@ -49,14 +49,16 @@
 
 <script setup lang="ts">
 import { useAsyncState } from '@vueuse/core'
-import { http } from '@/utils/http'
-import type { IAssociation } from '@/types'
-import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import CapabilityChips from './CapabilityChips.vue'
-import PrincipalProfile from './PrincipalProfile.vue'
 import CapabilityInput from './CapabilityInput.vue'
 import PrincipalInput from './PrincipalInput.vue'
+import PrincipalProfile from './PrincipalProfile.vue'
+
+import type { IAssociation } from '@/types'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   prefix: string

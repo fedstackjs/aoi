@@ -1,5 +1,7 @@
 import { fastifyPlugin } from 'fastify-plugin'
+
 import { loadEnv } from '../index.js'
+
 import { BaseAuthProvider } from './base.js'
 import { IaaaAuthProvider } from './iaaa.js'
 import { MailAuthProvider } from './mail.js'

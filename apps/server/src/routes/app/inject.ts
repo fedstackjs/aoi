@@ -1,6 +1,7 @@
 import { BSON } from 'mongodb'
-import { defineInjectionPoint } from '../../utils/inject.js'
+
 import { IApp, IOrgMembership } from '../../db/index.js'
+import { defineInjectionPoint } from '../../utils/inject.js'
 
 export const kAppContext = defineInjectionPoint<{
   app: IApp

@@ -33,13 +33,13 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import PlanList from '@/components/plan/PlanList.vue'
-import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+
 import CommonTagDialog from '@/components/common/CommonTagDialog.vue'
+import PlanList from '@/components/plan/PlanList.vue'
+import { withTitle } from '@/utils/title'
 
 const props = defineProps<{
   orgId: string

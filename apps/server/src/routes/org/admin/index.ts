@@ -1,11 +1,12 @@
+import { ORG_CAPS } from '../../../db/index.js'
+import { IOrgOssSettings, SOrgProfile, SOrgSettings } from '../../../index.js'
+import { T } from '../../../schemas/index.js'
 import { CAP_NONE, ensureCapability } from '../../../utils/capability.js'
 import { defineRoutes } from '../../common/index.js'
-import { ORG_CAPS } from '../../../db/index.js'
-import { Type } from '@sinclair/typebox'
-import { IOrgOssSettings, SOrgProfile, SOrgSettings } from '../../../index.js'
+import { kOrgContext } from '../inject.js'
+
 import { orgAdminMemberRoutes } from './member.js'
 import { orgAdminRunnerRoutes } from './runner.js'
-import { kOrgContext } from '../inject.js'
 
 function ossSettingsToUpdate(oss: IOrgOssSettings) {
   const $set: Record<string, unknown> = oss
@@ -59,7 +60,7 @@ export const orgAdminRoutes = defineRoutes(async (s) => {
     '/settings',
     {
       schema: {
-        body: Type.Partial(SOrgSettings)
+        body: T.Partial(SOrgSettings)
       }
     },
     async (req) => {

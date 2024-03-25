@@ -1,8 +1,7 @@
-import { Type } from '@sinclair/typebox'
 import { CONTEST_CAPS } from '../../../db/index.js'
+import { SContestRanklistSettings, T } from '../../../schemas/index.js'
 import { hasCapability } from '../../../utils/index.js'
 import { defineRoutes } from '../../common/index.js'
-import { SContestRanklistSettings } from '../../../schemas/index.js'
 import { kContestContext } from '../inject.js'
 
 export const ranklistAdminRoutes = defineRoutes(async (s) => {
@@ -19,9 +18,9 @@ export const ranklistAdminRoutes = defineRoutes(async (s) => {
     '/',
     {
       schema: {
-        body: Type.Object({
-          key: Type.String(),
-          name: Type.String()
+        body: T.Object({
+          key: T.String(),
+          name: T.String()
         })
       }
     },
@@ -42,8 +41,8 @@ export const ranklistAdminRoutes = defineRoutes(async (s) => {
     '/:key/settings',
     {
       schema: {
-        params: Type.Object({
-          key: Type.String()
+        params: T.Object({
+          key: T.String()
         }),
         response: {
           200: SContestRanklistSettings
@@ -63,8 +62,8 @@ export const ranklistAdminRoutes = defineRoutes(async (s) => {
     '/:key/settings',
     {
       schema: {
-        params: Type.Object({
-          key: Type.String()
+        params: T.Object({
+          key: T.String()
         }),
         body: SContestRanklistSettings
       }
@@ -85,8 +84,8 @@ export const ranklistAdminRoutes = defineRoutes(async (s) => {
     '/:key',
     {
       schema: {
-        params: Type.Object({
-          key: Type.String()
+        params: T.Object({
+          key: T.String()
         })
       }
     },

@@ -13,14 +13,15 @@
 </template>
 
 <script setup lang="ts">
-import ContestProblemSettingsInput from '@/components/contest/ContestProblemSettingsInput.vue'
-import type { IContestDTO, IContestProblemListDTO } from '@/components/contest/types'
-import IdInput from '@/components/utils/IdInput.vue'
-import { http } from '@/utils/http'
 import { reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
+
+import ContestProblemSettingsInput from '@/components/contest/ContestProblemSettingsInput.vue'
+import type { IContestDTO, IContestProblemListDTO } from '@/components/contest/types'
+import IdInput from '@/components/utils/IdInput.vue'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   orgId: string

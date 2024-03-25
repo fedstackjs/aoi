@@ -19,10 +19,11 @@
 </template>
 
 <script setup lang="ts">
-import type { IContestDTO } from '@/components/contest/types'
 import { ref } from 'vue'
-import { participantBatchUpdate } from '@/utils/contest/participant'
+
+import type { IContestDTO } from '@/components/contest/types'
 import { useAsyncTask } from '@/utils/async'
+import { participantBatchUpdate } from '@/utils/contest/participant'
 
 const props = defineProps<{
   orgId: string

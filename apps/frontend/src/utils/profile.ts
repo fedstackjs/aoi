@@ -1,5 +1,6 @@
-import { get, set } from 'idb-keyval'
 import debug from 'debug'
+import { get, set } from 'idb-keyval'
+
 import { AsyncQueue, BatchingQueue } from './async'
 import { http } from './http'
 

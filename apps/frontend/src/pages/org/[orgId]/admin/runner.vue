@@ -79,15 +79,16 @@
 </template>
 
 <script setup lang="ts">
-import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
-import { useI18n } from 'vue-i18n'
-import type { IRunner } from '@/types'
-import AsyncState from '@/components/utils/AsyncState.vue'
-import { useAsyncTask } from '@/utils/async'
 import { ref } from 'vue'
-import SettingsEditor from '@/components/utils/SettingsEditor.vue'
+import { useI18n } from 'vue-i18n'
+
 import RunnerInfoInput from '@/components/org/admin/RunnerInfoInput.vue'
+import AsyncState from '@/components/utils/AsyncState.vue'
+import SettingsEditor from '@/components/utils/SettingsEditor.vue'
+import type { IRunner } from '@/types'
+import { useAsyncTask } from '@/utils/async'
+import { http } from '@/utils/http'
 import { runnerLastAccessAttrs } from '@/utils/org/runner'
 
 const props = defineProps<{

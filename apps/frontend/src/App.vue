@@ -49,12 +49,13 @@
 </template>
 
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import AoiBar from '@/components/aoi/AoiBar.vue'
-import AoiNavDrawer from '@/components/aoi/AoiNavDrawer.vue'
-import AoiFooter from '@/components/aoi/AoiFooter.vue'
-import { usePlatformIssues, useRecommendedBrowsers } from '@/utils/platform'
 import { useI18n } from 'vue-i18n'
+import { RouterView } from 'vue-router'
+
+import AoiBar from '@/components/aoi/AoiBar.vue'
+import AoiFooter from '@/components/aoi/AoiFooter.vue'
+import AoiNavDrawer from '@/components/aoi/AoiNavDrawer.vue'
+import { usePlatformIssues, useRecommendedBrowsers } from '@/utils/platform'
 
 const { t } = useI18n()
 const { issues, hasIssue, ignore } = usePlatformIssues()

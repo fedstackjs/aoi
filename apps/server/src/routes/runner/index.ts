@@ -1,19 +1,22 @@
-import { Type } from '@sinclair/typebox'
-import { IRunner } from '../../db/index.js'
-import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
-import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { randomBytes } from 'node:crypto'
-import { runnerSolutionRoutes } from './solution.js'
-import { packageJson } from '../../utils/package.js'
-import { runnerRanklistRoutes } from './ranklist.js'
-import { logger } from '../../index.js'
-import { kRunnerContext } from './inject.js'
+
+import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { FastifyRequest } from 'fastify'
 
+import { IRunner } from '../../db/index.js'
+import { logger } from '../../index.js'
+import { T } from '../../schemas/index.js'
+import { packageJson } from '../../utils/package.js'
+import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
+
+import { kRunnerContext } from './inject.js'
+import { runnerRanklistRoutes } from './ranklist.js'
+import { runnerSolutionRoutes } from './solution.js'
+
 const registrationPayload = TypeCompiler.Compile(
-  Type.Object({
-    orgId: Type.String({ format: 'uuid' }),
-    runnerId: Type.String({ format: 'uuid' })
+  T.Object({
+    orgId: T.String({ format: 'uuid' }),
+    runnerId: T.String({ format: 'uuid' })
   })
 )
 
@@ -68,16 +71,16 @@ export const runnerRoutes = defineRoutes(async (s) => {
       schema: {
         security: [],
         description: 'Register a new runner',
-        body: Type.Object({
-          name: Type.String(),
-          labels: Type.Array(Type.String()),
-          version: Type.String(),
-          registrationToken: Type.String()
+        body: T.Object({
+          name: T.String(),
+          labels: T.Array(T.String()),
+          version: T.String(),
+          registrationToken: T.String()
         }),
         response: {
-          200: Type.Object({
-            runnerId: Type.UUID(),
-            runnerKey: Type.String()
+          200: T.Object({
+            runnerId: T.UUID(),
+            runnerKey: T.String()
           })
         }
       }
@@ -107,10 +110,10 @@ export const runnerRoutes = defineRoutes(async (s) => {
     '/ping',
     {
       schema: {
-        body: Type.Partial(
-          Type.StrictObject({
-            version: Type.String(),
-            message: Type.String()
+        body: T.Partial(
+          T.StrictObject({
+            version: T.String(),
+            message: T.String()
           })
         )
       }

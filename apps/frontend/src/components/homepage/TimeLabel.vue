@@ -12,8 +12,9 @@
 
 <script setup lang="ts">
 import { useAsyncState } from '@vueuse/core'
-import { http } from '@/utils/http'
 import { ref } from 'vue'
+
+import { http } from '@/utils/http'
 
 const today = new Date()
 const todayStr = ref(today.toLocaleDateString())

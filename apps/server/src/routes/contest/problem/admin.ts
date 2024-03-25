@@ -1,10 +1,12 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes } from '../../common/index.js'
-import { SContestProblemSettings } from '../../../schemas/contest.js'
 import { BSON } from 'mongodb'
+
 import { CONTEST_CAPS, SolutionState } from '../../../db/index.js'
+import { SContestProblemSettings } from '../../../schemas/contest.js'
+import { T } from '../../../schemas/index.js'
 import { hasCapability } from '../../../utils/index.js'
+import { defineRoutes } from '../../common/index.js'
 import { kContestContext } from '../inject.js'
+
 import { loadProblemSettings } from './common.js'
 
 export const problemAdminRoutes = defineRoutes(async (s) => {
@@ -21,8 +23,8 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
     '/',
     {
       schema: {
-        body: Type.Object({
-          problemId: Type.UUID(),
+        body: T.Object({
+          problemId: T.UUID(),
           settings: SContestProblemSettings
         })
       }
@@ -48,8 +50,8 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
     '/:problemId/settings',
     {
       schema: {
-        params: Type.Object({
-          problemId: Type.UUID()
+        params: T.Object({
+          problemId: T.UUID()
         }),
         response: { 200: SContestProblemSettings }
       }
@@ -68,8 +70,8 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
     '/:problemId/settings',
     {
       schema: {
-        params: Type.Object({
-          problemId: Type.UUID()
+        params: T.Object({
+          problemId: T.UUID()
         }),
         body: SContestProblemSettings
       }
@@ -91,12 +93,12 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Submit all solutions',
-        params: Type.Object({
-          problemId: Type.UUID()
+        params: T.Object({
+          problemId: T.UUID()
         }),
         response: {
-          200: Type.Object({
-            modifiedCount: Type.Number()
+          200: T.Object({
+            modifiedCount: T.Number()
           })
         }
       }
@@ -131,15 +133,15 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Rejudge all solutions',
-        params: Type.Object({
-          problemId: Type.UUID()
+        params: T.Object({
+          problemId: T.UUID()
         }),
-        body: Type.Object({
-          pull: Type.Optional(Type.Boolean())
+        body: T.Object({
+          pull: T.Optional(T.Boolean())
         }),
         response: {
-          200: Type.Object({
-            modifiedCount: Type.Number()
+          200: T.Object({
+            modifiedCount: T.Number()
           })
         }
       }
@@ -188,8 +190,8 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
     '/:problemId',
     {
       schema: {
-        params: Type.Object({
-          problemId: Type.UUID()
+        params: T.Object({
+          problemId: T.UUID()
         })
       }
     },

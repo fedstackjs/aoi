@@ -1,10 +1,11 @@
-import { Type } from '@fastify/type-provider-typebox'
 import { BSON } from 'mongodb'
+
 import { USER_CAPS } from '../../db/index.js'
-import { defineRoutes, swaggerTagMerger } from '../common/index.js'
-import { orgScopedRoutes } from './scoped.js'
+import { T, SOrgProfile } from '../../schemas/index.js'
 import { CAP_ALL, CAP_NONE, hasCapability } from '../../utils/capability.js'
-import { SOrgProfile } from '../../schemas/index.js'
+import { defineRoutes, swaggerTagMerger } from '../common/index.js'
+
+import { orgScopedRoutes } from './scoped.js'
 
 export const orgRoutes = defineRoutes(async (s) => {
   const { orgs, orgMemberships, users } = s.db
@@ -16,12 +17,12 @@ export const orgRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create a new organization',
-        body: Type.Object({
+        body: T.Object({
           profile: SOrgProfile
         }),
         response: {
-          200: Type.Object({
-            orgId: Type.String()
+          200: T.Object({
+            orgId: T.String()
           })
         }
       }
@@ -55,9 +56,9 @@ export const orgRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'List joined organizations',
         response: {
-          200: Type.Array(
-            Type.Object({
-              _id: Type.UUID(),
+          200: T.Array(
+            T.Object({
+              _id: T.UUID(),
               profile: SOrgProfile
             })
           )

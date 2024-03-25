@@ -1,9 +1,9 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
-import { SUserProfile, USER_CAPS, hasCapability } from '../../index.js'
-import { loadUserCapability } from '../common/access.js'
+
+import { SUserProfile, T, USER_CAPS, hasCapability } from '../../index.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
+import { loadUserCapability } from '../common/access.js'
+import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 
 const kUserContext = defineInjectionPoint<{
   _userId: BSON.UUID
@@ -15,8 +15,8 @@ export const userScopedRoutes = defineRoutes(async (s) => {
   s.addHook(
     'onRoute',
     paramSchemaMerger(
-      Type.Object({
-        userId: Type.String()
+      T.Object({
+        userId: T.String()
       })
     )
   )
@@ -33,11 +33,11 @@ export const userScopedRoutes = defineRoutes(async (s) => {
         description: 'Get user details',
         tags: ['user.details'],
         response: {
-          200: Type.Object({
+          200: T.Object({
             profile: SUserProfile,
-            capability: Type.Optional(Type.String()),
-            namespace: Type.Optional(Type.String()),
-            tags: Type.Optional(Type.Array(Type.String()))
+            capability: T.Optional(T.String()),
+            namespace: T.Optional(T.String()),
+            tags: T.Optional(T.Array(T.String()))
           })
         }
       }
@@ -119,13 +119,13 @@ export const userScopedRoutes = defineRoutes(async (s) => {
     '/preBind',
     {
       schema: {
-        body: Type.Object({
-          provider: Type.String(),
-          payload: Type.Unknown(),
-          mfaToken: Type.Optional(Type.String())
+        body: T.Object({
+          provider: T.String(),
+          payload: T.Unknown(),
+          mfaToken: T.Optional(T.String())
         }),
         response: {
-          200: Type.Unknown()
+          200: T.Unknown()
         },
         tags: ['user-auth']
       }
@@ -151,13 +151,13 @@ export const userScopedRoutes = defineRoutes(async (s) => {
     '/bind',
     {
       schema: {
-        body: Type.Object({
-          provider: Type.String(),
-          payload: Type.Unknown(),
-          mfaToken: Type.Optional(Type.String())
+        body: T.Object({
+          provider: T.String(),
+          payload: T.Unknown(),
+          mfaToken: T.Optional(T.String())
         }),
         response: {
-          200: Type.Unknown()
+          200: T.Unknown()
         },
         tags: ['user-auth']
       }

@@ -1,11 +1,13 @@
 import { randomBytes } from 'node:crypto'
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, swaggerTagMerger } from '../common/index.js'
+
 import { UUID } from 'mongodb'
-import { CAP_NONE, findPaginated, hasCapability } from '../../utils/index.js'
+
 import { ORG_CAPS } from '../../db/index.js'
+import { T, AccessLevel } from '../../schemas/index.js'
+import { CAP_NONE, findPaginated, hasCapability } from '../../utils/index.js'
 import { filterMerge, searchToFilter } from '../../utils/search.js'
-import { AccessLevel } from '../../schemas/index.js'
+import { defineRoutes, swaggerTagMerger } from '../common/index.js'
+
 import { appScopedRoutes } from './scoped.js'
 
 export const appRoutes = defineRoutes(async (s) => {
@@ -18,15 +20,15 @@ export const appRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create a new app',
-        body: Type.Object({
-          orgId: Type.String(),
-          slug: Type.String(),
-          title: Type.String(),
-          accessLevel: Type.AccessLevel()
+        body: T.Object({
+          orgId: T.String(),
+          slug: T.String(),
+          title: T.String(),
+          accessLevel: T.AccessLevel()
         }),
         response: {
-          200: Type.Object({
-            appId: Type.UUID()
+          200: T.Object({
+            appId: T.UUID()
           })
         }
       }
@@ -61,22 +63,22 @@ export const appRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List apps',
-        querystring: Type.Object({
-          orgId: Type.String(),
-          page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
-          count: Type.Boolean({ default: false }),
-          search: Type.Optional(Type.String({ minLength: 1 })),
-          tag: Type.Optional(Type.String())
+        querystring: T.Object({
+          orgId: T.String(),
+          page: T.Integer({ minimum: 1, default: 1 }),
+          perPage: T.Integer({ enum: [15, 30, 50, 100] }),
+          count: T.Boolean({ default: false }),
+          search: T.Optional(T.String({ minLength: 1 })),
+          tag: T.Optional(T.String())
         }),
         response: {
-          200: Type.PaginationResult(
-            Type.Object({
-              _id: Type.UUID(),
-              accessLevel: Type.AccessLevel(),
-              slug: Type.String(),
-              title: Type.String(),
-              tags: Type.Array(Type.String())
+          200: T.PaginationResult(
+            T.Object({
+              _id: T.UUID(),
+              accessLevel: T.AccessLevel(),
+              slug: T.String(),
+              title: T.String(),
+              tags: T.Array(T.String())
             })
           )
         }

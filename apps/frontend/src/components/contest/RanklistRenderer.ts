@@ -1,5 +1,6 @@
-import { useContestCapability, useContestData } from '@/utils/contest/inject'
 import { ref } from 'vue'
+
+import { useContestCapability, useContestData } from '@/utils/contest/inject'
 
 export function useRanklistRenderer() {
   try {

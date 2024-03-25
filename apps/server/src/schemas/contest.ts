@@ -1,39 +1,39 @@
-import { Static, Type } from '@sinclair/typebox'
+import { T, Static } from './common.js'
 
-export const SContestStage = Type.StrictObject({
-  name: Type.String(),
-  start: Type.Integer(),
-  settings: Type.Partial(
-    Type.StrictObject({
+export const SContestStage = T.StrictObject({
+  name: T.String(),
+  start: T.Integer(),
+  settings: T.Partial(
+    T.StrictObject({
       // Enable registration function to participants
-      registrationEnabled: Type.Boolean(),
+      registrationEnabled: T.Boolean(),
       // If enabled, user must have CAP_REGISTRATION to register
-      registrationAllowPublic: Type.Boolean(),
+      registrationAllowPublic: T.Boolean(),
       // Enable problem function to participants
-      problemEnabled: Type.Boolean(),
+      problemEnabled: T.Boolean(),
       // Show problem tags to participants
-      problemShowTags: Type.Boolean(),
+      problemShowTags: T.Boolean(),
       // Show solutions to participants
-      solutionEnabled: Type.Boolean(),
+      solutionEnabled: T.Boolean(),
       // Allow submit new solutions
-      solutionAllowSubmit: Type.Boolean(),
+      solutionAllowSubmit: T.Boolean(),
       // Allow participant see other's solution's status
-      solutionShowOther: Type.Boolean(),
+      solutionShowOther: T.Boolean(),
       // Allow participant see self solution's details (control OSS result json file)
-      solutionShowDetails: Type.Boolean(),
+      solutionShowDetails: T.Boolean(),
       // Allow participant see other's solution's details (control OSS result json file)
-      solutionShowOtherDetails: Type.Boolean(),
+      solutionShowOtherDetails: T.Boolean(),
       // Allow participant see other's solution's data (control OSS data file)
-      solutionShowOtherData: Type.Boolean(),
+      solutionShowOtherData: T.Boolean(),
       // Enable function function to participants
-      ranklistEnabled: Type.Boolean(),
+      ranklistEnabled: T.Boolean(),
       // Show participants panel
-      participantEnabled: Type.Boolean(),
+      participantEnabled: T.Boolean(),
       // Participant tag rules
-      tagRules: Type.Optional(
-        Type.Partial(
-          Type.StrictObject({
-            copyVerifiedFields: Type.String()
+      tagRules: T.Optional(
+        T.Partial(
+          T.StrictObject({
+            copyVerifiedFields: T.String()
           })
         )
       )
@@ -43,19 +43,19 @@ export const SContestStage = Type.StrictObject({
 
 export interface IContestStage extends Static<typeof SContestStage> {}
 
-export const SContestProblemSettings = Type.StrictObject({
-  score: Type.Number(),
-  slug: Type.String(),
-  solutionCountLimit: Type.Integer(),
-  showAfter: Type.Optional(Type.Integer())
+export const SContestProblemSettings = T.StrictObject({
+  score: T.Number(),
+  slug: T.String(),
+  solutionCountLimit: T.Integer(),
+  showAfter: T.Optional(T.Integer())
 })
 
 export interface IContestProblemSettings extends Static<typeof SContestProblemSettings> {}
 
-export const SContestRanklistSettings = Type.StrictObject({
-  showAfter: Type.Optional(Type.Integer()),
-  showBefore: Type.Optional(Type.Integer()),
-  config: Type.Optional(Type.String())
+export const SContestRanklistSettings = T.StrictObject({
+  showAfter: T.Optional(T.Integer()),
+  showBefore: T.Optional(T.Integer()),
+  config: T.Optional(T.String())
 })
 
 export interface IContestRanklistSettings extends Static<typeof SContestRanklistSettings> {}

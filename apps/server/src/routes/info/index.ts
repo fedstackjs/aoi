@@ -1,7 +1,7 @@
 import { USER_CAPS, hasCapability } from '../../index.js'
+import { T } from '../../schemas/index.js'
 import { loadUserCapability } from '../common/access.js'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
-import { Type } from '@sinclair/typebox'
 
 export const infoRoutes = defineRoutes(async (s) => {
   const { infos } = s.db
@@ -14,9 +14,9 @@ export const infoRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'List milestones',
         response: {
-          200: Type.Object({
-            csp: Type.String(),
-            noip: Type.String()
+          200: T.Object({
+            csp: T.String(),
+            noip: T.String()
           })
         },
         security: []
@@ -34,9 +34,9 @@ export const infoRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Update milestones',
-        body: Type.Object({
-          csp: Type.String(),
-          noip: Type.String()
+        body: T.Object({
+          csp: T.String(),
+          noip: T.String()
         })
       }
     },
@@ -57,10 +57,10 @@ export const infoRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'List friends',
         response: {
-          200: Type.Array(
-            Type.Object({
-              title: Type.String(),
-              url: Type.String()
+          200: T.Array(
+            T.Object({
+              title: T.String(),
+              url: T.String()
             })
           )
         },
@@ -79,10 +79,10 @@ export const infoRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Update friends',
-        body: Type.Array(
-          Type.Object({
-            title: Type.String(),
-            url: Type.String()
+        body: T.Array(
+          T.Object({
+            title: T.String(),
+            url: T.String()
           })
         )
       }
@@ -104,10 +104,10 @@ export const infoRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'List posters',
         response: {
-          200: Type.Array(
-            Type.Object({
-              title: Type.String(),
-              url: Type.String()
+          200: T.Array(
+            T.Object({
+              title: T.String(),
+              url: T.String()
             })
           )
         },
@@ -126,10 +126,10 @@ export const infoRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Update posters',
-        body: Type.Array(
-          Type.Object({
-            title: Type.String(),
-            url: Type.String()
+        body: T.Array(
+          T.Object({
+            title: T.String(),
+            url: T.String()
           })
         )
       }
@@ -151,8 +151,8 @@ export const infoRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'List default org',
         response: {
-          200: Type.Object({
-            defaultOrg: Type.String()
+          200: T.Object({
+            defaultOrg: T.String()
           })
         },
         security: []
@@ -170,8 +170,8 @@ export const infoRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Update default org',
-        body: Type.Object({
-          defaultOrg: Type.String()
+        body: T.Object({
+          defaultOrg: T.String()
         })
       }
     },

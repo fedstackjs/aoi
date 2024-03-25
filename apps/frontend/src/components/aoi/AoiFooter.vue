@@ -16,8 +16,9 @@
 </template>
 
 <script setup lang="ts">
-import { extraFooterText } from '@/utils/flags'
 import { useI18n } from 'vue-i18n'
+
+import { extraFooterText } from '@/utils/flags'
 
 const { t } = useI18n()
 </script>

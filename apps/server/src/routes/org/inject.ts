@@ -1,6 +1,7 @@
 import { BSON } from 'mongodb'
-import { defineInjectionPoint } from '../../utils/inject.js'
+
 import { IOrgMembership } from '../../db/index.js'
+import { defineInjectionPoint } from '../../utils/inject.js'
 
 export const kOrgContext = defineInjectionPoint<{
   _orgId: BSON.UUID

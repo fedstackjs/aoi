@@ -26,13 +26,13 @@
 </template>
 
 <script setup lang="ts">
-import type { IContestDTO } from '@/components/contest/types'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import RanklistSettings from '@/components/contest/RanklistSettings.vue'
-import { ref } from 'vue'
 import RanklistViewer from '@/components/contest/RanklistViewer.vue'
+import type { IContestDTO } from '@/components/contest/types'
 import { useContestCapability } from '@/utils/contest/inject'
-import { computed } from 'vue'
 
 const props = defineProps<{
   orgId: string

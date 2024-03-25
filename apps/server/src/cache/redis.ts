@@ -1,4 +1,5 @@
 import { Redis } from 'ioredis'
+
 import { BaseCache } from './base.js'
 
 export class RedisCache extends BaseCache {

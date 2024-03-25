@@ -72,6 +72,10 @@
 </template>
 
 <script setup lang="ts">
+import { useRouteQuery } from '@vueuse/router'
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
+
 import AoiGravatar from '@/components/aoi/AoiGravatar.vue'
 import CapabilityChips from '@/components/utils/CapabilityChips.vue'
 import CapabilityInput from '@/components/utils/CapabilityInput.vue'
@@ -80,10 +84,6 @@ import { useAsyncTask } from '@/utils/async'
 import { userBits } from '@/utils/capability'
 import { http, login, logout } from '@/utils/http'
 import { usePagination } from '@/utils/pagination'
-import { useRouteQuery } from '@vueuse/router'
-import { computed } from 'vue'
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 const headers = [
   { title: 'Profile', key: 'profile', align: 'start', sortable: false },

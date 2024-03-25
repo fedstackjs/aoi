@@ -1,7 +1,8 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes } from '../common/index.js'
 import { BSON, Document, UUID } from 'mongodb'
-import { SUserProfile, findPaginated } from '../../index.js'
+
+import { SUserProfile, T } from '../../schemas/index.js'
+import { findPaginated } from '../../utils/index.js'
+import { defineRoutes } from '../common/index.js'
 
 export const adminUserRoutes = defineRoutes(async (s) => {
   const { users } = s.db
@@ -11,14 +12,14 @@ export const adminUserRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List all system user',
-        querystring: Type.Object({
-          page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
-          count: Type.Boolean({ default: false }),
-          search: Type.Optional(Type.String({ minLength: 1 }))
+        querystring: T.Object({
+          page: T.Integer({ minimum: 1, default: 1 }),
+          perPage: T.Integer({ enum: [15, 30, 50, 100] }),
+          count: T.Boolean({ default: false }),
+          search: T.Optional(T.String({ minLength: 1 }))
         }),
         response: {
-          200: Type.PaginationResult(Type.Any())
+          200: T.PaginationResult(T.Any())
         }
       }
     },
@@ -51,11 +52,11 @@ export const adminUserRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Update user capability',
-        params: Type.Object({
-          userId: Type.UUID()
+        params: T.Object({
+          userId: T.UUID()
         }),
-        body: Type.Object({
-          capability: Type.String()
+        body: T.Object({
+          capability: T.String()
         })
       }
     },
@@ -71,15 +72,15 @@ export const adminUserRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Manually create a user',
-        body: Type.StrictObject({
+        body: T.StrictObject({
           profile: SUserProfile,
-          capability: Type.Optional(Type.String()),
-          namespace: Type.Optional(Type.String()),
-          tags: Type.Optional(Type.Array(Type.String()))
+          capability: T.Optional(T.String()),
+          namespace: T.Optional(T.String()),
+          tags: T.Optional(T.Array(T.String()))
         }),
         response: {
-          200: Type.Object({
-            userId: Type.String()
+          200: T.Object({
+            userId: T.String()
           })
         }
       }
@@ -100,9 +101,9 @@ export const adminUserRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Login as given user, bypassing authentication',
-        body: Type.Object({
-          userId: Type.UUID(),
-          tags: Type.Optional(Type.Array(Type.String()))
+        body: T.Object({
+          userId: T.UUID(),
+          tags: T.Optional(T.Array(T.String()))
         })
       }
     },

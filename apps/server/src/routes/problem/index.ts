@@ -1,12 +1,13 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
-import { problemScopedRoutes } from './scoped.js'
-import { CAP_NONE, ensureCapability, hasCapability } from '../../utils/capability.js'
 import { UUID } from 'mongodb'
+
 import { ORG_CAPS } from '../../db/index.js'
+import { T, AccessLevel } from '../../schemas/index.js'
+import { CAP_NONE, ensureCapability, hasCapability } from '../../utils/capability.js'
 import { paginationSkip } from '../../utils/pagination.js'
-import { AccessLevel } from '../../schemas/index.js'
 import { searchToFilter, filterMerge } from '../../utils/search.js'
+import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
+
+import { problemScopedRoutes } from './scoped.js'
 
 export const problemRoutes = defineRoutes(async (s) => {
   const { problems } = s.db
@@ -20,15 +21,15 @@ export const problemRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create a new problem',
-        body: Type.Object({
-          orgId: Type.String(),
-          slug: Type.String(),
-          title: Type.String(),
-          accessLevel: Type.AccessLevel()
+        body: T.Object({
+          orgId: T.String(),
+          slug: T.String(),
+          title: T.String(),
+          accessLevel: T.AccessLevel()
         }),
         response: {
-          200: Type.Object({
-            problemId: Type.UUID()
+          200: T.Object({
+            problemId: T.UUID()
           })
         }
       }
@@ -67,11 +68,11 @@ export const problemRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List problem tags',
-        querystring: Type.Object({
-          orgId: Type.UUID()
+        querystring: T.Object({
+          orgId: T.UUID()
         }),
         response: {
-          200: Type.Array(Type.String())
+          200: T.Array(T.String())
         }
       }
     },
@@ -86,30 +87,30 @@ export const problemRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List problems',
-        querystring: Type.Object({
-          orgId: Type.UUID(),
-          page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
-          count: Type.Boolean({ default: false }),
-          search: Type.Optional(Type.String({ minLength: 1 })),
-          tag: Type.Optional(Type.String())
+        querystring: T.Object({
+          orgId: T.UUID(),
+          page: T.Integer({ minimum: 1, default: 1 }),
+          perPage: T.Integer({ enum: [15, 30, 50, 100] }),
+          count: T.Boolean({ default: false }),
+          search: T.Optional(T.String({ minLength: 1 })),
+          tag: T.Optional(T.String())
         }),
         response: {
-          200: Type.PaginationResult(
-            Type.Object({
-              _id: Type.UUID(),
-              orgId: Type.UUID(),
-              slug: Type.String(),
-              title: Type.String(),
-              tags: Type.Array(Type.String()),
-              accessLevel: Type.AccessLevel(),
-              createdAt: Type.Integer(),
-              status: Type.Optional(
-                Type.Object({
-                  solutionCount: Type.Integer(),
-                  lastSolutionId: Type.UUID(),
-                  lastSolutionScore: Type.Number(),
-                  lastSolutionStatus: Type.String()
+          200: T.PaginationResult(
+            T.Object({
+              _id: T.UUID(),
+              orgId: T.UUID(),
+              slug: T.String(),
+              title: T.String(),
+              tags: T.Array(T.String()),
+              accessLevel: T.AccessLevel(),
+              createdAt: T.Integer(),
+              status: T.Optional(
+                T.Object({
+                  solutionCount: T.Integer(),
+                  lastSolutionId: T.UUID(),
+                  lastSolutionScore: T.Number(),
+                  lastSolutionStatus: T.String()
                 })
               )
             })

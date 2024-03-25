@@ -61,15 +61,16 @@
 </template>
 
 <script setup lang="ts">
-import { http } from '@/utils/http'
-import { orgBits } from '@/utils/capability'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { usePagination } from '@/utils/pagination'
+
 import AoiGravatar from '@/components/aoi/AoiGravatar.vue'
-import CapabilityInput from '@/components/utils/CapabilityInput.vue'
 import CapabilityChips from '@/components/utils/CapabilityChips.vue'
+import CapabilityInput from '@/components/utils/CapabilityInput.vue'
 import UserIdInput from '@/components/utils/UserIdInput.vue'
+import { orgBits } from '@/utils/capability'
+import { http } from '@/utils/http'
+import { usePagination } from '@/utils/pagination'
 
 const props = defineProps<{
   orgId: string

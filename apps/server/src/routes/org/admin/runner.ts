@@ -1,6 +1,7 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes } from '../../common/index.js'
 import { BSON } from 'mongodb'
+
+import { T } from '../../../schemas/index.js'
+import { defineRoutes } from '../../common/index.js'
 import { kOrgContext } from '../inject.js'
 
 export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
@@ -12,8 +13,8 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Register a new runner',
         response: {
-          200: Type.Object({
-            registrationToken: Type.String()
+          200: T.Object({
+            registrationToken: T.String()
           })
         }
       }
@@ -33,15 +34,15 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: Type.Array(
-            Type.Object({
-              _id: Type.UUID(),
-              labels: Type.Array(Type.String()),
-              name: Type.String(),
-              version: Type.String(),
-              message: Type.String(),
-              createdAt: Type.Number(),
-              accessedAt: Type.Number()
+          200: T.Array(
+            T.Object({
+              _id: T.UUID(),
+              labels: T.Array(T.String()),
+              name: T.String(),
+              version: T.String(),
+              message: T.String(),
+              createdAt: T.Number(),
+              accessedAt: T.Number()
             })
           )
         }
@@ -57,18 +58,18 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
     '/:runnerId',
     {
       schema: {
-        params: Type.Object({
-          runnerId: Type.UUID()
+        params: T.Object({
+          runnerId: T.UUID()
         }),
         response: {
-          200: Type.Object({
-            _id: Type.UUID(),
-            labels: Type.Array(Type.String()),
-            name: Type.String(),
-            version: Type.String(),
-            message: Type.String(),
-            createdAt: Type.Number(),
-            accessedAt: Type.Number()
+          200: T.Object({
+            _id: T.UUID(),
+            labels: T.Array(T.String()),
+            name: T.String(),
+            version: T.String(),
+            message: T.String(),
+            createdAt: T.Number(),
+            accessedAt: T.Number()
           })
         }
       }
@@ -87,13 +88,13 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
     '/:runnerId',
     {
       schema: {
-        params: Type.Object({
-          runnerId: Type.UUID()
+        params: T.Object({
+          runnerId: T.UUID()
         }),
-        body: Type.Partial(
-          Type.StrictObject({
-            labels: Type.Array(Type.String()),
-            name: Type.String()
+        body: T.Partial(
+          T.StrictObject({
+            labels: T.Array(T.String()),
+            name: T.String()
           })
         )
       }
@@ -112,8 +113,8 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
     '/:runnerId',
     {
       schema: {
-        params: Type.Object({
-          runnerId: Type.UUID()
+        params: T.Object({
+          runnerId: T.UUID()
         })
       }
     },

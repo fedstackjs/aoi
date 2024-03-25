@@ -18,11 +18,12 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import AnnouncementList from '@/components/announcement/AnnouncementList.vue'
 import { useUserCapability } from '@/utils/capability'
+import { withTitle } from '@/utils/title'
 
 const { t } = useI18n()
 const isAdmin = useUserCapability('admin')

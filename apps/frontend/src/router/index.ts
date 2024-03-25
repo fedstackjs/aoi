@@ -1,5 +1,6 @@
-import { useAppState } from '@/stores/app'
 import { createRouter, createWebHistory } from 'vue-router'
+
+import { useAppState } from '@/stores/app'
 import routes from '~pages'
 
 const router = createRouter({

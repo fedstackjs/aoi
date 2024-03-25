@@ -1,20 +1,19 @@
-import { Static, Type } from '@sinclair/typebox'
-import { SBaseProfile } from './common.js'
+import { T, Static, SBaseProfile } from './common.js'
 
-export const SOrgProfile = Type.NoAdditionalProperties(SBaseProfile)
+export const SOrgProfile = T.NoAdditionalProperties(SBaseProfile)
 export interface IOrgProfile extends Static<typeof SOrgProfile> {}
 
-export const SOrgOssSettings = Type.StrictObject({
-  bucket: Type.String(),
-  accessKey: Type.String(),
-  secretKey: Type.String(),
-  region: Type.Optional(Type.String()),
-  endpoint: Type.Optional(Type.String()), // The default is AWS S3
-  pathStyle: Type.Optional(Type.Boolean())
+export const SOrgOssSettings = T.StrictObject({
+  bucket: T.String(),
+  accessKey: T.String(),
+  secretKey: T.String(),
+  region: T.Optional(T.String()),
+  endpoint: T.Optional(T.String()), // The default is AWS S3
+  pathStyle: T.Optional(T.Boolean())
 })
 export interface IOrgOssSettings extends Static<typeof SOrgOssSettings> {}
 
-export const SOrgSettings = Type.StrictObject({
-  oss: Type.Optional(SOrgOssSettings)
+export const SOrgSettings = T.StrictObject({
+  oss: T.Optional(SOrgOssSettings)
 })
 export interface IOrgSettings extends Static<typeof SOrgSettings> {}

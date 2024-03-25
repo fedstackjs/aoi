@@ -37,14 +37,15 @@
 </template>
 
 <script setup lang="ts">
+import { useAsyncState } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+
 import AppSettingsInput from '@/components/app/AppSettingsInput.vue'
 import AccessLevelEditor from '@/components/utils/AccessLevelEditor.vue'
 import SettingsEditor from '@/components/utils/SettingsEditor.vue'
-import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
-import { useRouter } from 'vue-router'
 import { useAppData } from '@/utils/app/inject'
-import { useAsyncState } from '@vueuse/core'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   orgId: string

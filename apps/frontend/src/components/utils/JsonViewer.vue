@@ -28,15 +28,15 @@
 </template>
 
 <script setup lang="ts" generic="T">
-import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
-import { ref } from 'vue'
-import { useSlots } from 'vue'
-import { useI18n } from 'vue-i18n'
-import MonacoEditor from './MonacoEditor.vue'
-import AsyncState from './AsyncState.vue'
 import ky from 'ky'
-import { watch } from 'vue'
+import { ref, useSlots, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import AsyncState from './AsyncState.vue'
+import MonacoEditor from './MonacoEditor.vue'
+
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   endpoint?: string

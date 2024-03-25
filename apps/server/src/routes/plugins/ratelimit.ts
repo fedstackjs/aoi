@@ -1,5 +1,6 @@
-import { fastifyPlugin } from 'fastify-plugin'
 import { RateLimitPluginOptions, fastifyRateLimit } from '@fastify/rate-limit'
+import { fastifyPlugin } from 'fastify-plugin'
+
 import { RedisCache } from '../../cache/redis.js'
 
 export interface IApiRateLimitOptions extends RateLimitPluginOptions {}

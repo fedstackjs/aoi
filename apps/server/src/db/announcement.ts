@@ -1,5 +1,5 @@
-import { BSON, Collection } from 'mongodb'
 import { fastifyPlugin } from 'fastify-plugin'
+import { BSON, Collection } from 'mongodb'
 
 export interface IAnnouncement {
   _id: BSON.UUID

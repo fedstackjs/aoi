@@ -113,15 +113,18 @@
 </template>
 
 <script setup lang="ts">
-import { SolutionListMode } from './SolutionList'
+import { ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import ContestProblemIdInput from '../contest/ContestProblemIdInput.vue'
+import IdInput from '../utils/IdInput.vue'
 import UserIdInput from '../utils/UserIdInput.vue'
+
 import { useSolutionFilter } from './SolutionFilter'
+import { SolutionListMode } from './SolutionList'
+
 import { useSolutionStateOptions, useSolutionStatusOptions } from '@/utils/solution'
 import { useDateTimeStrTextField } from '@/utils/time'
-import ContestProblemIdInput from '../contest/ContestProblemIdInput.vue'
-import { ref, toRef } from 'vue'
-import IdInput from '../utils/IdInput.vue'
 
 defineProps<{
   mode: SolutionListMode

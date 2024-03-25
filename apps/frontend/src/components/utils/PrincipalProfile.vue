@@ -13,11 +13,14 @@
 </template>
 
 <script setup lang="ts">
-import AsyncState from './AsyncState.vue'
-import AoiGravatar from '../aoi/AoiGravatar.vue'
 import { useAsyncState } from '@vueuse/core'
-import { getProfile } from '@/utils/profile'
 import { computed } from 'vue'
+
+import AoiGravatar from '../aoi/AoiGravatar.vue'
+
+import AsyncState from './AsyncState.vue'
+
+import { getProfile } from '@/utils/profile'
 
 const props = defineProps<{
   principalId: string

@@ -1,5 +1,7 @@
-import { FastifyPluginAsyncTypebox, Static, Type } from '@fastify/type-provider-typebox'
+import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
 import { FastifyReply, FastifyRequest } from 'fastify'
+import { UUID } from 'mongodb'
+
 import {
   IUrlOptions,
   getDeleteUrl,
@@ -7,7 +9,7 @@ import {
   getHeadUrl,
   getUploadUrl
 } from '../../oss/index.js'
-import { UUID } from 'mongodb'
+import { T, Static } from '../../schemas/index.js'
 
 const types = Object.freeze({
   upload: getUploadUrl,
@@ -16,10 +18,10 @@ const types = Object.freeze({
   delete: getDeleteUrl
 })
 
-const SGetUrlOptions = Type.Partial(
-  Type.Object({
-    expiresIn: Type.Integer({ minimum: 1 }),
-    size: Type.Integer({ minimum: 1 })
+const SGetUrlOptions = T.Partial(
+  T.Object({
+    expiresIn: T.Integer({ minimum: 1 }),
+    size: T.Integer({ minimum: 1 })
   })
 )
 
@@ -39,13 +41,13 @@ export const getFileUrl: FastifyPluginAsyncTypebox<{
     '/:type',
     {
       schema: {
-        params: Type.Object({
-          type: Type.StringEnum(allowedTypes)
+        params: T.Object({
+          type: T.StringEnum(allowedTypes)
         }),
         querystring: SGetUrlOptions,
         response: {
-          200: Type.Object({
-            url: Type.String()
+          200: T.Object({
+            url: T.String()
           })
         }
       }

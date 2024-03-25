@@ -3,10 +3,11 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import type { IProblemDTO } from '@/components/problem/types'
 import SolutionList from '@/components/solution/SolutionList.vue'
 import { useProblemAdminCapability, useProblemSettings } from '@/utils/problem/inject'
-import { computed } from 'vue'
 
 const admin = useProblemAdminCapability()
 const settings = useProblemSettings()

@@ -1,9 +1,11 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
-import { groupScopedRoutes } from './scoped.js'
-import { ensureCapability, findPaginated } from '../../utils/index.js'
-import { ORG_CAPS, SGroupProfile } from '../../index.js'
 import { BSON } from 'mongodb'
+
+import { ORG_CAPS, SGroupProfile } from '../../index.js'
+import { T } from '../../schemas/index.js'
+import { ensureCapability, findPaginated } from '../../utils/index.js'
+import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
+
+import { groupScopedRoutes } from './scoped.js'
 
 export const groupRoutes = defineRoutes(async (s) => {
   const { groups } = s.db
@@ -17,17 +19,17 @@ export const groupRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'List group in an organization',
-        querystring: Type.Object({
-          orgId: Type.String(),
-          page: Type.Integer({ minimum: 1, default: 1 }),
-          perPage: Type.Integer({ enum: [15, 30, 50, 100] }),
-          count: Type.Boolean({ default: false })
+        querystring: T.Object({
+          orgId: T.String(),
+          page: T.Integer({ minimum: 1, default: 1 }),
+          perPage: T.Integer({ enum: [15, 30, 50, 100] }),
+          count: T.Boolean({ default: false })
         }),
         response: {
-          200: Type.PaginationResult(
-            Type.Object({
-              _id: Type.UUID(),
-              orgId: Type.UUID(),
+          200: T.PaginationResult(
+            T.Object({
+              _id: T.UUID(),
+              orgId: T.UUID(),
               profile: SGroupProfile
             })
           )
@@ -47,13 +49,13 @@ export const groupRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create a group',
-        body: Type.Object({
-          orgId: Type.String(),
+        body: T.Object({
+          orgId: T.String(),
           profile: SGroupProfile
         }),
         response: {
-          200: Type.Object({
-            groupId: Type.UUID()
+          200: T.Object({
+            groupId: T.UUID()
           })
         }
       }

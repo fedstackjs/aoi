@@ -1,4 +1,5 @@
 import { BSON } from 'mongodb'
+
 import { IContest, IContestStage, IContestParticipant } from '../../index.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
 

@@ -7,9 +7,10 @@
 </template>
 
 <script setup lang="ts">
-import { useRebindIaaa } from '@/utils/user/iaaa'
 import { toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import { useRebindIaaa } from '@/utils/user/iaaa'
 
 const props = defineProps<{
   userId: string

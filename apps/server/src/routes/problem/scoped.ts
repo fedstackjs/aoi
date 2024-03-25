@@ -1,21 +1,21 @@
-import { Type } from '@sinclair/typebox'
-import { BSON } from 'mongodb'
 import { SProblemConfigSchema } from '@aoi-js/common'
+import { BSON } from 'mongodb'
+
 import { PROBLEM_CAPS, ORG_CAPS, SolutionState } from '../../db/index.js'
-import { defineRoutes, loadCapability, loadUUID, paramSchemaMerger } from '../common/index.js'
+import { getUploadUrl, solutionDataKey } from '../../oss/index.js'
+import { T, SProblemSettings } from '../../schemas/index.js'
 import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/capability.js'
-import { getUploadUrl } from '../../oss/index.js'
-import { solutionDataKey } from '../../oss/index.js'
+import { manageContent } from '../common/content.js'
+import { defineRoutes, loadCapability, loadUUID, paramSchemaMerger } from '../common/index.js'
+
+import { problemAdminRoutes } from './admin.js'
 import { problemAttachmentRoutes } from './attachment.js'
 import { problemDataRoutes } from './data.js'
-import { problemSolutionRoutes } from './solution.js'
-import { problemAdminRoutes } from './admin.js'
-import { manageContent } from '../common/content.js'
 import { kProblemContext } from './inject.js'
-import { SProblemSettings } from '../../schemas/index.js'
+import { problemSolutionRoutes } from './solution.js'
 
-const problemIdSchema = Type.Object({
-  problemId: Type.String()
+const problemIdSchema = T.Object({
+  problemId: T.String()
 })
 
 export const problemScopedRoutes = defineRoutes(async (s) => {
@@ -50,17 +50,17 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get problem details',
         response: {
-          200: Type.Object({
-            _id: Type.UUID(),
-            orgId: Type.UUID(),
-            accessLevel: Type.AccessLevel(),
-            slug: Type.String(),
-            title: Type.String(),
-            description: Type.String(),
-            tags: Type.Array(Type.String()),
-            capability: Type.String(),
-            currentDataHash: Type.String(),
-            config: Type.Optional(SProblemConfigSchema),
+          200: T.Object({
+            _id: T.UUID(),
+            orgId: T.UUID(),
+            accessLevel: T.AccessLevel(),
+            slug: T.String(),
+            title: T.String(),
+            description: T.String(),
+            tags: T.Array(T.String()),
+            capability: T.String(),
+            currentDataHash: T.String(),
+            config: T.Optional(SProblemConfigSchema),
             settings: SProblemSettings
           })
         }
@@ -82,14 +82,14 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Submit a solution',
-        body: Type.Object({
-          hash: Type.Hash(),
-          size: Type.Integer()
+        body: T.Object({
+          hash: T.Hash(),
+          size: T.Integer()
         }),
         response: {
-          200: Type.Object({
-            solutionId: Type.UUID(),
-            uploadUrl: Type.String()
+          200: T.Object({
+            solutionId: T.UUID(),
+            uploadUrl: T.String()
           })
         }
       }

@@ -12,10 +12,11 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
-import { useRoute, useRouter } from 'vue-router'
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
+
+import { http } from '@/utils/http'
 
 const { t } = useI18n()
 const router = useRouter()

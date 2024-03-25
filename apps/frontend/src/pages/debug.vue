@@ -35,10 +35,11 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
+
 import OptionalInput from '@/components/utils/OptionalInput.vue'
 import { useAppState } from '@/stores/app'
 import { appBuildInfo } from '@/utils/build'
-import { useRouter } from 'vue-router'
 
 const app = useAppState()
 const router = useRouter()

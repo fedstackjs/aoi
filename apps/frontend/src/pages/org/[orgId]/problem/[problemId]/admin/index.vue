@@ -44,15 +44,16 @@
 </template>
 
 <script setup lang="ts">
-import AccessLevelEditor from '@/components/utils/AccessLevelEditor.vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { http } from '@/utils/http'
 import { useRouter } from 'vue-router'
-import type { IProblemDTO } from '@/components/problem/types'
+
 import ProblemSettingsInput from '@/components/problem/ProblemSettingsInput.vue'
+import type { IProblemDTO } from '@/components/problem/types'
+import AccessLevelEditor from '@/components/utils/AccessLevelEditor.vue'
 import SettingsEditor from '@/components/utils/SettingsEditor.vue'
 import { useAsyncTask, withMessage } from '@/utils/async'
-import { ref } from 'vue'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   orgId: string

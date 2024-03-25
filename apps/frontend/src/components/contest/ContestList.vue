@@ -52,15 +52,16 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { usePagination } from '@/utils/pagination'
-import { watch } from 'vue'
-import ContestStageChip from '@/components/utils/ContestStageChip.vue'
-import AccessLevelBadge from '@/components/utils/AccessLevelBadge.vue'
+
 import type { IContestDTO } from './types'
+
+import AccessLevelBadge from '@/components/utils/AccessLevelBadge.vue'
+import ContestStageChip from '@/components/utils/ContestStageChip.vue'
+import { usePagination } from '@/utils/pagination'
 import { denseDateString } from '@/utils/time'
+import { withTitle } from '@/utils/title'
 const props = defineProps<{
   orgId: string
   search?: string

@@ -1,15 +1,16 @@
-import fastifyJwt from '@fastify/jwt'
+import { fastifyJwt } from '@fastify/jwt'
+import { Static } from '@sinclair/typebox'
+import { TypeCompiler } from '@sinclair/typebox/compiler'
+import { FastifyRequest } from 'fastify'
 import { fastifyPlugin } from 'fastify-plugin'
 import { UUID } from 'mongodb'
-import { Static, Type } from '@sinclair/typebox'
-import { TypeCompiler } from '@sinclair/typebox/compiler'
 
+import { T } from '../../schemas/index.js'
 import { loadEnv } from '../../utils/index.js'
-import { FastifyRequest } from 'fastify'
 
-const SUserPayload = Type.Object({
-  userId: Type.UUID(),
-  tags: Type.Optional(Type.Array(Type.String()))
+const SUserPayload = T.Object({
+  userId: T.UUID(),
+  tags: T.Optional(T.Array(T.String()))
 })
 export type UserPayload = Static<typeof SUserPayload>
 const userPayload = TypeCompiler.Compile(SUserPayload)

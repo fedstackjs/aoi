@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { BSON } from 'mongodb'
+
 import { loadEnv, parseBoolean } from '../utils/index.js'
 
 export abstract class BaseAuthProvider {

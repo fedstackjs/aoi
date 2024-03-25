@@ -38,9 +38,10 @@
 <script setup lang="ts">
 import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
+
+import { fmtDate } from '@/components/announcement/fmtdate'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import { http } from '@/utils/http'
-import { fmtDate } from '@/components/announcement/fmtdate'
 
 const { t } = useI18n()
 

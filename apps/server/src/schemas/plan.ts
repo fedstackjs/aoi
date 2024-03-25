@@ -1,12 +1,12 @@
-import { Static, Type } from '@sinclair/typebox'
+import { T, Static } from './common.js'
 
-export const SPlanContestPrecondition = Type.Partial(
-  Type.StrictObject({
-    minTotalScore: Type.Number(),
-    problems: Type.Array(
-      Type.Object({
-        problemId: Type.String(),
-        minScore: Type.Number()
+export const SPlanContestPrecondition = T.Partial(
+  T.StrictObject({
+    minTotalScore: T.Number(),
+    problems: T.Array(
+      T.Object({
+        problemId: T.String(),
+        minScore: T.Number()
       })
     )
   })
@@ -14,12 +14,12 @@ export const SPlanContestPrecondition = Type.Partial(
 
 export interface IPlanContestPrecondition extends Static<typeof SPlanContestPrecondition> {}
 
-export const SPlanContestSettings = Type.StrictObject({
-  slug: Type.String(),
-  preConditionContests: Type.Optional(
-    Type.Array(
-      Type.Object({
-        contestId: Type.String(),
+export const SPlanContestSettings = T.StrictObject({
+  slug: T.String(),
+  preConditionContests: T.Optional(
+    T.Array(
+      T.Object({
+        contestId: T.String(),
         conditions: SPlanContestPrecondition
       })
     )
@@ -28,11 +28,11 @@ export const SPlanContestSettings = Type.StrictObject({
 
 export interface IPlanContestSettings extends Static<typeof SPlanContestSettings> {}
 
-export const SPlanSettings = Type.Partial(
-  Type.StrictObject({
-    registrationEnabled: Type.Boolean(),
-    registrationAllowPublic: Type.Boolean(),
-    promotion: Type.Optional(Type.Boolean())
+export const SPlanSettings = T.Partial(
+  T.StrictObject({
+    registrationEnabled: T.Boolean(),
+    registrationAllowPublic: T.Boolean(),
+    promotion: T.Optional(T.Boolean())
   })
 )
 

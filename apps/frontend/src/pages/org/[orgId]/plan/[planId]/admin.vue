@@ -17,10 +17,11 @@
 </template>
 
 <script setup lang="ts">
-import type { IPlanDTO } from '@/components/plan/types'
-import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import type { IPlanDTO } from '@/components/plan/types'
+import { withTitle } from '@/utils/title'
 
 const props = defineProps<{
   orgId: string

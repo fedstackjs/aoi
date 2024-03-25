@@ -16,9 +16,10 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 import type { IContestDTO } from '@/components/contest/types'
 import { useContestCapability } from '@/utils/contest/inject'
-import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   orgId: string

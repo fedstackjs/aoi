@@ -29,8 +29,10 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { useCommonTagDialog, type ICommonTagDialogProps } from './CommonTagDialog'
+
 import AsyncState from '../utils/AsyncState.vue'
+
+import { useCommonTagDialog, type ICommonTagDialogProps } from './CommonTagDialog'
 
 const props = defineProps<ICommonTagDialogProps>()
 const { tags } = useCommonTagDialog(props)

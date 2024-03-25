@@ -15,11 +15,12 @@
 </template>
 
 <script setup lang="ts">
-import { attachToLocalStorage } from '@/utils/persist'
 import { syncRef } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { useLocale } from 'vuetify'
+
 import { supportedLocales } from '@/plugins/i18n'
+import { attachToLocalStorage } from '@/utils/persist'
 
 const { locale } = useI18n({ useScope: 'global' })
 const { current } = useLocale()

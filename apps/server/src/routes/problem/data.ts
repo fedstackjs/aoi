@@ -1,16 +1,17 @@
 import { SProblemConfigSchema } from '@aoi-js/common'
+
 import { PROBLEM_CAPS } from '../../db/index.js'
 import { problemDataKey } from '../../oss/index.js'
+import { T } from '../../schemas/index.js'
 import { ensureCapability } from '../../utils/index.js'
-import { getFileUrl } from '../common/files.js'
-import { defineRoutes, paramSchemaMerger } from '../common/index.js'
-import { Type } from '@sinclair/typebox'
+import { getFileUrl, defineRoutes, paramSchemaMerger } from '../common/index.js'
+
 import { kProblemContext } from './inject.js'
 
 const dataScopedRoutes = defineRoutes(async (s) => {
   const { problems } = s.db
 
-  s.addHook('onRoute', paramSchemaMerger(Type.Object({ hash: Type.Hash() })))
+  s.addHook('onRoute', paramSchemaMerger(T.Object({ hash: T.Hash() })))
   s.register(getFileUrl, {
     prefix: '/url',
     resolve: async (_type, query, req) => {
@@ -26,7 +27,7 @@ const dataScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Delete problem attachment',
         response: {
-          200: Type.Object({})
+          200: T.Object({})
         }
       }
     },
@@ -62,12 +63,12 @@ export const problemDataRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get problem data',
         response: {
-          200: Type.Array(
-            Type.Object({
-              hash: Type.Hash(),
-              createdAt: Type.Number(),
+          200: T.Array(
+            T.Object({
+              hash: T.Hash(),
+              createdAt: T.Number(),
               config: SProblemConfigSchema,
-              description: Type.String()
+              description: T.String()
             })
           )
         }
@@ -83,10 +84,10 @@ export const problemDataRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Create problem data',
-        body: Type.Object({
-          hash: Type.Hash(),
+        body: T.Object({
+          hash: T.Hash(),
           config: SProblemConfigSchema,
-          description: Type.String()
+          description: T.String()
         })
       }
     },
@@ -106,8 +107,8 @@ export const problemDataRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Set problem data hash',
-        body: Type.Object({
-          hash: Type.Hash()
+        body: T.Object({
+          hash: T.Hash()
         })
       }
     },

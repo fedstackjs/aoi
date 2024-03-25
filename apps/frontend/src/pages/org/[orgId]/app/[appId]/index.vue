@@ -3,11 +3,12 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
 import { useAppData } from '@/utils/app/inject'
 import { withTitle } from '@/utils/title'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 defineProps<{
   orgId: string

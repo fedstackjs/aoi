@@ -1,7 +1,9 @@
 import { useAsyncState } from '@vueuse/core'
 import { toRef, type MaybeRef, type InjectionKey, provide, type Ref, inject, computed } from 'vue'
-import { http } from '../http'
+
 import { hasCapability, contestBits } from '../capability'
+import { http } from '../http'
+
 import type { IContestDTO } from '@/components/contest/types'
 
 const kContest: InjectionKey<Ref<IContestDTO>> = Symbol('contest')

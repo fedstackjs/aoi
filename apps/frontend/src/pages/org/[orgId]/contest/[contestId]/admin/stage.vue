@@ -67,16 +67,17 @@
 </template>
 
 <script setup lang="ts">
-import { http } from '@/utils/http'
 import { useAsyncState } from '@vueuse/core'
+import ms from 'ms'
 import { useI18n } from 'vue-i18n'
+import { useToast } from 'vue-toastification'
+
+import ContestStageSettingsInput from '@/components/contest/ContestStageSettingsInput.vue'
 import type { IContestDTO } from '@/components/contest/types'
-import type { IContestStage } from '@/types'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import DateTimeInput from '@/components/utils/DateTimeInput.vue'
-import ContestStageSettingsInput from '@/components/contest/ContestStageSettingsInput.vue'
-import { useToast } from 'vue-toastification'
-import ms from 'ms'
+import type { IContestStage } from '@/types'
+import { http } from '@/utils/http'
 
 const props = defineProps<{
   orgId: string

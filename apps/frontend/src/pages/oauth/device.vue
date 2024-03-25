@@ -18,10 +18,11 @@
 </template>
 
 <script setup lang="ts">
-import AoiLogo from '@/components/aoi/AoiLogo.vue'
 import { useI18n } from 'vue-i18n'
-import { withI18nTitle } from '@/utils/title'
 import { useRoute, useRouter } from 'vue-router'
+
+import AoiLogo from '@/components/aoi/AoiLogo.vue'
+import { withI18nTitle } from '@/utils/title'
 
 withI18nTitle('pages.authorize')
 

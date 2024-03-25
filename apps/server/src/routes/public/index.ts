@@ -1,6 +1,5 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadCapability, md5, swaggerTagMerger } from '../common/index.js'
 import { BSON, Collection } from 'mongodb'
+
 import {
   APP_CAPS,
   CONTEST_CAPS,
@@ -12,6 +11,8 @@ import {
   IWithAccessLevel
 } from '../../db/index.js'
 import { CAP_ALL, hasCapability } from '../../index.js'
+import { T } from '../../schemas/index.js'
+import { defineRoutes, loadCapability, md5, swaggerTagMerger } from '../common/index.js'
 
 type Resolvable = IPrincipalControlable & IWithContent & IWithAccessLevel & { _id: BSON.UUID }
 interface IResolver {
@@ -56,19 +57,19 @@ export const publicRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Batch fetch principal profiles',
-        body: Type.Object({
-          principalIds: Type.Array(Type.UUID())
+        body: T.Object({
+          principalIds: T.Array(T.UUID())
         }),
         response: {
-          200: Type.Array(
-            Type.Object({
-              principalId: Type.UUID(),
-              principalType: Type.StringEnum(['user', 'group']),
-              name: Type.String(),
-              emailHash: Type.String(),
-              orgId: Type.Optional(Type.UUID()),
-              namespace: Type.Optional(Type.String()),
-              tags: Type.Optional(Type.Array(Type.String()))
+          200: T.Array(
+            T.Object({
+              principalId: T.UUID(),
+              principalType: T.StringEnum(['user', 'group']),
+              name: T.String(),
+              emailHash: T.String(),
+              orgId: T.Optional(T.UUID()),
+              namespace: T.Optional(T.String()),
+              tags: T.Optional(T.Array(T.String()))
             }),
             { maxItems: 50 }
           )
@@ -127,14 +128,14 @@ export const publicRoutes = defineRoutes(async (s) => {
     '/resolve-slug',
     {
       schema: {
-        body: Type.Object({
-          orgId: Type.UUID(),
-          slug: Type.String(),
-          type: Type.String({ enum: slugTypes })
+        body: T.Object({
+          orgId: T.UUID(),
+          slug: T.String(),
+          type: T.String({ enum: slugTypes })
         }),
         response: {
-          200: Type.Object({
-            _id: Type.UUID()
+          200: T.Object({
+            _id: T.UUID()
           })
         }
       }

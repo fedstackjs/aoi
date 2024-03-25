@@ -1,10 +1,12 @@
-import { FastifyPluginAsyncTypebox, Type } from '@fastify/type-provider-typebox'
-import { BSON, Collection } from 'mongodb'
-import { CAP_NONE, IPrincipalControlable, IWithAccessLevel } from '../../index.js'
+import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
 import { FastifyRequest } from 'fastify'
+import { BSON, Collection } from 'mongodb'
 
-const Params = Type.Object({
-  principalId: Type.String()
+import { CAP_NONE, IPrincipalControlable, IWithAccessLevel } from '../../index.js'
+import { T } from '../../schemas/index.js'
+
+const Params = T.Object({
+  principalId: T.String()
 })
 
 export const manageACL: FastifyPluginAsyncTypebox<{
@@ -23,10 +25,10 @@ export const manageACL: FastifyPluginAsyncTypebox<{
       schema: {
         description: 'Get associations of the object',
         response: {
-          200: Type.Array(
-            Type.Object({
-              principalId: Type.UUID(),
-              capability: Type.String()
+          200: T.Array(
+            T.Object({
+              principalId: T.UUID(),
+              capability: T.String()
             })
           )
         }
@@ -45,8 +47,8 @@ export const manageACL: FastifyPluginAsyncTypebox<{
     '/',
     {
       schema: {
-        body: Type.Object({
-          principalId: Type.String()
+        body: T.Object({
+          principalId: T.String()
         })
       }
     },
@@ -72,8 +74,8 @@ export const manageACL: FastifyPluginAsyncTypebox<{
     {
       schema: {
         params: Params,
-        body: Type.Object({
-          capability: Type.String()
+        body: T.Object({
+          capability: T.String()
         })
       }
     },
@@ -122,8 +124,8 @@ export const manageAccessLevel: FastifyPluginAsyncTypebox<{
     '/',
     {
       schema: {
-        body: Type.Object({
-          accessLevel: Type.AccessLevel()
+        body: T.Object({
+          accessLevel: T.AccessLevel()
         })
       }
     },

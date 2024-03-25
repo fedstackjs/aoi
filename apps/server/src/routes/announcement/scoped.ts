@@ -1,13 +1,12 @@
-import { USER_CAPS, hasCapability } from '../../index.js'
-import { loadUserCapability } from '../common/access.js'
-import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
-import { Type } from '@sinclair/typebox'
-import { IAnnouncement } from '../../db/index.js'
 import { BSON } from 'mongodb'
-import { defineInjectionPoint } from '../../utils/inject.js'
 
-const articleIdSchema = Type.Object({
-  articleId: Type.String()
+import { IAnnouncement, USER_CAPS } from '../../db/index.js'
+import { T } from '../../schemas/index.js'
+import { defineInjectionPoint, hasCapability } from '../../utils/index.js'
+import { loadUserCapability, defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
+
+const articleIdSchema = T.Object({
+  articleId: T.String()
 })
 
 const kAnnouncementCtx = defineInjectionPoint<{
@@ -42,11 +41,11 @@ export const announcementScopedRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Get article details',
         response: {
-          200: Type.Object({
-            title: Type.String(),
-            description: Type.String(),
-            public: Type.Boolean(),
-            date: Type.String()
+          200: T.Object({
+            title: T.String(),
+            description: T.String(),
+            public: T.Boolean(),
+            date: T.String()
           })
         },
         security: []
@@ -68,11 +67,11 @@ export const announcementScopedRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Update article details',
-        body: Type.Object({
-          title: Type.String(),
-          description: Type.String(),
-          public: Type.Boolean(),
-          date: Type.String()
+        body: T.Object({
+          title: T.String(),
+          description: T.String(),
+          public: T.Boolean(),
+          date: T.String()
         })
       }
     },

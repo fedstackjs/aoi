@@ -2,6 +2,7 @@ import { USER_CAPS, hasCapability } from '../../index.js'
 import { packageJson } from '../../utils/package.js'
 import { loadUserCapability } from '../common/access.js'
 import { defineRoutes, swaggerTagMerger } from '../common/index.js'
+
 import { adminUserRoutes } from './user.js'
 
 export const adminRoutes = defineRoutes(async (s) => {

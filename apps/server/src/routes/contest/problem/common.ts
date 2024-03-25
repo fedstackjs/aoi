@@ -1,4 +1,5 @@
 import { FastifyRequest } from 'fastify'
+
 import { tryLoadUUID } from '../../common/index.js'
 import { kContestContext } from '../inject.js'
 

@@ -25,10 +25,11 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+
 import type { IContestDTO } from '@/components/contest/types'
+import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
 import { useContestCapability } from '@/utils/contest/inject'
 import { usePagination } from '@/utils/pagination'
-import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
 
 const props = defineProps<{
   orgId: string

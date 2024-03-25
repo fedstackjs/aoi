@@ -37,8 +37,10 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import AoiLogo from '../aoi/AoiLogo.vue'
 import { useRouter } from 'vue-router'
+
+import AoiLogo from '../aoi/AoiLogo.vue'
+
 import { withI18nTitle } from '@/utils/title'
 
 const { t } = useI18n()

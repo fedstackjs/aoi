@@ -11,14 +11,15 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { ref } from 'vue'
-import { http } from '@/utils/http'
-import { useToast } from 'vue-toastification'
-import * as xlsx from 'xlsx'
 import type { Ranklist } from '@aoi-js/common'
 import type { IUserProfile } from '@aoi-js/server'
 import ky from 'ky'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useToast } from 'vue-toastification'
+import * as xlsx from 'xlsx'
+
+import { http } from '@/utils/http'
 
 const { t } = useI18n()
 const toast = useToast()

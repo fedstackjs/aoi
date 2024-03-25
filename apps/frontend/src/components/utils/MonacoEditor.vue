@@ -3,8 +3,9 @@
 </template>
 
 <script setup lang="ts">
-import { useMonaco, type IMonacoEditorProps } from '@/utils/monaco'
 import { ref } from 'vue'
+
+import { useMonaco, type IMonacoEditorProps } from '@/utils/monaco'
 
 const container = ref<HTMLElement>(null as never)
 

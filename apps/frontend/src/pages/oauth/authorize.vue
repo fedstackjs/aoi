@@ -61,18 +61,18 @@
 </template>
 
 <script setup lang="ts">
-import AoiLogo from '@/components/aoi/AoiLogo.vue'
-import AsyncState from '@/components/utils/AsyncState.vue'
-import { useLogin } from '@/stores/app'
-import { useApp } from '@/utils/app/inject'
 import { useRouteQuery } from '@vueuse/router'
 import { useI18n } from 'vue-i18n'
-import { useMfa } from '@/stores/app'
+import { useRouter } from 'vue-router'
+
+import AoiLogo from '@/components/aoi/AoiLogo.vue'
+import AsyncState from '@/components/utils/AsyncState.vue'
+import OrgProfile from '@/components/utils/OrgProfile.vue'
+import { useLogin, useMfa } from '@/stores/app'
+import { useApp } from '@/utils/app/inject'
 import { useAsyncTask } from '@/utils/async'
 import { http, mfaTokenValue } from '@/utils/http'
 import { withI18nTitle } from '@/utils/title'
-import { useRouter } from 'vue-router'
-import OrgProfile from '@/components/utils/OrgProfile.vue'
 
 withI18nTitle('pages.authorize')
 

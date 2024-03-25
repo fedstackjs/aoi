@@ -44,15 +44,16 @@
 </template>
 
 <script setup lang="ts">
-import { http } from '@/utils/http'
-import { withTitle } from '@/utils/title'
 import { useAsyncState } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 import AoiGravatar from '@/components/aoi/AoiGravatar.vue'
 import CapabilityChips from '@/components/utils/CapabilityChips.vue'
-import { orgBits } from '@/utils/capability'
 import UserIdInput from '@/components/utils/UserIdInput.vue'
+import { orgBits } from '@/utils/capability'
+import { http } from '@/utils/http'
+import { withTitle } from '@/utils/title'
 
 const props = defineProps<{
   orgId: string

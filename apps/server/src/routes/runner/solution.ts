@@ -1,11 +1,13 @@
-import { Type } from '@sinclair/typebox'
-import { ContestRanklistState, SolutionState } from '../../db/index.js'
-import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
-import { getDownloadUrl, problemDataKey, solutionDataKey, solutionDetailsKey } from '../../index.js'
-import { getFileUrl } from '../common/files.js'
-import { BSON } from 'mongodb'
 import { SProblemConfigSchema } from '@aoi-js/common'
+import { BSON } from 'mongodb'
+
+import { ContestRanklistState, SolutionState } from '../../db/index.js'
+import { getDownloadUrl, problemDataKey, solutionDataKey, solutionDetailsKey } from '../../index.js'
+import { T } from '../../schemas/index.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
+import { getFileUrl } from '../common/files.js'
+import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
+
 import { kRunnerContext } from './inject.js'
 
 const kRunnerSolutionContext = defineInjectionPoint<{
@@ -17,9 +19,9 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
   s.addHook(
     'onRoute',
     paramSchemaMerger(
-      Type.Object({
-        solutionId: Type.String({ format: 'uuid' }),
-        taskId: Type.String({ format: 'uuid' })
+      T.Object({
+        solutionId: T.String({ format: 'uuid' }),
+        taskId: T.String({ format: 'uuid' })
       })
     )
   )
@@ -36,19 +38,19 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Update solution result',
-        body: Type.Partial(
-          Type.Object(
+        body: T.Partial(
+          T.Object(
             {
-              status: Type.String(),
-              score: Type.Number({ minimum: 0, maximum: 100 }),
-              metrics: Type.Record(Type.String(), Type.Number()),
-              message: Type.String()
+              status: T.String(),
+              score: T.Number({ minimum: 0, maximum: 100 }),
+              metrics: T.Record(T.String(), T.Number()),
+              message: T.String()
             },
             { additionalProperties: false }
           )
         ),
         response: {
-          200: Type.Object({})
+          200: T.Object({})
         }
       }
     },
@@ -86,7 +88,7 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Mark solution as completed',
         response: {
-          200: Type.Object({})
+          200: T.Object({})
         }
       }
     },
@@ -171,19 +173,19 @@ export const runnerSolutionRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Poll for a new solution',
         response: {
-          200: Type.Partial(
-            Type.Object({
-              taskId: Type.UUID(),
-              solutionId: Type.UUID(),
-              orgId: Type.UUID(),
-              userId: Type.UUID(),
-              contestId: Type.UUID(),
+          200: T.Partial(
+            T.Object({
+              taskId: T.UUID(),
+              solutionId: T.UUID(),
+              orgId: T.UUID(),
+              userId: T.UUID(),
+              contestId: T.UUID(),
               problemConfig: SProblemConfigSchema,
-              problemDataUrl: Type.String(),
-              problemDataHash: Type.String(),
-              solutionDataUrl: Type.String(),
-              solutionDataHash: Type.String(),
-              errMsg: Type.String()
+              problemDataUrl: T.String(),
+              problemDataHash: T.String(),
+              solutionDataUrl: T.String(),
+              solutionDataHash: T.String(),
+              errMsg: T.String()
             })
           )
         }

@@ -1,4 +1,5 @@
 import { fastifyPlugin } from 'fastify-plugin'
+
 import { IContainer, createInjectionContainer } from '../../utils/index.js'
 
 declare module 'fastify' {

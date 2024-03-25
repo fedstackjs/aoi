@@ -1,10 +1,11 @@
-import { Type } from '@sinclair/typebox'
-import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 import { BSON } from 'mongodb'
-import { defineInjectionPoint } from '../../utils/inject.js'
 
-const solutionIdSchema = Type.Object({
-  solutionId: Type.String()
+import { T } from '../../schemas/index.js'
+import { defineInjectionPoint } from '../../utils/inject.js'
+import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
+
+const solutionIdSchema = T.Object({
+  solutionId: T.String()
 })
 
 const kSolutionContext = defineInjectionPoint<{

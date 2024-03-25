@@ -1,9 +1,9 @@
-import rnd from 'randomstring'
-import { Type } from '@sinclair/typebox'
 import { UUID } from 'mongodb'
+import rnd from 'randomstring'
 
-import { defineRoutes, swaggerTagMerger } from '../common/index.js'
+import { T } from '../../schemas/index.js'
 import { loadEnv } from '../../utils/index.js'
+import { defineRoutes, swaggerTagMerger } from '../common/index.js'
 
 const DEVICE_VERIFICATION_URI = loadEnv(
   'DEVICE_VERIFICATION_URI',
@@ -23,13 +23,13 @@ export const oauthDeviceRoutes = defineRoutes(async (s) => {
     {
       schema: {
         security: [],
-        body: Type.Object({
-          appId: Type.String()
+        body: T.Object({
+          appId: T.String()
         }),
         response: {
-          200: Type.Object({
-            secret: Type.String(),
-            verificationUri: Type.String()
+          200: T.Object({
+            secret: T.String(),
+            verificationUri: T.String()
           })
         }
       }
@@ -56,13 +56,13 @@ export const oauthDeviceRoutes = defineRoutes(async (s) => {
     {
       schema: {
         security: [],
-        body: Type.Object({
-          appId: Type.String(),
-          secret: Type.String()
+        body: T.Object({
+          appId: T.String(),
+          secret: T.String()
         }),
         response: {
-          200: Type.Object({
-            code: Type.String()
+          200: T.Object({
+            code: T.String()
           })
         }
       }
@@ -80,10 +80,10 @@ export const oauthDeviceRoutes = defineRoutes(async (s) => {
     '/authorize',
     {
       schema: {
-        body: Type.Object({
-          appId: Type.String(),
-          secret: Type.String(),
-          code: Type.String()
+        body: T.Object({
+          appId: T.String(),
+          secret: T.String(),
+          code: T.String()
         })
       }
     },

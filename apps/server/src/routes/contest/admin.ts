@@ -1,11 +1,13 @@
-import { Type } from '@sinclair/typebox'
+import { UUID } from 'mongodb'
+
 import { CONTEST_CAPS, ContestRanklistState, SolutionState } from '../../index.js'
+import { SContestStage } from '../../schemas/contest.js'
+import { T } from '../../schemas/index.js'
 import { ensureCapability } from '../../utils/index.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
 import { defineRoutes, generateRangeQuery } from '../common/index.js'
-import { SContestStage } from '../../schemas/contest.js'
+
 import { kContestContext } from './inject.js'
-import { UUID } from 'mongodb'
 
 export const contestAdminRoutes = defineRoutes(async (s) => {
   const { contests, solutions } = s.db
@@ -50,8 +52,8 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
       schema: {
         description: 'Submit all solutions',
         response: {
-          200: Type.Object({
-            modifiedCount: Type.Number()
+          200: T.Object({
+            modifiedCount: T.Number()
           })
         }
       }
@@ -85,19 +87,19 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Rejudge all solutions',
-        body: Type.Object({
-          problemId: Type.Optional(Type.UUID()),
-          state: Type.Optional(Type.Integer({ minimum: 1, maximum: 4 })),
-          status: Type.Optional(Type.String()),
-          runnerId: Type.Optional(Type.String()),
-          scoreL: Type.Optional(Type.Number()),
-          scoreR: Type.Optional(Type.Number()),
-          submittedAtL: Type.Optional(Type.Integer()),
-          submittedAtR: Type.Optional(Type.Integer())
+        body: T.Object({
+          problemId: T.Optional(T.UUID()),
+          state: T.Optional(T.Integer({ minimum: 1, maximum: 4 })),
+          status: T.Optional(T.String()),
+          runnerId: T.Optional(T.String()),
+          scoreL: T.Optional(T.Number()),
+          scoreR: T.Optional(T.Number()),
+          submittedAtL: T.Optional(T.Integer()),
+          submittedAtR: T.Optional(T.Integer())
         }),
         response: {
-          200: Type.Object({
-            modifiedCount: Type.Number()
+          200: T.Object({
+            modifiedCount: T.Number()
           })
         }
       }
@@ -141,10 +143,10 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     {
       schema: {
         response: {
-          200: Type.Object({
-            ranklistState: Type.Integer(),
-            ranklistUpdatedAt: Type.Integer(),
-            ranklistRunnerId: Type.Optional(Type.UUID())
+          200: T.Object({
+            ranklistState: T.Integer(),
+            ranklistUpdatedAt: T.Integer(),
+            ranklistRunnerId: T.Optional(T.UUID())
           })
         }
       }
@@ -164,8 +166,8 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     '/update-ranklists',
     {
       schema: {
-        body: Type.Object({
-          resetRunner: Type.Optional(Type.Boolean())
+        body: T.Object({
+          resetRunner: T.Optional(T.Boolean())
         })
       }
     },
@@ -195,7 +197,7 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Update contest stages',
-        response: { 200: Type.Array(SContestStage) }
+        response: { 200: T.Array(SContestStage) }
       }
     },
     async (req) => {
@@ -208,7 +210,7 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     {
       schema: {
         description: 'Update contest stages',
-        body: Type.Array(SContestStage)
+        body: T.Array(SContestStage)
       }
     },
     async (req, rep) => {

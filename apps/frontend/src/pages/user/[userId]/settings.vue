@@ -20,13 +20,14 @@
 </template>
 
 <script setup lang="ts">
-import { withTitle } from '@/utils/title'
-import { useI18n } from 'vue-i18n'
-import SettingsEditor from '@/components/utils/SettingsEditor.vue'
-import UserProfileInput from '@/components/user/UserProfileInput.vue'
 import { computed } from 'vue'
-import { invalidateProfile } from '@/utils/profile'
+import { useI18n } from 'vue-i18n'
+
 import UserAuth from '@/components/user/UserAuth.vue'
+import UserProfileInput from '@/components/user/UserProfileInput.vue'
+import SettingsEditor from '@/components/utils/SettingsEditor.vue'
+import { invalidateProfile } from '@/utils/profile'
+import { withTitle } from '@/utils/title'
 
 const { t } = useI18n()
 

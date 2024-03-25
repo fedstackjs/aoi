@@ -30,12 +30,13 @@
 </template>
 
 <script setup lang="ts">
-import { useLogin } from '@/stores/app'
-import { http } from '@/utils/http'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'vue-toastification'
 import type { SubmitEventPromise } from 'vuetify'
+
+import { useLogin } from '@/stores/app'
+import { http } from '@/utils/http'
 
 const { t } = useI18n()
 const toast = useToast()

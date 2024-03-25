@@ -22,10 +22,11 @@
 </template>
 
 <script setup lang="ts">
-import AoiLogo from '@/components/aoi/AoiLogo.vue'
-import { withTitle } from '@/utils/title'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import AoiLogo from '@/components/aoi/AoiLogo.vue'
+import { withTitle } from '@/utils/title'
 
 const { t } = useI18n()
 
