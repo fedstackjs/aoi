@@ -26,15 +26,16 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(corepack yarn config get cacheFolder)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -80,14 +81,14 @@ jobs:
         run: node -p -e "'version='+require('./apps/server/package.json').version" >> $GITHUB_OUTPUT
 
       - name: Log in to Aliyun Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: registry.cn-hangzhou.aliyuncs.com
           username: ${{ secrets.ACR_USER }}
           password: ${{ secrets.ACR_PASS }}
 
       - name: Build and push server Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
           context: '.'
