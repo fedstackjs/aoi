@@ -41,7 +41,7 @@
     "@wooorm/starry-night": "^2.1.1",
     "blueimp-md5": "^2.19.0",
     "debug": "^4.3.4",
-    "dompurify": "^3.0.6",
+    "dompurify": "^3.0.11",
     "echarts": "^5.4.3",
     "eslint-plugin-prettier": "^5.1.0",
     "eslint-plugin-vue": "^9.19.2",

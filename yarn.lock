@@ -249,7 +249,7 @@ __metadata:
     "@wooorm/starry-night": "npm:^2.1.1"
     blueimp-md5: "npm:^2.19.0"
     debug: "npm:^4.3.4"
-    dompurify: "npm:^3.0.6"
+    dompurify: "npm:^3.0.11"
     echarts: "npm:^5.4.3"
     eslint-plugin-prettier: "npm:^5.1.0"
     eslint-plugin-vue: "npm:^9.19.2"
@@ -5035,10 +5035,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:^3.0.6":
-  version: 3.0.6
-  resolution: "dompurify@npm:3.0.6"
-  checksum: 10/bf6e8a240673f60f5aafa46b598cfb66a18ab68f2801840005bc784b3fd3598a6bfac1eca1f80a98b197054d2329cd6edbc857aca34364abdee389a8fe6c027a
+"dompurify@npm:^3.0.11":
+  version: 3.0.11
+  resolution: "dompurify@npm:3.0.11"
+  checksum: 10/fc7027ef5cc09ad906625e8aa39b3ca50570fd05aec9fd5995349f0be866385122265c7a823c416694c7bb4c3415e9172cce03b92a153a16c7d1d27165b2a0fd
   languageName: node
   linkType: hard
 
