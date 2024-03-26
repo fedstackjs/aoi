@@ -4,6 +4,7 @@ import { toHtml } from 'hast-util-to-html'
 import markdownIt from 'markdown-it'
 import onigurumaUrl from 'vscode-oniguruma/release/onig.wasm?url'
 
+import markdownAlerts from './alerts'
 import markdownItKatex from './katex'
 
 const starryNight = await createStarryNight(common, {
@@ -31,6 +32,7 @@ const md = markdownIt({
     })
   }
 })
+md.use(markdownAlerts)
 md.use(markdownItKatex)
 
 export function renderMarkdown(source: string) {

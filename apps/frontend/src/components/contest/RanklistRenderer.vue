@@ -69,7 +69,7 @@ import RanklistTopstars from '../contest/RanklistTopstars.vue'
 import { useRanklistRenderer } from './RanklistRenderer'
 
 import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
-import { renderMarkdown } from '@/utils/md'
+import { renderMarkdown } from '@/utils/markdown'
 
 const props = defineProps<{
   ranklist: Ranklist
