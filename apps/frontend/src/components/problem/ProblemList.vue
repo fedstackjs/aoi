@@ -10,14 +10,23 @@
     item-value="_id"
     @update:options="({ page, itemsPerPage }) => problems.execute(0, page, itemsPerPage)"
   >
-    <template v-slot:[`item.slug`]="{ item }">
-      <code>{{ item.slug }}</code>
-    </template>
     <template v-slot:[`item.title`]="{ item }">
-      <AccessLevelBadge :access-level="item.accessLevel" inline />
-      <RouterLink :to="`/org/${orgId}/problem/${item._id}`">
-        {{ item.title }}
-      </RouterLink>
+      <div class="u-flex u-items-center u-gap-2">
+        <RouterLink :to="`/org/${orgId}/problem/${item._id}`" class="u-flex u-gap-2">
+          <div>
+            <div>
+              {{ item.title }}
+            </div>
+            <div class="u-text-xs text-secondary">
+              <code>{{ item.slug }}</code>
+            </div>
+          </div>
+        </RouterLink>
+        <ProblemStatus :org-id="orgId" :problem-id="item._id" :status="item.status" />
+      </div>
+    </template>
+    <template v-slot:[`item.accessLevel`]="{ item }">
+      <AccessLevelBadge variant="chip" :access-level="item.accessLevel" inline />
     </template>
     <template v-slot:[`item.tags`]="{ item }">
       <ProblemTagGroup :tags="item.tags" :url-prefix="`/org/${orgId}/problem/tag`" />
@@ -31,6 +40,7 @@ import { useI18n } from 'vue-i18n'
 
 import AccessLevelBadge from '../utils/AccessLevelBadge.vue'
 
+import ProblemStatus from './ProblemStatus.vue'
 import ProblemTagGroup from './ProblemTagGroup.vue'
 import type { IProblemDTO } from './types'
 
@@ -48,9 +58,9 @@ const { t } = useI18n()
 withTitle(computed(() => t('pages.problems')))
 
 const headers = [
-  { title: t('term.slug'), key: 'slug', align: 'start', sortable: false },
   { title: t('term.name'), key: 'title', sortable: false },
-  { title: t('term.tags'), key: 'tags', sortable: false }
+  { title: t('term.tags'), key: 'tags', sortable: false },
+  { title: t('term.access-level'), key: 'accessLevel', align: 'end', sortable: false }
 ] as const
 
 const {

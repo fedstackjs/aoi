@@ -17,29 +17,37 @@ import {
 export const useAppState = defineStore('app_state', () => {
   const route = useRoute()
 
-  const user = useAsyncState(async () => {
-    const resp = await http.get(`user/${userId.value}`)
-    const user = await resp.json<{
-      profile: IUserProfile
-      capability: string
-    }>()
-    return user
-  }, null)
+  const user = useAsyncState(
+    async () => {
+      const resp = await http.get(`user/${userId.value}`)
+      const user = await resp.json<{
+        profile: IUserProfile
+        capability: string
+      }>()
+      return user
+    },
+    null,
+    { immediate: false }
+  )
   watchDebounced(userId, () => user.execute(), { immediate: true })
 
-  const joinedOrgs = useAsyncState(async () => {
-    const orgs = await http.get('org').json<
-      Array<{
-        _id: string
-        profile: {
-          name: string
-          email: string
-        }
-      }>
-    >()
-    if (!orgId.value) orgId.value = orgs[0]._id
-    return orgs
-  }, [])
+  const joinedOrgs = useAsyncState(
+    async () => {
+      const orgs = await http.get('org').json<
+        Array<{
+          _id: string
+          profile: {
+            name: string
+            email: string
+          }
+        }>
+      >()
+      if (!orgId.value) orgId.value = orgs[0]._id
+      return orgs
+    },
+    [],
+    { immediate: false }
+  )
   watchDebounced(userId, () => joinedOrgs.execute(), { immediate: true })
 
   const orgId = ref((route.params.orgId as string) ?? '')
@@ -86,8 +94,8 @@ export const useAppState = defineStore('app_state', () => {
       'orgCapability',
       () => orgProfile.state.value?.membership?.capability ?? '0'
     ),
-    debug,
-    overrides
+    debug: computed(() => debug.value),
+    overrides: computed(() => overrides.value)
   }
 })
 

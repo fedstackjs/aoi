@@ -1,34 +1,23 @@
 <template>
   <VChip
-    :text="status"
     :prepend-icon="display[0]"
     :color="display[1]"
-    variant="outlined"
+    :variant="abbrev ? 'text' : 'outlined'"
     :to="to"
-    v-if="to"
-  />
-  <VChip :text="status" :prepend-icon="display[0]" :color="display[1]" variant="outlined" v-else />
+  >
+    {{ status }}
+    <span v-if="score !== undefined">
+      (<code :style="{ color: palette(score) }" v-text="score" />)
+    </span>
+  </VChip>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { useSolutionStatus, type ISolutionStatusProps } from './SolutionStatus'
 
-const props = defineProps<{
-  status: string
-  to?: string
-}>()
+import { palette } from '@/utils/colors'
 
-const knownStatus: Record<string, [string, string]> = {
-  Accepted: ['mdi-check', 'success'],
-  Success: ['mdi-check', 'info'],
-  'Memory Limit Exceeded': ['mdi-database-alert-outline', 'error'],
-  'Time Limit Exceeded': ['mdi-timer-alert-outline', 'error'],
-  'Wrong Answer': ['mdi-close', 'error'],
-  'Compile Error': ['mdi-code-braces', 'error'],
-  'Internal Error': ['mdi-help-circle-outline', ''],
-  'Runtime Error': ['mdi-alert-decagram-outline', 'error'],
-  Running: ['mdi-play', 'indigo'],
-  Queued: ['mdi-timer-sand', 'indigo']
-}
-const display = computed(() => knownStatus[props.status] ?? ['mdi-circle-outline', 'warning'])
+const props = defineProps<ISolutionStatusProps>()
+
+const { display, status } = useSolutionStatus(props)
 </script>

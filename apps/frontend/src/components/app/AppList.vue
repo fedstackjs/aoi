@@ -10,13 +10,16 @@
     item-value="_id"
     @update:options="({ page, itemsPerPage }) => apps.execute(0, page, itemsPerPage)"
   >
-    <template v-slot:[`item.slug`]="{ item }">
-      <code>{{ item.slug }}</code>
-    </template>
     <template v-slot:[`item.title`]="{ item }">
-      <AccessLevelBadge :access-level="item.accessLevel" inline />
-      <RouterLink :to="`/org/${orgId}/app/${item._id}`">
-        {{ item.title }}
+      <RouterLink :to="`/org/${orgId}/contest/${item._id}`">
+        <div>
+          <div>
+            {{ item.title }}
+          </div>
+          <div class="u-text-xs text-secondary">
+            <code>{{ item.slug }}</code>
+          </div>
+        </div>
       </RouterLink>
     </template>
     <template v-slot:[`item.tags`]="{ item }">
@@ -29,6 +32,9 @@
           {{ tag }}
         </VChip>
       </VChipGroup>
+    </template>
+    <template v-slot:[`item.accessLevel`]="{ item }">
+      <AccessLevelBadge variant="chip" :access-level="item.accessLevel" inline />
     </template>
   </VDataTableServer>
 </template>
@@ -55,9 +61,9 @@ const { t } = useI18n()
 withTitle(computed(() => t('pages.apps')))
 
 const headers = [
-  { title: t('term.slug'), key: 'slug', align: 'start', sortable: false },
   { title: t('term.name'), key: 'title', sortable: false },
-  { title: t('term.tags'), key: 'tags', sortable: false }
+  { title: t('term.tags'), key: 'tags', sortable: false },
+  { title: t('term.access-level'), key: 'accessLevel', align: 'end', sortable: false }
 ] as const
 
 const {

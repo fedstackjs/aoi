@@ -122,6 +122,7 @@ term:
   runner-id: Runner ID
   path: Path
   filter: Filter
+  access-level: Access Level
 
 common:
   created-at: Created at
@@ -222,3 +223,8 @@ platform-issue:
   file: File API not supported
   file-stream: Web Stream API for File not supported
   transferable-stream: Transferable Streams not supported
+
+access-level:
+  public: Public
+  restricted: Restricted
+  private: Private
