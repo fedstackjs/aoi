@@ -1,5 +1,7 @@
 import type { ProblemConfig } from '@aoi-js/common'
-import type { IProblemSettings } from '@aoi-js/server'
+import type { IProblemSettings, IProblemStatus } from '@aoi-js/server'
+
+export interface IProblemStatusDTO extends Omit<IProblemStatus, '_id' | 'problemId' | 'userId'> {}
 
 export interface IProblemDTO {
   _id: string
@@ -13,4 +15,5 @@ export interface IProblemDTO {
   currentDataHash: string
   config: ProblemConfig
   settings: IProblemSettings
+  status?: IProblemStatusDTO
 }

@@ -10,13 +10,16 @@
     item-value="_id"
     @update:options="({ page, itemsPerPage }) => contests.execute(0, page, itemsPerPage)"
   >
-    <template v-slot:[`item.slug`]="{ item }">
-      <code>{{ item.slug }}</code>
-    </template>
     <template v-slot:[`item.title`]="{ item }">
-      <AccessLevelBadge :access-level="item.accessLevel" inline />
       <RouterLink :to="`/org/${orgId}/contest/${item._id}`">
-        {{ item.title }}
+        <div>
+          <div>
+            {{ item.title }}
+          </div>
+          <div class="u-text-xs text-secondary">
+            <code>{{ item.slug }}</code>
+          </div>
+        </div>
       </RouterLink>
     </template>
     <template v-slot:[`item.count`]="{ item }">
@@ -48,6 +51,9 @@
         </VChip>
       </VChipGroup>
     </template>
+    <template v-slot:[`item.accessLevel`]="{ item }">
+      <AccessLevelBadge variant="chip" :access-level="item.accessLevel" inline />
+    </template>
   </VDataTableServer>
 </template>
 
@@ -74,12 +80,12 @@ const now = +new Date()
 withTitle(computed(() => t('pages.contests')))
 
 const headers = [
-  { title: t('term.slug'), key: 'slug', align: 'start', sortable: false },
   { title: t('term.name'), key: 'title', sortable: false },
   { title: t('term.participant-count'), key: 'count', sortable: false },
   { title: t('term.contest-time'), key: 'time', sortable: false },
   { title: t('term.contest-stage'), key: 'stage', sortable: false },
-  { title: t('term.tags'), key: 'tags', sortable: false }
+  { title: t('term.tags'), key: 'tags', sortable: false },
+  { title: t('term.access-level'), key: 'accessLevel', align: 'end', sortable: false }
 ] as const
 
 const {

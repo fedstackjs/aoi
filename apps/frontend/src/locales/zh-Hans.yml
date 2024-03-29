@@ -122,6 +122,7 @@ term:
   runner-id: 评测机 ID
   path: 路径
   filter: 过滤
+  access-level: 访问等级
 
 common:
   created-at: 创建于
@@ -221,3 +222,8 @@ platform-issue:
   file: 不支持 File API
   file-stream: 不支持文件上的 Web Stream API
   transferable-stream: 不支持 Transferable Streams
+
+access-level:
+  public: 公开
+  restricted: 受限
+  private: 私有
