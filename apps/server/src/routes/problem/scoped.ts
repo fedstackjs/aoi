@@ -1,5 +1,5 @@
 import { SProblemConfigSchema } from '@aoi-js/common'
-import { BSON } from 'mongodb'
+import { BSON, MongoServerError } from 'mongodb'
 
 import { PROBLEM_CAPS, ORG_CAPS, SolutionState } from '../../db/index.js'
 import { getUploadUrl, solutionDataKey } from '../../oss/index.js'
@@ -144,20 +144,30 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       }
 
       const newSolutionId = new BSON.UUID()
-      const { modifiedCount, upsertedCount } = await problemStatuses.updateOne(
-        {
-          userId: req.user.userId,
-          problemId: ctx._problemId,
-          solutionCount: maxSolutionCount ? { $lt: maxSolutionCount } : undefined
-        },
-        {
-          $inc: { solutionCount: 1 },
-          $set: { lastSolutionId: newSolutionId, lastSolutionScore: 0, lastSolutionStatus: '' },
-          $setOnInsert: { _id: new BSON.UUID() }
-        },
-        { upsert: true, ignoreUndefined: true }
-      )
-      if (!(modifiedCount + upsertedCount)) return rep.preconditionFailed('Solution limit reached')
+      try {
+        const { modifiedCount, upsertedCount } = await problemStatuses.updateOne(
+          {
+            userId: req.user.userId,
+            problemId: ctx._problemId,
+            solutionCount: maxSolutionCount ? { $lt: maxSolutionCount } : undefined
+          },
+          {
+            $inc: { solutionCount: 1 },
+            $set: { lastSolutionId: newSolutionId, lastSolutionScore: 0, lastSolutionStatus: '' },
+            $setOnInsert: { _id: new BSON.UUID() }
+          },
+          { upsert: true, ignoreUndefined: true }
+        )
+        if (!(modifiedCount + upsertedCount)) {
+          return rep.preconditionFailed('Solution limit reached')
+        }
+      } catch (err) {
+        // E11000 duplicate key error
+        if (err instanceof MongoServerError && err.code === 11000) {
+          return rep.preconditionFailed('Solution limit reached')
+        }
+        throw err
+      }
 
       const { insertedId } = await solutions.insertOne(
         {
