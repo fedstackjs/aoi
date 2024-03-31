@@ -26,17 +26,19 @@
     </VTabs>
     <VWindow v-show="!submitting" v-model="currentTab">
       <VWindowItem value="form">
-        <SubmitForm v-if="problem.config.submit.form" :config="problem.config" @upload="submit" />
+        <SubmitForm v-if="problem.config.submit.form" :config="problem.config" @upload="submit">
+          <VCheckbox hide-details v-model="preferPrivate" :label="t('solution.prefer-private')" />
+        </SubmitForm>
       </VWindowItem>
       <VWindowItem value="upload-file">
-        <SubmitFile v-if="problem.config.submit.upload" :config="problem.config" @upload="submit" />
+        <SubmitFile v-if="problem.config.submit.upload" :config="problem.config" @upload="submit">
+          <VCheckbox hide-details v-model="preferPrivate" :label="t('solution.prefer-private')" />
+        </SubmitFile>
       </VWindowItem>
       <VWindowItem value="upload-dir">
-        <SubmitDir
-          v-if="problem.config.submit.zipFolder"
-          :config="problem.config"
-          @upload="submit"
-        />
+        <SubmitDir v-if="problem.config.submit.zipFolder" :config="problem.config" @upload="submit">
+          <VCheckbox hide-details v-model="preferPrivate" :label="t('solution.prefer-private')" />
+        </SubmitDir>
       </VWindowItem>
     </VWindow>
     <VCardText v-if="submitting" class="text-center">
@@ -68,7 +70,7 @@ const props = defineProps<{
 const { t } = useI18n()
 const currentTab = ref()
 
-const { submitting, submitMsg, indeterminate, progress, submit } = useProblemSubmit(
+const { submitting, submitMsg, indeterminate, progress, submit, preferPrivate } = useProblemSubmit(
   computed(() => props.problem._id),
   toRef(props, 'contestId'),
   toRef(props, 'manualSubmit')

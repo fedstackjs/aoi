@@ -1,11 +1,21 @@
 import { UUID } from 'mongodb'
 
-import { CONTEST_CAPS, ContestRanklistState, SolutionState } from '../../index.js'
+import {
+  CONTEST_CAPS,
+  ContestRanklistState,
+  SolutionState,
+  contestRuleSchemas
+} from '../../index.js'
 import { SContestStage } from '../../schemas/contest.js'
 import { T } from '../../schemas/index.js'
 import { ensureCapability } from '../../utils/index.js'
-import { manageACL, manageAccessLevel } from '../common/access.js'
-import { defineRoutes, generateRangeQuery } from '../common/index.js'
+import {
+  manageACL,
+  manageAccessLevel,
+  defineRoutes,
+  generateRangeQuery,
+  manageRules
+} from '../common/index.js'
 
 import { kContestContext } from './inject.js'
 
@@ -30,6 +40,12 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
     collection: contests,
     resolve: async (req) => req.inject(kContestContext)._contestId,
     prefix: '/accessLevel'
+  })
+  s.register(manageRules, {
+    collection: contests,
+    resolve: async (req) => req.inject(kContestContext)._contestId,
+    schemas: contestRuleSchemas,
+    prefix: '/rule'
   })
 
   s.delete(

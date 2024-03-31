@@ -5,11 +5,18 @@ import { IUserProfile } from '../index.js'
 import {
   IContestProblemSettings,
   IContestRanklistSettings,
-  IContestStage
+  IContestStage,
+  SContestSolutionRuleResult
 } from '../schemas/contest.js'
 import { capabilityMask } from '../utils/capability.js'
 
-import { IPrincipalControlable, IWithAccessLevel, IWithAttachment, IWithContent } from './common.js'
+import {
+  IPrincipalControlable,
+  IWithAccessLevel,
+  IWithAttachment,
+  IWithContent,
+  RulesFromSchemas
+} from './common.js'
 import { ISolution } from './solution.js'
 import { IUser } from './user.js'
 
@@ -53,6 +60,18 @@ export interface IContestRanklist {
   settings: IContestRanklistSettings
 }
 
+export interface IContestSolutionRuleCtx {
+  contest: IContest
+  currentStage: IContestStage
+  participant: IContestParticipant | null
+  currentResult: IContestParticipantResult | null
+  solution: ISolution
+}
+
+export const contestRuleSchemas = {
+  solution: SContestSolutionRuleResult
+}
+
 export interface IContest
   extends IPrincipalControlable,
     IWithAttachment,
@@ -73,6 +92,13 @@ export interface IContest
   ranklistTaskId?: BSON.UUID
 
   participantCount: number
+
+  rules?: RulesFromSchemas<
+    typeof contestRuleSchemas,
+    {
+      solution: IContestSolutionRuleCtx
+    }
+  >
 }
 
 export function getCurrentContestStage(now: number, { stages }: IContest) {

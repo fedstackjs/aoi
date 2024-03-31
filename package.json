@@ -18,6 +18,7 @@
     "husky": "^8.0.3",
     "prettier": "^3.1.1",
     "rimraf": "^5.0.5",
+    "tsx": "^4.7.1",
     "typescript": "^5.3.3",
     "vitepress": "^1.0.0-rc.36",
     "zx": "^7.2.3"

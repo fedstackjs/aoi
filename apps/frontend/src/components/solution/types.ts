@@ -15,4 +15,5 @@ export interface ISolutionDTO {
   createdAt: number
   submittedAt?: number
   completedAt?: number
+  preferPrivate?: boolean
 }

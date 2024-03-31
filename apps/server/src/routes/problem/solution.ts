@@ -21,37 +21,45 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     )
   )
 
-  s.post('/submit', {}, async (req, rep) => {
-    const ctx = req.inject(kProblemContext)
+  s.post(
+    '/submit',
+    {
+      schema: {
+        body: T.Partial(T.Object({}))
+      }
+    },
+    async (req, rep) => {
+      const ctx = req.inject(kProblemContext)
 
-    const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
-    const admin = hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_ADMIN)
-    const { modifiedCount } = await solutions.updateOne(
-      {
-        _id: solutionId,
-        contestId: { $exists: false },
-        problemId: ctx._problemId,
-        userId: admin ? undefined : req.user.userId,
-        state: admin ? undefined : SolutionState.CREATED
-      },
-      [
+      const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
+      const admin = hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_ADMIN)
+      const { modifiedCount } = await solutions.updateOne(
         {
-          $set: {
-            state: SolutionState.PENDING,
-            submittedAt: { $convert: { input: '$$NOW', to: 'double' } },
-            score: 0,
-            status: '',
-            metrics: {},
-            message: ''
-          }
+          _id: solutionId,
+          contestId: { $exists: false },
+          problemId: ctx._problemId,
+          userId: admin ? undefined : req.user.userId,
+          state: admin ? undefined : SolutionState.CREATED
         },
-        { $unset: ['taskId', 'runnerId'] }
-      ],
-      { ignoreUndefined: true }
-    )
-    if (modifiedCount === 0) return rep.notFound()
-    return {}
-  })
+        [
+          {
+            $set: {
+              state: SolutionState.PENDING,
+              submittedAt: { $convert: { input: '$$NOW', to: 'double' } },
+              score: 0,
+              status: '',
+              metrics: {},
+              message: ''
+            }
+          },
+          { $unset: ['taskId', 'runnerId'] }
+        ],
+        { ignoreUndefined: true }
+      )
+      if (modifiedCount === 0) return rep.notFound()
+      return {}
+    }
+  )
 
   s.post('/rejudge', {}, async (req, rep) => {
     const ctx = req.inject(kProblemContext)

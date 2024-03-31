@@ -11,7 +11,7 @@
     @update:options="({ page, itemsPerPage }) => apps.execute(0, page, itemsPerPage)"
   >
     <template v-slot:[`item.title`]="{ item }">
-      <RouterLink :to="`/org/${orgId}/contest/${item._id}`">
+      <RouterLink :to="`/org/${orgId}/app/${item._id}`">
         <div>
           <div>
             {{ item.title }}

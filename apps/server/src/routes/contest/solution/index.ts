@@ -1,10 +1,15 @@
 import { FastifyRequest } from 'fastify'
 import { BSON } from 'mongodb'
 
-import { CONTEST_CAPS, ISolution, SolutionState } from '../../../db/index.js'
+import {
+  CONTEST_CAPS,
+  IContestSolutionRuleCtx,
+  ISolution,
+  SolutionState
+} from '../../../db/index.js'
 import { solutionDataKey, solutionDetailsKey } from '../../../oss/index.js'
-import { T } from '../../../schemas/index.js'
-import { findPaginated, hasCapability } from '../../../utils/index.js'
+import { SContestSolutionRuleResult, T } from '../../../schemas/index.js'
+import { createEvaluator, findPaginated, hasCapability } from '../../../utils/index.js'
 import { getFileUrl } from '../../common/files.js'
 import {
   defineRoutes,
@@ -30,6 +35,7 @@ function checkUser(
 
 const solutionScopedRoutes = defineRoutes(async (s) => {
   const { solutions } = s.db
+  const solutionRuleEvaluator = createEvaluator(SContestSolutionRuleResult)<IContestSolutionRuleCtx>
 
   s.addHook(
     'onRoute',
@@ -40,41 +46,49 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     )
   )
 
-  s.post('/submit', {}, async (req, rep) => {
-    const ctx = req.inject(kContestContext)
+  s.post(
+    '/submit',
+    {
+      schema: {
+        body: T.Partial(T.Object({}))
+      }
+    },
+    async (req, rep) => {
+      const ctx = req.inject(kContestContext)
 
-    const { solutionAllowSubmit } = ctx._contestStage.settings
-    if (!solutionAllowSubmit && !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {
-      return rep.forbidden()
-    }
+      const { solutionAllowSubmit } = ctx._contestStage.settings
+      if (!solutionAllowSubmit && !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {
+        return rep.forbidden()
+      }
 
-    const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
-    const admin = hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)
-    const { modifiedCount } = await solutions.updateOne(
-      {
-        _id: solutionId,
-        contestId: ctx._contestId,
-        userId: admin ? undefined : req.user.userId,
-        state: admin ? undefined : SolutionState.CREATED
-      },
-      [
+      const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
+      const admin = hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)
+      const { modifiedCount } = await solutions.updateOne(
         {
-          $set: {
-            state: SolutionState.PENDING,
-            submittedAt: { $convert: { input: '$$NOW', to: 'double' } },
-            score: 0,
-            status: '',
-            metrics: {},
-            message: ''
-          }
+          _id: solutionId,
+          contestId: ctx._contestId,
+          userId: admin ? undefined : req.user.userId,
+          state: admin ? undefined : SolutionState.CREATED
         },
-        { $unset: ['taskId', 'runnerId'] }
-      ],
-      { ignoreUndefined: true }
-    )
-    if (modifiedCount === 0) return rep.notFound()
-    return {}
-  })
+        [
+          {
+            $set: {
+              state: SolutionState.PENDING,
+              submittedAt: { $convert: { input: '$$NOW', to: 'double' } },
+              score: 0,
+              status: '',
+              metrics: {},
+              message: ''
+            }
+          },
+          { $unset: ['taskId', 'runnerId'] }
+        ],
+        { ignoreUndefined: true }
+      )
+      if (modifiedCount === 0) return rep.notFound()
+      return {}
+    }
+  )
 
   s.post('/rejudge', {}, async (req, rep) => {
     const ctx = req.inject(kContestContext)
@@ -125,7 +139,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
             message: T.String(),
             createdAt: T.Number(),
             submittedAt: T.Optional(T.Number()),
-            completedAt: T.Optional(T.Number())
+            completedAt: T.Optional(T.Number()),
+            preferPrivate: T.Optional(T.Boolean())
           })
         }
       }
@@ -155,7 +170,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
             message: 1,
             createdAt: 1,
             submittedAt: 1,
-            completedAt: 1
+            completedAt: 1,
+            preferPrivate: 1
           },
           ignoreUndefined: true
         }
@@ -201,9 +217,22 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
       })
       if (!solution) throw s.httpErrors.notFound()
       const { solutionShowOtherData } = ctx._contestStage.settings
-      if (!checkUser(req, solution.userId, solutionShowOtherData)) {
-        throw s.httpErrors.forbidden()
+      let showData = checkUser(req, solution.userId, solutionShowOtherData)
+      if (ctx._contest.rules?.solution) {
+        ;({ showData } = solutionRuleEvaluator(
+          {
+            contest: ctx._contest,
+            currentStage: ctx._contestStage,
+            participant: ctx._contestParticipant,
+            currentResult: ctx._contestParticipant?.results[solution.problemId.toString()] ?? null,
+            solution
+          },
+          ctx._contest.rules?.solution,
+          {},
+          { showData }
+        ))
       }
+      if (!showData) throw s.httpErrors.forbidden()
       return [ctx._contest.orgId, solutionDataKey(solution._id)]
     },
     allowedTypes: ['download']

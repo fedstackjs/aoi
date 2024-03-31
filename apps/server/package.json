@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@aoi-js/common": "workspace:^",
+    "@aoi-js/rule": "workspace:^",
     "@aws-sdk/client-s3": "^3.385.0",
     "@aws-sdk/s3-request-presigner": "^3.385.0",
     "@fastify/formbody": "^7.4.0",

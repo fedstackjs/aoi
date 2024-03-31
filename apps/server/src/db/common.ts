@@ -1,3 +1,5 @@
+import { IRuleSet } from '@aoi-js/rule'
+import { Static, TSchema } from '@sinclair/typebox'
 import { BSON } from 'mongodb'
 
 import { AccessLevel } from '../schemas/index.js'
@@ -55,4 +57,8 @@ export interface IWithContent {
   title: string
   description: string
   tags: string[]
+}
+
+export type RulesFromSchemas<T, C extends { [K in keyof T]: unknown }> = {
+  [K in keyof T & keyof C]: T[K] extends TSchema ? IRuleSet<C[K], Static<T[K]>> : never
 }

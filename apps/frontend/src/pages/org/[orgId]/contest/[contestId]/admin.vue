@@ -13,6 +13,9 @@
       <VTab prepend-icon="mdi-lock" :to="rel('access')">
         {{ t('term.access') }}
       </VTab>
+      <VTab prepend-icon="mdi-code-tags" :to="rel('rule')">
+        {{ t('term.rules') }}
+      </VTab>
     </VTabs>
     <VDivider vertical />
     <RouterView class="flex-grow-1" :contest="contest" @updated="emit('updated')" />

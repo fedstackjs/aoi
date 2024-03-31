@@ -1,4 +1,4 @@
-import { FastifyPluginAsyncTypebox, Static, TSchema } from '@fastify/type-provider-typebox'
+import { FastifyPluginAsyncTypebox, TSchema } from '@fastify/type-provider-typebox'
 import { FastifyRequest } from 'fastify'
 import { BSON, Collection } from 'mongodb'
 
@@ -7,27 +7,39 @@ export const manageSettings: FastifyPluginAsyncTypebox<{
   collection: Collection<any>
   resolve: (req: FastifyRequest) => Promise<BSON.UUID | null>
   schema: TSchema
+  key?: string
+  allowDelete?: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  extractor?: (item: any) => any
 }> = async (s, opts) => {
-  const collection = opts.collection as Collection<
-    { settings: Static<TSchema> } & { _id: BSON.UUID }
-  >
+  const {
+    collection,
+    resolve,
+    schema,
+    key = 'settings',
+    allowDelete = false,
+    extractor = (item) => item?.[key]
+  } = opts as Omit<typeof opts, 'collection'> & {
+    collection: Collection<{ _id: BSON.UUID } & Record<string, unknown>>
+  }
 
   s.get(
     '/',
     {
       schema: {
-        description: 'Get settings',
+        description: `Get ${key}`,
         response: {
-          200: opts.schema
+          200: schema
         }
       }
     },
     async (req, rep) => {
-      const _id = await opts.resolve(req)
+      const _id = await resolve(req)
       if (!_id) return rep.notFound()
-      const item = await collection.findOne({ _id }, { projection: { settings: 1 } })
-      if (!item) return rep.notFound()
-      return item.settings
+      const item = await collection.findOne({ _id }, { projection: { [key]: 1 } })
+      const settings = extractor(item)
+      if (!settings) return rep.notFound()
+      return settings
     }
   )
 
@@ -35,15 +47,32 @@ export const manageSettings: FastifyPluginAsyncTypebox<{
     '/',
     {
       schema: {
-        description: 'Update settings',
-        body: opts.schema
+        description: `Update ${key}`,
+        body: schema
       }
     },
     async (req, rep) => {
-      const _id = await opts.resolve(req)
+      const _id = await resolve(req)
       if (!_id) return rep.notFound()
-      await collection.updateOne({ _id }, { $set: { settings: req.body } })
+      await collection.updateOne({ _id }, { $set: { [key]: req.body } })
       return {}
     }
   )
+
+  if (allowDelete) {
+    s.delete(
+      '/',
+      {
+        schema: {
+          description: `Delete ${key}`
+        }
+      },
+      async (req, rep) => {
+        const _id = await resolve(req)
+        if (!_id) return rep.notFound()
+        await collection.updateOne({ _id }, { $unset: { [key]: '' } })
+        return {}
+      }
+    )
+  }
 }
