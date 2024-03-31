@@ -1,6 +1,0 @@
-releases:
-  "@aoi-js/frontend": 1.1.0-alpha.5
-  "@aoi-js/server": 1.1.0-alpha.5
-
-declined:
-  - "@aoi-js/rule"
