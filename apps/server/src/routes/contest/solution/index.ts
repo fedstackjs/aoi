@@ -217,7 +217,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
       })
       if (!solution) throw s.httpErrors.notFound()
       const { solutionShowOtherData } = ctx._contestStage.settings
-      let showData = checkUser(req, solution.userId, solutionShowOtherData)
+      let showData = !!solutionShowOtherData
       if (ctx._contest.rules?.solution) {
         ;({ showData } = solutionRuleEvaluator(
           {
@@ -232,7 +232,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
           { showData }
         ))
       }
-      if (!showData) throw s.httpErrors.forbidden()
+      if (!checkUser(req, solution.userId, showData)) throw s.httpErrors.forbidden()
       return [ctx._contest.orgId, solutionDataKey(solution._id)]
     },
     allowedTypes: ['download']
