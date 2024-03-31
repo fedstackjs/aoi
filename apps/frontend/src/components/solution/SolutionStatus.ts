@@ -22,12 +22,13 @@ export function useSolutionStatus(props: ISolutionStatusProps) {
   }
   const display = computed(() => knownStatus[props.status] ?? ['mdi-circle-outline', 'warning'])
   const status = computed(() => {
-    if (!props.abbrev) return props.status
-    const abbrev = props.status
+    const status = props.status || 'Unknown'
+    if (!props.abbrev) return status
+    const abbrev = status
       .split(' ')
       .map((word) => word[0].toUpperCase())
       .join('')
-    return abbrev.length > 1 ? abbrev : props.status.slice(0, 2).toUpperCase()
+    return abbrev.length > 1 ? abbrev : status.slice(0, 2).toUpperCase()
   })
   return { display, status }
 }

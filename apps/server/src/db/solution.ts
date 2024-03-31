@@ -31,6 +31,8 @@ export interface ISolution {
   createdAt: number
   submittedAt?: number
   completedAt?: number
+
+  preferPrivate?: boolean
 }
 
 declare module './index.js' {

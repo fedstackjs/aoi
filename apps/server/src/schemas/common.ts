@@ -51,6 +51,41 @@ export class ServerTypeBuilder extends JavaScriptTypeBuilder {
       total: this.Optional(this.Integer())
     })
   }
+
+  RuleCondition() {
+    return this.Object({
+      $eq: this.Optional(this.Any()),
+      $ne: this.Optional(this.Any()),
+      $gt: this.Optional(this.Any()),
+      $gte: this.Optional(this.Any()),
+      $lt: this.Optional(this.Any()),
+      $lte: this.Optional(this.Any()),
+      $in: this.Optional(this.Array(this.Any())),
+      $nin: this.Optional(this.Array(this.Any())),
+      $startsWith: this.Optional(this.String()),
+      $endsWith: this.Optional(this.String())
+    })
+  }
+
+  RuleMatcher() {
+    return this.Record(this.String(), this.RuleCondition())
+  }
+
+  RuleSet<T extends TSchema>(result: T) {
+    const projector = this.Mapped(this.KeyOf(result), (K) =>
+      this.Union([this.Index(result, K), this.String()])
+    )
+
+    const rule = this.Object({
+      match: this.Union([this.RuleMatcher(), this.Array(this.RuleMatcher())]),
+      returns: projector
+    })
+
+    return this.Object({
+      rules: this.Array(rule),
+      defaults: this.Optional(projector)
+    })
+  }
 }
 
 export const T = new ServerTypeBuilder()

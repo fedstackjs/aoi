@@ -1,0 +1,25 @@
+{
+  "name": "@aoi-js/rule",
+  "version": "1.0.0",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fedstackjs/aoi.git",
+    "directory": "libs/rule"
+  },
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "run -T tsc",
+    "type-check": "run -T tsc --noEmit",
+    "lint": "run -T eslint --ignore-path .gitignore .",
+    "format": "run -T prettier --ignore-path .gitignore --check .",
+    "test": "run -T tsx --test src/**/*.spec.ts"
+  }
+}

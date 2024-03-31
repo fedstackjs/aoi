@@ -11,6 +11,7 @@ import { CAP_NONE, computeCapability } from '../../utils/capability.js'
 export * from './access.js'
 export * from './content.js'
 export * from './files.js'
+export * from './rule.js'
 export * from './settings.js'
 
 export function defineRoutes(plugin: FastifyPluginAsyncTypebox) {

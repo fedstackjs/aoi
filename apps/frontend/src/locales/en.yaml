@@ -123,6 +123,7 @@ term:
   path: Path
   filter: Filter
   access-level: Access Level
+  rules: Rules
 
 common:
   created-at: Created at

@@ -123,6 +123,7 @@ term:
   path: 路径
   filter: 过滤
   access-level: 访问等级
+  rules: 规则
 
 common:
   created-at: 创建于
