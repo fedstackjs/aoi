@@ -218,6 +218,7 @@ solution:
   max-score: Max Score
   submitted-since: Submitted Since
   submitted-before: Submitted Before
+  prefer-private: Prefer solution to be private
 
 platform-issue:
   web-worker: Web Worker not supported

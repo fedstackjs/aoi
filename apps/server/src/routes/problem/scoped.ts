@@ -84,7 +84,8 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
         description: 'Submit a solution',
         body: T.Object({
           hash: T.Hash(),
-          size: T.Integer()
+          size: T.Integer(),
+          preferPrivate: T.Optional(T.Boolean())
         }),
         response: {
           200: T.Object({
@@ -117,50 +118,73 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
       const maxSize = config.solution?.maxSize ?? 1024 * 1024 * 10 // 10MiB
       if (req.body.size > maxSize) return rep.badRequest('Solution too large')
 
-      const idOnUpsert = new BSON.UUID()
       const value = await solutions.findOneAndUpdate(
-        { problemId: ctx._problemId, userId: req.user.userId, state: SolutionState.CREATED },
+        {
+          problemId: ctx._problemId,
+          contestId: { $exists: false },
+          userId: req.user.userId,
+          state: SolutionState.CREATED
+        },
         {
           $set: {
             label: config.label,
             problemDataHash: currentDataHash,
-            solutionDataHash: req.body.hash
-          },
-          $setOnInsert: {
-            _id: idOnUpsert,
-            orgId: ctx._problem.orgId,
-            score: 0,
-            metrics: {},
-            status: '',
-            message: '',
-            createdAt: Date.now()
+            solutionDataHash: req.body.hash,
+            preferPrivate: req.body.preferPrivate
           }
         },
-        { upsert: true, returnDocument: 'after' }
+        { returnDocument: 'after', ignoreUndefined: true }
       )
+      if (value) {
+        const uploadUrl = await getUploadUrl(oss, solutionDataKey(value._id), {
+          expiresIn: 300,
+          size: req.body.size
+        })
+        return { solutionId: value._id, uploadUrl }
+      }
 
-      if (!value) throw s.httpErrors.conflict()
-
-      const upserted = value._id.equals(idOnUpsert)
-      await problemStatuses.updateOne(
+      const newSolutionId = new BSON.UUID()
+      const { modifiedCount, upsertedCount } = await problemStatuses.updateOne(
         {
           userId: req.user.userId,
           problemId: ctx._problemId,
-          solutionCount: upserted && maxSolutionCount ? { $lt: maxSolutionCount } : undefined
+          solutionCount: maxSolutionCount ? { $lt: maxSolutionCount } : undefined
         },
         {
-          $inc: { solutionCount: upserted ? 1 : undefined },
-          $set: { lastSolutionId: value._id, lastSolutionScore: 0, lastSolutionStatus: '' },
-          $setOnInsert: { _id: new BSON.UUID(), solutionCount: upserted ? undefined : 0 }
+          $inc: { solutionCount: 1 },
+          $set: { lastSolutionId: newSolutionId, lastSolutionScore: 0, lastSolutionStatus: '' },
+          $setOnInsert: { _id: new BSON.UUID() }
         },
         { upsert: true, ignoreUndefined: true }
       )
+      if (!(modifiedCount + upsertedCount)) return rep.preconditionFailed('Solution limit reached')
 
-      const uploadUrl = await getUploadUrl(oss, solutionDataKey(value._id), {
+      const { insertedId } = await solutions.insertOne(
+        {
+          _id: newSolutionId,
+          orgId: ctx._problem.orgId,
+          problemId: ctx._problem._id,
+          userId: req.user.userId,
+          label: config.label,
+          problemDataHash: currentDataHash,
+          state: SolutionState.CREATED,
+          solutionDataHash: req.body.hash,
+          score: 0,
+          metrics: {},
+          status: '',
+          message: '',
+          // createdAt is only a reference time,
+          // so use local time here
+          createdAt: req._now,
+          preferPrivate: req.body.preferPrivate
+        },
+        { ignoreUndefined: true }
+      )
+      const uploadUrl = await getUploadUrl(oss, solutionDataKey(insertedId), {
         expiresIn: 300,
         size: req.body.size
       })
-      return { solutionId: value._id, uploadUrl }
+      return { solutionId: insertedId, uploadUrl }
     }
   )
 

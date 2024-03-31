@@ -150,7 +150,8 @@ const problemViewRoutes = defineRoutes(async (s) => {
         }),
         body: T.Object({
           hash: T.Hash(),
-          size: T.Integer()
+          size: T.Integer(),
+          preferPrivate: T.Optional(T.Boolean())
         }),
         response: {
           200: T.Object({
@@ -208,9 +209,11 @@ const problemViewRoutes = defineRoutes(async (s) => {
           $set: {
             label: config.label,
             problemDataHash: currentDataHash,
-            solutionDataHash: req.body.hash
+            solutionDataHash: req.body.hash,
+            preferPrivate: req.body.preferPrivate
           }
-        }
+        },
+        { returnDocument: 'after', ignoreUndefined: true }
       )
       if (value) {
         const uploadUrl = await getUploadUrl(oss, solutionDataKey(value._id), {
@@ -239,24 +242,28 @@ const problemViewRoutes = defineRoutes(async (s) => {
       )
       if (!modifiedCount) return rep.preconditionFailed('Solution limit reached')
 
-      const { insertedId } = await solutions.insertOne({
-        _id: newSolutionId,
-        orgId: ctx._contest.orgId,
-        problemId,
-        contestId: ctx._contestId,
-        userId: req.user.userId,
-        label: config.label,
-        problemDataHash: problem.currentDataHash,
-        state: SolutionState.CREATED,
-        solutionDataHash: req.body.hash,
-        score: 0,
-        metrics: {},
-        status: '',
-        message: '',
-        // createdAt is only a reference time,
-        // so use local time here
-        createdAt: req._now
-      })
+      const { insertedId } = await solutions.insertOne(
+        {
+          _id: newSolutionId,
+          orgId: ctx._contest.orgId,
+          problemId,
+          contestId: ctx._contestId,
+          userId: req.user.userId,
+          label: config.label,
+          problemDataHash: problem.currentDataHash,
+          state: SolutionState.CREATED,
+          solutionDataHash: req.body.hash,
+          score: 0,
+          metrics: {},
+          status: '',
+          message: '',
+          // createdAt is only a reference time,
+          // so use local time here
+          createdAt: req._now,
+          preferPrivate: req.body.preferPrivate
+        },
+        { ignoreUndefined: true }
+      )
       const uploadUrl = await getUploadUrl(oss, solutionDataKey(insertedId), {
         expiresIn: 300,
         size: req.body.size

@@ -101,6 +101,13 @@
       :loading="solution.isLoading.value || autoRefreshRunning"
     />
     <VBtn v-if="showData && !viewFile" :text="t('action.view')" @click="viewFile = true" />
+    <VSpacer />
+    <VCheckbox
+      hide-details
+      readonly
+      :model-value="solution.state.value?.preferPrivate"
+      :label="t('solution.prefer-private')"
+    />
   </VCardActions>
   <VCardText v-if="showData && viewFile">
     <ZipAutoViewer :endpoint="downloadEndpoint" default-file="answer.code" show-metadata />

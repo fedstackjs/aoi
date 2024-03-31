@@ -217,6 +217,7 @@ solution:
   max-score: 最高分
   submitted-since: 提交晚于
   submitted-before: 提交早于
+  prefer-private: 不希望共享代码
 
 platform-issue:
   web-worker: 不支持 Web Worker API

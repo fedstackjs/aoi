@@ -25,11 +25,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     '/submit',
     {
       schema: {
-        body: T.Partial(
-          T.Object({
-            preferPrivate: T.Boolean()
-          })
-        )
+        body: T.Partial(T.Object({}))
       }
     },
     async (req, rep) => {
@@ -53,8 +49,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
               score: 0,
               status: '',
               metrics: {},
-              message: '',
-              preferPrivate: req.body.preferPrivate
+              message: ''
             }
           },
           { $unset: ['taskId', 'runnerId'] }

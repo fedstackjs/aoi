@@ -20,6 +20,8 @@ export function useProblemSubmit(
   const route = useRoute()
   const { t } = useI18n()
 
+  const preferPrivate = ref(false)
+
   const submitting = ref(false)
   const submitMsg = ref('')
   const indeterminate = ref(true)
@@ -50,7 +52,7 @@ export function useProblemSubmit(
         : `problem/${problemId}/solution`
       const { solutionId, uploadUrl } = await http
         .post(url, {
-          json: { hash, size }
+          json: { hash, size, preferPrivate: preferPrivate.value }
         })
         .json<{
           solutionId: string
@@ -64,7 +66,9 @@ export function useProblemSubmit(
         url = contestId
           ? `contest/${contestId}/solution/${solutionId}/submit`
           : `problem/${problemId}/solution/${solutionId}/submit`
-        await http.post(url)
+        await http.post(url, {
+          json: {}
+        })
       }
       toast.success(t('submit-success'))
       url = contestId
@@ -77,5 +81,5 @@ export function useProblemSubmit(
     submitting.value = false
   }
 
-  return { submitting, submitMsg, indeterminate, progress, submit }
+  return { submitting, submitMsg, indeterminate, progress, submit, preferPrivate }
 }

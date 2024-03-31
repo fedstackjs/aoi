@@ -5,6 +5,7 @@
     </VCardText>
     <VCardActions>
       <VBtn color="primary" @click="submit">{{ t('action.submit') }}</VBtn>
+      <slot />
     </VCardActions>
   </VCard>
 </template>
