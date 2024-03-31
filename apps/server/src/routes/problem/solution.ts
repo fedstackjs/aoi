@@ -111,7 +111,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
             message: T.String(),
             createdAt: T.Number(),
             submittedAt: T.Optional(T.Number()),
-            completedAt: T.Optional(T.Number())
+            completedAt: T.Optional(T.Number()),
+            preferPrivate: T.Optional(T.Boolean())
           })
         }
       }
@@ -141,7 +142,8 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
             message: 1,
             createdAt: 1,
             submittedAt: 1,
-            completedAt: 1
+            completedAt: 1,
+            preferPrivate: 1
           },
           ignoreUndefined: true
         }
