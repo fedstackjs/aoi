@@ -1,5 +1,5 @@
 <template>
-  <VCard flat>
+  <VCard>
     <RouterView :contest="contest" />
   </VCard>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <VCard variant="flat">
+  <VCard>
     <VCardText v-if="!problems.length">
       <VAlert type="info">{{ t('msg.no-problem') }}</VAlert>
     </VCardText>

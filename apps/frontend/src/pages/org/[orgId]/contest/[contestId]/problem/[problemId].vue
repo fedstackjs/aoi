@@ -1,11 +1,11 @@
 <template>
-  <VCard variant="flat" v-if="contestProblem">
-    <AsyncState :state="problem" hide-when-loading>
-      <template v-slot="{ value }">
+  <AsyncState v-if="contestProblem" :state="problem" hide-when-loading>
+    <template v-slot="{ value }">
+      <VCard :class="$style.header">
         <VCardTitle>
-          <div class="d-flex justify-space-between">
+          <div class="d-flex justify-space-between align-center">
             <div>
-              <p class="text-h4">{{ value.title }}</p>
+              <span class="text-h4">{{ value.title }}</span>
             </div>
             <div>
               <VChipGroup class="justify-end">
@@ -13,37 +13,31 @@
                   {{ tag }}
                 </VChip>
               </VChipGroup>
-              <ProblemJumpBtn :problem-id="props.problemId" />
-              <VBtn
-                size="small"
-                v-if="admin"
-                prepend-icon="mdi-arrow-top-left"
-                variant="outlined"
-                color="info"
-                :to="{
-                  path: `/org/${orgId}/contest/${contestId}/solution`,
-                  query: { problemId: problemId }
-                }"
-              >
-                {{ t('jump-to-solutions') }}
-              </VBtn>
             </div>
           </div>
           <div class="d-flex u-gap-2 pt-2">
             <VChip
               color="info"
               variant="outlined"
+              prepend-icon="mdi-star-four-points"
               :text="t('score', { score: contestProblem.settings.score })"
             />
             <VChip
-              color="warning"
+              :color="solutionCountLimit.color"
               variant="outlined"
-              :text="t('solution-count-limit', { limit: solutionCountLimit })"
+              prepend-icon="mdi-format-vertical-align-top"
+              :text="t('solution-count-limit', { limit: solutionCountLimit.limit })"
+            />
+            <VChip
+              v-if="admin"
+              color="primary"
+              variant="outlined"
+              prepend-icon="mdi-arrow-top-left"
+              :text="t('jump-to-problem')"
+              :to="`/org/${orgId}/problem/${problemId}`"
             />
           </div>
         </VCardTitle>
-        <VDivider />
-
         <VTabs v-model="currentTab">
           <VTab prepend-icon="mdi-book-outline" value="desc">
             {{ t('tabs.problem-description') }}
@@ -55,6 +49,12 @@
           >
             {{ t('tabs.submit') }}
           </VTab>
+          <VTab
+            prepend-icon="mdi-timer-sand"
+            :to="{ path: `/org/${orgId}/contest/${contestId}/solution`, query: { problemId } }"
+          >
+            {{ t('tabs.solutions') }}
+          </VTab>
           <VTab prepend-icon="mdi-attachment" value="attachments">
             {{ t('tabs.attachments') }}
           </VTab>
@@ -62,6 +62,8 @@
             {{ t('tabs.management') }}
           </VTab>
         </VTabs>
+      </VCard>
+      <VCard class="mt-2">
         <VWindow v-model="currentTab">
           <VWindowItem value="desc">
             <VCard flat>
@@ -82,17 +84,17 @@
             <ProblemTabAdmin :contest-id="contestId" :problem="value" @updated="emit('updated')" />
           </VWindowItem>
         </VWindow>
-      </template>
-    </AsyncState>
-  </VCard>
+      </VCard>
+    </template>
+  </AsyncState>
 </template>
 
 <script setup lang="ts">
 import { useAsyncState } from '@vueuse/core'
 import { ref, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useLayout } from 'vuetify'
 
-import ProblemJumpBtn from '@/components/contest/ProblemJumpBtn.vue'
 import ProblemTabAdmin from '@/components/contest/ProblemTabAdmin.vue'
 import ProblemTabAttachments from '@/components/contest/ProblemTabAttachments.vue'
 import type {
@@ -130,6 +132,7 @@ const problem = useAsyncState(async () => {
 }, null)
 
 const app = useAppState()
+const layout = useLayout()
 
 const solutionCount = useAsyncState(
   async () => {
@@ -156,8 +159,16 @@ const contestProblem = computed(() => {
 
 const solutionCountLimit = computed(() => {
   const limit = contestProblem.value?.settings.solutionCountLimit ?? 0
-  if (solutionCount.isLoading.value) return limit
-  return `${solutionCount.state.value}/${limit}`
+  if (solutionCount.isLoading.value) return { limit, color: 'success' }
+  return {
+    limit: `${solutionCount.state.value}/${limit}`,
+    color:
+      solutionCount.state.value >= limit
+        ? 'error'
+        : solutionCount.state.value >= Math.max(1, limit - 2)
+          ? 'warning'
+          : 'success'
+  }
 })
 
 watch(
@@ -169,29 +180,21 @@ watch(
 )
 </script>
 
+<style module>
+.header {
+  position: sticky;
+  top: v-bind(layout.mainRect.value.top + 'px');
+  z-index: 1;
+}
+</style>
+
 <i18n global>
   en:
-    problem-description: Description
-    problem-submit: Submit
-    problem-attachments: Attachments
-    problem-data: Data
-    problem-management: Management
-    problem-solutions: solution
-    solutions: solutions
-    status: Status
-    jump-to-solutions: Jump to solutions
+    jump-to-problem: Jump to problem
     score: 'Score: {score}'
     solution-count-limit: 'Solution count limit: {limit}'
   zh-Hans:
-    problem-description: 题面
-    problem-submit: 提交
-    problem-attachments: 附件
-    problem-data: 数据
-    problem-management: 管理
-    problem-solutions: 提交记录
-    solutions: 提交记录
-    status: 状态
-    jump-to-solutions: 跳转到提交记录
+    jump-to-problem: 跳转到题目页面
     score: 分数：{score}
     solution-count-limit: 提交次数限制：{limit}
   </i18n>

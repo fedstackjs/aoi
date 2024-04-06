@@ -1,22 +1,28 @@
 <template>
-  <AsyncState :state="data" hide-when-loading>
+  <AsyncState :state="data">
     <template v-slot="{ value }">
       <VTabs v-model="currentTab">
-        <VTab prepend-icon="mdi-form-textarea" value="visual" v-if="slots.default">
-          {{ t('visualized') }}
-        </VTab>
-        <VTab prepend-icon="mdi-code-json" value="raw" v-if="!hideRaw">
-          {{ t('raw') }}
-        </VTab>
-        <VTab prepend-icon="mdi-refresh" :value="currentTab" @click="data.execute()">
-          {{ t('action.refresh') }}
-        </VTab>
+        <VTab
+          prepend-icon="mdi-form-textarea"
+          value="visual"
+          :text="t('visualized')"
+          v-if="slots.default"
+        />
+        <VTab prepend-icon="mdi-code-json" value="raw" :text="t('raw')" v-if="!hideRaw" />
+        <VBtn
+          :text="t('action.refresh')"
+          prepend-icon="mdi-refresh"
+          variant="text"
+          class="align-self-center me-4"
+          height="100%"
+          @click="data.execute()"
+        />
       </VTabs>
       <VWindow v-model="currentTab">
         <VWindowItem value="visual" v-if="slots.default">
           <slot :value="value"></slot>
         </VWindowItem>
-        <VWindowItem value="raw">
+        <VWindowItem value="raw" v-if="!hideRaw">
           <MonacoEditor readonly language="json" :model-value="JSON.stringify(value, null, 2)" />
         </VWindowItem>
       </VWindow>
@@ -58,13 +64,17 @@ async function resolveUrl() {
   throw new Error('No url or endpoint provided')
 }
 
-const data = useAsyncState(async () => {
-  if (props.rawData) return props.rawData
-  if (props.rawString) return JSON.parse(props.rawString)
-  const url = await resolveUrl()
-  const json = await ky.get(url).json<T>()
-  return json
-}, null)
+const data = useAsyncState(
+  async () => {
+    if (props.rawData) return props.rawData
+    if (props.rawString) return JSON.parse(props.rawString)
+    const url = await resolveUrl()
+    const json = await ky.get(url).json<T>()
+    return json
+  },
+  null,
+  { resetOnExecute: false }
+)
 
 watch([() => props.endpoint, () => props.url, () => props.rawString], () => data.execute())
 </script>

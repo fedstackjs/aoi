@@ -26,6 +26,9 @@
         {{ t('pages.signin') }}
       </VBtn>
     </VToolbarItems>
+    <template #extension v-if="appState.navBarExtension">
+      <component :is="appState.navBarExtension[0]" v-bind="appState.navBarExtension[1].value" />
+    </template>
   </VAppBar>
 </template>
 

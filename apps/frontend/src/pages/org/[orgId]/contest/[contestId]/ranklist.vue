@@ -1,32 +1,35 @@
 <template>
   <AsyncState :state="ranklists" hide-when-loading>
     <template v-slot="{ value }">
-      <div class="d-flex flex-row">
-        <VTabs direction="vertical" color="primary">
-          <VTab v-if="enableOverview" prepend-icon="mdi-home" :to="rel('')" exact>
-            {{ t('term.overview') }}
-          </VTab>
-          <VTab
-            v-for="ranklist in value"
-            :key="ranklist.key"
-            prepend-icon="mdi-list-box-outline"
-            :to="rel(encodeURIComponent(ranklist.key))"
-            exact
-          >
-            {{ ranklist.name }}
-          </VTab>
-          <VTab prepend-icon="mdi-plus" :to="rel('new')" exact v-if="admin">
-            {{ t('action.new') }}
-          </VTab>
-        </VTabs>
-        <VDivider vertical />
-        <RouterView
-          class="flex-grow-1"
-          :contest="contest"
-          :ranklists="value"
-          @updated="ranklists.execute()"
-        />
-      </div>
+      <VRow>
+        <VCol cols="auto">
+          <VTabs direction="vertical" color="primary">
+            <VTab v-if="enableOverview" prepend-icon="mdi-home" :to="rel('')" exact>
+              {{ t('term.overview') }}
+            </VTab>
+            <VTab
+              v-for="ranklist in value"
+              :key="ranklist.key"
+              prepend-icon="mdi-list-box-outline"
+              :to="rel(encodeURIComponent(ranklist.key))"
+              exact
+            >
+              {{ ranklist.name }}
+            </VTab>
+            <VTab prepend-icon="mdi-plus" :to="rel('new')" exact v-if="admin">
+              {{ t('action.new') }}
+            </VTab>
+          </VTabs>
+        </VCol>
+        <VCol>
+          <RouterView
+            class="flex-grow-1"
+            :contest="contest"
+            :ranklists="value"
+            @updated="ranklists.execute()"
+          />
+        </VCol>
+      </VRow>
     </template>
   </AsyncState>
 </template>

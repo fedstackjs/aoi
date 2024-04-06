@@ -1,5 +1,5 @@
 <template>
-  <VCard flat>
+  <VCard :title="t('tabs.attachments')">
     <AsyncState :state="attachments" hide-when-loading>
       <template v-slot="{ value }">
         <VTable>

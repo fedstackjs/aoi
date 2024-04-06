@@ -1,25 +1,30 @@
 <template>
-  <div class="d-flex flex-row">
-    <VTabs direction="vertical" color="primary">
-      <VTab prepend-icon="mdi-cog" :to="rel('')" exact>
-        {{ t('term.settings') }}
-      </VTab>
-      <VTab prepend-icon="mdi-text" :to="rel('content')">
-        {{ t('term.content') }}
-      </VTab>
-      <VTab prepend-icon="mdi-table-clock" :to="rel('stage')">
-        {{ t('term.contest-stage') }}
-      </VTab>
-      <VTab prepend-icon="mdi-lock" :to="rel('access')">
-        {{ t('term.access') }}
-      </VTab>
-      <VTab prepend-icon="mdi-code-tags" :to="rel('rule')">
-        {{ t('term.rules') }}
-      </VTab>
-    </VTabs>
-    <VDivider vertical />
-    <RouterView class="flex-grow-1" :contest="contest" @updated="emit('updated')" />
-  </div>
+  <VRow>
+    <VCol cols="auto">
+      <VTabs direction="vertical" color="primary">
+        <VTab prepend-icon="mdi-cog" :to="rel('')" exact>
+          {{ t('term.settings') }}
+        </VTab>
+        <VTab prepend-icon="mdi-text" :to="rel('content')">
+          {{ t('term.content') }}
+        </VTab>
+        <VTab prepend-icon="mdi-table-clock" :to="rel('stage')">
+          {{ t('term.contest-stage') }}
+        </VTab>
+        <VTab prepend-icon="mdi-lock" :to="rel('access')">
+          {{ t('term.access') }}
+        </VTab>
+        <VTab prepend-icon="mdi-code-tags" :to="rel('rule')">
+          {{ t('term.rules') }}
+        </VTab>
+      </VTabs>
+    </VCol>
+    <VCol>
+      <VCard>
+        <RouterView :contest="contest" @updated="emit('updated')" />
+      </VCard>
+    </VCol>
+  </VRow>
 </template>
 
 <script setup lang="ts">
