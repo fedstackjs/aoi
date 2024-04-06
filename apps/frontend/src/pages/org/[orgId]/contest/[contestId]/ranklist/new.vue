@@ -1,5 +1,5 @@
 <template>
-  <VCard variant="flat" :title="t('add-ranklist')">
+  <VCard :title="t('add-ranklist')">
     <VCardText>
       <VTextField :label="t('term.key')" v-model="payload.key" />
       <VTextField :label="t('term.name')" v-model="payload.name" />

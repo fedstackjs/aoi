@@ -1,6 +1,6 @@
 import { useAsyncState, useLocalStorage, useTitle, watchDebounced } from '@vueuse/core'
 import { defineStore } from 'pinia'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, shallowRef, watch, type Component, type Ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import type { IOrgProfile, IUserProfile } from '@/types'
@@ -68,6 +68,7 @@ export const useAppState = defineStore('app_state', () => {
 
   const navBar = ref<boolean>()
   const title = useTitle()
+  const navBarExtension = shallowRef<[Component, Ref]>()
   const loggedIn = isLoggedIn
   const mfaAlive = isMfaAlive
   const mfaToken = mfaTokenValue
@@ -80,6 +81,7 @@ export const useAppState = defineStore('app_state', () => {
   const withOverride = <T>(key: string, fn: () => T) => computed(() => overrides.value[key] ?? fn())
   return {
     navBar,
+    navBarExtension,
     title,
     loggedIn,
     userId,

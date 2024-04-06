@@ -1,18 +1,21 @@
 <template>
-  <div class="d-flex flex-row">
-    <VTabs direction="vertical" color="primary">
-      <VTab prepend-icon="mdi-format-list-bulleted-square" :to="rel('')" exact>
-        {{ t('participant.participant-list') }}
-      </VTab>
-      <VTab prepend-icon="mdi-cog" :to="rel('admin')" v-if="admin">
-        {{ t('participant.participant-admin') }}
-      </VTab>
-    </VTabs>
-    <VDivider vertical />
-    <VCard variant="flat" class="flex-grow-1">
-      <RouterView :contest="contest" />
-    </VCard>
-  </div>
+  <VRow>
+    <VCol cols="auto">
+      <VTabs direction="vertical" color="primary">
+        <VTab prepend-icon="mdi-format-list-bulleted-square" :to="rel('')" exact>
+          {{ t('participant.participant-list') }}
+        </VTab>
+        <VTab prepend-icon="mdi-cog" :to="rel('admin')" v-if="admin">
+          {{ t('participant.participant-admin') }}
+        </VTab>
+      </VTabs>
+    </VCol>
+    <VCol>
+      <VCard class="flex-grow-1">
+        <RouterView :contest="contest" />
+      </VCard>
+    </VCol>
+  </VRow>
 </template>
 
 <script setup lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <VCard variant="flat" :title="t('add-problem')">
+  <VCard :title="t('add-problem')">
     <VCardText>
       <IdInput label="ID" v-model="payload.problemId" endpoint="problem" :search="{ orgId }" />
       <ContestProblemSettingsInput v-model="payload.settings" />

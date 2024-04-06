@@ -1,8 +1,12 @@
 <template>
   <div class="u-flex u-flex-col u-items-center">
-    <VBreadcrumbs density="compact" :items="items" divider="-"></VBreadcrumbs>
+    <VBreadcrumbs density="compact" :items="items" divider="-">
+      <template v-slot:title="{ item }">
+        {{ t(`stages.${item.title}`) }}
+      </template>
+    </VBreadcrumbs>
     <div class="u-self-stretch u-flex u-items-center u-gap-2">
-      <VChip color="blue" :text="new Date(section.begin).toLocaleString()" />
+      <VChip color="blue" :text="denseDateString(section.begin)" />
       <VChip v-if="section.tPlus" :text="'T+' + section.tPlus" />
       <div class="u-flex-1">
         <VProgressLinear
@@ -13,66 +17,26 @@
         />
       </div>
       <VChip v-if="section.tMinus" :text="'T-' + section.tMinus" />
-      <VChip color="red" :text="new Date(section.end).toLocaleString()" />
+      <VChip color="red" :text="denseDateString(section.end)" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import ms from 'ms'
-import { computed, ref, onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-import type { IPlanContestDTO } from '../plan/types'
+import {
+  useContestProgressBar,
+  type IContestProgressBarProps,
+  type IContestProgressBarEmits
+} from './ContestProgressBar'
 
-import type { IContestDTO } from '@/components/contest/types'
+import { denseDateString } from '@/utils/time'
 
-const props = defineProps<{ contest: IContestDTO | IPlanContestDTO }>()
-const emit = defineEmits<{
-  (ev: 'updated'): void
-}>()
-const now = ref(Date.now())
+const props = defineProps<IContestProgressBarProps>()
+const emit = defineEmits<IContestProgressBarEmits>()
 
-const items = computed(() =>
-  props.contest.stages.map(({ name }) => ({
-    title: name,
-    disabled: props.contest.currentStage.name !== name
-  }))
-)
+const { t } = useI18n()
 
-const section = computed(() => {
-  const stages = props.contest.stages
-  const i = stages.findIndex((stage) => stage.name === props.contest.currentStage.name)
-  if (i <= 0 || i >= stages.length - 1) {
-    if (i <= 0 && now.value >= stages[1].start) {
-      emit('updated')
-    }
-    return {
-      begin: stages[1].start,
-      end: stages[stages.length - 1].start,
-      progress: i <= 0 ? 0 : 100,
-      stopped: i >= stages.length - 1
-    }
-  }
-  const begin = stages[i].start
-  const end = stages[i + 1].start
-  if (now.value >= end) {
-    emit('updated')
-  }
-  const progress = (100 * (now.value - begin)) / (end - begin)
-  return {
-    begin,
-    end,
-    tPlus: ms(now.value - begin),
-    tMinus: ms(end - now.value),
-    progress
-  }
-})
-
-const intervalId = setInterval(() => {
-  now.value = Date.now()
-}, 1000)
-
-onBeforeUnmount(() => {
-  clearInterval(intervalId)
-})
+const { items, section } = useContestProgressBar(props, emit)
 </script>

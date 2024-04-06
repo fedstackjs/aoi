@@ -1,10 +1,10 @@
 <template>
-  <VCard variant="flat">
-    <VTabs v-model="currentTab">
+  <VCard>
+    <VTabs v-if="admin" v-model="currentTab">
       <VTab value="show">
         {{ t('ranklist-show') }}
       </VTab>
-      <VTab v-if="admin" value="settings" prepend-icon="mdi-cog-outline">
+      <VTab value="settings" prepend-icon="mdi-cog-outline">
         {{ t('ranklist-settings') }}
       </VTab>
     </VTabs>
@@ -47,7 +47,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const currentTab = ref()
+const currentTab = ref('show')
 const admin = useContestCapability('admin')
 
 const endpoint = computed(
