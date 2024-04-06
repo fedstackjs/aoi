@@ -178,6 +178,8 @@ msg:
     {issues}
     建议您升级浏览器到最新版本，或者切换为另一种现代浏览器。
   recommended-browsers: 推荐的浏览器
+  registered: 已报名
+  not-registered: 未报名
 
 tabs:
   description: 描述

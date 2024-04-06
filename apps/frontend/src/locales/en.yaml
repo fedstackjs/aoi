@@ -179,6 +179,8 @@ msg:
     Please upgrade your web browser to the latest version,
     or switch to a modern web browser.
   recommended-browsers: Recommended web browsers
+  registered: Registered
+  not-registered: Not Registered
 
 tabs:
   description: Description

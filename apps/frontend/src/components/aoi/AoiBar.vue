@@ -6,7 +6,7 @@
         <template #prepend>
           <VIcon size="48"><AoiLogo /></VIcon>
         </template>
-        <div class="text-none u-pl-4 u-font-mono u-text-3xl">
+        <div v-if="mdAndUp" class="text-none u-pl-4 u-font-mono u-text-3xl">
           {{ appName }}
         </div>
       </VBtn>
@@ -16,10 +16,10 @@
 
     <VSpacer></VSpacer>
 
-    <SearchBox v-if="appState.orgId" :org-id="appState.orgId" />
+    <SearchBox v-if="mdAndUp && appState.orgId" />
     <VToolbarItems v-if="appState.loggedIn">
       <AoiBarAddMenu />
-      <AoiBarUserMenu />
+      <AoiBarUserMenu :dense="!mdAndUp" />
     </VToolbarItems>
     <VToolbarItems v-else>
       <VBtn color="blue-darken-1" to="/auth/login" exact>
@@ -34,6 +34,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { useDisplay } from 'vuetify'
 
 import SearchBox from '../homepage/SearchBox.vue'
 import TimeLabel from '../homepage/TimeLabel.vue'
@@ -47,4 +48,5 @@ import { appName, showCountdown } from '@/utils/flags'
 
 const { t } = useI18n()
 const appState = useAppState()
+const { mdAndUp } = useDisplay()
 </script>

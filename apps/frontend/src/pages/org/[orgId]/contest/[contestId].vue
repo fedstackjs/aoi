@@ -4,7 +4,7 @@
       <template v-slot="{ value }">
         <VRow>
           <VCol>
-            <VCard variant="text">
+            <VCard variant="text" v-intersect="{ handler: onIntersect, options: { rootMargin } }">
               <VCardTitle class="d-flex justify-space-between">
                 <div>
                   <p class="text-h4">{{ value.title }}</p>
@@ -40,8 +40,8 @@
 
 <script setup lang="ts">
 import { useAsyncState } from '@vueuse/core'
-import { computed, toRef } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { computed, ref, toRef } from 'vue'
+import { useLayout } from 'vuetify'
 
 import ContestProgressBar from '@/components/contest/ContestProgressBar.vue'
 import ContestTabs from '@/components/contest/ContestTabs.vue'
@@ -52,21 +52,19 @@ import RegisterBtn from '@/components/utils/RegisterBtn.vue'
 import { useContest } from '@/utils/contest/inject'
 import { useContestProblemList } from '@/utils/contest/problem/inject'
 import { http } from '@/utils/http'
-import { withNavExtension, withTitle } from '@/utils/title'
+import { withI18nTitle, withNavExtension, withTitle } from '@/utils/title'
 
 const props = defineProps<{
   orgId: string
   contestId: string
 }>()
 
-const { t } = useI18n()
-
 const { contest, showRegistration, showAdminTab } = useContest(
   toRef(props, 'orgId'),
   toRef(props, 'contestId')
 )
 
-withTitle(computed(() => contest.state.value?.title ?? t('pages.contests')))
+withI18nTitle('pages.contests')
 
 const problems = useContestProblemList(toRef(props, 'contestId'))
 
@@ -75,6 +73,13 @@ const participant = useAsyncState(async () => {
   return resp
 }, null)
 
+const layout = useLayout()
+const headerVisible = ref(true)
+const rootMargin = computed(() => `-${layout.mainRect.value.top}px 0px 0px 0px`)
+function onIntersect(isIntersecting: boolean) {
+  headerVisible.value = isIntersecting
+}
+
 withNavExtension(
   ContestTabs,
   computed(() => ({
@@ -82,7 +87,8 @@ withNavExtension(
     contestId: props.contestId,
     showAdminTab: showAdminTab.value,
     registered: !!participant.state.value,
-    contest: contest.state.value
+    contest: contest.state.value,
+    headerVisible: headerVisible.value
   }))
 )
 

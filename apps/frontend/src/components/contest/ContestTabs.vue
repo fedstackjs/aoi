@@ -1,5 +1,16 @@
 <template>
-  <VTabs align-tabs="center" class="u-flex-1">
+  <VTabs align-tabs="title" class="u-min-w-64">
+    <VTab class="text-none" selected-class="" color="" :to="rel('')" :text="contest?.title ?? ''" />
+    <VSlideYReverseTransition>
+      <div class="u-self-center u-flex u-gap-2" v-if="contest && !headerVisible">
+        <VChip color="success" v-if="registered" :text="t('msg.registered')" />
+        <VChip color="info" v-else :text="t('msg.not-registered')" />
+        <ContestStageChip :stages="contest.stages" :now="+now" />
+      </div>
+    </VSlideYReverseTransition>
+  </VTabs>
+  <VSpacer class="u-min-w-4" />
+  <VTabs align-tabs="end">
     <VTab prepend-icon="mdi-book-outline" exact :to="rel('')" :text="t('tabs.description')" />
     <VTab prepend-icon="mdi-attachment" :to="rel('attachment')" :text="t('tabs.attachments')" />
     <VTab
@@ -36,20 +47,23 @@
 </template>
 
 <script setup lang="ts">
+import { useNow } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 
+import ContestStageChip from './ContestStageChip.vue'
+
 import type { IContestDTO } from '@/components/contest/types'
-import { useAppState } from '@/stores/app'
 
 const { t } = useI18n()
-const app = useAppState()
 const props = defineProps<{
   orgId: string
   contestId: string
   showAdminTab: boolean
   registered: boolean
   contest: IContestDTO
+  headerVisible: boolean
 }>()
 
 const rel = (to: string) => `/org/${props.orgId}/contest/${props.contestId}/${to}`
+const now = useNow()
 </script>

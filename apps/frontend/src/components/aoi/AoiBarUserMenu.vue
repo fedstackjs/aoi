@@ -7,7 +7,7 @@
             <AoiGravatar :email="userInfo.state.value?.profile.email ?? ''" />
           </VAvatar>
         </template>
-        {{ userInfo.state.value?.profile.name }}
+        {{ dense ? '' : userInfo.state.value?.profile.name }}
       </VBtn>
     </template>
     <VList>
@@ -21,6 +21,10 @@ import AoiGravatar from './AoiGravatar.vue'
 
 import { useAppState } from '@/stores/app'
 import { useAppUserMenu } from '@/utils/menus'
+
+defineProps<{
+  dense?: boolean
+}>()
 
 const app = useAppState()
 const userInfo = app.user
