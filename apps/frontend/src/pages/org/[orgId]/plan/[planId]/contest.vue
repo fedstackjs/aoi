@@ -9,8 +9,9 @@
           <VTab
             v-for="contest of value"
             :key="contest._id"
-            prepend-icon="mdi-list-box-outline"
             :to="rel(contest._id)"
+            class="text-none"
+            prepend-icon="mdi-list-box-outline"
             exact
           >
             <span>

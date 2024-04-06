@@ -10,9 +10,9 @@
             <VTab
               v-for="problem of value"
               :key="problem._id"
-              prepend-icon="mdi-list-box-outline"
               :to="rel(problem._id)"
-              exact
+              prepend-icon="mdi-list-box-outline"
+              class="text-none"
             >
               {{ problem.settings.slug }}.
               {{ problem.title }}
