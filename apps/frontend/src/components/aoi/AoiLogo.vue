@@ -1,5 +1,5 @@
 <template>
-  <VImg :src="logo" />
+  <VImg :src="logo" v-bind="$attrs" />
 </template>
 
 <script setup lang="ts">

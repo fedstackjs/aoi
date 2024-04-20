@@ -4,11 +4,9 @@
       <VCol lg="4" xl="3">
         <VCard variant="text">
           <VCardTitle class="text-center">
-            <div>
-              <VAvatar size="180" rounded="0">
-                <AoiLogo />
-              </VAvatar>
-            </div>
+            <VIcon size="128">
+              <AoiLogo />
+            </VIcon>
             <div>{{ t('pages.authorize') }}</div>
           </VCardTitle>
         </VCard>

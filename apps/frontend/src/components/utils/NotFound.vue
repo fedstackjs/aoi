@@ -4,11 +4,9 @@
       <VCol lg="4" xl="3">
         <VCard variant="text">
           <VCardTitle class="text-center">
-            <div>
-              <VAvatar size="180" rounded="0">
-                <AoiLogo />
-              </VAvatar>
-            </div>
+            <VIcon size="128">
+              <AoiLogo />
+            </VIcon>
           </VCardTitle>
           <VAlert type="warning" title="404" :text="t('pages.not-found')" />
           <VCardActions class="justify-center">
