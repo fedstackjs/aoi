@@ -38,7 +38,7 @@
             <code>{{ item._id }}</code>
           </template>
           <template v-slot:[`item.createdAt`]="{ item }">
-            <VChip :text="new Date(item.createdAt).toLocaleString()" />
+            <VChip :text="denseDateString(item.createdAt)" />
           </template>
           <template v-slot:[`item.accessedAt`]="{ item }">
             <VChip v-bind="runnerLastAccessAttrs(item.accessedAt)" />
@@ -67,6 +67,7 @@
         </VCardText>
         <SettingsEditor
           :endpoint="`org/${orgId}/admin/runner/${editRunnerId}`"
+          allow-delete
           @updated="(editDialog = false), runners.execute()"
         >
           <template v-slot="scoped">
@@ -90,6 +91,7 @@ import type { IRunner } from '@/types'
 import { useAsyncTask } from '@/utils/async'
 import { http } from '@/utils/http'
 import { runnerLastAccessAttrs } from '@/utils/org/runner'
+import { denseDateString } from '@/utils/time'
 
 const props = defineProps<{
   orgId: string
@@ -116,6 +118,7 @@ const headers = [
   { title: t('term.name'), key: 'name' },
   { title: t('term.version'), key: 'version' },
   { title: t('term.message'), key: 'message' },
+  { title: t('term.ip'), key: 'ip' },
   { title: t('common.created-at'), key: 'createdAt' },
   { title: t('common.accessed-at'), key: 'accessedAt' },
   { title: t('term.labels'), key: '_labels' },

@@ -31,7 +31,8 @@ function updateAccessedAt(req: FastifyRequest, runner: IRunner) {
         {
           $set: {
             accessedAt: now,
-            version: req.headers['user-agent']
+            version: req.headers['user-agent'],
+            ip: req.ip
           }
         },
         { ignoreUndefined: true }
@@ -98,6 +99,7 @@ export const runnerRoutes = defineRoutes(async (s) => {
         labels: req.body.labels,
         version: req.body.version,
         message: '',
+        ip: req.ip,
         key: runnerKey,
         createdAt: Date.now(),
         accessedAt: Date.now()
@@ -112,14 +114,22 @@ export const runnerRoutes = defineRoutes(async (s) => {
       schema: {
         body: T.Partial(
           T.StrictObject({
-            version: T.String(),
             message: T.String()
           })
         )
       }
     },
     async (req) => {
-      await runners.updateOne({ _id: req.inject(kRunnerContext)._runner._id }, { $set: req.body })
+      await runners.updateOne(
+        { _id: req.inject(kRunnerContext)._runner._id },
+        {
+          $set: {
+            version: req.headers['user-agent'],
+            message: req.body.message,
+            ip: req.ip
+          }
+        }
+      )
       return {}
     }
   )

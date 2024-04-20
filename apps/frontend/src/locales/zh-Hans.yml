@@ -125,6 +125,7 @@ term:
   filter: 过滤
   access-level: 访问等级
   rules: 规则
+  ip: IP 地址
 
 common:
   created-at: 创建于

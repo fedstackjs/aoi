@@ -41,6 +41,7 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
               name: T.String(),
               version: T.String(),
               message: T.String(),
+              ip: T.String(),
               createdAt: T.Number(),
               accessedAt: T.Number()
             })
@@ -68,6 +69,7 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
             name: T.String(),
             version: T.String(),
             message: T.String(),
+            ip: T.String(),
             createdAt: T.Number(),
             accessedAt: T.Number()
           })
