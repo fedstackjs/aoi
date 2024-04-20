@@ -53,6 +53,8 @@ action:
   select-tag: Select Tag
   dismiss: Dismiss
   fullscreen: Fullscreen
+  recommend-problem: Recommend Problem
+  select: Select
 
 term:
   content: Content
