@@ -58,7 +58,7 @@ export function useSolutionView(props: ISolutionViewProps) {
     const url = props.contestId
       ? `contest/${props.contestId}/solution/${props.solutionId}/submit`
       : `problem/${props.problemId}/solution/${props.solutionId}/submit`
-    await http.post(url)
+    await http.post(url, { json: {} })
     solution.execute()
     autoRefresh.resume()
   })

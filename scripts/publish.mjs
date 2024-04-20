@@ -27,7 +27,7 @@ for (const { ident } of items) {
   console.log(`Publishing ${chalk.greenBright(ident)}...`)
   await $`yarn workspace ${ident} pack --out package.tgz`
   try {
-    await $`cd ${packages[ident]} && npm publish package.tgz --provenance`
+    await $`npm publish ${packages[ident]}/package.tgz --provenance`
   } catch (err) {
     const stdout = /** @type {ProcessOutput} */ (err).stdout
     if (stdout.includes('You cannot publish over the previously published versions')) {
