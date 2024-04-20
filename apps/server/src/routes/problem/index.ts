@@ -178,4 +178,88 @@ export const problemRoutes = defineRoutes(async (s) => {
       return { total, items }
     }
   )
+
+  s.post(
+    '/recommend',
+    {
+      schema: {
+        description: 'Recommend problems',
+        body: T.Object({
+          orgId: T.UUID(),
+          search: T.Optional(T.String({ minLength: 1 })),
+          tags: T.Optional(T.Array(T.String())),
+          sample: T.Integer({ minimum: 1, maximum: 15 })
+        }),
+        response: {
+          200: T.Array(
+            T.Object({
+              _id: T.UUID(),
+              orgId: T.UUID(),
+              slug: T.String(),
+              title: T.String(),
+              tags: T.Array(T.String()),
+              accessLevel: T.AccessLevel(),
+              createdAt: T.Integer(),
+              status: T.Optional(
+                T.Object({
+                  solutionCount: T.Integer(),
+                  lastSolutionId: T.UUID(),
+                  lastSolutionScore: T.Number(),
+                  lastSolutionStatus: T.String()
+                })
+              )
+            })
+          )
+        }
+      }
+    },
+    async (req) => {
+      const { orgId: rawOrgId, sample, ...rest } = req.body
+      const orgId = new UUID(rawOrgId)
+
+      const membership = await req.loadMembership(orgId)
+      ensureCapability(
+        membership?.capability ?? CAP_NONE,
+        ORG_CAPS.CAP_PROBLEM,
+        s.httpErrors.forbidden()
+      )
+
+      const items = await problems
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .aggregate<any>(
+          [
+            {
+              $match: {
+                $and: [{ orgId }, searchToFilter(rest, { maxConditions: Infinity })]
+              }
+            },
+            { $sample: { size: sample } },
+            {
+              $lookup: {
+                from: 'problemStatuses',
+                let: { problemId: '$_id' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $and: [
+                          { $eq: ['$problemId', '$$problemId'] },
+                          { $eq: ['$userId', req.user.userId] }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                as: 'status'
+              }
+            },
+            { $unwind: { path: '$status', preserveNullAndEmptyArrays: true } }
+          ],
+          { ignoreUndefined: true }
+        )
+        .toArray()
+
+      return items
+    }
+  )
 })

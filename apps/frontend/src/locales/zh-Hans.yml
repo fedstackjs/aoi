@@ -53,6 +53,8 @@ action:
   select-tag: 选择标签
   dismiss: 忽略并关闭
   fullscreen: 全屏
+  recommend-problem: 推荐题目
+  select: 选择
 
 term:
   content: 内容

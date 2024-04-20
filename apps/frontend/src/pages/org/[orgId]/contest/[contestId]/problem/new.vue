@@ -8,6 +8,7 @@
       <VBtn color="primary" variant="elevated" @click="addProblem()">
         {{ t('action.add') }}
       </VBtn>
+      <ContestProblemRecommender v-if="problemAdmin" :org-id @update="payload.problemId = $event" />
     </VCardActions>
   </VCard>
 </template>
@@ -18,9 +19,11 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 
+import ContestProblemRecommender from '@/components/contest/ContestProblemRecommender.vue'
 import ContestProblemSettingsInput from '@/components/contest/ContestProblemSettingsInput.vue'
 import type { IContestDTO, IContestProblemListDTO } from '@/components/contest/types'
 import IdInput from '@/components/utils/IdInput.vue'
+import { useOrgCapability } from '@/utils/capability'
 import { http } from '@/utils/http'
 
 const props = defineProps<{
@@ -36,6 +39,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 const router = useRouter()
 const toast = useToast()
+const problemAdmin = useOrgCapability('problem')
 
 const payload = reactive({
   problemId: '',
