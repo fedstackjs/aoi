@@ -1,16 +1,17 @@
 import { BSON } from 'mongodb'
 
-import { ISolution, PROBLEM_CAPS, SolutionState } from '../../db/index.js'
+import { IProblemSolutionRuleCtx, ISolution, PROBLEM_CAPS, SolutionState } from '../../db/index.js'
 import { solutionDataKey, solutionDetailsKey } from '../../index.js'
-import { T } from '../../schemas/index.js'
-import { findPaginated, hasCapability } from '../../utils/index.js'
+import { SProblemSolutionRuleResult, T } from '../../schemas/index.js'
+import { createEvaluator, findPaginated, hasCapability } from '../../utils/index.js'
 import { getFileUrl } from '../common/files.js'
 import { defineRoutes, generateRangeQuery, loadUUID, paramSchemaMerger } from '../common/index.js'
 
 import { kProblemContext } from './inject.js'
 
 const solutionScopedRoutes = defineRoutes(async (s) => {
-  const { solutions } = s.db
+  const { solutions, problemStatuses } = s.db
+  const solutionRuleEvaluator = createEvaluator(SProblemSolutionRuleResult)<IProblemSolutionRuleCtx>
 
   s.addHook(
     'onRoute',
@@ -183,8 +184,6 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
     resolve: async (type, query, req) => {
       const ctx = req.inject(kProblemContext)
 
-      const { solutionShowOtherData } = ctx._problem.settings
-      const admin = hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_ADMIN)
       const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
       const solution = await solutions.findOne({
         _id: solutionId,
@@ -192,7 +191,29 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
         problemId: ctx._problemId
       })
       if (!solution) throw s.httpErrors.notFound()
-      if (!solutionShowOtherData && !admin && !solution.userId.equals(req.user.userId)) {
+      const { solutionShowOtherData } = ctx._problem.settings
+      let showData = !!solutionShowOtherData
+      if (ctx._problem.rules?.solution) {
+        const currentResult = await problemStatuses.findOne({
+          userId: req.user.userId,
+          problemId: ctx._problemId
+        })
+        const { showData: _showData } = solutionRuleEvaluator(
+          {
+            problem: ctx._problem,
+            currentResult,
+            solution
+          },
+          ctx._problem.rules.solution
+        )
+        if (typeof _showData === 'string') {
+          throw s.httpErrors.forbidden(_showData)
+        }
+        showData = _showData ?? showData
+      }
+      const admin = hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_ADMIN)
+
+      if (!showData && !admin && !solution.userId.equals(req.user.userId)) {
         throw s.httpErrors.forbidden()
       }
       return [ctx._problem.orgId, solutionDataKey(solution._id)]

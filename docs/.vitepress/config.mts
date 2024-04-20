@@ -26,6 +26,7 @@ export default defineConfig({
         items: [
           { text: '使用指南', link: '/user-guide' },
           { text: '管理指南', link: '/admin-guide' },
+          { text: '规则系统', link: '/rule' },
           { text: '开发指南', link: '/dev-guide' }
         ]
       }

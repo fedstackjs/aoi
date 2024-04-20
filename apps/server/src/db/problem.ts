@@ -2,10 +2,17 @@ import { ProblemConfig } from '@aoi-js/common'
 import { fastifyPlugin } from 'fastify-plugin'
 import { BSON, Collection } from 'mongodb'
 
-import { IProblemSettings } from '../schemas/problem.js'
+import { IProblemSettings, SProblemSolutionRuleResult } from '../schemas/problem.js'
 import { capabilityMask } from '../utils/capability.js'
 
-import { IPrincipalControlable, IWithAccessLevel, IWithAttachment, IWithContent } from './common.js'
+import {
+  IPrincipalControlable,
+  IWithAccessLevel,
+  IWithAttachment,
+  IWithContent,
+  RulesFromSchemas
+} from './common.js'
+import { ISolution } from './solution.js'
 
 export const PROBLEM_CAPS = {
   CAP_ACCESS: capabilityMask(0), // Can access(view) this problem
@@ -32,6 +39,16 @@ export interface IProblemData {
   createdAt: number
 }
 
+export interface IProblemSolutionRuleCtx {
+  problem: IProblem
+  currentResult: IProblemStatus | null
+  solution: ISolution
+}
+
+export const problemRuleSchemas = {
+  solution: SProblemSolutionRuleResult
+}
+
 export interface IProblem
   extends IPrincipalControlable,
     IWithAttachment,
@@ -50,6 +67,13 @@ export interface IProblem
   settings: IProblemSettings
 
   createdAt: number
+
+  rules?: RulesFromSchemas<
+    typeof problemRuleSchemas,
+    {
+      solution: IProblemSolutionRuleCtx
+    }
+  >
 }
 
 declare module './index.js' {

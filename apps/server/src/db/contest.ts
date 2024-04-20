@@ -6,6 +6,7 @@ import {
   IContestProblemSettings,
   IContestRanklistSettings,
   IContestStage,
+  SContestParticipantRuleResult,
   SContestSolutionRuleResult
 } from '../schemas/contest.js'
 import { capabilityMask } from '../utils/capability.js'
@@ -60,6 +61,12 @@ export interface IContestRanklist {
   settings: IContestRanklistSettings
 }
 
+export interface IContestParticipantRuleCtx {
+  contest: IContest
+  currentStage: IContestStage
+  user: IUser
+}
+
 export interface IContestSolutionRuleCtx {
   contest: IContest
   currentStage: IContestStage
@@ -69,6 +76,7 @@ export interface IContestSolutionRuleCtx {
 }
 
 export const contestRuleSchemas = {
+  participant: SContestParticipantRuleResult,
   solution: SContestSolutionRuleResult
 }
 
@@ -96,6 +104,7 @@ export interface IContest
   rules?: RulesFromSchemas<
     typeof contestRuleSchemas,
     {
+      participant: IContestParticipantRuleCtx
       solution: IContestSolutionRuleCtx
     }
   >

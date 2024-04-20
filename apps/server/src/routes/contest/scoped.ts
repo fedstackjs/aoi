@@ -1,9 +1,14 @@
 import { BSON } from 'mongodb'
 
-import { CONTEST_CAPS, ORG_CAPS, evalTagRules, getCurrentContestStage } from '../../db/index.js'
-import { SContestStage } from '../../schemas/contest.js'
-import { T } from '../../schemas/index.js'
-import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/index.js'
+import {
+  CONTEST_CAPS,
+  IContestParticipantRuleCtx,
+  ORG_CAPS,
+  evalTagRules,
+  getCurrentContestStage
+} from '../../db/index.js'
+import { SContestParticipantRuleResult, SContestStage, T } from '../../schemas/index.js'
+import { CAP_ALL, createEvaluator, ensureCapability, hasCapability } from '../../utils/index.js'
 import { manageContent } from '../common/content.js'
 import { defineRoutes, loadCapability, loadUUID, paramSchemaMerger } from '../common/index.js'
 
@@ -17,6 +22,9 @@ import { contestSolutionRoutes } from './solution/index.js'
 
 export const contestScopedRoutes = defineRoutes(async (s) => {
   const { contests, contestParticipants, users } = s.db
+  const participantRuleEvaluator = createEvaluator(
+    SContestParticipantRuleResult
+  )<IContestParticipantRuleCtx>
 
   s.addHook(
     'onRoute',
@@ -114,20 +122,39 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
 
       const user = await users.findOne({ _id: req.user.userId })
       if (!user) return rep.notFound()
+      let tags = await evalTagRules(ctx._contestStage, user)
+      if (ctx._contest.rules?.participant) {
+        const { allowRegister, tags: _tags } = participantRuleEvaluator(
+          {
+            contest: ctx._contest,
+            currentStage: ctx._contestStage,
+            user
+          },
+          ctx._contest.rules?.participant,
+          {}
+        )
+        if (typeof allowRegister === 'string') {
+          return rep.forbidden(allowRegister)
+        }
+        if (allowRegister === false) {
+          return rep.forbidden('Cannot register for contest')
+        }
+        tags ??= _tags
+      }
       await contestParticipants.insertOne(
         {
           _id: new BSON.UUID(),
           userId: req.user.userId,
           contestId: ctx._contestId,
           results: {},
-          tags: await evalTagRules(ctx._contestStage, user),
+          tags,
           createdAt: req._now,
           updatedAt: req._now
         },
         { ignoreUndefined: true }
       )
 
-      // TODO: add to the corresponding contest
+      // TODO: This operation is not atomic along with registration
       await contests.updateOne({ _id: ctx._contestId }, { $inc: { participantCount: 1 } })
 
       return {}

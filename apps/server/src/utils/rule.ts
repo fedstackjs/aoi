@@ -3,8 +3,10 @@ import { httpErrors } from '@fastify/sensible'
 import { Static, TSchema } from '@sinclair/typebox'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
 
+import { T } from '../schemas/common.js'
+
 export function createEvaluator<T extends TSchema>(schema: T) {
-  const checker = TypeCompiler.Compile(schema)
+  const checker = TypeCompiler.Compile(T.Partial(schema))
   type Result = Static<T>
   return <Context>(
     context: Context,

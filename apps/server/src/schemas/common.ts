@@ -1,4 +1,10 @@
-import { JavaScriptTypeBuilder, TSchema, ObjectOptions, TProperties } from '@sinclair/typebox'
+import {
+  JavaScriptTypeBuilder,
+  TSchema,
+  ObjectOptions,
+  TProperties,
+  StringOptions
+} from '@sinclair/typebox'
 import { BSON } from 'mongodb'
 import './formats.js'
 
@@ -72,8 +78,8 @@ export class ServerTypeBuilder extends JavaScriptTypeBuilder {
   }
 
   RuleSet<T extends TSchema>(result: T) {
-    const projector = this.Mapped(this.KeyOf(result), (K) =>
-      this.Union([this.Index(result, K), this.String()])
+    const projector = this.Partial(
+      this.Mapped(this.KeyOf(result), (K) => this.Union([this.Index(result, K), this.String()]))
     )
 
     const rule = this.Object({
@@ -85,6 +91,10 @@ export class ServerTypeBuilder extends JavaScriptTypeBuilder {
       rules: this.Array(rule),
       defaults: this.Optional(projector)
     })
+  }
+
+  BooleanOrString(options?: StringOptions) {
+    return this.Union([this.Boolean(), this.String(options)])
   }
 }
 

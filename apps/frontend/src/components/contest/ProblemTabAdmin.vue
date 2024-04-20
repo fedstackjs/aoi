@@ -68,7 +68,7 @@ const submitAllTask = useAsyncTask(async () => {
   return withMessage(t('msg.submit-all-success', { count: modifiedCount }))
 })
 
-const pull = ref(false)
+const pull = ref(true)
 const rejudgeAllTask = useAsyncTask(async () => {
   const { modifiedCount } = await http
     .post(`contest/${props.contestId}/problem/${props.problem._id}/rejudge-all`, {
