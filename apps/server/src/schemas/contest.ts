@@ -61,7 +61,15 @@ export const SContestRanklistSettings = T.StrictObject({
 export interface IContestRanklistSettings extends Static<typeof SContestRanklistSettings> {}
 
 export const SContestSolutionRuleResult = T.StrictObject({
-  showData: T.Boolean()
+  showData: T.BooleanOrString()
 })
 
 export interface IContestSolutionRuleResult extends Static<typeof SContestSolutionRuleResult> {}
+
+export const SContestParticipantRuleResult = T.StrictObject({
+  allowRegister: T.BooleanOrString(),
+  tags: T.Array(T.String())
+})
+
+export interface IContestParticipantRuleResult
+  extends Static<typeof SContestParticipantRuleResult> {}

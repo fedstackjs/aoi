@@ -1,9 +1,9 @@
-import { PROBLEM_CAPS, SolutionState } from '../../db/index.js'
+import { PROBLEM_CAPS, SolutionState, problemRuleSchemas } from '../../db/index.js'
 import { SProblemSettings } from '../../index.js'
 import { T } from '../../schemas/index.js'
 import { ensureCapability } from '../../utils/capability.js'
 import { manageACL, manageAccessLevel } from '../common/access.js'
-import { defineRoutes } from '../common/index.js'
+import { defineRoutes, manageRules } from '../common/index.js'
 import { manageSettings } from '../common/settings.js'
 
 import { kProblemContext } from './inject.js'
@@ -21,21 +21,28 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
 
   s.register(manageACL, {
     collection: problems,
-    resolve: async (req) => req.inject(kProblemContext)._problem._id,
+    resolve: async (req) => req.inject(kProblemContext)._problemId,
     defaultCapability: PROBLEM_CAPS.CAP_ACCESS,
     prefix: '/access'
   })
   s.register(manageAccessLevel, {
     collection: problems,
-    resolve: async (req) => req.inject(kProblemContext)._problem._id,
+    resolve: async (req) => req.inject(kProblemContext)._problemId,
     prefix: '/accessLevel'
   })
 
   s.register(manageSettings, {
     collection: problems,
-    resolve: async (req) => req.inject(kProblemContext)._problem._id,
+    resolve: async (req) => req.inject(kProblemContext)._problemId,
     schema: SProblemSettings,
     prefix: '/settings'
+  })
+
+  s.register(manageRules, {
+    collection: problems,
+    resolve: async (req) => req.inject(kProblemContext)._problemId,
+    schemas: problemRuleSchemas,
+    prefix: '/rule'
   })
 
   s.post(
@@ -133,7 +140,7 @@ export const problemAdminRoutes = defineRoutes(async (s) => {
     },
     async (req) => {
       // TODO: handle dependencies
-      await problems.deleteOne({ _id: req.inject(kProblemContext)._problem._id })
+      await problems.deleteOne({ _id: req.inject(kProblemContext)._problemId })
       return {}
     }
   )

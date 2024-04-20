@@ -219,7 +219,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
       const { solutionShowOtherData } = ctx._contestStage.settings
       let showData = !!solutionShowOtherData
       if (ctx._contest.rules?.solution) {
-        ;({ showData } = solutionRuleEvaluator(
+        const { showData: _showData } = solutionRuleEvaluator(
           {
             contest: ctx._contest,
             currentStage: ctx._contestStage,
@@ -227,10 +227,12 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
             currentResult: ctx._contestParticipant?.results[solution.problemId.toString()] ?? null,
             solution
           },
-          ctx._contest.rules?.solution,
-          {},
-          { showData }
-        ))
+          ctx._contest.rules?.solution
+        )
+        if (typeof _showData === 'string') {
+          throw s.httpErrors.forbidden(_showData)
+        }
+        showData = _showData ?? showData
       }
       if (!checkUser(req, solution.userId, showData)) throw s.httpErrors.forbidden()
       return [ctx._contest.orgId, solutionDataKey(solution._id)]

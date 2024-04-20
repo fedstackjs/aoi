@@ -16,3 +16,9 @@ export const SProblemSettings = T.Partial(
 )
 
 export interface IProblemSettings extends Static<typeof SProblemSettings> {}
+
+export const SProblemSolutionRuleResult = T.StrictObject({
+  showData: T.BooleanOrString()
+})
+
+export interface IProblemSolutionRuleResult extends Static<typeof SProblemSolutionRuleResult> {}

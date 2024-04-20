@@ -18,8 +18,8 @@
               v-model="rejudgeOptions.problemId"
               :label="t('term.problem-id')"
               :rules="[isUUID, isNotEmpty]"
-              :append-icon="rejudgeOptions.problemId === undefined ? 'mdi-null' : 'mdi-delete'"
-              @click:append="rejudgeOptions.problemId = undefined"
+              :append-inner-icon="rejudgeOptions.problemId !== undefined && 'mdi-delete'"
+              @click:append-inner="rejudgeOptions.problemId = undefined"
             />
           </VCol>
           <VCol cols="6">
@@ -32,16 +32,16 @@
                 { title: 'Completed', value: 4 }
               ]"
               :label="t('term.state')"
-              :append-icon="rejudgeOptions.state === undefined ? 'mdi-null' : 'mdi-delete'"
-              @click:append="rejudgeOptions.state = undefined"
+              :append-inner-icon="rejudgeOptions.state !== undefined && 'mdi-delete'"
+              @click:append-inner="rejudgeOptions.state = undefined"
             />
           </VCol>
           <VCol cols="6">
             <VTextField
               v-model="rejudgeOptions.status"
               :label="t('term.status')"
-              :append-icon="rejudgeOptions.status === undefined ? 'mdi-null' : 'mdi-delete'"
-              @click:append="rejudgeOptions.status = undefined"
+              :append-inner-icon="rejudgeOptions.status !== undefined && 'mdi-delete'"
+              @click:append-inner="rejudgeOptions.status = undefined"
             />
           </VCol>
           <VCol cols="12">
@@ -49,8 +49,8 @@
               v-model="rejudgeOptions.runnerId"
               :rules="[isUUID]"
               :label="t('term.runner-id')"
-              :append-icon="rejudgeOptions.runnerId === undefined ? 'mdi-null' : 'mdi-delete'"
-              @click:append="rejudgeOptions.runnerId = undefined"
+              :append-inner-icon="rejudgeOptions.runnerId !== undefined && 'mdi-delete'"
+              @click:append-inner="rejudgeOptions.runnerId = undefined"
             />
           </VCol>
           <VCol cols="6">
@@ -58,8 +58,8 @@
               v-model.number="rejudgeOptions.scoreL"
               :rules="[(v) => v === undefined || v >= 0, (v) => v === undefined || v <= 100]"
               :label="t('min-score')"
-              :append-icon="rejudgeOptions.scoreL === undefined ? 'mdi-null' : 'mdi-delete'"
-              @click:append="rejudgeOptions.scoreL = undefined"
+              :append-inner-icon="rejudgeOptions.scoreL !== undefined && 'mdi-delete'"
+              @click:append-inner="rejudgeOptions.scoreL = undefined"
             />
           </VCol>
           <VCol cols="6">
@@ -67,24 +67,24 @@
               v-model.number="rejudgeOptions.scoreR"
               :rules="[(v) => v === undefined || v >= 0, (v) => v === undefined || v <= 100]"
               :label="t('max-score')"
-              :append-icon="rejudgeOptions.scoreR === undefined ? 'mdi-null' : 'mdi-delete'"
-              @click:append="rejudgeOptions.scoreR = undefined"
+              :append-inner-icon="rejudgeOptions.scoreR !== undefined && 'mdi-delete'"
+              @click:append-inner="rejudgeOptions.scoreR = undefined"
             />
           </VCol>
           <VCol cols="6">
             <DateTimeInput
               v-model="rejudgeOptions.submittedAtL"
               :label="t('submitted-after')"
-              :append-icon="rejudgeOptions.submittedAtL === undefined ? 'mdi-null' : 'mdi-delete'"
-              @click:append="rejudgeOptions.submittedAtL = undefined"
+              :append-inner-icon="rejudgeOptions.submittedAtL !== undefined && 'mdi-delete'"
+              @click:append-inner="rejudgeOptions.submittedAtL = undefined"
             />
           </VCol>
           <VCol cols="6">
             <DateTimeInput
               v-model="rejudgeOptions.submittedAtR"
               :label="t('submitted-before')"
-              :append-icon="rejudgeOptions.submittedAtR === undefined ? 'mdi-null' : 'mdi-delete'"
-              @click:append="rejudgeOptions.submittedAtR = undefined"
+              :append-inner-icon="rejudgeOptions.submittedAtR !== undefined && 'mdi-delete'"
+              @click:append-inner="rejudgeOptions.submittedAtR = undefined"
             />
           </VCol>
         </VRow>
