@@ -1,9 +1,9 @@
 <template>
   <AsyncState :state="ranklists" hide-when-loading>
     <template v-slot="{ value }">
-      <VRow>
-        <VCol cols="auto">
-          <VTabs direction="vertical" color="primary">
+      <div class="u-flex">
+        <div>
+          <VTabs direction="vertical" color="primary" :class="$style.tabs">
             <VTab v-if="enableOverview" prepend-icon="mdi-home" :to="rel('')" exact>
               {{ t('term.overview') }}
             </VTab>
@@ -20,16 +20,11 @@
               {{ t('action.new') }}
             </VTab>
           </VTabs>
-        </VCol>
-        <VCol>
-          <RouterView
-            class="flex-grow-1"
-            :contest="contest"
-            :ranklists="value"
-            @updated="ranklists.execute()"
-          />
-        </VCol>
-      </VRow>
+        </div>
+        <div class="u-flex-1 u-min-w-0">
+          <RouterView :contest="contest" :ranklists="value" @updated="ranklists.execute()" />
+        </div>
+      </div>
     </template>
   </AsyncState>
 </template>
@@ -37,6 +32,7 @@
 <script setup lang="ts">
 import { useAsyncState } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
+import { useLayout } from 'vuetify'
 
 import type { IContestDTO } from '@/components/contest/types'
 import AsyncState from '@/components/utils/AsyncState.vue'
@@ -52,6 +48,7 @@ const props = defineProps<{
 
 const { t } = useI18n()
 const admin = useContestCapability('admin')
+const layout = useLayout()
 
 const ranklists = useAsyncState(async () => {
   const resp = await http.get(`contest/${props.contestId}/ranklist`)
@@ -60,3 +57,10 @@ const ranklists = useAsyncState(async () => {
 
 const rel = (to: string) => `/org/${props.orgId}/contest/${props.contestId}/ranklist/${to}`
 </script>
+
+<style module>
+.tabs {
+  position: sticky;
+  top: v-bind(layout.mainRect.value.top + 16 + 'px');
+}
+</style>

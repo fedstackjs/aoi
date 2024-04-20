@@ -1,5 +1,5 @@
 <template>
-  <component :is="JsonViewer<Ranklist>" :endpoint="props.endpoint" hide-raw>
+  <component :is="JsonViewer<Ranklist>" :endpoint="props.endpoint" hide-raw fullscreen>
     <template v-slot="{ value }">
       <RanklistRenderer :ranklist="value" />
     </template>

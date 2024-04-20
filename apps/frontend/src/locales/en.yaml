@@ -52,6 +52,7 @@ action:
   generate-slug: Generate Slug
   select-tag: Select Tag
   dismiss: Dismiss
+  fullscreen: Fullscreen
 
 term:
   content: Content

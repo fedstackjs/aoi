@@ -1,8 +1,8 @@
 <template>
   <AsyncState :state="problems" hide-when-loading>
     <template v-slot="{ value }">
-      <VRow>
-        <VCol cols="auto">
+      <div class="u-flex">
+        <div>
           <VTabs direction="vertical" color="primary" :class="$style.tabs">
             <VTab v-if="enableOverview" prepend-icon="mdi-home" :to="rel('')" exact>
               {{ t('term.overview') }}
@@ -21,16 +21,11 @@
               {{ t('action.new') }}
             </VTab>
           </VTabs>
-        </VCol>
-        <VCol>
-          <RouterView
-            class="flex-grow-1"
-            :contest="contest"
-            :problems="value"
-            @updated="problems.execute()"
-          />
-        </VCol>
-      </VRow>
+        </div>
+        <div class="u-flex-1 u-min-w-0">
+          <RouterView :contest="contest" :problems="value" @updated="problems.execute()" />
+        </div>
+      </div>
     </template>
   </AsyncState>
 </template>

@@ -52,6 +52,7 @@ action:
   generate-slug: 生成编号
   select-tag: 选择标签
   dismiss: 忽略并关闭
+  fullscreen: 全屏
 
 term:
   content: 内容

@@ -13,13 +13,20 @@
           :text="t('action.refresh')"
           prepend-icon="mdi-refresh"
           variant="text"
-          class="align-self-center me-4"
-          height="100%"
+          class="align-self-center"
           @click="data.execute()"
+        />
+        <VBtn
+          :text="t('action.fullscreen')"
+          prepend-icon="mdi-fullscreen"
+          variant="text"
+          class="align-self-center"
+          v-if="fullscreen"
+          @click="enterFullscreen()"
         />
       </VTabs>
       <VWindow v-model="currentTab">
-        <VWindowItem value="visual" v-if="slots.default">
+        <VWindowItem value="visual" v-if="slots.default" ref="viewer">
           <slot :value="value"></slot>
         </VWindowItem>
         <VWindowItem value="raw" v-if="!hideRaw">
@@ -36,7 +43,7 @@
 <script setup lang="ts" generic="T">
 import { useAsyncState } from '@vueuse/core'
 import ky from 'ky'
-import { ref, useSlots, watch } from 'vue'
+import { ref, useSlots, watch, type ComponentPublicInstance } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import AsyncState from './AsyncState.vue'
@@ -50,10 +57,12 @@ const props = defineProps<{
   rawData?: T
   rawString?: string
   hideRaw?: boolean
+  fullscreen?: boolean
 }>()
 const slots = useSlots()
 const { t } = useI18n()
 const currentTab = ref()
+const viewer = ref<ComponentPublicInstance | null>(null)
 
 async function resolveUrl() {
   if (props.url) return props.url
@@ -77,6 +86,10 @@ const data = useAsyncState(
 )
 
 watch([() => props.endpoint, () => props.url, () => props.rawString], () => data.execute())
+
+function enterFullscreen() {
+  viewer.value?.$el?.requestFullscreen?.()
+}
 </script>
 <i18n>
 en:
