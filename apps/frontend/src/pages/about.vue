@@ -8,12 +8,32 @@
               <AoiLogo width="128" />
               <q class="u-text-2xl u-font-italic">The <b>AOI</b> Project</q>
               <span class="text-black u-text-xl">
-                AOI V1.0
-                <ruby class="text-primary">せかい <rt>Sekai</rt> </ruby>
+                AOI V1.1
+                <ruby class="text-primary">はるひ <rt>Haruhi</rt> </ruby>
               </span>
               <span class="text-secondary">Released under the AGPL-3.0 License</span>
-              <span class="text-secondary">2024-02-20</span>
+              <span class="text-secondary">2024-04-20</span>
             </a>
+          </VCardText>
+          <VDivider />
+          <VCardText class="d-flex flex-column align-center">
+            <h3>History Versions</h3>
+            <VTable>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Version</th>
+                  <th>Code Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2024-04-20</td>
+                  <td>1.0.x</td>
+                  <td>せかい</td>
+                </tr>
+              </tbody>
+            </VTable>
           </VCardText>
         </VCard>
       </VCol>
