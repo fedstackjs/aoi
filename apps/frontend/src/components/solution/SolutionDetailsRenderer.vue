@@ -2,7 +2,7 @@
   <VCard variant="flat">
     <VCardSubtitle>{{ t('term.jobs') }}</VCardSubtitle>
     <VCardText>
-      <VExpansionPanels variant="accordion">
+      <VExpansionPanels v-if="value.jobs" variant="accordion">
         <VExpansionPanel v-for="(job, i) in value.jobs" :key="i">
           <!-- A Job named 'job' -->
           <VExpansionPanelTitle>
@@ -21,7 +21,7 @@
           </VExpansionPanelTitle>
           <VExpansionPanelText>
             <VCardSubtitle>{{ t('term.tests') }}</VCardSubtitle>
-            <VExpansionPanels class="pb-4">
+            <VExpansionPanels v-if="job.tests" class="pb-4">
               <VExpansionPanel v-for="(test, i) in job.tests" :key="i">
                 <!-- A Subtask named 'subtask' -->
                 <VExpansionPanelTitle>
@@ -40,20 +40,24 @@
                     </VCol>
                   </VRow>
                 </VExpansionPanelTitle>
-                <VExpansionPanelText>
+                <VExpansionPanelText v-if="test.summary">
                   <MarkdownRenderer :md="test.summary" />
                 </VExpansionPanelText>
               </VExpansionPanel>
             </VExpansionPanels>
-            <VDivider />
-            <VCardSubtitle>{{ t('term.summary') }}</VCardSubtitle>
-            <MarkdownRenderer :md="job.summary" class="pa-4" />
+            <template v-if="job.summary">
+              <VDivider />
+              <VCardSubtitle>{{ t('term.summary') }}</VCardSubtitle>
+              <MarkdownRenderer :md="job.summary" class="pa-4" />
+            </template>
           </VExpansionPanelText>
         </VExpansionPanel>
       </VExpansionPanels>
     </VCardText>
-    <VCardSubtitle>{{ t('term.summary') }}</VCardSubtitle>
-    <MarkdownRenderer :md="value.summary" class="pa-4" />
+    <template v-if="value.summary">
+      <VCardSubtitle>{{ t('term.summary') }}</VCardSubtitle>
+      <MarkdownRenderer :md="value.summary" class="pa-4" />
+    </template>
   </VCard>
 </template>
 

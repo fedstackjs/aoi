@@ -9,6 +9,7 @@ export interface IRunner {
   key: string
   version: string
   message: string
+  ip: string
 
   createdAt: number
   accessedAt: number
