@@ -1,17 +1,16 @@
 <template>
   <VCardText class="py-0">
     <div v-for="item of options.items ?? []" :key="item.key">
-      <VTextField
-        v-if="item.type.text"
-        v-model="value[item.key]"
-        :label="item.label"
-        :hint="item.description"
-      />
+      <div class="d-flex align-center u-gap-2">
+        <code class="text-secondary">{{ item.key }}</code>
+        <VDivider />
+      </div>
+      <MarkdownRenderer v-if="item.description" :md="item.description" />
+      <VTextField v-if="item.type.text" v-model="value[item.key]" :label="item.label" />
       <VSelect
         v-if="item.type.select"
         v-model="value[item.key]"
         :label="item.label"
-        :hint="item.description"
         :items="item.type.select.options"
       />
     </div>
@@ -21,6 +20,8 @@
 <script setup lang="ts">
 import type { ProblemConfigSubmitFormMetadata } from '@aoi-js/common'
 import { watch, reactive } from 'vue'
+
+import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
 
 defineProps<{
   options: Partial<ProblemConfigSubmitFormMetadata>
