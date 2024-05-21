@@ -11,7 +11,8 @@ export const orgBits = {
   admin: 1,
   problem: 2,
   contest: 3,
-  plan: 4
+  plan: 4,
+  app: 5
 }
 
 export const problemBits = {

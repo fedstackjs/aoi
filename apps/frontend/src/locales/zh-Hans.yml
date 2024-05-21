@@ -153,7 +153,8 @@ cap:
   problem: 题目控制
   contest: 比赛控制
   admin: 管理权限
-  plan: 计划权限
+  plan: 计划控制
+  app: 应用控制
   createOrg: 创建组织
   solution: 管理提交
   content: 管理内容
