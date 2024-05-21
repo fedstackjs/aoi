@@ -7,6 +7,7 @@ import { defineRoutes } from '../common/index.js'
 
 import { oauthDeviceRoutes } from './device.js'
 import { oauthGithubCompatRoutes } from './githubCompat.js'
+import { oauthIaaaCompatRoutes } from './iaaaCompat.js'
 
 export const oauthRoutes = defineRoutes(async (s) => {
   const { apps, users, orgMemberships } = s.db
@@ -92,5 +93,6 @@ export const oauthRoutes = defineRoutes(async (s) => {
   )
 
   s.register(oauthGithubCompatRoutes, { prefix: '/github_compat' })
+  s.register(oauthIaaaCompatRoutes, { prefix: '/iaaa_compat' })
   s.register(oauthDeviceRoutes, { prefix: '/device' })
 })

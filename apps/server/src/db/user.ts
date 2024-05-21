@@ -1,3 +1,4 @@
+import { IAAAUserInfo } from '@lcpu/iaaa'
 import { fastifyPlugin } from 'fastify-plugin'
 import { BSON, Collection } from 'mongodb'
 
@@ -14,6 +15,7 @@ export interface IUserAuthSources {
   passwordResetDue?: boolean
   mail?: string
   iaaaId?: string
+  iaaaInfo?: IAAAUserInfo
 }
 
 export interface IUser {

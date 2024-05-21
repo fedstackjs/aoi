@@ -53,7 +53,8 @@ export class IaaaAuthProvider extends BaseAuthProvider {
         'profile.realname': resp.userInfo.name,
         'profile.school': '北京大学',
         'profile.studentGrade': `${resp.userInfo.dept}${resp.userInfo.detailType}(${resp.userInfo.campus})`,
-        'authSources.iaaaId': resp.userInfo.identityId
+        'authSources.iaaaId': resp.userInfo.identityId,
+        'authSources.iaaaInfo': resp.userInfo
       },
       $addToSet: { 'profile.verified': { $each: ['realname', 'school', 'studentGrade'] } }
     })
@@ -84,8 +85,9 @@ export class IaaaAuthProvider extends BaseAuthProvider {
     const resp = await validate(req.ip, this.iaaaId, this.iaaaKey, payload.token)
     if (!resp.success) throw httpErrors.forbidden(resp.errMsg)
     let userId: UUID
-    const user = await this.users.findOne(
+    const user = await this.users.findOneAndUpdate(
       { 'authSources.iaaaId': resp.userInfo.identityId },
+      { $set: { 'authSources.iaaaInfo': resp.userInfo } },
       { projection: { _id: 1 } }
     )
     if (user) {
@@ -103,7 +105,8 @@ export class IaaaAuthProvider extends BaseAuthProvider {
           verified: ['realname', 'school', 'studentGrade']
         },
         authSources: {
-          iaaaId: resp.userInfo.identityId
+          iaaaId: resp.userInfo.identityId,
+          iaaaInfo: resp.userInfo
         }
       })
       userId = insertedId
