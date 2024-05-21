@@ -17,7 +17,8 @@ export const SAppSettings = T.Partial(
     ),
     attachUser: T.Boolean(),
     attachMembership: T.Boolean(),
-    allowDeviceFlow: T.Boolean()
+    allowDeviceFlow: T.Boolean(),
+    enableIaaa: T.Boolean()
   })
 )
 
