@@ -14,6 +14,8 @@ export const oauthIaaaCompatRoutes = defineRoutes(async (s) => {
     '/svc/token/validate.do',
     {
       schema: {
+        description: 'See IAAA Guide V2.1 section 3.4.1 for details',
+        security: [],
         querystring: T.Object({
           remoteAddr: T.String({ maxLength: 45 }),
           appId: T.UUID(),
@@ -44,40 +46,31 @@ export const oauthIaaaCompatRoutes = defineRoutes(async (s) => {
     },
     async (req) => {
       const { remoteAddr, appId, token, msgAbs } = req.query
+      const { userId, tags } = req.verifyToken(token)
+      const tag = tags?.find((tag) => tag.startsWith(`.oauth.access_token.`))
+      if (!tag || appId !== tag.slice(20) || !UUID.isValid(appId)) {
+        return { success: false, errCode: '1', errMsg: '无效的appId' }
+      }
+
       const app = await apps.findOne(
         { _id: new UUID(appId) },
-        {
-          projection: {
-            secret: 1,
-            'settings.enableIaaa': 1
-          }
-        }
+        { projection: { secret: 1, 'settings.enableIaaa': 1 } }
       )
       if (!app || !app.settings.enableIaaa) {
-        return {
-          success: false,
-          errCode: '1',
-          errMsg: '未找到对应应用'
-        }
+        return { success: false, errCode: '1', errMsg: '未找到对应应用' }
       }
+
       const digest = md5(`appId=${appId}&remoteAddr=${remoteAddr}&token=${token}` + app.secret)
       if (digest !== msgAbs) {
-        return {
-          success: false,
-          errCode: '2',
-          errMsg: '签名错误'
-        }
+        return { success: false, errCode: '1', errMsg: '签名错误' }
       }
+
       const user = await users.findOne(
-        { _id: req.user.userId },
+        { _id: new UUID(userId) },
         { projection: { profile: 1, 'authSources.iaaaInfo': 1 } }
       )
       if (!user || !user.authSources.iaaaInfo) {
-        return {
-          success: false,
-          errCode: '3',
-          errMsg: '用户未绑定身份'
-        }
+        return { success: false, errCode: '3', errMsg: '用户未绑定身份' }
       }
 
       return {
