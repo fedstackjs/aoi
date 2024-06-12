@@ -16,7 +16,8 @@ export const adminUserRoutes = defineRoutes(async (s) => {
           page: T.Integer({ minimum: 1, default: 1 }),
           perPage: T.Integer({ enum: [15, 30, 50, 100] }),
           count: T.Boolean({ default: false }),
-          search: T.Optional(T.String({ minLength: 1 }))
+          search: T.Optional(T.String({ minLength: 1 })),
+          capability: T.Optional(T.String())
         }),
         response: {
           200: T.PaginationResult(T.Any())
@@ -25,9 +26,12 @@ export const adminUserRoutes = defineRoutes(async (s) => {
     },
     async (req) => {
       const filter: Document = {}
-      if (req.query.search) {
-        filter['profile.name'] = { $regex: req.query.search }
+      if (req.query.search) filter['profile.name'] = { $regex: req.query.search }
+      if (req.query.capability && +req.query.capability) {
+        const capability = new BSON.Long(req.query.capability)
+        filter.$expr = { $eq: [{ $bitAnd: ['$capability', capability] }, capability] }
       }
+
       const { items, total } = await findPaginated(
         users,
         req.query.page,
