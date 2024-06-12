@@ -3,13 +3,21 @@
     <VCardTitle class="d-flex align-center">
       <div>Users</div>
       <VSpacer />
-      <VTextField
-        v-model="newSearch"
-        @keydown.enter="search = newSearch"
-        label="Search"
-        hide-details
-        density="compact"
-      />
+      <div class="u-grid u-grid-flow-col u-grid-rows-1 u-gap-2 u-flex-1">
+        <CapabilityInput
+          v-model="searchCapability"
+          :bits="userBits"
+          hide-details
+          density="compact"
+        />
+        <VTextField
+          v-model="newSearch"
+          @keydown.enter="search = newSearch"
+          label="Search"
+          hide-details
+          density="compact"
+        />
+      </div>
     </VCardTitle>
     <VDataTableServer
       :headers="headers"
@@ -95,6 +103,7 @@ const headers = [
 ] as const
 
 const search = useRouteQuery('search', '')
+const searchCapability = useRouteQuery('capability', '')
 const newSearch = ref(search.value)
 
 const {
@@ -112,7 +121,10 @@ const {
   tags?: string[]
 }>(
   `admin/user`,
-  computed(() => ({ search: search.value || undefined }))
+  computed(() => ({
+    search: search.value || undefined,
+    capability: searchCapability.value || undefined
+  }))
 )
 
 const dialog = ref(false)

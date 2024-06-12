@@ -19,7 +19,8 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
         querystring: T.Object({
           page: T.Integer({ minimum: 1, default: 1 }),
           perPage: T.Integer({ enum: [15, 30, 50, 100] }),
-          count: T.Boolean({ default: false })
+          count: T.Boolean({ default: false }),
+          capability: T.Optional(T.String())
         }),
         response: {
           200: T.PaginationResult(T.Any())
@@ -28,14 +29,23 @@ export const orgAdminMemberRoutes = defineRoutes(async (s) => {
     },
     async (req) => {
       const ctx = req.inject(kOrgContext)
+      const capability = new BSON.Long(req.query.capability ?? 0)
       let count = 0
       if (req.query.count) {
-        count = await orgMemberships.countDocuments({ orgId: ctx._orgId })
+        count = await orgMemberships.countDocuments({
+          orgId: ctx._orgId,
+          $expr: { $eq: [{ $bitAnd: ['$capability', capability] }, capability] }
+        })
       }
       const skip = paginationSkip(req.query.page, req.query.perPage)
       const members = await orgMemberships
         .aggregate([
-          { $match: { orgId: ctx._orgId } },
+          {
+            $match: {
+              orgId: ctx._orgId,
+              $expr: { $eq: [{ $bitAnd: ['$capability', capability] }, capability] }
+            }
+          },
           { $skip: skip },
           { $limit: req.query.perPage },
           {

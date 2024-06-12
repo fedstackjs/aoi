@@ -2,13 +2,21 @@
   <VCard variant="flat">
     <VCardTitle class="d-flex justify-space-between align-center">
       <div>{{ t('term.members') }}</div>
-      <div class="flex-grow-1 u-max-w-64">
+      <VSpacer />
+      <div class="u-grid u-grid-flow-col u-grid-rows-1 u-gap-2 u-flex-1">
+        <CapabilityInput
+          v-model="searchCapability"
+          :bits="orgBits"
+          hide-details
+          density="compact"
+        />
         <UserIdInput
           v-model="newMember"
           :label="t('term.user-id')"
           density="compact"
           append-icon="mdi-plus"
           @click:append="addMember"
+          hide-details
         />
       </div>
     </VCardTitle>
@@ -61,7 +69,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { useRouteQuery } from '@vueuse/router'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import AoiGravatar from '@/components/aoi/AoiGravatar.vue'
@@ -85,6 +94,8 @@ const headers = [
   { title: t('term.actions'), key: '_actions' }
 ] as const
 
+const searchCapability = useRouteQuery('capability', '')
+
 const {
   page,
   itemsPerPage,
@@ -98,7 +109,12 @@ const {
     }
   }
   capability: string
-}>(`org/${props.orgId}/admin/member`, {})
+}>(
+  `org/${props.orgId}/admin/member`,
+  computed(() => ({
+    capability: searchCapability.value || undefined
+  }))
+)
 
 async function deleteMember(userId: string) {
   await http.delete(`org/${props.orgId}/admin/member/${userId}`)
