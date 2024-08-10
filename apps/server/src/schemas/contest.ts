@@ -27,6 +27,8 @@ export const SContestStage = T.StrictObject({
       solutionShowOtherData: T.Boolean(),
       // Enable function function to participants
       ranklistEnabled: T.Boolean(),
+      // Skip ranklist calculation
+      ranklistSkipCalculation: T.Boolean(),
       // Show participants panel
       participantEnabled: T.Boolean(),
       // Participant tag rules

@@ -7,7 +7,7 @@ import {
   contestRanklistKey,
   getUploadUrl
 } from '../../index.js'
-import { T } from '../../schemas/index.js'
+import { SContestStage, T } from '../../schemas/index.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
 import { defineRoutes, loadUUID, paramSchemaMerger } from '../common/index.js'
 
@@ -71,6 +71,32 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
       )
       if (modifiedCount === 0) return rep.notFound()
       return {}
+    }
+  )
+
+  s.get(
+    '/contest',
+    {
+      schema: {
+        description: 'Get contest details',
+        response: {
+          200: T.Object({
+            _id: T.UUID(),
+            slug: T.String(),
+            title: T.String(),
+            description: T.String(),
+            tags: T.Array(T.String()),
+            stages: T.Array(SContestStage)
+          })
+        }
+      }
+    },
+    async (req, rep) => {
+      const ctx = req.inject(kRunnerRanklistContext)
+
+      const contest = await contests.findOne({ _id: ctx._contestId, ranklistTaskId: ctx._taskId })
+      if (!contest) return rep.notFound()
+      return contest
     }
   )
 

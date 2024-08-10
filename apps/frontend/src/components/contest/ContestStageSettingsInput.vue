@@ -38,6 +38,7 @@ const keys: {
   solutionShowOtherDetails: 'solution-show-other-details',
   solutionShowOtherData: 'solution-show-other-data',
   ranklistEnabled: 'ranklist-enabled',
+  ranklistSkipCalculation: 'ranklist-skip-calculation',
   participantEnabled: 'participant-enabled'
 }
 
@@ -62,6 +63,7 @@ en:
     solution-show-other-details: Solution Allow Other Details
     solution-show-other-data: Solution Allow Other Data
     ranklist-enabled: Ranklist Enabled
+    ranklist-skip-calculation: Skip Ranklist Calculation
     participant-enabled: Participant Enabled
   contest-stage-settings-hint:
     registration-enabled: Enable registration
@@ -75,6 +77,7 @@ en:
     solution-show-other-details: Allow show other details
     solution-show-other-data: Allow show other data
     ranklist-enabled: Enable ranklist
+    ranklist-skip-calculation: Skip ranklist calculation
     participant-enabled: Enable participant
 zh-Hans:
   contest-stage-settings:
@@ -89,6 +92,7 @@ zh-Hans:
     solution-show-other-details: 允许展示他人提交记录细节
     solution-show-other-data: 允许展示他人提交记录数据
     ranklist-enabled: 启用排名
+    ranklist-skip-calculation: 跳过排名计算
     participant-enabled: 启用参赛者
   contest-stage-settings-hint:
     registration-enabled: 开启后，选手才可以报名
@@ -102,5 +106,6 @@ zh-Hans:
     solution-show-other-details: 开启后，选手可以查看他人提交详情
     solution-show-other-data: 开启后，选手可以查看他人提交内容（代码、数据等）
     ranklist-enabled: 开启后，选手才可以查看排行榜
+    ranklist-skip-calculation: 开启后，本阶段提交不计入排行榜（订正模式）
     participant-enabled: 开启后，选手才可以查看参赛者列表
 </i18n>
