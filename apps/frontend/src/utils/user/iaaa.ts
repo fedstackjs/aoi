@@ -14,8 +14,19 @@ const html = `
 `
 
 export async function getToken() {
-  const win = window.open('/auth/iaaa', 'iaaa', 'width=800,height=600')
-  const client = win?.window
+  const iframe = document.createElement('iframe')
+  iframe.style.background = 'white'
+  iframe.style.zIndex = '9999'
+  iframe.style.border = 'none'
+  iframe.style.position = 'fixed'
+  iframe.style.top = '0'
+  iframe.style.left = '0'
+  iframe.style.width = '100%'
+  iframe.style.height = '100%'
+  iframe.src = '/auth/iaaa'
+  document.body.appendChild(iframe)
+  // const win = window.open('/auth/iaaa', 'iaaa', 'width=800,height=600')
+  const client = iframe.contentWindow
   if (!client) throw new Error('Failed to open IAAA window')
   client.document.write(html)
   client.document.forms[0].submit()
@@ -23,7 +34,8 @@ export async function getToken() {
     try {
       const token = new URLSearchParams(client.document.location.search).get('token')
       if (token) {
-        win.close()
+        // win.close()
+        iframe.remove()
         return token
       }
     } catch (err) {
