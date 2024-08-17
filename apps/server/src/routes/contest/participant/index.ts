@@ -121,7 +121,7 @@ const contestParticipantAdminRoutes = defineRoutes(async (s) => {
         params: T.Object({
           userId: T.UUID()
         }),
-        body: T.Object({
+        body: T.StrictObject({
           tags: T.Optional(T.Array(T.String())),
           banned: T.Optional(T.Boolean())
         })
@@ -133,7 +133,7 @@ const contestParticipantAdminRoutes = defineRoutes(async (s) => {
       await contestParticipants.updateOne({ contestId: ctx._contestId, userId }, [
         {
           $set: {
-            tags: req.body.tags,
+            ...req.body,
             updatedAt: { $convert: { input: '$$NOW', to: 'double' } }
           }
         }
