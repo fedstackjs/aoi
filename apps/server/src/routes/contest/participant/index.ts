@@ -95,7 +95,8 @@ const contestParticipantAdminRoutes = defineRoutes(async (s) => {
         }),
         response: {
           200: T.Object({
-            tags: T.Optional(T.Array(T.String()))
+            tags: T.Optional(T.Array(T.String())),
+            banned: T.Optional(T.Boolean())
           })
         }
       }
