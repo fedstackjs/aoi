@@ -153,6 +153,7 @@ const runnerRanklistTaskRoutes = defineRoutes(async (s) => {
               userId: T.UUID(),
               contestId: T.UUID(),
               tags: T.Optional(T.Array(T.String())),
+              banned: T.Optional(T.Boolean()),
               results: T.Record(
                 T.String(),
                 T.Object({
