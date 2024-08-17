@@ -7,6 +7,7 @@
     <SettingsEditor :endpoint="`contest/${contestId}/participant/admin/${userId}`">
       <template v-slot="scoped">
         <VCombobox v-model="scoped.value.tags" :label="t('term.tags')" multiple chips />
+        <VCheckbox v-model="scoped.value.banned" :label="t('term.banned')" />
       </template>
     </SettingsEditor>
     <VDivider />
@@ -26,7 +27,7 @@ import { useI18n } from 'vue-i18n'
 import type { IContestDTO } from '@/components/contest/types'
 import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
 import SettingsEditor from '@/components/utils/SettingsEditor.vue'
-import { useContestCapability, useContestSettings } from '@/utils/contest/inject'
+import { useContestCapability } from '@/utils/contest/inject'
 
 defineProps<{
   orgId: string

@@ -42,6 +42,7 @@ export interface IContestParticipant {
   createdAt: number
   updatedAt: number
   tags?: string[]
+  banned?: boolean
 }
 
 export interface IContestProblem {

@@ -121,7 +121,8 @@ const contestParticipantAdminRoutes = defineRoutes(async (s) => {
           userId: T.UUID()
         }),
         body: T.Object({
-          tags: T.Optional(T.Array(T.String()))
+          tags: T.Optional(T.Array(T.String())),
+          banned: T.Optional(T.Boolean())
         })
       }
     },
@@ -139,9 +140,4 @@ const contestParticipantAdminRoutes = defineRoutes(async (s) => {
       return 0
     }
   )
-
-  s.delete('/:userId', {}, async () => {
-    // TODO: delete participant
-    return s.httpErrors.notImplemented()
-  })
 })

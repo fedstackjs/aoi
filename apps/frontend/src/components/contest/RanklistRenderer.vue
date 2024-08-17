@@ -64,9 +64,8 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 
-import RanklistTopstars from '../contest/RanklistTopstars.vue'
-
 import { useRanklistRenderer } from './RanklistRenderer'
+import RanklistTopstars from './RanklistTopstars.vue'
 
 import PrincipalProfile from '@/components/utils/PrincipalProfile.vue'
 import { renderMarkdown } from '@/utils/markdown'
@@ -85,3 +84,13 @@ const length = computed(() =>
 
 const { admin, participantUrl, problemUrl, solutionUrl } = useRanklistRenderer()
 </script>
+
+<style scoped>
+td:not(:last-child) {
+  border-right: 1px solid #eee;
+}
+
+th {
+  border-bottom: 2px solid #eee;
+}
+</style>

@@ -53,6 +53,8 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
     })
     if (!participant) {
       ensureCapability(capability, CONTEST_CAPS.CAP_ACCESS, s.httpErrors.forbidden())
+    } else if (participant.banned) {
+      ensureCapability(capability, CONTEST_CAPS.CAP_ADMIN, s.httpErrors.forbidden())
     }
     req.provide(kContestContext, {
       _contestId: contestId,
