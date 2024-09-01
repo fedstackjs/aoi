@@ -10,7 +10,7 @@ export const oauthIaaaCompatRoutes = defineRoutes(async (s) => {
 
   if (!Object.hasOwn(s.authProviders, 'iaaa')) return
 
-  s.get(
+  s.post(
     '/oauth.jsp',
     {
       schema: {
