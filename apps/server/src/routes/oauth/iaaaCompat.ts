@@ -14,6 +14,7 @@ export const oauthIaaaCompatRoutes = defineRoutes(async (s) => {
     '/oauth.jsp',
     {
       schema: {
+        security: [],
         body: T.Object({
           appID: T.String(),
           appName: T.String(),
