@@ -1,12 +1,9 @@
-import { fastifyFormbody } from '@fastify/formbody'
 import { UUID } from 'mongodb'
 
 import { T } from '../../schemas/common.js'
 import { defineRoutes, md5, swaggerTagMerger } from '../common/index.js'
 
 export const oauthIaaaCompatRoutes = defineRoutes(async (s) => {
-  await s.register(fastifyFormbody)
-
   const { users, apps } = s.db
 
   s.addHook('onRoute', swaggerTagMerger('iaaa-compat'))
