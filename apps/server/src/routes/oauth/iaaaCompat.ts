@@ -1,14 +1,36 @@
+import { fastifyFormbody } from '@fastify/formbody'
 import { UUID } from 'mongodb'
 
 import { T } from '../../schemas/common.js'
 import { defineRoutes, md5, swaggerTagMerger } from '../common/index.js'
 
 export const oauthIaaaCompatRoutes = defineRoutes(async (s) => {
+  await s.register(fastifyFormbody)
+
   const { users, apps } = s.db
 
   s.addHook('onRoute', swaggerTagMerger('iaaa-compat'))
 
   if (!Object.hasOwn(s.authProviders, 'iaaa')) return
+
+  s.get(
+    '/oauth.jsp',
+    {
+      schema: {
+        body: T.Object({
+          appID: T.String(),
+          appName: T.String(),
+          redirectUrl: T.String()
+        })
+      }
+    },
+    async (req, rep) => {
+      const url = new URL('/oauth/authorize', req.originalUrl)
+      url.searchParams.set('client_id', req.body.appID)
+      url.searchParams.set('redirect_uri', req.body.redirectUrl)
+      return rep.redirect(307, url.toString())
+    }
+  )
 
   s.get(
     '/svc/token/validate.do',
