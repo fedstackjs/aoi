@@ -23,10 +23,10 @@ export const oauthIaaaCompatRoutes = defineRoutes(async (s) => {
       }
     },
     async (req, rep) => {
-      const url = new URL('/oauth/authorize', req.originalUrl)
-      url.searchParams.set('client_id', req.body.appID)
-      url.searchParams.set('redirect_uri', req.body.redirectUrl)
-      return rep.redirect(307, url.toString())
+      const params = new URLSearchParams()
+      params.set('client_id', req.body.appID)
+      params.set('redirect_uri', req.body.redirectUrl)
+      return rep.redirect(302, '/oauth/authorize' + '?' + params.toString())
     }
   )
 
