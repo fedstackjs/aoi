@@ -27,7 +27,7 @@ export const useVaptcha = ({ onPass }: { onPass?: (token: string) => void } = {}
 
   onMounted(() => {
     const config = {
-      vid: import.meta.env.VAPTCHA_VID,
+      vid: import.meta.env.VITE_VAPTCHA_VID,
       mode: 'click',
       scene: 0,
       container: document.getElementById('vaptcha'),
