@@ -69,7 +69,15 @@ export class ServerTypeBuilder extends JavaScriptTypeBuilder {
       $in: this.Optional(this.Array(this.Any())),
       $nin: this.Optional(this.Array(this.Any())),
       $startsWith: this.Optional(this.String()),
-      $endsWith: this.Optional(this.String())
+      $notStartsWith: this.Optional(this.String()),
+      $endsWith: this.Optional(this.String()),
+      $notEndsWith: this.Optional(this.String()),
+      $includes: this.Optional(this.Any()),
+      $notIncludes: this.Optional(this.Any()),
+      $includesEach: this.Optional(this.Array(this.Any())),
+      $notIncludesEach: this.Optional(this.Array(this.Any())),
+      $includesSome: this.Optional(this.Array(this.Any())),
+      $notIncludesSome: this.Optional(this.Array(this.Any()))
     })
   }
 
