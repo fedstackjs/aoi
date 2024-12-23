@@ -27,6 +27,8 @@ export function deepGet<T, K extends string>(value: T, key: K): DeepGet<T, K> {
   return deepGet(value[cur as keyof T], key.slice(cur.length + 1)) as DeepGet<T, K>
 }
 
+export type ElementType<T> = T extends (infer U)[] ? U : never
+
 export class ConditionOps<Value> {
   $eq = (value: Value, expected: Value) => value === expected
   $ne = (value: Value, expected: Value) => value !== expected
@@ -41,6 +43,13 @@ export class ConditionOps<Value> {
 
   $startsWith = (value: Value, expected: string) => `${value}`.startsWith(expected)
   $endsWith = (value: Value, expected: string) => `${value}`.endsWith(expected)
+
+  $includes = (value: Value, expected: ElementType<Value>) =>
+    Array.isArray(value) && value.includes(expected)
+  $includesEach = (value: Value, expected: ElementType<Value>[]) =>
+    Array.isArray(value) && Array.isArray(expected) && expected.every((v) => value.includes(v))
+  $includesSome = (value: Value, expected: ElementType<Value>[]) =>
+    Array.isArray(value) && Array.isArray(expected) && expected.some((v) => value.includes(v))
 }
 
 const conditionOps = new ConditionOps()
@@ -53,7 +62,7 @@ export function evaluateCondition<Value>(value: Value, condition: Condition<Valu
   for (const opName of Object.getOwnPropertyNames(condition)) {
     if (!Object.hasOwn(conditionOps, opName)) throw new Error('Invalid condition')
     const op = conditionOps[opName as keyof ConditionOps<Value>]
-    if (!op(value, condition[opName as keyof Condition<Value>] as any)) return false
+    if (!op(value, condition[opName as keyof Condition<Value>] as never)) return false
   }
   return true
 }

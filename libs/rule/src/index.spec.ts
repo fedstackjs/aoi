@@ -99,6 +99,27 @@ describe('condition', () => {
     assert.equal(evaluateCondition('abc', { $endsWith: 'b' }), false)
     assert.equal(evaluateCondition(1, { $endsWith: '1' }), true)
   })
+
+  it('should work with $includes', () => {
+    assert.equal(evaluateCondition([1, 2, 3], { $includes: 1 }), true)
+    assert.equal(evaluateCondition([1, 2, 3], { $includes: 4 }), false)
+    // @ts-expect-error: invalid condition
+    assert.equal(evaluateCondition(1, { $includes: 1 }), false)
+  })
+
+  it('should work with $includesEach', () => {
+    assert.equal(evaluateCondition([1, 2, 3], { $includesEach: [1, 2] }), true)
+    assert.equal(evaluateCondition([1, 2, 3], { $includesEach: [1, 4] }), false)
+    // @ts-expect-error: invalid condition
+    assert.equal(evaluateCondition(1, { $includesEach: [1] }), false)
+  })
+
+  it('should work with $includesSome', () => {
+    assert.equal(evaluateCondition([1, 2, 3], { $includesSome: [1, 4] }), true)
+    assert.equal(evaluateCondition([1, 2, 3], { $includesSome: [4, 5] }), false)
+    // @ts-expect-error: invalid condition
+    assert.equal(evaluateCondition(1, { $includesSome: [1] }), false)
+  })
 })
 
 describe('matcher', () => {
