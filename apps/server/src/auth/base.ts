@@ -41,7 +41,7 @@ export abstract class BaseAuthProvider {
   ): Promise<boolean>
 
   preLogin?(payload: unknown, req: FastifyRequest, rep: FastifyReply): Promise<unknown>
-  abstract login(
+  login?(
     payload: unknown,
     req: FastifyRequest,
     rep: FastifyReply
