@@ -42,14 +42,21 @@ export class ConditionOps<Value> {
   $nin = (value: Value, expected: Value[]) => Array.isArray(expected) && !expected.includes(value)
 
   $startsWith = (value: Value, expected: string) => `${value}`.startsWith(expected)
+  $notStartsWith = (value: Value, expected: string) => !this.$startsWith(value, expected)
   $endsWith = (value: Value, expected: string) => `${value}`.endsWith(expected)
+  $notEndsWith = (value: Value, expected: string) => !this.$endsWith(value, expected)
 
   $includes = (value: Value, expected: ElementType<Value>) =>
     Array.isArray(value) && value.includes(expected)
+  $notIncludes = (value: Value, expected: ElementType<Value>) => !this.$includes(value, expected)
   $includesEach = (value: Value, expected: ElementType<Value>[]) =>
     Array.isArray(value) && Array.isArray(expected) && expected.every((v) => value.includes(v))
+  $notIncludesEach = (value: Value, expected: ElementType<Value>[]) =>
+    !this.$includesEach(value, expected)
   $includesSome = (value: Value, expected: ElementType<Value>[]) =>
     Array.isArray(value) && Array.isArray(expected) && expected.some((v) => value.includes(v))
+  $notIncludesSome = (value: Value, expected: ElementType<Value>[]) =>
+    !this.$includesSome(value, expected)
 }
 
 const conditionOps = new ConditionOps()
