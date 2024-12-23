@@ -187,6 +187,7 @@ msg:
   registered: 已报名
   not-registered: 未报名
   code-sent: 验证码已发送
+  tips: 温馨提示
 
 tabs:
   description: 描述

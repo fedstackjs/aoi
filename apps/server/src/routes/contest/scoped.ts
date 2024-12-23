@@ -141,7 +141,7 @@ export const contestScopedRoutes = defineRoutes(async (s) => {
         if (allowRegister === false) {
           return rep.forbidden('Cannot register for contest')
         }
-        tags ??= _tags
+        tags = [...(tags ?? []), ..._tags]
       }
       await contestParticipants.insertOne(
         {

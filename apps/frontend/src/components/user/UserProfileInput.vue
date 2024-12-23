@@ -1,7 +1,14 @@
 <template>
+  <VAlert
+    variant="tonal"
+    type="info"
+    :title="t('msg.tips')"
+    :text="t('msg.user-auth-hint')"
+    class="u-mb-4"
+  />
   <VTextField
     v-model="model.name"
-    :label="t('term.name')"
+    :label="t('term.name') + (verified['name'] ? t('msg.verified') : '')"
     type="string"
     :rules="usernameRules"
     :append-inner-icon="verified['name']"
@@ -9,7 +16,7 @@
   />
   <VTextField
     v-model="model.email"
-    :label="t('term.email')"
+    :label="t('term.email') + (verified['email'] ? t('msg.verified') : '')"
     type="string"
     :rules="emailRules"
     :append-inner-icon="verified['email']"
@@ -17,7 +24,7 @@
   />
   <VTextField
     v-model="model.realname"
-    :label="t('term.realname')"
+    :label="t('term.realname') + (verified['realname'] ? t('msg.verified') : '')"
     type="string"
     :rules="realnameRules"
     :append-inner-icon="verified['realname']"
@@ -25,7 +32,7 @@
   />
   <VTextField
     v-model="model.telephone"
-    :label="t('term.telephone')"
+    :label="t('term.telephone') + (verified['telephone'] ? t('msg.verified') : '')"
     type="string"
     :rules="telephoneRules"
     :append-inner-icon="verified['telephone']"
@@ -33,7 +40,7 @@
   />
   <VTextField
     v-model="model.school"
-    :label="t('term.school')"
+    :label="t('term.school') + (verified['school'] ? t('msg.verified') : '')"
     type="string"
     :rules="schoolRules"
     :append-inner-icon="verified['school']"
@@ -41,7 +48,7 @@
   />
   <VTextField
     v-model="model.studentGrade"
-    :label="t('term.student-grade')"
+    :label="t('term.student-grade') + (verified['studentGrade'] ? t('msg.verified') : '')"
     type="string"
     :rules="studentGradeRules"
     :append-inner-icon="verified['studentGrade']"
@@ -128,6 +135,9 @@ en:
     violate-stugrade-rule: Student Grade must not be empty.
     signup-username-exists: Username already exists.
     signup-success: Sign up successfully.
+  msg:
+    verified: ' [Verified]'
+    user-auth-hint: Please bind your email, phone number, etc. in "User Authentication". The user information updated through the form below cannot be verified.
 zh-Hans:
   hint:
     violate-username-rule: 用户名不能为空
@@ -139,4 +149,7 @@ zh-Hans:
     violate-stugrade-rule: 年级不能为空
     signup-username-exists: 用户名已存在
     signup-success: 注册成功
+  msg:
+    verified: ' 【已验证】'
+    user-auth-hint: 请在“用户认证”处绑定邮箱、手机号等凭据。通过下面的表单更新的用户信息无法得到验证。
 </i18n>
