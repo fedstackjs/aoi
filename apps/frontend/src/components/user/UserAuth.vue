@@ -8,7 +8,7 @@
       <VBtn variant="outlined" @click="doVerify" :text="t('do-verify')" />
     </VAlert>
     <VRow v-else>
-      <VCol v-for="method of login.state.value.providers" :key="method">
+      <VCol v-for="method of login.state.value.providers" :key="method" cols="6">
         <VCard variant="outlined" :title="t(`provider-${method}`)">
           <component :is="components[method]" :userId="userId" />
         </VCard>
@@ -25,6 +25,7 @@ import { useI18n } from 'vue-i18n'
 import UserAuthIaaa from './UserAuthIaaa.vue'
 import UserAuthMail from './UserAuthMail.vue'
 import UserAuthPassword from './UserAuthPassword.vue'
+import UserAuthSms from './UserAuthSms.vue'
 
 import { useMfa } from '@/stores/app'
 import { enableMfa } from '@/utils/flags'
@@ -40,16 +41,13 @@ const { hasMfaToken, doVerify } = useMfa()
 const components: Record<string, Component> = {
   password: UserAuthPassword,
   mail: UserAuthMail,
-  iaaa: UserAuthIaaa
+  iaaa: UserAuthIaaa,
+  sms: UserAuthSms
 }
 
-const login = useAsyncState(
-  () => http.get('auth/login').json<{ providers: string[]; signup: boolean }>(),
-  {
-    providers: [],
-    signup: false
-  }
-)
+const login = useAsyncState(() => http.get('auth/verify').json<{ providers: string[] }>(), {
+  providers: []
+})
 </script>
 
 <i18n>
@@ -58,6 +56,7 @@ en:
   provider-password: Password Login
   provider-mail: Email Login
   provider-iaaa: IAAA Login
+  provider-sms: SMS Login
   mfa-required: MFA Required
   do-verify: Verify
 zh-Hans:
@@ -65,6 +64,7 @@ zh-Hans:
   provider-password: 密码登录
   provider-mail: 邮箱登录
   provider-iaaa: 北京大学统一身份认证
+  provider-sms: 短信登录
   mfa-required: 需要多因子身份认证
   do-verify: 开始认证
 </i18n>

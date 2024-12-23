@@ -186,6 +186,7 @@ msg:
   recommended-browsers: 推荐的浏览器
   registered: 已报名
   not-registered: 未报名
+  code-sent: 验证码已发送
 
 tabs:
   description: 描述

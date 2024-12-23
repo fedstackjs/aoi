@@ -6,6 +6,7 @@ import { BaseAuthProvider } from './base.js'
 import { IaaaAuthProvider } from './iaaa.js'
 import { MailAuthProvider } from './mail.js'
 import { PasswordAuthProvider } from './password.js'
+import { SMSAuthProvider } from './sms.js'
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -19,7 +20,8 @@ export const authProviderPlugin = fastifyPlugin(async (s) => {
   const authProviderList: Array<BaseAuthProvider> = [
     new PasswordAuthProvider(s.db.users),
     new MailAuthProvider(s.db.users, s.cache),
-    new IaaaAuthProvider(s.db.users)
+    new IaaaAuthProvider(s.db.users),
+    new SMSAuthProvider(s.db.users, s.cache)
   ].filter((p) => enabledAuthProviders.includes(p.name))
 
   await Promise.all(authProviderList.map((p) => p.init?.()))

@@ -14,6 +14,7 @@ export interface IUserAuthSources {
   password?: string
   passwordResetDue?: boolean
   mail?: string
+  sms?: string
   iaaaId?: string
   iaaaInfo?: IAAAUserInfo
 }

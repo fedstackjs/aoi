@@ -99,6 +99,60 @@ describe('condition', () => {
     assert.equal(evaluateCondition('abc', { $endsWith: 'b' }), false)
     assert.equal(evaluateCondition(1, { $endsWith: '1' }), true)
   })
+
+  it('should work with $includes', () => {
+    assert.equal(evaluateCondition([1, 2, 3], { $includes: 1 }), true)
+    assert.equal(evaluateCondition([1, 2, 3], { $includes: 4 }), false)
+    // @ts-expect-error: invalid condition
+    assert.equal(evaluateCondition(1, { $includes: 1 }), false)
+  })
+
+  it('should work with $includesEach', () => {
+    assert.equal(evaluateCondition([1, 2, 3], { $includesEach: [1, 2] }), true)
+    assert.equal(evaluateCondition([1, 2, 3], { $includesEach: [1, 4] }), false)
+    // @ts-expect-error: invalid condition
+    assert.equal(evaluateCondition(1, { $includesEach: [1] }), false)
+  })
+
+  it('should work with $includesSome', () => {
+    assert.equal(evaluateCondition([1, 2, 3], { $includesSome: [1, 4] }), true)
+    assert.equal(evaluateCondition([1, 2, 3], { $includesSome: [4, 5] }), false)
+    // @ts-expect-error: invalid condition
+    assert.equal(evaluateCondition(1, { $includesSome: [1] }), false)
+  })
+
+  it('should work with $notStartsWith', () => {
+    assert.equal(evaluateCondition('abc', { $notStartsWith: 'a' }), false)
+    assert.equal(evaluateCondition('abc', { $notStartsWith: 'b' }), true)
+    assert.equal(evaluateCondition(1, { $notStartsWith: '1' }), false)
+  })
+
+  it('should work with $notEndsWith', () => {
+    assert.equal(evaluateCondition('abc', { $notEndsWith: 'c' }), false)
+    assert.equal(evaluateCondition('abc', { $notEndsWith: 'b' }), true)
+    assert.equal(evaluateCondition(1, { $notEndsWith: '1' }), false)
+  })
+
+  it('should work with $notIncludes', () => {
+    assert.equal(evaluateCondition([1, 2, 3], { $notIncludes: 1 }), false)
+    assert.equal(evaluateCondition([1, 2, 3], { $notIncludes: 4 }), true)
+    // @ts-expect-error: invalid condition
+    assert.equal(evaluateCondition(1, { $notIncludes: 1 }), true)
+  })
+
+  it('should work with $notIncludesEach', () => {
+    assert.equal(evaluateCondition([1, 2, 3], { $notIncludesEach: [1, 2] }), false)
+    assert.equal(evaluateCondition([1, 2, 3], { $notIncludesEach: [1, 4] }), true)
+    // @ts-expect-error: invalid condition
+    assert.equal(evaluateCondition(1, { $notIncludesEach: [1] }), true)
+  })
+
+  it('should work with $notIncludesSome', () => {
+    assert.equal(evaluateCondition([1, 2, 3], { $notIncludesSome: [1, 4] }), false)
+    assert.equal(evaluateCondition([1, 2, 3], { $notIncludesSome: [4, 5] }), true)
+    // @ts-expect-error: invalid condition
+    assert.equal(evaluateCondition(1, { $notIncludesSome: [1] }), true)
+  })
 })
 
 describe('matcher', () => {

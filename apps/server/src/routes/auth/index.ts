@@ -11,7 +11,8 @@ const signupEnabled = loadEnv('SIGNUP_ENABLED', parseBoolean, true)
 export const authRoutes = defineRoutes(async (s) => {
   const { users, orgMemberships, infos } = s.db
   const authProviders = s.authProviders
-  const providerNames = Object.keys(authProviders)
+  const loginProviders = Object.keys(authProviders).filter((name) => authProviders[name].login)
+  const verifyProviders = Object.keys(authProviders).filter((name) => authProviders[name].verify)
 
   s.addHook('onRoute', (route) => {
     ;(route.schema ??= {}).security ??= []
@@ -31,7 +32,7 @@ export const authRoutes = defineRoutes(async (s) => {
       }
     },
     async () => {
-      return { providers: providerNames, signup: signupEnabled }
+      return { providers: loginProviders, signup: signupEnabled }
     }
   )
 
@@ -73,9 +74,27 @@ export const authRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const { provider, payload } = req.body
       if (!Object.hasOwn(authProviders, provider)) return rep.badRequest()
-      const [userId, tags] = await authProviders[provider].login(payload, req, rep)
+      const impl = authProviders[provider]
+      if (!impl.login) return rep.badRequest()
+      const [userId, tags] = await impl.login(payload, req, rep)
       const token = await rep.jwtSign({ userId: userId.toString(), tags }, { expiresIn: '7d' })
       return { token }
+    }
+  )
+
+  s.get(
+    '/verify',
+    {
+      schema: {
+        response: {
+          200: T.Object({
+            providers: T.Array(T.String())
+          })
+        }
+      }
+    },
+    async () => {
+      return { providers: verifyProviders }
     }
   )
 
