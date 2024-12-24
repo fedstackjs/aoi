@@ -18,6 +18,10 @@ router.beforeEach((to, from, next) => {
   const appState = useAppState()
   if (to.path.startsWith('/org') && !appState.loggedIn)
     return next({ path: '/auth/login', query: { redirect: to.fullPath } })
+  if (to.path.includes(':self') && !appState.loggedIn)
+    return next({ path: '/auth/login', query: { redirect: to.fullPath } })
+  if (to.path.includes(':self'))
+    return next({ path: to.path.replace(':self', appState.userId), query: to.query, hash: to.hash })
   return next()
 })
 

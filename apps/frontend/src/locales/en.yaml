@@ -187,6 +187,8 @@ msg:
   recommended-browsers: Recommended web browsers
   registered: Registered
   not-registered: Not Registered
+  code-sent: Verification code sent
+  tips: Tips
 
 tabs:
   description: Description
