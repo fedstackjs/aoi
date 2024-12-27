@@ -3,13 +3,23 @@
     <VTextField
       v-model="newPhone"
       prepend-inner-icon="mdi-phone"
+      :readonly="codeSent"
       :label="t('term.telephone')"
       :rules="phoneRules"
     />
     <div id="vaptcha"></div>
-    <VOtpInput v-if="token" v-model.trim="code" />
+    <VOtpInput v-if="codeSent" v-model.trim="code" />
   </VCardText>
   <VCardActions>
+    <VBtn
+      variant="elevated"
+      color="info"
+      :disabled="!token || !phoneValid || codeSent"
+      :loading="sendTask.isLoading.value"
+      @click="sendTask.execute(token)"
+    >
+      {{ t('action.send-otp') }}
+    </VBtn>
     <VBtn
       variant="elevated"
       @click="updateTask.execute()"
@@ -22,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRef } from 'vue'
+import { computed, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useChangePhone } from '@/utils/user/sms'
@@ -33,15 +43,8 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const { newPhone, code, token, sendTask, updateTask } = useChangePhone(toRef(props, 'userId'))
-
-const phoneRules = [
-  (value: string) => {
-    const re = /^1\d{10}$/
-    if (re.test(value)) return true
-    return t('hint.violate-phone-rule')
-  }
-]
+const { newPhone, code, token, sendTask, updateTask, phoneRules, phoneValid, codeSent } =
+  useChangePhone(toRef(props, 'userId'))
 </script>
 
 <i18n>

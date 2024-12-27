@@ -55,6 +55,7 @@ action:
   fullscreen: 全屏
   recommend-problem: 推荐题目
   select: 选择
+  send-otp: 发送验证码
 
 term:
   content: 内容
