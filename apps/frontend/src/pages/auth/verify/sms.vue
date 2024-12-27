@@ -16,7 +16,14 @@
 
     <VCardActions class="u-space-x-2">
       <div class="u-flex-1">
-        <VBtn :disabled="!token || !phoneValid || codeSent" color="info" block variant="flat">
+        <VBtn
+          :disabled="!token || !phoneValid || codeSent"
+          :loading="isSending"
+          color="info"
+          block
+          variant="flat"
+          @click="preVerify"
+        >
           {{ t('action.send-otp') }}
         </VBtn>
       </div>
@@ -62,12 +69,14 @@ const phoneRules = [
   }
 ]
 
-const isLoading = ref(false)
 const phoneValid = computed(() => phoneRules.every((rule) => rule(phone.value) === true))
+const isLoading = ref(false)
+const isSending = ref(false)
 const codeSent = ref(false)
 
 async function preVerify() {
   if (!phoneValid.value) return
+  isSending.value = true
   try {
     await http.post('auth/preVerify', {
       json: {
@@ -83,6 +92,7 @@ async function preVerify() {
   } catch (err) {
     toast.error(t('hint.sms-send-failed', { msg: await prettyHTTPError(err) }))
   }
+  isSending.value = false
 }
 
 async function verify(ev: SubmitEventPromise) {
