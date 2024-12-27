@@ -70,7 +70,7 @@ function decoratedVerifyMfa(this: FastifyRequest, token: string): string {
 }
 
 export const apiRoutes = defineRoutes(async (s) => {
-  s.decorateRequest('_container', null)
+  s.decorateRequest('_container')
   s.decorateRequest('provide', decoratedProvide)
   s.decorateRequest('inject', decoratedInject)
   s.decorateRequest('loadMembership', decoratedLoadMembership)

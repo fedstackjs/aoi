@@ -17,7 +17,7 @@ if (trustProxy) {
 }
 
 const server = fastify({
-  logger,
+  loggerInstance: logger,
   trustProxy
 })
 
