@@ -55,6 +55,7 @@ action:
   fullscreen: Fullscreen
   recommend-problem: Recommend Problem
   select: Select
+  send-otp: Send OTP
 
 term:
   content: Content
