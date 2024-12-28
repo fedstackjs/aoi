@@ -6,30 +6,45 @@
         prepend-inner-icon="mdi-phone"
         :label="t('term.telephone')"
         :rules="phoneRules"
+        :readonly="codeSent"
       />
 
       <div id="vaptcha"></div>
 
-      <VOtpInput v-if="token" v-model.trim="code" />
+      <VOtpInput v-if="codeSent" v-model.trim="code" />
     </VCardText>
 
-    <VCardActions v-if="token">
-      <VBtn
-        :disabled="code.length !== 6"
-        :loading="isLoading"
-        type="submit"
-        color="primary"
-        block
-        variant="flat"
-      >
-        {{ t('pages.verify') }}
-      </VBtn>
+    <VCardActions class="u-space-x-2">
+      <div class="u-flex-1">
+        <VBtn
+          :disabled="!token || !phoneValid || codeSent"
+          :loading="isSending"
+          color="info"
+          block
+          variant="flat"
+          @click="preVerify"
+        >
+          {{ t('action.send-otp') }}
+        </VBtn>
+      </div>
+      <div class="u-flex-1">
+        <VBtn
+          :disabled="!token || code.length !== 6"
+          :loading="isLoading"
+          type="submit"
+          color="primary"
+          block
+          variant="flat"
+        >
+          {{ t('pages.verify') }}
+        </VBtn>
+      </div>
     </VCardActions>
   </VForm>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'vue-toastification'
 import type { SubmitEventPromise } from 'vuetify'
@@ -54,9 +69,14 @@ const phoneRules = [
   }
 ]
 
+const phoneValid = computed(() => phoneRules.every((rule) => rule(phone.value) === true))
 const isLoading = ref(false)
+const isSending = ref(false)
+const codeSent = ref(false)
 
 async function preVerify() {
+  if (!phoneValid.value) return
+  isSending.value = true
   try {
     await http.post('auth/preVerify', {
       json: {
@@ -67,10 +87,12 @@ async function preVerify() {
         }
       }
     })
+    codeSent.value = true
     toast.success(t('hint.sms-sent'))
   } catch (err) {
     toast.error(t('hint.sms-send-failed', { msg: await prettyHTTPError(err) }))
   }
+  isSending.value = false
 }
 
 async function verify(ev: SubmitEventPromise) {
