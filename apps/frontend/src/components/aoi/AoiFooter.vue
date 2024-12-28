@@ -1,8 +1,8 @@
 <template>
   <VFooter app absolute>
     <VRow no-gutters>
-      <VCol cols="12" class="text-center" v-if="extraFooterText">
-        <span>{{ extraFooterText }}</span>
+      <VCol cols="12" class="text-center" v-if="extraFooter">
+        <div v-html="extraFooter" />
       </VCol>
       <VCol cols="12" class="text-center text-caption u-opacity-70">
         <I18nT keypath="powered-by">
@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
-import { extraFooterText } from '@/utils/flags'
+import { extraFooter } from '@/utils/flags'
 
 const { t } = useI18n()
 </script>

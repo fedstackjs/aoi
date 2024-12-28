@@ -13,7 +13,7 @@
               AOI-UI v{{ appBuildInfo.version }}
             </div>
             <div class="u-text-xs u-font-mono u-tracking-tighter u-text-blue-900">
-              {{ appBuildInfo.hash }}@{{ appBuildInfo.branch }}
+              {{ appBuildInfo.hash }}
             </div>
           </div>
         </VBtn>

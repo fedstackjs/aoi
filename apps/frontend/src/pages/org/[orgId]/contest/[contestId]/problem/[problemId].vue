@@ -1,67 +1,136 @@
 <template>
   <AsyncState v-if="contestProblem" :state="problem" hide-when-loading>
     <template v-slot="{ value }">
-      <VCard :class="$style.header">
-        <VCardTitle>
-          <div class="d-flex justify-space-between align-center">
-            <div>
-              <span class="text-h4">{{ value.title }}</span>
-            </div>
-            <div>
-              <VChipGroup class="justify-end">
-                <VChip v-for="tag in value.tags" class="mx-2" :key="tag">
-                  {{ tag }}
-                </VChip>
-              </VChipGroup>
+      <div v-intersect="{ handler: onIntersect, options: { rootMargin } }"></div>
+      <VCard :class="$style.header" :density="shrinkHeader ? 'compact' : 'default'">
+        <VFadeTransition mode="out-in">
+          <div v-if="shrinkHeader">
+            <VCardTitle class="pb-0">
+              <div class="d-flex justify-space-between align-center">
+                <div>
+                  <span class="text-h6">{{ value.title }}</span>
+                </div>
+                <div>
+                  <VChipGroup class="justify-end">
+                    <VChip v-for="tag in value.tags" class="mx-2" :key="tag" density="compact">
+                      {{ tag }}
+                    </VChip>
+                  </VChipGroup>
+                </div>
+              </div>
+            </VCardTitle>
+            <div class="d-flex justify-space-between align-center">
+              <VTabs v-model="currentTab" density="compact">
+                <VTab prepend-icon="mdi-book-outline" value="desc">
+                  {{ t('tabs.problem-description') }}
+                </VTab>
+                <VTab
+                  prepend-icon="mdi-upload-outline"
+                  value="submit"
+                  v-if="value.config && (settings.solutionEnabled || admin)"
+                >
+                  {{ t('tabs.submit') }}
+                </VTab>
+                <VTab
+                  prepend-icon="mdi-timer-sand"
+                  :to="{
+                    path: `/org/${orgId}/contest/${contestId}/solution`,
+                    query: { problemId }
+                  }"
+                >
+                  {{ t('tabs.solutions') }}
+                </VTab>
+                <VTab prepend-icon="mdi-attachment" value="attachments">
+                  {{ t('tabs.attachments') }}
+                </VTab>
+                <VTab prepend-icon="mdi-cog-outline" value="management" v-if="admin">
+                  {{ t('tabs.management') }}
+                </VTab>
+              </VTabs>
+              <div class="u-flex u-px-2 u-space-x-2">
+                <VChip
+                  color="info"
+                  variant="outlined"
+                  prepend-icon="mdi-star-four-points"
+                  density="compact"
+                  :text="'' + contestProblem.settings.score"
+                />
+                <VChip
+                  :color="solutionCountLimit.color"
+                  variant="outlined"
+                  prepend-icon="mdi-format-vertical-align-top"
+                  density="compact"
+                  :text="'' + solutionCountLimit.limit"
+                />
+              </div>
             </div>
           </div>
-          <div class="d-flex u-gap-2 pt-2">
-            <VChip
-              color="info"
-              variant="outlined"
-              prepend-icon="mdi-star-four-points"
-              :text="t('score', { score: contestProblem.settings.score })"
-            />
-            <VChip
-              :color="solutionCountLimit.color"
-              variant="outlined"
-              prepend-icon="mdi-format-vertical-align-top"
-              :text="t('solution-count-limit', { limit: solutionCountLimit.limit })"
-            />
-            <VChip
-              v-if="admin"
-              color="primary"
-              variant="outlined"
-              prepend-icon="mdi-arrow-top-left"
-              :text="t('jump-to-problem')"
-              :to="`/org/${orgId}/problem/${problemId}`"
-            />
+          <div v-else>
+            <VCardTitle>
+              <div class="d-flex justify-space-between align-center">
+                <div>
+                  <span class="text-h4">{{ value.title }}</span>
+                </div>
+                <div>
+                  <VChipGroup class="justify-end">
+                    <VChip v-for="tag in value.tags" class="mx-2" :key="tag">
+                      {{ tag }}
+                    </VChip>
+                  </VChipGroup>
+                </div>
+              </div>
+              <div class="d-flex u-space-x-2 pt-2">
+                <VChip
+                  color="info"
+                  variant="outlined"
+                  prepend-icon="mdi-star-four-points"
+                  :text="t('score', { score: contestProblem.settings.score })"
+                />
+                <VChip
+                  :color="solutionCountLimit.color"
+                  variant="outlined"
+                  prepend-icon="mdi-format-vertical-align-top"
+                  :text="t('solution-count-limit', { limit: solutionCountLimit.limit })"
+                />
+                <VChip
+                  v-if="admin"
+                  color="primary"
+                  variant="outlined"
+                  prepend-icon="mdi-arrow-top-left"
+                  :text="t('jump-to-problem')"
+                  :to="`/org/${orgId}/problem/${problemId}`"
+                />
+              </div>
+            </VCardTitle>
+            <VTabs v-model="currentTab">
+              <VTab prepend-icon="mdi-book-outline" value="desc">
+                {{ t('tabs.problem-description') }}
+              </VTab>
+              <VTab
+                prepend-icon="mdi-upload-outline"
+                value="submit"
+                v-if="value.config && (settings.solutionEnabled || admin)"
+              >
+                {{ t('tabs.submit') }}
+              </VTab>
+              <VTab
+                prepend-icon="mdi-timer-sand"
+                :to="{
+                  path: `/org/${orgId}/contest/${contestId}/solution`,
+                  query: { problemId }
+                }"
+              >
+                {{ t('tabs.solutions') }}
+              </VTab>
+              <VTab prepend-icon="mdi-attachment" value="attachments">
+                {{ t('tabs.attachments') }}
+              </VTab>
+              <VTab prepend-icon="mdi-cog-outline" value="management" v-if="admin">
+                {{ t('tabs.management') }}
+              </VTab>
+            </VTabs>
           </div>
-        </VCardTitle>
-        <VTabs v-model="currentTab">
-          <VTab prepend-icon="mdi-book-outline" value="desc">
-            {{ t('tabs.problem-description') }}
-          </VTab>
-          <VTab
-            prepend-icon="mdi-upload-outline"
-            value="submit"
-            v-if="value.config && (settings.solutionEnabled || admin)"
-          >
-            {{ t('tabs.submit') }}
-          </VTab>
-          <VTab
-            prepend-icon="mdi-timer-sand"
-            :to="{ path: `/org/${orgId}/contest/${contestId}/solution`, query: { problemId } }"
-          >
-            {{ t('tabs.solutions') }}
-          </VTab>
-          <VTab prepend-icon="mdi-attachment" value="attachments">
-            {{ t('tabs.attachments') }}
-          </VTab>
-          <VTab prepend-icon="mdi-cog-outline" value="management" v-if="admin">
-            {{ t('tabs.management') }}
-          </VTab>
-        </VTabs>
+        </VFadeTransition>
       </VCard>
       <VCard class="mt-2">
         <VWindow v-model="currentTab">
@@ -93,7 +162,7 @@
 import { useAsyncState } from '@vueuse/core'
 import { ref, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useLayout } from 'vuetify'
+import { useDisplay, useLayout } from 'vuetify'
 
 import ProblemTabAdmin from '@/components/contest/ProblemTabAdmin.vue'
 import ProblemTabAttachments from '@/components/contest/ProblemTabAttachments.vue'
@@ -133,6 +202,13 @@ const problem = useAsyncState(async () => {
 
 const app = useAppState()
 const layout = useLayout()
+const display = useDisplay()
+const rootMargin = computed(() => `-${layout.mainRect.value.top}px 0px 0px 0px`)
+const shouldShrinkHeader = ref(false)
+const shrinkHeader = computed(() => display.lgAndDown.value && shouldShrinkHeader.value)
+function onIntersect(isIntersecting: boolean) {
+  shouldShrinkHeader.value = !isIntersecting
+}
 
 const solutionCount = useAsyncState(
   async () => {
