@@ -1,12 +1,18 @@
 <template>
-  <VAppBar border>
+  <VAppBar border :density="appState.navBarExtension ? 'compact' : 'default'">
     <VAppBarNavIcon @click="appState.navBar = !appState.navBar" />
     <VToolbarItems>
       <VBtn to="/" rounded="lg" :active="false">
         <template #prepend>
-          <VIcon size="48"><AoiLogo /></VIcon>
+          <VIcon :size="appState.navBarExtension ? '32' : '48'">
+            <AoiLogo />
+          </VIcon>
         </template>
-        <div v-if="mdAndUp" class="text-none u-pl-4 u-font-mono u-text-3xl">
+        <div
+          v-if="mdAndUp"
+          class="text-none u-pl-4 u-font-mono"
+          :class="[appState.navBarExtension ? 'u-text-2xl' : 'u-text-3xl']"
+        >
           {{ appName }}
         </div>
       </VBtn>
