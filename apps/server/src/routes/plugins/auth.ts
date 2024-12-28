@@ -12,12 +12,12 @@ export const apiUserAuthPlugin = fastifyPlugin(async (s) => {
       // Only allow tagged routes
       if (req.user.tags) {
         const tags = new Set(req.user.tags)
-        if (!req.routeOptions.schema.tags?.some((tag) => tags.has(tag))) return rep.forbidden()
+        if (!req.routeOptions.schema?.tags?.some((tag) => tags.has(tag))) return rep.forbidden()
       }
     }
 
     // Check JWT
-    const { security } = req.routeOptions.schema
+    const security = req.routeOptions.schema?.security
     if (!security || security.some((sec) => Object.hasOwn(sec, 'bearerAuth'))) {
       if (!req.user) return rep.forbidden()
     }

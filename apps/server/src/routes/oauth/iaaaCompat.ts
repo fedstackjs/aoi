@@ -26,7 +26,7 @@ export const oauthIaaaCompatRoutes = defineRoutes(async (s) => {
       const params = new URLSearchParams()
       params.set('client_id', req.body.appID)
       params.set('redirect_uri', req.body.redirectUrl)
-      return rep.redirect(302, '/oauth/authorize' + '?' + params.toString())
+      return rep.redirect('/oauth/authorize' + '?' + params.toString(), 302)
     }
   )
 
