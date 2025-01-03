@@ -54,15 +54,15 @@ const login = useAsyncState(() => http.get('auth/verify').json<{ providers: stri
 en:
   user-auth: User Authentication
   provider-password: Password Login
-  provider-mail: Email Login
-  provider-iaaa: IAAA Login
-  provider-sms: SMS Login
+  provider-mail: Bind Email
+  provider-iaaa: Bind IAAA
+  provider-sms: Bind SMS
   mfa-required: MFA Required
   do-verify: Verify
 zh-Hans:
   user-auth: 用户认证
   provider-password: 密码登录
-  provider-mail: 邮箱登录
+  provider-mail: 绑定邮箱
   provider-iaaa: 北京大学统一身份认证
   provider-sms: 短信登录
   mfa-required: 需要多因子身份认证

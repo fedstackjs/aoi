@@ -1,5 +1,5 @@
 import { httpErrors } from '@fastify/sensible'
-import { validate } from '@lcpu/iaaa'
+import { IAAAUserInfo, validate } from '@lcpu/iaaa'
 import { TypeCompiler } from '@sinclair/typebox/compiler'
 import { FastifyRequest } from 'fastify'
 import { Collection, Filter, UUID } from 'mongodb'
@@ -40,6 +40,21 @@ export class IaaaAuthProvider extends BaseAuthProvider {
     )
   }
 
+  private _getEmail(info: IAAAUserInfo) {
+    if (info.identityType === '学生') {
+      const year = +info.identityId.slice(0, 2)
+      /**
+       * 2020年8月31日前入校的学生，邮箱账号为"学号@pku.edu.cn"
+       * 2020年8月31日之后入校的学生，邮箱账号为"学号@stu.pku.edu.cn"
+       * @see https://its.pku.edu.cn/service_1_mail.jsp
+       */
+      if (year >= 20) {
+        return `${info.identityId}@stu.pku.edu.cn`
+      }
+    }
+    return `${info.identityId}@pku.edu.cn`
+  }
+
   override async bind(userId: UUID, payload: unknown, req: FastifyRequest): Promise<unknown> {
     if (!TokenPayload.Check(payload)) throw httpErrors.badRequest()
     const resp = await validate(req.ip, this.iaaaId, this.iaaaKey, payload.token)
@@ -48,16 +63,27 @@ export class IaaaAuthProvider extends BaseAuthProvider {
     if (!this.allowRebind) {
       filter['authSources.iaaaId'] = { $exists: false }
     }
-    const { matchedCount } = await this.users.updateOne(filter, {
-      $set: {
-        'profile.realname': resp.userInfo.name,
-        'profile.school': '北京大学',
-        'profile.studentGrade': `${resp.userInfo.dept}${resp.userInfo.detailType}(${resp.userInfo.campus})`,
-        'authSources.iaaaId': resp.userInfo.identityId,
-        'authSources.iaaaInfo': resp.userInfo
-      },
-      $addToSet: { 'profile.verified': { $each: ['realname', 'school', 'studentGrade'] } }
-    })
+    const { matchedCount } = await this.users.updateOne(filter, [
+      {
+        $set: {
+          'profile.realname': resp.userInfo.name,
+          'profile.school': '北京大学',
+          'profile.studentGrade': `${resp.userInfo.dept}${resp.userInfo.detailType}(${resp.userInfo.campus})`,
+          'profile.email': {
+            $cond: {
+              if: { $in: ['email', '$profile.verified'] },
+              then: '$profile.email',
+              else: this._getEmail(resp.userInfo)
+            }
+          },
+          'profile.verified': {
+            $setUnion: ['$profile.verified', ['realname', 'school', 'studentGrade', 'email']]
+          },
+          'authSources.iaaaId': resp.userInfo.identityId,
+          'authSources.iaaaInfo': resp.userInfo
+        }
+      }
+    ])
     if (!matchedCount) return httpErrors.badRequest('User already bound')
     return {}
   }
