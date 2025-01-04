@@ -9,7 +9,9 @@
         :readonly="codeSent"
       />
 
-      <div id="vaptcha"></div>
+      <div class="u-flex u-justify-center">
+        <VueTurnstile v-model="token" :site-key="siteKey" />
+      </div>
 
       <VOtpInput v-if="codeSent" v-model.trim="code" />
     </VCardText>
@@ -47,16 +49,17 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'vue-toastification'
+import VueTurnstile from 'vue-turnstile'
 import type { SubmitEventPromise } from 'vuetify'
 
 import { useMfa } from '@/stores/app'
 import { http, prettyHTTPError } from '@/utils/http'
-import { useVaptcha } from '@/utils/vaptcha'
 
 const { t } = useI18n()
 const toast = useToast()
 const { postVerify } = useMfa()
-const { token } = useVaptcha({ onPass: preVerify })
+const token = ref('')
+const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY
 
 const phone = ref('')
 const code = ref('')
@@ -83,7 +86,9 @@ async function preVerify() {
         provider: 'sms',
         payload: {
           phone: phone.value,
-          token: token.value
+          context: {
+            cfTurnstileResponse: token.value
+          }
         }
       }
     })

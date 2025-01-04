@@ -285,6 +285,7 @@ __metadata:
     vue-router: "npm:^4.3.0"
     vue-toastification: "npm:next"
     vue-tsc: "npm:^2.0.13"
+    vue-turnstile: "npm:^1.0.11"
     vuetify: "npm:^3.5.7"
     webfontloader: "npm:^1.6.28"
     xlsx: "npm:^0.18.5"
@@ -11235,6 +11236,15 @@ __metadata:
   bin:
     vue-tsc: bin/vue-tsc.js
   checksum: 10/ce49110d64b1590221cce178c15870a366aaa0c5c0488cde9bea729f0dc9cc3d875e551cf684074f28ab558eead5af4517f28eb88d5bcf8faa356b9c0b9bfb78
+  languageName: node
+  linkType: hard
+
+"vue-turnstile@npm:^1.0.11":
+  version: 1.0.11
+  resolution: "vue-turnstile@npm:1.0.11"
+  peerDependencies:
+    vue: ^3.2.45
+  checksum: 10/5c556ea10a3fc9e7c983705b5ed8911ef87c73ac4574e302f31d009791dea1c2d0ca5e454020e49533d4e541028f42972e45e06d2df07f68bcb15aa0fafef48c
   languageName: node
   linkType: hard
 

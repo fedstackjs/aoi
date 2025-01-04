@@ -3,7 +3,6 @@ import { useI18n } from 'vue-i18n'
 
 import { noMessage, useAsyncTask, withMessage } from '../async'
 import { http } from '../http'
-import { useVaptcha } from '../vaptcha'
 
 import { useAppState } from '@/stores/app'
 
@@ -20,7 +19,6 @@ export function useChangePhone(userId: MaybeRef<string>) {
   ]
   const phoneValid = computed(() => phoneRules.every((rule) => rule(newPhone.value) === true))
   const app = useAppState()
-  const { token } = useVaptcha({ onPass: (token) => sendTask.execute(token) })
   const { t } = useI18n()
   const codeSent = ref(false)
 
@@ -31,7 +29,9 @@ export function useChangePhone(userId: MaybeRef<string>) {
         provider: 'sms',
         payload: {
           phone: newPhone.value,
-          token
+          context: {
+            cfTurnstileResponse: token
+          }
         },
         mfaToken: app.mfaToken
       }
@@ -51,5 +51,5 @@ export function useChangePhone(userId: MaybeRef<string>) {
       }
     })
   })
-  return { newPhone, code, token, sendTask, updateTask, phoneRules, phoneValid, codeSent }
+  return { newPhone, code, sendTask, updateTask, phoneRules, phoneValid, codeSent }
 }
