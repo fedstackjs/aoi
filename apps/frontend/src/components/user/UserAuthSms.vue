@@ -7,7 +7,7 @@
       :label="t('term.telephone')"
       :rules="phoneRules"
     />
-    <div id="vaptcha"></div>
+    <VueTurnstile v-model="token" :site-key="siteKey" />
     <VOtpInput v-if="codeSent" v-model.trim="code" />
   </VCardText>
   <VCardActions>
@@ -32,8 +32,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, toRef } from 'vue'
+import { ref, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
+import VueTurnstile from 'vue-turnstile'
 
 import { useChangePhone } from '@/utils/user/sms'
 
@@ -43,8 +44,11 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const { newPhone, code, token, sendTask, updateTask, phoneRules, phoneValid, codeSent } =
-  useChangePhone(toRef(props, 'userId'))
+const token = ref('')
+const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY
+const { newPhone, code, sendTask, updateTask, phoneRules, phoneValid, codeSent } = useChangePhone(
+  toRef(props, 'userId')
+)
 </script>
 
 <i18n>
