@@ -37,6 +37,16 @@
       :to="rel('participant')"
       :text="t('tabs.participant')"
     />
+    <template v-if="contest?.currentStage.settings.actions">
+      <VTab
+        v-for="action in contest.currentStage.settings.actions"
+        :key="action.title"
+        :to="action.target"
+        target="_blank"
+        :text="action.title"
+        :prepend-icon="action.icon ?? 'mdi-link'"
+      />
+    </template>
     <VTab
       v-show="showAdminTab"
       prepend-icon="mdi-cog-outline"
