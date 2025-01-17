@@ -1,5 +1,14 @@
 import { T, Static } from './common.js'
 
+export const SContestAction = T.StrictObject({
+  type: T.StringEnum(['link']),
+  icon: T.String({ maxLength: 1024 }),
+  title: T.String({ maxLength: 16 }),
+  target: T.String({ maxLength: 1024 })
+})
+
+export interface IContestAction extends Static<typeof SContestAction> {}
+
 export const SContestStage = T.StrictObject({
   name: T.String(),
   start: T.Integer(),
@@ -38,7 +47,9 @@ export const SContestStage = T.StrictObject({
             copyVerifiedFields: T.String()
           })
         )
-      )
+      ),
+      // Actions
+      actions: T.Optional(T.Array(SContestAction))
     })
   )
 })

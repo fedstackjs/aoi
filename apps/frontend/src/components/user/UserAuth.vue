@@ -64,7 +64,7 @@ zh-Hans:
   provider-password: 密码登录
   provider-mail: 绑定邮箱
   provider-iaaa: 北京大学统一身份认证
-  provider-sms: 短信登录
+  provider-sms: 绑定短信
   mfa-required: 需要多因子身份认证
   do-verify: 开始认证
 </i18n>

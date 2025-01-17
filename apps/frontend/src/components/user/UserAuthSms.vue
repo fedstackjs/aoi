@@ -24,7 +24,7 @@
       variant="elevated"
       @click="updateTask.execute()"
       :loading="updateTask.isLoading.value"
-      :disabled="!token || sendTask.isLoading.value"
+      :disabled="!token || code.length !== 6 || sendTask.isLoading.value"
     >
       {{ t('action.update') }}
     </VBtn>

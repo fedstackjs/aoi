@@ -1,4 +1,6 @@
 <template>
+  <VDivider />
+  <VCardSubtitle class="pl-0 pb-2">Settings</VCardSubtitle>
   <div class="u-grid u-grid-cols-3">
     <VCheckbox
       density="compact"
@@ -10,12 +12,32 @@
     />
   </div>
   <VDivider />
+  <VCardSubtitle class="pl-0 pb-2">Tag Rules</VCardSubtitle>
   <ContestStageTagRulesInput v-model="model.tagRules" />
+  <VDivider />
+  <VCardSubtitle class="pl-0 pb-2">Actions</VCardSubtitle>
+  <OptionalInput v-model="model.actions" :init="() => []">
+    <template v-slot="scoped">
+      <ListInput
+        v-model="scoped.value"
+        :init="() => ({ type: 'link', icon: '', title: '', target: '' }) as const"
+        label="Actions"
+      >
+        <template v-slot="scoped">
+          <ContestStageActionInput v-model="scoped.value" />
+        </template>
+      </ListInput>
+    </template>
+  </OptionalInput>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
+import ListInput from '../utils/ListInput.vue'
+import OptionalInput from '../utils/OptionalInput.vue'
+
+import ContestStageActionInput from './ContestStageActionInput.vue'
 import ContestStageTagRulesInput from './ContestStageTagRulesInput.vue'
 
 import type { IContestStage } from '@/types'

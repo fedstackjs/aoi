@@ -1,5 +1,7 @@
 import type { ProblemConfig } from '@aoi-js/common'
 
+import type { IContestStage } from '@/types'
+
 export interface IContestDTO {
   _id: string
   orgId: string
@@ -13,24 +15,7 @@ export interface IContestDTO {
   end: number
   stages: { name: string; start: number }[]
 
-  currentStage: {
-    name: string
-    start: number
-    settings: {
-      registrationEnabled: boolean
-      registrationAllowPublic: boolean
-      problemEnabled: boolean
-      problemShowTags: boolean
-      solutionEnabled: boolean
-      solutionAllowSubmit: boolean
-      solutionShowOther: boolean
-      solutionShowDetails: boolean
-      solutionShowOtherDetails: boolean
-      solutionShowOtherData: boolean
-      ranklistEnabled: boolean
-      participantEnabled: boolean
-    }
-  }
+  currentStage: IContestStage
 }
 
 export interface IContestProblemListDTO {
