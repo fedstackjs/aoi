@@ -1,6 +1,6 @@
 import type { ProblemConfig } from '@aoi-js/common'
 
-import type { IContestStage } from '@/types'
+import type { IContestProblemSettings, IContestStage } from '@/types'
 
 export interface IContestDTO {
   _id: string
@@ -22,12 +22,7 @@ export interface IContestProblemListDTO {
   _id: string
   title: string
   tags?: string[]
-  settings: {
-    score: number
-    slug: string
-    solutionCountLimit: number
-    showAfter: number
-  }
+  settings: IContestProblemSettings
 }
 
 export interface IContestProblemDTO {

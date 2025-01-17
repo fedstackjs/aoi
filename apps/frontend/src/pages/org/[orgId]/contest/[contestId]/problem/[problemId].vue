@@ -43,6 +43,16 @@
                 <VTab prepend-icon="mdi-attachment" value="attachments">
                   {{ t('tabs.attachments') }}
                 </VTab>
+                <template v-if="contestProblem.settings.actions">
+                  <VTab
+                    v-for="action in contestProblem.settings.actions"
+                    :key="action.title"
+                    :to="action.target"
+                    target="_blank"
+                    :text="action.title"
+                    :prepend-icon="action.icon ?? 'mdi-link'"
+                  />
+                </template>
                 <VTab prepend-icon="mdi-cog-outline" value="management" v-if="admin">
                   {{ t('tabs.management') }}
                 </VTab>
@@ -125,6 +135,16 @@
               <VTab prepend-icon="mdi-attachment" value="attachments">
                 {{ t('tabs.attachments') }}
               </VTab>
+              <template v-if="contestProblem.settings.actions">
+                <VTab
+                  v-for="action in contestProblem.settings.actions"
+                  :key="action.title"
+                  :to="action.target"
+                  target="_blank"
+                  :text="action.title"
+                  :prepend-icon="action.icon ?? 'mdi-link'"
+                />
+              </template>
               <VTab prepend-icon="mdi-cog-outline" value="management" v-if="admin">
                 {{ t('tabs.management') }}
               </VTab>

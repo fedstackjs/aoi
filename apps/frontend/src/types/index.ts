@@ -7,7 +7,8 @@ export type {
   IProblemSettings,
   IPlanSettings,
   IUserProfile,
-  IContestAction
+  IContestAction,
+  IContestProblemSettings
 } from '@aoi-js/server'
 
 export interface IProfile {
