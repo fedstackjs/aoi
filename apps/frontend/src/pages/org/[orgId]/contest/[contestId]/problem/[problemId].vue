@@ -43,19 +43,20 @@
                 <VTab prepend-icon="mdi-attachment" value="attachments">
                   {{ t('tabs.attachments') }}
                 </VTab>
-                <template v-if="contestProblem.settings.actions">
-                  <VTab
-                    v-for="action in contestProblem.settings.actions"
-                    :key="action.title"
-                    :to="action.target"
-                    target="_blank"
-                    :text="action.title"
-                    :prepend-icon="action.icon ?? 'mdi-link'"
-                  />
-                </template>
                 <VTab prepend-icon="mdi-cog-outline" value="management" v-if="admin">
                   {{ t('tabs.management') }}
                 </VTab>
+                <template v-if="contestProblem.settings.actions">
+                  <VBtn
+                    v-for="action in contestProblem.settings.actions"
+                    :key="action.title"
+                    :text="action.title"
+                    :prepend-icon="action.icon ?? 'mdi-link'"
+                    variant="text"
+                    class="align-self-center"
+                    @click="execute(action)"
+                  />
+                </template>
               </VTabs>
               <div class="u-flex u-px-2 u-space-x-2">
                 <VChip
@@ -135,19 +136,20 @@
               <VTab prepend-icon="mdi-attachment" value="attachments">
                 {{ t('tabs.attachments') }}
               </VTab>
-              <template v-if="contestProblem.settings.actions">
-                <VTab
-                  v-for="action in contestProblem.settings.actions"
-                  :key="action.title"
-                  :to="action.target"
-                  target="_blank"
-                  :text="action.title"
-                  :prepend-icon="action.icon ?? 'mdi-link'"
-                />
-              </template>
               <VTab prepend-icon="mdi-cog-outline" value="management" v-if="admin">
                 {{ t('tabs.management') }}
               </VTab>
+              <template v-if="contestProblem.settings.actions">
+                <VBtn
+                  v-for="action in contestProblem.settings.actions"
+                  :key="action.title"
+                  :text="action.title"
+                  :prepend-icon="action.icon ?? 'mdi-link'"
+                  variant="text"
+                  class="align-self-center"
+                  @click="execute(action)"
+                />
+              </template>
             </VTabs>
           </div>
         </VFadeTransition>
@@ -195,6 +197,7 @@ import ProblemSubmit from '@/components/problem/ProblemSubmit.vue'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'
 import { useAppState } from '@/stores/app'
+import { useContestAction } from '@/utils/contest/action'
 import { useContestCapability, useContestSettings } from '@/utils/contest/inject'
 import { http } from '@/utils/http'
 
@@ -274,6 +277,8 @@ watch(
     solutionCount.execute()
   }
 )
+
+const { execute } = useContestAction()
 </script>
 
 <style module>
