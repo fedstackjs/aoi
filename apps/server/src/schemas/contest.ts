@@ -1,7 +1,7 @@
 import { T, Static } from './common.js'
 
 export const SContestAction = T.StrictObject({
-  type: T.StringEnum(['link']),
+  type: T.StringEnum(['link', 'toast']),
   icon: T.String({ maxLength: 1024 }),
   title: T.String({ maxLength: 16 }),
   target: T.String({ maxLength: 1024 })

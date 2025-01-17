@@ -37,22 +37,23 @@
       :to="rel('participant')"
       :text="t('tabs.participant')"
     />
-    <template v-if="contest?.currentStage.settings.actions">
-      <VTab
-        v-for="action in contest.currentStage.settings.actions"
-        :key="action.title"
-        :to="action.target"
-        target="_blank"
-        :text="action.title"
-        :prepend-icon="action.icon ?? 'mdi-link'"
-      />
-    </template>
     <VTab
       v-show="showAdminTab"
       prepend-icon="mdi-cog-outline"
       :to="rel('admin')"
       :text="t('tabs.management')"
     />
+    <template v-if="contest?.currentStage.settings.actions">
+      <VBtn
+        v-for="action in contest.currentStage.settings.actions"
+        :key="action.title"
+        :text="action.title"
+        :prepend-icon="action.icon ?? 'mdi-link'"
+        variant="text"
+        class="align-self-center"
+        @click="execute(action)"
+      />
+    </template>
   </VTabs>
 </template>
 
@@ -63,6 +64,7 @@ import { useI18n } from 'vue-i18n'
 import ContestStageChip from './ContestStageChip.vue'
 
 import type { IContestDTO } from '@/components/contest/types'
+import { useContestAction } from '@/utils/contest/action'
 
 const { t } = useI18n()
 const props = defineProps<{
@@ -76,4 +78,6 @@ const props = defineProps<{
 
 const rel = (to: string) => `/org/${props.orgId}/contest/${props.contestId}/${to}`
 const now = useNow()
+
+const { execute } = useContestAction()
 </script>
