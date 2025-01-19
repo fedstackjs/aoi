@@ -16,6 +16,7 @@
       </ListInput>
     </template>
   </OptionalInput>
+  <VCheckbox v-model="model.disableSubmit" :label="t('disable-submit')" />
 </template>
 
 <script setup lang="ts">
@@ -34,6 +35,8 @@ const model = defineModel<IContestProblemSettings>({ required: true })
 <i18n>
 en:
   solution-count-limit: Solution Count Limit
+  disable-submit: Disable Submit
 zh-Hans:
   solution-count-limit: 提交记录数量限制
+  disable-submit: 禁止提交
 </i18n>

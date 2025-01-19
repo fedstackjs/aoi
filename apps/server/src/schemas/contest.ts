@@ -61,7 +61,8 @@ export const SContestProblemSettings = T.StrictObject({
   slug: T.String(),
   solutionCountLimit: T.Integer(),
   showAfter: T.Optional(T.Integer()),
-  actions: T.Optional(T.Array(SContestAction))
+  actions: T.Optional(T.Array(SContestAction)),
+  disableSubmit: T.Optional(T.Boolean())
 })
 
 export interface IContestProblemSettings extends Static<typeof SContestProblemSettings> {}

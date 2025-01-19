@@ -38,6 +38,7 @@ action:
   register: 注册
   refresh: 刷新
   copy: 复制
+  copy-for: 复制{what}
   add: 添加
   view: 查看
   publish: 发布
