@@ -60,6 +60,9 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
       if (!solutionAllowSubmit && !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {
         return rep.forbidden()
       }
+      const problemIds = ctx._contest.problems
+        .filter((problem) => !problem.settings.disableSubmit)
+        .map((problem) => problem.problemId)
 
       const solutionId = loadUUID(req.params, 'solutionId', s.httpErrors.badRequest())
       const admin = hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)
@@ -67,6 +70,7 @@ const solutionScopedRoutes = defineRoutes(async (s) => {
         {
           _id: solutionId,
           contestId: ctx._contestId,
+          problemId: admin ? undefined : { $in: problemIds },
           userId: admin ? undefined : req.user.userId,
           state: admin ? undefined : SolutionState.CREATED
         },

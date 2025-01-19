@@ -38,6 +38,7 @@ action:
   register: Register
   refresh: Refresh
   copy: Copy
+  copy-for: Copy {what}
   add: Add
   view: View
   publish: Publish

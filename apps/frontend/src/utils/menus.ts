@@ -1,6 +1,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { useToast } from 'vue-toastification'
 
 import { hasCapability, orgBits, useOrgCapability, useUserCapability, userBits } from './capability'
 
@@ -69,6 +70,7 @@ export function useAppUserMenu() {
   const router = useRouter()
   const { t } = useI18n()
   const app = useAppState()
+  const toast = useToast()
 
   return computed(() => [
     {
@@ -78,6 +80,16 @@ export function useAppUserMenu() {
       exact: true
     },
     { prependIcon: 'mdi-cog', to: `/user/${app.userId}/settings`, title: t('pages.user-settings') },
+    {
+      prependIcon: 'mdi-identifier',
+      title: t('action.copy-for', { what: t('term.user-id') }),
+      action: () => {
+        navigator.clipboard
+          .writeText(app.userId)
+          .then(() => toast.success(t('msg.operation-success')))
+          .catch((err) => toast.error(`${err}`))
+      }
+    },
     {
       prependIcon: 'mdi-logout',
       action: () => {
