@@ -190,6 +190,9 @@ msg:
   not-registered: 未报名
   code-sent: 验证码已发送
   tips: 温馨提示
+  manual-submit-hint: |
+    提交已经被禁用。点击提交按钮，您可以创建或更新一个草稿答案。
+    请放心，系统或管理员将稍后为您提交。
 
 tabs:
   description: 描述

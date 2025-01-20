@@ -13,6 +13,9 @@
         </VChip>
       </div>
     </VCardTitle>
+    <VCardText v-if="manualSubmit">
+      <VAlert type="info" :text="t('msg.manual-submit-hint')" />
+    </VCardText>
     <VTabs v-show="!submitting" v-model="currentTab">
       <VTab v-if="problem.config.submit.form" prepend-icon="mdi-form-textarea" value="form">
         {{ t('submit-form') }}

@@ -191,6 +191,9 @@ msg:
   not-registered: Not Registered
   code-sent: Verification code sent
   tips: Tips
+  manual-submit-hint: |
+    Solution submit is disabled for now, but you can create / update an draft solution,
+    which will be submitted later by the system.
 
 tabs:
   description: Description

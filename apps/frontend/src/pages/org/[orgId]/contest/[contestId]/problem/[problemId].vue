@@ -165,7 +165,9 @@
             <ProblemSubmit
               :contest-id="contestId"
               :problem="value"
-              :manual-submit="!settings.solutionAllowSubmit"
+              :manual-submit="
+                !settings.solutionAllowSubmit || contestProblem.settings.disableSubmit
+              "
             />
           </VWindowItem>
           <VWindowItem value="attachments">

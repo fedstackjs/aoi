@@ -41,10 +41,10 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
         body: T.Partial(
           T.Object(
             {
-              status: T.String(),
+              status: T.String({ maxLength: 32 }),
               score: T.Number({ minimum: 0, maximum: 100 }),
               metrics: T.Record(T.String(), T.Number()),
-              message: T.String()
+              message: T.String({ maxLength: 128 })
             },
             { additionalProperties: false }
           )

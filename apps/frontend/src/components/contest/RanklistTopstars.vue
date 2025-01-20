@@ -13,6 +13,7 @@ import { LineChart } from 'echarts/charts'
 import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
+import { watch } from 'vue'
 import VChart from 'vue-echarts'
 
 import AsyncState from '../utils/AsyncState.vue'
@@ -76,4 +77,10 @@ const option = useAsyncState(async () => {
     }
   }
 }, null)
+
+watch(
+  () => props.topstar,
+  () => option.execute(),
+  { deep: true }
+)
 </script>
