@@ -1,6 +1,6 @@
+#!/usr/bin/env node
 import { fastify } from 'fastify'
 
-import { authProviderPlugin } from '../auth/index.js'
 import { cachePlugin } from '../cache/index.js'
 import { ContestStatus, dbPlugin } from '../db/index.js'
 import { logger } from '../utils/logger.js'
@@ -9,7 +9,6 @@ const server = fastify({ loggerInstance: logger })
 
 await server.register(dbPlugin)
 await server.register(cachePlugin)
-await server.register(authProviderPlugin)
 
 server.post('/contest/update-status', async () => {
   const { db } = server
