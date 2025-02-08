@@ -240,7 +240,7 @@ export const contestAdminRoutes = defineRoutes(async (s) => {
 
       await contests.updateOne(
         { _id: req.inject(kContestContext)._contestId },
-        { $set: { stages, start, end } }
+        { $set: { stages, start, end, nextStatusUpdate: 0 } }
       )
       return {}
     }
