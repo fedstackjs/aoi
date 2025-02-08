@@ -6,7 +6,12 @@
       <div>{{ error }}</div>
     </details>
   </VAlert>
-  <ZipViewer v-else-if="zip" :zip="zip" :default-file="defaultFile" :show-metadata="showMetadata" />
+  <ArchiveViewer
+    v-else-if="zip"
+    :zip="zip"
+    :default-file="defaultFile"
+    :show-metadata="showMetadata"
+  />
 </template>
 
 <script setup lang="ts">
@@ -15,7 +20,7 @@ import { HTTPError } from 'ky'
 import { ref, shallowRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import ZipViewer from './ZipViewer.vue'
+import ArchiveViewer from './ArchiveViewer.vue'
 
 import { parseArchiveFile } from '@/utils/archive'
 import { noMessage, useAsyncTask } from '@/utils/async'
