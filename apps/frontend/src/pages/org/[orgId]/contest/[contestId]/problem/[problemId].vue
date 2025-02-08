@@ -27,7 +27,13 @@
                 <VTab
                   prepend-icon="mdi-upload-outline"
                   value="submit"
-                  v-if="value.config && (settings.solutionEnabled || admin)"
+                  v-if="
+                    value.config &&
+                    ((settings.solutionEnabled &&
+                      settings.problemAllowCreateSolution &&
+                      !contestProblem.settings.disableCreateSolution) ||
+                      admin)
+                  "
                 >
                   {{ t('tabs.submit') }}
                 </VTab>
@@ -120,7 +126,13 @@
               <VTab
                 prepend-icon="mdi-upload-outline"
                 value="submit"
-                v-if="value.config && (settings.solutionEnabled || admin)"
+                v-if="
+                  value.config &&
+                  ((settings.solutionEnabled &&
+                    settings.problemAllowCreateSolution &&
+                    !contestProblem.settings.disableCreateSolution) ||
+                    admin)
+                "
               >
                 {{ t('tabs.submit') }}
               </VTab>
