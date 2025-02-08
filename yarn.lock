@@ -338,6 +338,7 @@ __metadata:
       optional: true
   bin:
     aoi-server: lib/cli/index.js
+    aoi-server-updater: lib/cli/updater.js
   languageName: unknown
   linkType: soft
 

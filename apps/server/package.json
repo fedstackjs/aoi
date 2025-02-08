@@ -16,7 +16,8 @@
     "lib"
   ],
   "bin": {
-    "aoi-server": "lib/cli/index.js"
+    "aoi-server": "lib/cli/index.js",
+    "aoi-server-updater": "lib/cli/updater.js"
   },
   "dependencies": {
     "@aoi-js/common": "workspace:^",

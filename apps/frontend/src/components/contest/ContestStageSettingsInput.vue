@@ -53,6 +53,7 @@ const keys: {
   registrationAllowPublic: 'registration-allow-public',
   problemEnabled: 'problem-enabled',
   problemShowTags: 'problem-show-tags',
+  problemAllowCreateSolution: 'problem-allow-create-solution',
   solutionEnabled: 'solution-enabled',
   solutionAllowSubmit: 'solution-allow-submit',
   solutionShowOther: 'solution-show-other',
@@ -61,7 +62,8 @@ const keys: {
   solutionShowOtherData: 'solution-show-other-data',
   ranklistEnabled: 'ranklist-enabled',
   ranklistSkipCalculation: 'ranklist-skip-calculation',
-  participantEnabled: 'participant-enabled'
+  participantEnabled: 'participant-enabled',
+  forceRunning: 'force-running'
 }
 
 const entries = Object.entries(keys).map(([k, v]) => [
@@ -78,6 +80,7 @@ en:
     registration-allow-public: Registration Allow Public
     problem-enabled: Problem Enabled
     problem-show-tags: Problem Show Tags
+    problem-allow-create-solution: Problem Allow Create Solution
     solution-enabled: Solution Enabled
     solution-allow-submit: Solution Allow Submit
     solution-show-other: Solution Allow Other
@@ -87,11 +90,13 @@ en:
     ranklist-enabled: Ranklist Enabled
     ranklist-skip-calculation: Skip Ranklist Calculation
     participant-enabled: Participant Enabled
+    force-running: Force Running
   contest-stage-settings-hint:
     registration-enabled: Enable registration
     registration-allow-public: Allow public registration
     problem-enabled: Enable problem
     problem-show-tags: Show tags on problem
+    problem-allow-create-solution: Allow create solution
     solution-enabled: Enable solution
     solution-allow-submit: Allow submit
     solution-show-other: Allow show other
@@ -101,12 +106,14 @@ en:
     ranklist-enabled: Enable ranklist
     ranklist-skip-calculation: Skip ranklist calculation
     participant-enabled: Enable participant
+    force-running: Force running
 zh-Hans:
   contest-stage-settings:
     registration-enabled: 启用注册功能
     registration-allow-public: 允许公开注册
     problem-enabled: 启用题目
     problem-show-tags: 题目显示标签
+    problem-allow-create-solution: 允许创建解答
     solution-enabled: 启用提交记录
     solution-allow-submit: 允许提交
     solution-show-other: 允许展示他人提交记录
@@ -116,11 +123,13 @@ zh-Hans:
     ranklist-enabled: 启用排名
     ranklist-skip-calculation: 跳过排名计算
     participant-enabled: 启用参赛者
+    force-running: 强制为进行状态
   contest-stage-settings-hint:
     registration-enabled: 开启后，选手才可以报名
     registration-allow-public: 关闭后，只允许分配了报名权限的用户报名
     problem-enabled: 开启后，选手才可查看题目
     problem-show-tags: 关闭后，题目隐藏标签
+    problem-allow-create-solution: 开启后，选手才可以创建解答
     solution-enabled: 开启后，选手才可提交或查看提交
     solution-allow-submit: 开启后，选手才可以提交
     solution-show-other: 开启后，选手可以查看他人提交记录（仅状态）
@@ -130,4 +139,5 @@ zh-Hans:
     ranklist-enabled: 开启后，选手才可以查看排行榜
     ranklist-skip-calculation: 开启后，本阶段提交不计入排行榜（订正模式）
     participant-enabled: 开启后，选手才可以查看参赛者列表
+    force-running: 若不开启，当启用题目、允许提交、计算排行时方为进行状态
 </i18n>

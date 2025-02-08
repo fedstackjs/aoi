@@ -22,6 +22,8 @@ export const SContestStage = T.StrictObject({
       problemEnabled: T.Boolean(),
       // Show problem tags to participants
       problemShowTags: T.Boolean(),
+      // Allow participant to create solutions
+      problemAllowCreateSolution: T.Boolean(),
       // Show solutions to participants
       solutionEnabled: T.Boolean(),
       // Allow submit new solutions
@@ -41,15 +43,15 @@ export const SContestStage = T.StrictObject({
       // Show participants panel
       participantEnabled: T.Boolean(),
       // Participant tag rules
-      tagRules: T.Optional(
-        T.Partial(
-          T.StrictObject({
-            copyVerifiedFields: T.String()
-          })
-        )
+      tagRules: T.Partial(
+        T.StrictObject({
+          copyVerifiedFields: T.String()
+        })
       ),
       // Actions
-      actions: T.Optional(T.Array(SContestAction))
+      actions: T.Array(SContestAction),
+      // Force Running
+      forceRunning: T.Boolean()
     })
   )
 })
@@ -62,6 +64,7 @@ export const SContestProblemSettings = T.StrictObject({
   solutionCountLimit: T.Integer(),
   showAfter: T.Optional(T.Integer()),
   actions: T.Optional(T.Array(SContestAction)),
+  disableCreateSolution: T.Optional(T.Boolean()),
   disableSubmit: T.Optional(T.Boolean())
 })
 

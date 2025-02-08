@@ -164,8 +164,28 @@ const problemViewRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const ctx = req.inject(kContestContext)
       if (!ctx._contestParticipant) return rep.forbidden()
-      const { solutionEnabled } = ctx._contestStage.settings
-      if (!solutionEnabled && !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)) {
+      const { solutionEnabled, problemAllowCreateSolution } = ctx._contestStage.settings
+      // Check for contest settings
+      if (
+        !(solutionEnabled && problemAllowCreateSolution) &&
+        !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)
+      ) {
+        return rep.forbidden()
+      }
+
+      // Check for problem settings
+      const [problemId, settings] = loadProblemSettings(req)
+      if (!settings) {
+        return rep.notFound()
+      }
+      if (
+        !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN) &&
+        settings.showAfter &&
+        settings.showAfter > req._now
+      ) {
+        return rep.notFound()
+      }
+      if (settings.disableCreateSolution) {
         return rep.forbidden()
       }
 
@@ -175,15 +195,6 @@ const problemViewRoutes = defineRoutes(async (s) => {
       )
       const oss = org?.settings.oss
       if (!oss) return rep.preconditionFailed('OSS not configured')
-
-      const [problemId, settings] = loadProblemSettings(req)
-      if (!settings) return rep.notFound()
-      if (
-        !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN) &&
-        settings.showAfter &&
-        settings.showAfter > req._now
-      )
-        return rep.notFound()
 
       const problem = await problems.findOne(
         { _id: problemId },

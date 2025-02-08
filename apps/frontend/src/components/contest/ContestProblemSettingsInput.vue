@@ -16,6 +16,7 @@
       </ListInput>
     </template>
   </OptionalInput>
+  <VCheckbox v-model="model.disableCreateSolution" :label="t('disable-create-solution')" />
   <VCheckbox v-model="model.disableSubmit" :label="t('disable-submit')" />
 </template>
 
@@ -36,7 +37,9 @@ const model = defineModel<IContestProblemSettings>({ required: true })
 en:
   solution-count-limit: Solution Count Limit
   disable-submit: Disable Submit
+  disable-create-solution: Disable Create Solution
 zh-Hans:
   solution-count-limit: 提交记录数量限制
   disable-submit: 禁止提交
+  disable-create-solution: 禁止创建解答
 </i18n>
