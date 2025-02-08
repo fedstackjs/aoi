@@ -2,8 +2,8 @@ import { IAAAUserInfo } from '@lcpu/iaaa'
 import { fastifyPlugin } from 'fastify-plugin'
 import { BSON, Collection } from 'mongodb'
 
-import { capabilityMask } from '../index.js'
 import { IUserProfile } from '../schemas/index.js'
+import { capabilityMask } from '../utils/index.js'
 
 export const USER_CAPS = {
   CAP_ADMIN: capabilityMask(0),

@@ -1,7 +1,6 @@
 import { fastifyPlugin } from 'fastify-plugin'
 import { BSON, Collection } from 'mongodb'
 
-import { IUserProfile } from '../index.js'
 import {
   IContestProblemSettings,
   IContestRanklistSettings,
@@ -9,6 +8,7 @@ import {
   SContestParticipantRuleResult,
   SContestSolutionRuleResult
 } from '../schemas/contest.js'
+import { IUserProfile } from '../schemas/index.js'
 import { capabilityMask } from '../utils/capability.js'
 
 import {

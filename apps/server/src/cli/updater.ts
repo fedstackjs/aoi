@@ -132,7 +132,5 @@ startAsyncInterval(async () => {
   })
   if (resp.statusCode !== 200) {
     server.log.error(`Failed to update contest status: ${resp.payload}`)
-    return
   }
-  server.log.info('Contest status updated')
 }, 1000)
