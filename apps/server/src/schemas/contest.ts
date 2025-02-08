@@ -43,17 +43,15 @@ export const SContestStage = T.StrictObject({
       // Show participants panel
       participantEnabled: T.Boolean(),
       // Participant tag rules
-      tagRules: T.Optional(
-        T.Partial(
-          T.StrictObject({
-            copyVerifiedFields: T.String()
-          })
-        )
+      tagRules: T.Partial(
+        T.StrictObject({
+          copyVerifiedFields: T.String()
+        })
       ),
       // Actions
-      actions: T.Optional(T.Array(SContestAction)),
+      actions: T.Array(SContestAction),
       // Force Running
-      forceRunning: T.Optional(T.Boolean())
+      forceRunning: T.Boolean()
     })
   )
 })
