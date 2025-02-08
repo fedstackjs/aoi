@@ -81,6 +81,12 @@ export const contestRuleSchemas = {
   solution: SContestSolutionRuleResult
 }
 
+export enum ContestStatus {
+  PENDING = 0,
+  ENDED = 1,
+  RUNNING = 2
+}
+
 export interface IContest
   extends IPrincipalControlable,
     IWithAttachment,
@@ -101,6 +107,9 @@ export interface IContest
   ranklistTaskId?: BSON.UUID
 
   participantCount: number
+
+  status?: ContestStatus
+  nextStatusUpdate?: number
 
   rules?: RulesFromSchemas<
     typeof contestRuleSchemas,

@@ -165,7 +165,7 @@ export const contestRoutes = defineRoutes(async (s) => {
             participantCount: 1
           }
         },
-        { start: -1 }
+        { status: -1, start: -1 }
       )
       return result
     }
@@ -225,7 +225,7 @@ export const contestRoutes = defineRoutes(async (s) => {
             participantCount: 1
           }
         },
-        { start: -1 }
+        { status: -1, start: -1 }
       )
       return result
     }
