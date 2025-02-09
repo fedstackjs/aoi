@@ -55,8 +55,7 @@ server.post('/contest/update-status', async () => {
                     input: '$stages',
                     cond: {
                       $gte: [{ $convert: { input: '$$NOW', to: 'double' } }, '$$this.start']
-                    },
-                    limit: 1
+                    }
                   }
                 }
               },
