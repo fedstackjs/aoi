@@ -82,8 +82,8 @@ export const contestRuleSchemas = {
 }
 
 export enum ContestStatus {
-  PENDING = 0,
-  ENDED = 1,
+  ENDED = 0,
+  PENDING = 1,
   RUNNING = 2
 }
 
