@@ -23,6 +23,7 @@
     </VCardSubtitle>
     <VCardActions>
       <RanklistExportBtn :contestId="contestId" :ranklistKey="props.ranklistKey" />
+      <RanklistExportBtnV2 :contestId="contestId" :ranklistKey="props.ranklistKey" />
     </VCardActions>
     <VCardSubtitle>
       {{ t('term.danger-zone') }}
@@ -39,6 +40,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
 import RanklistExportBtn from './RanklistExportBtn.vue'
+import RanklistExportBtnV2 from './RanklistExportBtnV2.vue'
 import RanklistPublicSettings from './RanklistPublicSettings.vue'
 import RanklistSettingsInput from './RanklistSettingsInput.vue'
 
