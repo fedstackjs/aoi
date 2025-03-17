@@ -66,7 +66,7 @@ export const oauthIaaaCompatRoutes = defineRoutes(async (s) => {
     },
     async (req) => {
       const { remoteAddr, appId, token, msgAbs } = req.query
-      const { userId, tags } = req.verifyToken(token)
+      const { userId, tags } = await req.verifyToken(token)
       const tag = tags?.find((tag) => tag.startsWith(`.oauth.access_token.`))
       if (!tag || appId !== tag.slice(20) || !UUID.isValid(appId)) {
         return { success: false, errCode: '1', errMsg: '无效的appId' }

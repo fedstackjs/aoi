@@ -29,6 +29,20 @@ export function paramSchemaMerger(schema: TSchema) {
   }
 }
 
+export const allTags = [
+  'announcement',
+  'app',
+  'auth',
+  'contest',
+  'group',
+  'info',
+  'organization',
+  'plan',
+  'problem',
+  'solution',
+  'user'
+]
+
 export function swaggerTagMerger(...tags: string[]) {
   return (route: RouteOptions) => {
     const routeSchema = (route.schema ??= {})

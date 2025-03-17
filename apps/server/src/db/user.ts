@@ -17,6 +17,7 @@ export interface IUserAuthSources {
   sms?: string
   iaaaId?: string
   iaaaInfo?: IAAAUserInfo
+  uaaa?: string
 }
 
 export interface IUser {

@@ -87,7 +87,7 @@ export const runnerRoutes = defineRoutes(async (s) => {
       }
     },
     async (req) => {
-      const content = s.jwt.verify(req.body.registrationToken)
+      const content = await req.verify(req.body.registrationToken)
       if (!registrationPayload.Check(content)) throw s.httpErrors.badRequest()
       const orgId = loadUUID(content, 'orgId', s.httpErrors.badRequest())
       const runnerId = loadUUID(content, 'runnerId', s.httpErrors.badRequest())

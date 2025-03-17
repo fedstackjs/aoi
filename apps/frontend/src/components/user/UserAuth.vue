@@ -26,6 +26,7 @@ import UserAuthIaaa from './UserAuthIaaa.vue'
 import UserAuthMail from './UserAuthMail.vue'
 import UserAuthPassword from './UserAuthPassword.vue'
 import UserAuthSms from './UserAuthSms.vue'
+import UserAuthUaaa from './UserAuthUaaa.vue'
 
 import { useMfa } from '@/stores/app'
 import { enableMfa } from '@/utils/flags'
@@ -42,6 +43,7 @@ const components: Record<string, Component> = {
   password: UserAuthPassword,
   mail: UserAuthMail,
   iaaa: UserAuthIaaa,
+  uaaa: UserAuthUaaa,
   sms: UserAuthSms
 }
 
@@ -57,6 +59,7 @@ en:
   provider-mail: Bind Email
   provider-iaaa: Bind IAAA
   provider-sms: Bind SMS
+  provider-uaaa: UAAA Link
   mfa-required: MFA Required
   do-verify: Verify
 zh-Hans:
@@ -65,6 +68,7 @@ zh-Hans:
   provider-mail: 绑定邮箱
   provider-iaaa: 北京大学统一身份认证
   provider-sms: 绑定短信
+  provider-uaaa: 绑定统合身份认证
   mfa-required: 需要多因子身份认证
   do-verify: 开始认证
 </i18n>

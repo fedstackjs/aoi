@@ -19,7 +19,6 @@ import { planRoutes } from './plan/index.js'
 import {
   apiHealthPlugin,
   apiInjectPlugin,
-  apiJwtPlugin,
   apiRatelimitPlugin,
   apiUserAuthPlugin
 } from './plugins/index.js'
@@ -38,7 +37,7 @@ declare module 'fastify' {
     inject<T>(point: InjectionPoint<T>): T
     loadMembership(orgId: UUID): Promise<IOrgMembership | null>
     loadOss(orgId: UUID): Promise<IOrgOssSettings>
-    verifyMfa(token: string): string
+    verifyMfa(token: string): Promise<string>
   }
 }
 
@@ -58,9 +57,9 @@ async function decoratedLoadMembership(
   return this.server.db.orgMemberships.findOne({ userId: this.user.userId, orgId })
 }
 
-function decoratedVerifyMfa(this: FastifyRequest, token: string): string {
+async function decoratedVerifyMfa(this: FastifyRequest, token: string): Promise<string> {
   if (!this.user) throw this.server.httpErrors.forbidden()
-  const payload = this.verifyToken(token)
+  const payload = await this.verifyToken(token)
   if (!this.user.userId.equals(payload.userId)) throw this.server.httpErrors.forbidden()
   const tag = payload.tags?.find((tag) => tag.startsWith('.mfa.'))
   if (!tag) throw this.server.httpErrors.forbidden()
@@ -76,7 +75,6 @@ export const apiRoutes = defineRoutes(async (s) => {
   s.decorateRequest('loadMembership', decoratedLoadMembership)
   s.decorateRequest('verifyMfa', decoratedVerifyMfa)
 
-  await s.register(apiJwtPlugin)
   await s.register(apiInjectPlugin)
   await s.register(apiHealthPlugin)
 
