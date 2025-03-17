@@ -1,4 +1,5 @@
 import { fastifyFormbody } from '@fastify/formbody'
+import * as jose from 'jose'
 import { UUID } from 'mongodb'
 
 import { IOrgMembership, IUser } from '../../db/index.js'
@@ -51,7 +52,7 @@ export const oauthRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const { code, client_id, client_secret } = req.body
-      const { userId, tags } = req.verifyToken(code)
+      const { userId, tags } = await req.verifyToken(code)
       const tag = tags?.find((tag) => tag.startsWith(`.oauth.access_token.`))
       if (!tag) return rep.badRequest()
 
@@ -65,10 +66,14 @@ export const oauthRoutes = defineRoutes(async (s) => {
 
       const scopes = app.settings.scopes ?? ['user.details']
       const fullAccess = scopes.some((scope) => scope === '*')
-      const token = await rep.jwtSign(
-        { userId: userId.toString(), tags: fullAccess ? undefined : scopes },
-        { expiresIn: '7d' }
-      )
+      const jwt = new jose.SignJWT({
+        userId: userId.toString(),
+        tags: fullAccess ? undefined : scopes
+      })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime('7d')
+      const token = await rep.sign(jwt)
       let user: (Omit<IUser, 'capability'> & { capability?: string }) | undefined
       if (app.settings.attachUser) {
         const result = await users.findOne({ _id: new UUID(userId) })

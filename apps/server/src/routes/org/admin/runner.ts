@@ -1,3 +1,4 @@
+import * as jose from 'jose'
 import { BSON } from 'mongodb'
 
 import { T } from '../../../schemas/index.js'
@@ -24,7 +25,11 @@ export const orgAdminRunnerRoutes = defineRoutes(async (s) => {
         orgId: req.inject(kOrgContext)._orgId,
         runnerId: new BSON.UUID()
       }
-      const token = await rep.jwtSign(payload, { expiresIn: '5min' })
+      const jwt = new jose.SignJWT(payload)
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime('5min')
+      const token = await rep.sign(jwt)
       return { registrationToken: token }
     }
   )

@@ -1,3 +1,5 @@
+import * as jose from 'jose'
+
 import { APP_CAPS } from '../../db/index.js'
 import { T, SAppSettings } from '../../schemas/index.js'
 import { CAP_ALL, hasCapability } from '../../utils/index.js'
@@ -110,10 +112,11 @@ export const appScopedRoutes = defineRoutes(async (s) => {
       const tags = [`.oauth.access_token.${app._id}`]
       if (req.body.type === 'device') tags.push(`.oauth.bypass_secret`)
 
-      const token = await rep.jwtSign(
-        { userId: req.user.userId.toString(), tags },
-        { expiresIn: '1min' }
-      )
+      const jwt = new jose.SignJWT({ userId: req.user.userId.toString(), tags })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime('1min')
+      const token = await rep.sign(jwt)
       return { token }
     }
   )
