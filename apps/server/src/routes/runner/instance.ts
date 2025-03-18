@@ -49,6 +49,30 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
     })
   })
 
+  s.get(
+    '/',
+    {
+      schema: {
+        response: {
+          200: T.Object({
+            orgId: T.UUID(),
+            userId: T.UUID(),
+            problemId: T.UUID(),
+            contestId: T.Optional(T.UUID()),
+            state: T.Number(),
+            message: T.String()
+          })
+        }
+      }
+    },
+    async (req, rep) => {
+      const ctx = req.inject(kRunnerInstanceContext)
+      const instance = await instances.findOne({ _id: ctx._instanceId, taskId: ctx._taskId })
+      if (!instance) return rep.notFound()
+      return instance
+    }
+  )
+
   s.patch(
     '/',
     {
