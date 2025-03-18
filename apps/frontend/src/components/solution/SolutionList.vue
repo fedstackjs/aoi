@@ -39,7 +39,7 @@
       <PrincipalProfile :principal-id="item.userId" />
     </template>
     <template v-slot:[`item.problemTitle`]="{ item }">
-      <RouterLink :to="item.problemUrl" style="color: primary">
+      <RouterLink :to="item.problemUrl" class="text-primary">
         {{ item.problemTitle }}
       </RouterLink>
     </template>
