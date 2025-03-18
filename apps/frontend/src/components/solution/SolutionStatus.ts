@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 
 export interface ISolutionStatusProps {
-  status: string
+  status?: string
   to?: string
   abbrev?: boolean
   score?: number
@@ -20,7 +20,9 @@ export function useSolutionStatus(props: ISolutionStatusProps) {
     Running: ['mdi-play', 'indigo'],
     Queued: ['mdi-timer-sand', 'indigo']
   }
-  const display = computed(() => knownStatus[props.status] ?? ['mdi-circle-outline', 'warning'])
+  const display = computed(
+    () => knownStatus[props.status ?? ''] ?? ['mdi-circle-outline', 'warning']
+  )
   const status = computed(() => {
     const status = props.status || 'Unknown'
     if (!props.abbrev) return status

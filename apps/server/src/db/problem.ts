@@ -27,11 +27,11 @@ export interface IProblemStatus {
   _id: BSON.UUID
   problemId: BSON.UUID
   userId: BSON.UUID
-  solutionCount: number
-  instanceCount: number
-  lastSolutionId: BSON.UUID
-  lastSolutionScore: number
-  lastSolutionStatus: string
+  solutionCount?: number
+  instanceCount?: number
+  lastSolutionId?: BSON.UUID
+  lastSolutionScore?: number
+  lastSolutionStatus?: string
 }
 
 export interface IProblemData {

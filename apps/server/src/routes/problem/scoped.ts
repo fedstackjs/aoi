@@ -224,9 +224,9 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
 
       const org = await orgs.findOne(
         { _id: ctx._problem.orgId },
-        { projection: { 'settings.problemInstanceCount': 1 } }
+        { projection: { 'settings.problemInstanceLimit': 1 } }
       )
-      const totalSeats = org?.settings.problemInstanceCount
+      const totalSeats = org?.settings.problemInstanceLimit
       if (!totalSeats) return rep.preconditionFailed('Problem instance is disabled in organization')
 
       const { data, currentDataHash } = ctx._problem
@@ -244,6 +244,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
           {
             orgId: ctx._problem.orgId,
             userId: req.user.userId,
+            contestId: { $exists: false },
             state: { $ne: InstanceState.DESTROYED }
           },
           { projection: { slotNo: 1 } }

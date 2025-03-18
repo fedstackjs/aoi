@@ -11,6 +11,16 @@
       :messages="hint"
     />
   </div>
+  <VTextField
+    v-model.number="model.instanceLimit"
+    type="number"
+    min="0"
+    max="100"
+    label="Instance Limit"
+    density="compact"
+    hide-details
+    class="u-py-4"
+  />
   <VDivider />
   <VCardSubtitle class="pl-0 pb-2">Tag Rules</VCardSubtitle>
   <ContestStageTagRulesInput v-model="model.tagRules" />
@@ -63,7 +73,9 @@ const keys: {
   ranklistEnabled: 'ranklist-enabled',
   ranklistSkipCalculation: 'ranklist-skip-calculation',
   participantEnabled: 'participant-enabled',
-  forceRunning: 'force-running'
+  forceRunning: 'force-running',
+  instanceEnabled: 'instance-enabled',
+  instanceAllowCreate: 'instance-allow-create'
 }
 
 const entries = Object.entries(keys).map(([k, v]) => [
@@ -91,6 +103,8 @@ en:
     ranklist-skip-calculation: Skip Ranklist Calculation
     participant-enabled: Participant Enabled
     force-running: Force Running
+    instance-enabled: Instance Enabled
+    instance-allow-create: Instance Allow Create
   contest-stage-settings-hint:
     registration-enabled: Enable registration
     registration-allow-public: Allow public registration
@@ -107,6 +121,8 @@ en:
     ranklist-skip-calculation: Skip ranklist calculation
     participant-enabled: Enable participant
     force-running: Force running
+    instance-enabled: Enable instance
+    instance-allow-create: Allow create instance
 zh-Hans:
   contest-stage-settings:
     registration-enabled: 启用注册功能
@@ -124,6 +140,8 @@ zh-Hans:
     ranklist-skip-calculation: 跳过排名计算
     participant-enabled: 启用参赛者
     force-running: 强制为进行状态
+    instance-enabled: 启用题目实例功能
+    instance-allow-create: 允许创建题目实例
   contest-stage-settings-hint:
     registration-enabled: 开启后，选手才可以报名
     registration-allow-public: 关闭后，只允许分配了报名权限的用户报名
@@ -140,4 +158,6 @@ zh-Hans:
     ranklist-skip-calculation: 开启后，本阶段提交不计入排行榜（订正模式）
     participant-enabled: 开启后，选手才可以查看参赛者列表
     force-running: 若不开启，当启用题目、允许提交、计算排行时方为进行状态
+    instance-enabled: 开启后，选手才可以查看题目实例
+    instance-allow-create: 开启后，选手才可以创建题目实例
 </i18n>

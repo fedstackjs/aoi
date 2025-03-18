@@ -15,6 +15,6 @@ export interface IOrgOssSettings extends Static<typeof SOrgOssSettings> {}
 
 export const SOrgSettings = T.StrictObject({
   oss: T.Optional(SOrgOssSettings),
-  problemInstanceCount: T.Optional(T.Number())
+  problemInstanceLimit: T.Optional(T.Number())
 })
 export interface IOrgSettings extends Static<typeof SOrgSettings> {}

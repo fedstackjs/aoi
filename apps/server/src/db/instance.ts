@@ -45,9 +45,10 @@ export const dbInstancePlugin = fastifyPlugin(async (s) => {
       }
     }
   )
-  // An owner can only have one instance of a problem at a time
+
+  // Limiters
   await col.createIndex(
-    { orgId: 1, userId: 1, problemId: 1 },
+    { orgId: 1, userId: 1, contestId: 1, problemId: 1 },
     {
       unique: true,
       partialFilterExpression: {
@@ -56,7 +57,7 @@ export const dbInstancePlugin = fastifyPlugin(async (s) => {
     }
   )
   await col.createIndex(
-    { orgId: 1, userId: 1, slotNo: 1 },
+    { orgId: 1, userId: 1, contestId: 1, slotNo: 1 },
     {
       unique: true,
       partialFilterExpression: {

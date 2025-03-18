@@ -22,7 +22,12 @@
             </div>
           </div>
         </RouterLink>
-        <ProblemStatus :org-id="orgId" :problem-id="item._id" :status="item.status" />
+        <ProblemStatus
+          v-if="item.status?.lastSolutionId"
+          :org-id="orgId"
+          :problem-id="item._id"
+          :status="item.status"
+        />
       </div>
     </template>
     <template v-slot:[`item.accessLevel`]="{ item }">

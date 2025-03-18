@@ -52,6 +52,19 @@
                 <VTab prepend-icon="mdi-cog-outline" value="management" v-if="admin">
                   {{ t('tabs.management') }}
                 </VTab>
+                <InstanceCreateBtn
+                  v-if="
+                    value.config &&
+                    ((settings.instanceEnabled &&
+                      settings.instanceAllowCreate &&
+                      !contestProblem.settings.disableCreateInstance &&
+                      contestProblem.settings.maxInstanceCount) ||
+                      admin)
+                  "
+                  :org-id="orgId"
+                  :contest-id="contestId"
+                  :problem-id="problemId"
+                />
                 <template v-if="contestProblem.settings.actions">
                   <VBtn
                     v-for="action in contestProblem.settings.actions"
@@ -151,6 +164,19 @@
               <VTab prepend-icon="mdi-cog-outline" value="management" v-if="admin">
                 {{ t('tabs.management') }}
               </VTab>
+              <InstanceCreateBtn
+                v-if="
+                  value.config &&
+                  ((settings.instanceEnabled &&
+                    settings.instanceAllowCreate &&
+                    !contestProblem.settings.disableCreateInstance &&
+                    contestProblem.settings.maxInstanceCount) ||
+                    admin)
+                "
+                :org-id="orgId"
+                :contest-id="contestId"
+                :problem-id="problemId"
+              />
               <template v-if="contestProblem.settings.actions">
                 <VBtn
                   v-for="action in contestProblem.settings.actions"
@@ -205,6 +231,7 @@ import type {
   IContestProblemDTO,
   IContestProblemListDTO
 } from '@/components/contest/types'
+import InstanceCreateBtn from '@/components/instance/InstanceCreateBtn.vue'
 import ProblemSubmit from '@/components/problem/ProblemSubmit.vue'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import MarkdownRenderer from '@/components/utils/MarkdownRenderer.vue'

@@ -1,7 +1,7 @@
 import { SProblemConfigSchema } from '@aoi-js/common'
-import { BSON, Document } from 'mongodb'
+import { BSON, Document, MongoServerError } from 'mongodb'
 
-import { CONTEST_CAPS, SolutionState } from '../../../db/index.js'
+import { CONTEST_CAPS, InstanceState, SolutionState } from '../../../db/index.js'
 import { getUploadUrl, problemAttachmentKey, solutionDataKey } from '../../../oss/index.js'
 import { SContestProblemSettings } from '../../../schemas/contest.js'
 import { T } from '../../../schemas/index.js'
@@ -14,7 +14,7 @@ import { problemAdminRoutes } from './admin.js'
 import { loadProblemSettings } from './common.js'
 
 const problemViewRoutes = defineRoutes(async (s) => {
-  const { contestParticipants, problems, solutions, orgs } = s.db
+  const { contestParticipants, problems, solutions, orgs, instances } = s.db
 
   s.addHook('onRequest', async (req, rep) => {
     const ctx = req.inject(kContestContext)
@@ -280,6 +280,129 @@ const problemViewRoutes = defineRoutes(async (s) => {
         size: req.body.size
       })
       return { solutionId: insertedId, uploadUrl }
+    }
+  )
+
+  s.post(
+    '/:problemId/instance',
+    {
+      schema: {
+        description: 'Create an instance',
+        params: T.Object({
+          problemId: T.String()
+        }),
+        response: {
+          200: T.Object({
+            instanceId: T.UUID()
+          })
+        }
+      }
+    },
+    async (req, rep) => {
+      const ctx = req.inject(kContestContext)
+      if (!ctx._contestParticipant) return rep.forbidden()
+      const { instanceEnabled, instanceAllowCreate, instanceLimit } = ctx._contestStage.settings
+      // Check for contest settings
+      if (
+        !(instanceEnabled && instanceAllowCreate) &&
+        !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN)
+      ) {
+        return rep.forbidden()
+      }
+
+      // Check for problem settings
+      const [problemId, settings] = loadProblemSettings(req)
+      if (!settings) {
+        return rep.notFound()
+      }
+      if (
+        !hasCapability(ctx._contestCapability, CONTEST_CAPS.CAP_ADMIN) &&
+        settings.showAfter &&
+        settings.showAfter > req._now
+      ) {
+        return rep.notFound()
+      }
+      if (settings.disableCreateInstance || !settings.maxInstanceCount) {
+        return rep.forbidden()
+      }
+
+      if (!instanceLimit) return rep.preconditionFailed('Problem instance is disabled in contest')
+
+      const problem = await problems.findOne(
+        { _id: problemId },
+        { projection: { currentDataHash: 1, data: 1 } }
+      )
+      if (!problem) return rep.notFound()
+      const { data, currentDataHash } = problem
+      const currentData = data.find(({ hash }) => hash === currentDataHash)
+      if (!currentData) return rep.preconditionFailed('Current data not found')
+      const { config } = currentData
+      if (!config.instanceLabel || !config.instance) {
+        return rep.preconditionFailed('Instance config not found')
+      }
+
+      const existing = await instances
+        .find(
+          {
+            orgId: ctx._contest.orgId,
+            userId: req.user.userId,
+            contestId: ctx._contestId,
+            state: { $ne: InstanceState.DESTROYED }
+          },
+          { projection: { slotNo: 1 } }
+        )
+        .toArray()
+      if (existing.length >= instanceLimit) {
+        return rep.preconditionFailed('Instance limit reached')
+      }
+      let availableSlot = -1
+      for (let i = 0; i < instanceLimit; i++) {
+        if (!existing.some((x) => x.slotNo === i)) {
+          availableSlot = i
+          break
+        }
+      }
+      if (availableSlot === -1) {
+        return rep.preconditionFailed('Instance limit reached')
+      }
+
+      const { modifiedCount } = await contestParticipants.updateOne(
+        {
+          _id: ctx._contestParticipant._id,
+          $or: [
+            { [`results.${problemId}`]: { $exists: false } },
+            { [`results.${problemId}.solutionCount`]: { $lt: settings.maxInstanceCount } }
+          ]
+        },
+        { $inc: { [`results.${problemId}.solutionCount`]: 1 } }
+      )
+      if (!modifiedCount) return rep.preconditionFailed('Instance limit reached')
+
+      try {
+        const { insertedId } = await instances.insertOne(
+          {
+            _id: new BSON.UUID(),
+            orgId: ctx._contest.orgId,
+            contestId: ctx._contestId,
+            problemId,
+            userId: req.user.userId,
+            slotNo: availableSlot,
+            label: config.instanceLabel,
+            problemDataHash: currentDataHash,
+            state: InstanceState.PENDING,
+            message: '',
+            createdAt: req._now
+          },
+          { ignoreUndefined: true }
+        )
+        return { instanceId: insertedId }
+      } catch (err) {
+        // E11000 duplicate key error
+        if (err instanceof MongoServerError && err.code === 11000) {
+          return rep.preconditionFailed('Instance limit reached')
+        }
+        throw err
+      }
     }
   )
 })

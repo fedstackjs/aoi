@@ -25,7 +25,7 @@
       </VCardText>
       <VCardSubtitle>{{ t('other-settings') }}</VCardSubtitle>
       <VCardText>
-        <VTextField label="Problem Instance Limit" v-model.number="value.problemInstanceCount" />
+        <VTextField label="Problem Instance Limit" v-model.number="value.problemInstanceLimit" />
       </VCardText>
       <VCardActions>
         <VBtn color="primary" @click="save">{{ t('action.save') }}</VBtn>

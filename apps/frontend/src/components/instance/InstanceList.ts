@@ -26,10 +26,10 @@ export enum InstanceListMode {
 export function useInstanceList(props: IInstanceListProps) {
   const { t } = useI18n()
   const app = useAppState()
-  const mode = props.problemId
-    ? InstanceListMode.PROBLEM
-    : props.contestId
-      ? InstanceListMode.CONTEST
+  const mode = props.contestId
+    ? InstanceListMode.CONTEST
+    : props.problemId
+      ? InstanceListMode.PROBLEM
       : InstanceListMode.GLOBAL
 
   const headers = computed(() => {
@@ -88,7 +88,7 @@ export function useInstanceList(props: IInstanceListProps) {
   const isAll = computed(() => !actualUserId.value)
 
   // TODO: support contest instance
-  const canCreateInstance = computed(() => props.problemId && !props.contestId)
+  const canCreateInstance = computed(() => props.problemId)
   const createInstanceTask = useAsyncTask(async () => {
     switch (mode) {
       case InstanceListMode.PROBLEM: {
