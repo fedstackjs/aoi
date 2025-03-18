@@ -42,15 +42,8 @@ declare module 'fastify' {
   }
 }
 
-export const apiUserAuthPlugin = fastifyPlugin(async (s) => {
-  let uaaa: UaaaAuthProvider | undefined
-  if (s.authProviders.uaaa && s.authProviders.uaaa instanceof UaaaAuthProvider) {
-    uaaa = s.authProviders.uaaa
-  }
-  const JWKS = uaaa && jose.createRemoteJWKSet(new URL(uaaa.openidConfig.jwks_uri))
+export const apiAuthPlugin = fastifyPlugin(async (s) => {
   const secret = loadEnv('JWT_SECRET', (value) => new TextEncoder().encode(value))
-
-  const { db } = s
 
   async function decoratedVerify(this: FastifyRequest, token: string): Promise<unknown> {
     const { payload } = await jose.jwtVerify(token, secret)
@@ -67,7 +60,16 @@ export const apiUserAuthPlugin = fastifyPlugin(async (s) => {
   s.decorateRequest('verify', decoratedVerify)
   s.decorateRequest('verifyToken', decoratedVerifyToken)
   s.decorateReply('sign', decoratedSign)
+})
 
+export const apiUserAuthPlugin = fastifyPlugin(async (s) => {
+  let uaaa: UaaaAuthProvider | undefined
+  if (s.authProviders.uaaa && s.authProviders.uaaa instanceof UaaaAuthProvider) {
+    uaaa = s.authProviders.uaaa
+  }
+  const JWKS = uaaa && jose.createRemoteJWKSet(new URL(uaaa.openidConfig.jwks_uri))
+  const secret = loadEnv('JWT_SECRET', (value) => new TextEncoder().encode(value))
+  const { db } = s
   s.addHook('onRequest', async (req, rep) => {
     if (req.headers.authorization) {
       const token = req.headers.authorization.replace(/^(?:bearer|token) /i, '')

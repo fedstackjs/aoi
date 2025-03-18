@@ -2,6 +2,7 @@ import { SProblemConfigSchema } from '@aoi-js/common'
 import { BSON, MongoServerError } from 'mongodb'
 
 import { PROBLEM_CAPS, ORG_CAPS, SolutionState } from '../../db/index.js'
+import { InstanceState } from '../../db/instance.js'
 import { getUploadUrl, solutionDataKey } from '../../oss/index.js'
 import { T, SProblemSettings } from '../../schemas/index.js'
 import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/capability.js'
@@ -19,7 +20,7 @@ const problemIdSchema = T.Object({
 })
 
 export const problemScopedRoutes = defineRoutes(async (s) => {
-  const { problems, solutions, problemStatuses, orgs } = s.db
+  const { problems, solutions, problemStatuses, orgs, instances } = s.db
 
   s.addHook('onRoute', paramSchemaMerger(problemIdSchema))
 
@@ -60,7 +61,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
             tags: T.Array(T.String()),
             capability: T.String(),
             currentDataHash: T.String(),
-            config: T.Optional(SProblemConfigSchema),
+            config: T.Optional(T.Omit(SProblemConfigSchema, ['judge', 'instance'])),
             settings: SProblemSettings
           })
         }
@@ -195,6 +196,121 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
         size: req.body.size
       })
       return { solutionId: insertedId, uploadUrl }
+    }
+  )
+
+  s.post(
+    '/instance',
+    {
+      schema: {
+        description: 'Open an instance',
+        response: {
+          200: T.Object({
+            instanceId: T.UUID()
+          })
+        }
+      }
+    },
+    async (req, rep) => {
+      const ctx = req.inject(kProblemContext)
+
+      const { allowPublicInstance, maxInstanceCount } = ctx._problem.settings
+      if (
+        !allowPublicInstance &&
+        !hasCapability(ctx._problemCapability, PROBLEM_CAPS.CAP_INSTANCE)
+      ) {
+        return rep.preconditionFailed()
+      }
+
+      const org = await orgs.findOne(
+        { _id: ctx._problem.orgId },
+        { projection: { 'settings.problemInstanceCount': 1 } }
+      )
+      const totalSeats = org?.settings.problemInstanceCount
+      if (!totalSeats) return rep.preconditionFailed('Problem instance is disabled in organization')
+
+      const { data, currentDataHash } = ctx._problem
+      const currentData = data.find(({ hash }) => hash === currentDataHash)
+      if (!currentData) {
+        return rep.preconditionFailed('Current data not found')
+      }
+      const { config } = currentData
+      if (!config.instanceLabel || !config.instance) {
+        return rep.preconditionFailed('Instance config not found')
+      }
+
+      const existing = await instances
+        .find(
+          {
+            orgId: ctx._problem.orgId,
+            userId: req.user.userId,
+            state: { $ne: InstanceState.DESTROYED }
+          },
+          { projection: { slotNo: 1 } }
+        )
+        .toArray()
+      if (existing.length >= totalSeats) {
+        return rep.preconditionFailed('Instance limit reached')
+      }
+      let availableSlot = -1
+      for (let i = 0; i < totalSeats; i++) {
+        if (!existing.some((x) => x.slotNo === i)) {
+          availableSlot = i
+          break
+        }
+      }
+      if (availableSlot === -1) {
+        return rep.preconditionFailed('Instance limit reached')
+      }
+
+      try {
+        const { modifiedCount, upsertedCount } = await problemStatuses.updateOne(
+          {
+            userId: req.user.userId,
+            problemId: ctx._problemId,
+            instanceCount: maxInstanceCount ? { $lt: maxInstanceCount } : undefined
+          },
+          {
+            $inc: { instanceCount: 1 },
+            $setOnInsert: { _id: new BSON.UUID() }
+          },
+          { upsert: true, ignoreUndefined: true }
+        )
+        if (!(modifiedCount + upsertedCount)) {
+          return rep.preconditionFailed('Instance limit reached')
+        }
+      } catch (err) {
+        // E11000 duplicate key error
+        if (err instanceof MongoServerError && err.code === 11000) {
+          return rep.preconditionFailed('Instance limit reached')
+        }
+        throw err
+      }
+
+      try {
+        const { insertedId } = await instances.insertOne(
+          {
+            _id: new BSON.UUID(),
+            orgId: ctx._problem.orgId,
+            problemId: ctx._problem._id,
+            userId: req.user.userId,
+            slotNo: availableSlot,
+            label: config.instanceLabel,
+            problemDataHash: currentDataHash,
+            state: InstanceState.PENDING,
+            message: '',
+            createdAt: req._now
+          },
+          { ignoreUndefined: true }
+        )
+        return { instanceId: insertedId }
+      } catch (err) {
+        // E11000 duplicate key error
+        if (err instanceof MongoServerError && err.code === 11000) {
+          return rep.preconditionFailed('Instance limit reached')
+        }
+        throw err
+      }
     }
   )
 

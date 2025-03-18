@@ -80,7 +80,7 @@ const problemViewRoutes = defineRoutes(async (s) => {
               })
             ),
             currentDataHash: T.String(),
-            config: T.Optional(SProblemConfigSchema)
+            config: T.Optional(T.Omit(SProblemConfigSchema, ['judge', 'instance']))
           })
         }
       }

@@ -110,10 +110,11 @@ export function useAppNavMenu() {
     return [
       { prependIcon: 'mdi-list-box', to: '/problem', title: t('pages.problems') },
       { prependIcon: 'mdi-balloon', to: '/contest', title: t('pages.contests') },
-      { prependIcon: 'mdi-timer-sand', to: '/solution', title: t('pages.solutions') },
-      { prependIcon: 'mdi-clipboard-text-outline', to: '/plan', title: t('pages.plans') },
-      { prependIcon: 'mdi-application-export', to: '/app', title: t('pages.apps') },
-      { prependIcon: 'mdi-account-multiple', to: '/group', title: t('pages.groups') }
+      { prependIcon: 'mdi-timer-sand-full', to: '/solution', title: t('pages.solutions') },
+      { prependIcon: 'mdi-codepen', to: '/instance', title: t('pages.instances') },
+      { prependIcon: 'mdi-clipboard-text', to: '/plan', title: t('pages.plans') },
+      { prependIcon: 'mdi-account-multiple', to: '/group', title: t('pages.groups') },
+      { prependIcon: 'mdi-application-brackets', to: '/app', title: t('pages.apps') }
     ].map((item) => ({
       ...item,
       to: `/org/${appState.orgId}${item.to}`

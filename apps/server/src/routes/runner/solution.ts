@@ -20,8 +20,8 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
     'onRoute',
     paramSchemaMerger(
       T.Object({
-        solutionId: T.String({ format: 'uuid' }),
-        taskId: T.String({ format: 'uuid' })
+        solutionId: T.UUID(),
+        taskId: T.UUID()
       })
     )
   )
@@ -179,6 +179,7 @@ export const runnerSolutionRoutes = defineRoutes(async (s) => {
               solutionId: T.UUID(),
               orgId: T.UUID(),
               userId: T.UUID(),
+              problemId: T.UUID(),
               contestId: T.UUID(),
               problemConfig: SProblemConfigSchema,
               problemDataUrl: T.String(),
@@ -209,6 +210,7 @@ export const runnerSolutionRoutes = defineRoutes(async (s) => {
         solutionId: solution._id,
         orgId: solution.orgId,
         userId: solution.userId,
+        problemId: solution.problemId,
         contestId: solution.contestId
       }
 

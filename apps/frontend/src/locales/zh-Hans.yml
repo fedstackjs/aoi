@@ -20,6 +20,7 @@ pages:
   solutions: 提交记录
   not-found: 页面不存在
   authorize: 授权登录
+  instances: 实例
 
 action:
   reload: 重载
@@ -203,6 +204,7 @@ tabs:
   ranklist: 排行榜
   participant: 参赛选手
   problem-description: 题面
+  instances: 实例
 
 metrics:
   cpu: CPU
@@ -241,3 +243,11 @@ access-level:
   public: 公开
   restricted: 受限
   private: 私有
+
+instance:
+  state:
+    destroyed: '已销毁'
+    pending: '等待中'
+    queued: '排队中'
+    active: '运行中'
+    unknown: '未知'

@@ -1,33 +1,26 @@
-import { BSON, Filter } from 'mongodb'
+import { Filter, UUID } from 'mongodb'
 
-import { ISolution, ORG_CAPS } from '../../db/index.js'
+import { IInstance, ORG_CAPS } from '../../db/index.js'
 import { T } from '../../schemas/index.js'
 import { hasCapability, paginationSkip } from '../../utils/index.js'
-import { defineRoutes, generateRangeQuery, loadUUID, swaggerTagMerger } from '../common/index.js'
+import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 
-import { solutionScopedRoute } from './scoped.js'
+export const instanceRoutes = defineRoutes(async (s) => {
+  const { orgMemberships, instances } = s.db
 
-export const solutionRoutes = defineRoutes(async (s) => {
-  s.addHook('onRoute', swaggerTagMerger('solution'))
+  s.addHook('onRoute', swaggerTagMerger('instance'))
 
   s.get(
     '/',
     {
       schema: {
-        description: 'Get solution list',
+        description: 'Get instance list',
         querystring: T.Object({
           orgId: T.UUID(),
           userId: T.Optional(T.UUID()),
           problemId: T.Optional(T.UUID()),
-          contestId: T.Optional(T.String()),
-
+          contestId: T.Optional(T.UUID()),
           state: T.Optional(T.Integer({ minimum: 0, maximum: 4 })),
-          status: T.Optional(T.String()),
-          scoreL: T.Optional(T.Number()),
-          scoreR: T.Optional(T.Number()),
-          submittedAtL: T.Optional(T.Integer()),
-          submittedAtR: T.Optional(T.Integer()),
-
           page: T.Integer({ minimum: 1, default: 1 }),
           perPage: T.Integer({ enum: [15, 30, 50, 100] }),
           count: T.Boolean({ default: false })
@@ -36,33 +29,29 @@ export const solutionRoutes = defineRoutes(async (s) => {
           200: T.PaginationResult(
             T.Object({
               _id: T.UUID(),
+              userId: T.UUID(),
               problemId: T.UUID(),
               contestId: T.Optional(T.UUID()),
-              userId: T.UUID(),
               problemTitle: T.String(),
               contestTitle: T.Optional(T.String()),
+              slotNo: T.Integer(),
               state: T.Integer(),
-              score: T.Number(),
-              metrics: T.Record(T.String(), T.Number()),
-              status: T.String(),
               message: T.String(),
-              submittedAt: T.Optional(T.Number())
+              createdAt: T.Integer(),
+              activatedAt: T.Optional(T.Integer()),
+              destroyedAt: T.Optional(T.Integer())
             })
           )
         }
       }
     },
     async (req, rep) => {
-      const userId = req.query.userId ? new BSON.UUID(req.query.userId) : undefined
-      // check org auth, user should be in the org
+      const userId = req.query.userId ? new UUID(req.query.userId) : undefined
       const orgId = loadUUID(req.query, 'orgId', s.httpErrors.badRequest())
-      const membership = await s.db.orgMemberships.findOne({
+      const membership = await orgMemberships.findOne({
         orgId: orgId,
         userId: req.user.userId
       })
-      // check auth, satisfy one of the following:
-      // 1. admin of the org
-      // 2. userId exists and userId is current user
       const isAdmin = membership && hasCapability(membership.capability, ORG_CAPS.CAP_ADMIN)
       const isCurrentUser = userId !== undefined && userId.equals(req.user.userId)
       if (!isAdmin && !isCurrentUser) {
@@ -70,26 +59,23 @@ export const solutionRoutes = defineRoutes(async (s) => {
       }
       const filter = {
         contestId: req.query.contestId
-          ? BSON.UUID.isValid(req.query.contestId)
-            ? new BSON.UUID(req.query.contestId)
+          ? UUID.isValid(req.query.contestId)
+            ? new UUID(req.query.contestId)
             : { $exists: false }
           : undefined,
-        problemId: req.query.problemId ? new BSON.UUID(req.query.problemId) : undefined,
+        problemId: req.query.problemId ? new UUID(req.query.problemId) : undefined,
         userId,
-        state: req.query.state,
-        status: req.query.status,
-        score: generateRangeQuery(req.query.scoreL, req.query.scoreR),
-        submittedAt: generateRangeQuery(req.query.submittedAtL, req.query.submittedAtR)
-      } satisfies Filter<ISolution>
+        state: req.query.state
+      } satisfies Filter<IInstance>
       const skip = paginationSkip(req.query.page, req.query.perPage)
       const total = req.query.count
-        ? await s.db.solutions.countDocuments(filter, { ignoreUndefined: true })
+        ? await instances.countDocuments(filter, { ignoreUndefined: true })
         : undefined
-      const items = (await s.db.solutions
+      const items = (await instances
         .aggregate(
           [
             { $match: filter },
-            { $sort: { submittedAt: -1 } },
+            { $sort: { createdAt: -1 } },
             { $skip: skip },
             { $limit: req.query.perPage },
             {
@@ -113,24 +99,24 @@ export const solutionRoutes = defineRoutes(async (s) => {
             {
               $project: {
                 _id: 1,
+                userId: 1,
                 problemId: 1,
                 contestId: 1,
-                userId: 1,
                 problemTitle: '$problem.title',
                 contestTitle: '$contest.title',
+                slotNo: 1,
                 state: 1,
-                score: 1,
-                metrics: 1,
-                status: 1,
                 message: 1,
-                submittedAt: 1
+                createdAt: 1,
+                activatedAt: 1,
+                destroyedAt: 1
               }
             }
           ],
           { ignoreUndefined: true }
         )
         .toArray()) as Array<
-        ISolution & {
+        IInstance & {
           problemTitle: string
           contestTitle?: string
         }
@@ -138,6 +124,4 @@ export const solutionRoutes = defineRoutes(async (s) => {
       return { items, total }
     }
   )
-
-  s.register(solutionScopedRoute, { prefix: '/:solutionId' })
 })

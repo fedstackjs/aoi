@@ -26,8 +26,6 @@
 </template>
 
 <script setup lang="ts">
-import type { VListItem } from 'vuetify/components'
-
 import AoiNavOrgSelector from './AoiNavOrgSelector.vue'
 
 import LocaleSelectBtn from '@/components/locale/LocaleSelectBtn.vue'

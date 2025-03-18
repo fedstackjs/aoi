@@ -23,6 +23,9 @@
                 <VTab prepend-icon="mdi-upload-outline" :to="rel('submit')" v-if="value.config">
                   {{ t('tabs.submit') }}
                 </VTab>
+                <VTab prepend-icon="mdi-codepen" :to="rel('instance')" v-if="value.config">
+                  {{ t('tabs.instances') }}
+                </VTab>
                 <VTab prepend-icon="mdi-timer-sand" :to="rel('solution')">
                   {{ t('tabs.solutions') }}
                 </VTab>

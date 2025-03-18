@@ -8,6 +8,7 @@ import { dbAppPlugin } from './app.js'
 import { dbContestPlugin } from './contest.js'
 import { dbGroupPlugin } from './group.js'
 import { dbInfoPlugin } from './info.js'
+import { dbInstancePlugin } from './instance.js'
 import { dbOrgPlugin } from './org.js'
 import { dbPlanPlugin } from './plan.js'
 import { dbProblemPlugin } from './problem.js'
@@ -29,6 +30,7 @@ export * from './plan.js'
 export * from './info.js'
 export * from './announcement.js'
 export * from './publicRanklist.js'
+export * from './instance.js'
 
 export interface IDbContainer {
   client: MongoClient
@@ -67,5 +69,6 @@ export const dbPlugin = fastifyPlugin(async (s) => {
   await s.register(dbRunnerPlugin)
   await s.register(dbSolutionPlugin)
   await s.register(dbUserPlugin)
+  await s.register(dbInstancePlugin)
   logger.info('Database ready')
 })
