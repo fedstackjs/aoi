@@ -1,3 +1,4 @@
+import { useIntervalFn } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -103,6 +104,16 @@ export function useInstanceList(props: IInstanceListProps) {
       }
     }
   })
+
+  useIntervalFn(
+    () => {
+      if (instances.state.value.items.some((item) => item.state)) {
+        instances.execute(0, page.value, itemsPerPage.value)
+      }
+    },
+    2000,
+    { immediate: true }
+  )
 
   return {
     filter,

@@ -34,6 +34,7 @@
     v-model:items-per-page="itemsPerPage"
     item-value="_id"
     @update:options="handleOptionsUpdate"
+    show-expand
   >
     <template v-slot:[`item.state`]="{ item }">
       <InstanceStateChip :state="item.state" @click.right="filter.state.value = '' + item.state" />
@@ -57,6 +58,18 @@
     <template v-slot:[`item.createdAt`]="{ item }">
       <code>{{ item.createdAtStr }}</code>
     </template>
+    <template v-slot:expanded-row="{ columns, item }">
+      <tr>
+        <td :colspan="columns.length" class="py-2">
+          <VCard>
+            <VCardText v-if="item.message">
+              <MarkdownRenderer :md="item.message" />
+            </VCardText>
+            <VAlert v-else type="info" text="Instance is waiting to be provisioned." />
+          </VCard>
+        </td>
+      </tr>
+    </template>
   </VDataTableServer>
 </template>
 
@@ -64,6 +77,7 @@
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 
+import MarkdownRenderer from '../utils/MarkdownRenderer.vue'
 import PrincipalProfile from '../utils/PrincipalProfile.vue'
 
 import InstanceFilter from './InstanceFilter.vue'
