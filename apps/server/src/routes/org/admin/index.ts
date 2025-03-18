@@ -1,4 +1,6 @@
-import { ORG_CAPS } from '../../../db/index.js'
+import { UpdateFilter } from 'mongodb'
+
+import { IOrg, ORG_CAPS } from '../../../db/index.js'
 import { IOrgOssSettings, SOrgProfile, SOrgSettings } from '../../../index.js'
 import { T } from '../../../schemas/index.js'
 import { CAP_NONE, ensureCapability } from '../../../utils/capability.js'
@@ -66,9 +68,14 @@ export const orgAdminRoutes = defineRoutes(async (s) => {
     async (req) => {
       const ctx = req.inject(kOrgContext)
       const { oss, ...rest } = req.body
-      let $set = rest
+      let $set: UpdateFilter<IOrg> = Object.fromEntries(
+        Object.entries(rest).map(([k, v]) => [`settings.${k}`, v])
+      )
       if (oss) {
-        $set = { ...$set, ...ossSettingsToUpdate(oss) }
+        $set = {
+          ...$set,
+          ...ossSettingsToUpdate(oss)
+        }
       }
       await orgs.updateOne({ _id: ctx._orgId }, { $set })
       return {}

@@ -11,19 +11,25 @@
   </VTabs>
   <VSpacer class="u-min-w-4" />
   <VTabs align-tabs="end">
-    <VTab prepend-icon="mdi-book-outline" exact :to="rel('')" :text="t('tabs.description')" />
+    <VTab prepend-icon="mdi-book" exact :to="rel('')" :text="t('tabs.description')" />
     <VTab prepend-icon="mdi-attachment" :to="rel('attachment')" :text="t('tabs.attachments')" />
     <VTab
       v-show="showAdminTab || (contest?.currentStage.settings.problemEnabled && registered)"
-      prepend-icon="mdi-list-box-outline"
+      prepend-icon="mdi-list-box"
       :to="rel('problem')"
       :text="t('tabs.problems')"
     />
     <VTab
       v-show="showAdminTab || (contest?.currentStage.settings.solutionEnabled && registered)"
-      prepend-icon="mdi-timer-sand"
+      prepend-icon="mdi-timer-sand-full"
       :to="rel('solution')"
       :text="t('tabs.solutions')"
+    />
+    <VTab
+      v-show="showAdminTab || (contest?.currentStage.settings.instanceEnabled && registered)"
+      prepend-icon="mdi-codepen"
+      :to="rel('instance')"
+      :text="t('tabs.instances')"
     />
     <VTab
       v-show="showAdminTab || contest?.currentStage.settings.ranklistEnabled"
@@ -33,13 +39,13 @@
     />
     <VTab
       v-show="showAdminTab || contest?.currentStage.settings.participantEnabled"
-      prepend-icon="mdi-account-details-outline"
+      prepend-icon="mdi-account-details"
       :to="rel('participant')"
       :text="t('tabs.participant')"
     />
     <VTab
       v-show="showAdminTab"
-      prepend-icon="mdi-cog-outline"
+      prepend-icon="mdi-cog"
       :to="rel('admin')"
       :text="t('tabs.management')"
     />

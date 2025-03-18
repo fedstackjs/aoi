@@ -89,11 +89,23 @@ export const SProblemConfigSubmitSchema = Type.Partial(
 
 export type ProblemConfigSubmit = Static<typeof SProblemConfigSubmitSchema>
 
+export const SProblemConfigInstanceSchema = Type.Object(
+  {
+    adapter: Type.String(),
+    config: Type.Record(Type.String(), Type.Any())
+  },
+  {
+    description: 'Instance configuration'
+  }
+)
+
 export const SProblemConfigSchema = Type.Object({
   label: Type.String(),
   solution: Type.Optional(SProblemConfigSolutionSchema),
   judge: SProblemConfigJudgeSchema,
   submit: SProblemConfigSubmitSchema,
+  instanceLabel: Type.Optional(Type.String()),
+  instance: Type.Optional(SProblemConfigInstanceSchema),
   variables: Type.Optional(
     Type.Record(Type.String({ pattern: '^[a-zA-Z_][a-zA-Z0-9_]*$' }), Type.String())
   )

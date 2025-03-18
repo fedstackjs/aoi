@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { sleep } from '../async'
 
 const UAAA_URL = import.meta.env.VITE_UAAA_URL
+const UAAA_APP_ID = import.meta.env.VITE_UAAA_APP_ID
 const UAAA_UI_APP_ID = import.meta.env.VITE_UI_APP_ID
 const UAAA_AOI_APP_ID = import.meta.env.VITE_AOI_APP_ID
 const uaaa = ky.create({ prefixUrl: UAAA_URL })
@@ -69,7 +70,9 @@ export const useUAAALogin = () => {
     url.searchParams.set('client_id', UAAA_UI_APP_ID)
     url.searchParams.set(
       'scope',
-      ['openid', 'profile', 'email', `uperm://uaaa/session/claim`].map(encodeURIComponent).join(' ')
+      ['openid', 'profile', 'email', `uperm://${UAAA_APP_ID}/session/claim`]
+        .map(encodeURIComponent)
+        .join(' ')
     )
     url.searchParams.set('response_type', 'code')
     url.searchParams.set('confidential', '0')

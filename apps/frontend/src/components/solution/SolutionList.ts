@@ -2,8 +2,6 @@ import { useRouteQuery } from '@vueuse/router'
 import { computed, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import type { IContestProblemListDTO } from '../contest/types'
-
 import type { ISolutionDTO } from './types'
 
 import { useAppState } from '@/stores/app'

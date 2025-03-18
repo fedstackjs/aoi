@@ -32,7 +32,7 @@ export const getFileUrl: FastifyPluginAsyncTypebox<{
     options: Static<typeof SGetUrlOptions>,
     req: FastifyRequest,
     rep: FastifyReply
-  ) => Promise<[UUID, string, IUrlOptions?]>
+  ) => Promise<[UUID, string, IUrlOptions?] | string>
 }> = async (s, options) => {
   const { orgs } = s.db
   const allowedTypes = options.allowedTypes ?? ['upload', 'download', 'head', 'delete']
@@ -53,7 +53,9 @@ export const getFileUrl: FastifyPluginAsyncTypebox<{
       }
     },
     async (req, rep) => {
-      const [orgId, key, opt] = await options.resolve(req.params.type, req.query, req, rep)
+      const resolved = await options.resolve(req.params.type, req.query, req, rep)
+      if (typeof resolved === 'string') return { url: resolved }
+      const [orgId, key, opt] = resolved
       const org = await orgs.findOne({ _id: orgId }, { projection: { settings: 1 } })
       const settings = org?.settings.oss
       if (!settings) return rep.preconditionFailed('OSS not configured')

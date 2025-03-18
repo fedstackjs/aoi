@@ -1,5 +1,4 @@
 import { fastifyFormbody } from '@fastify/formbody'
-import * as jose from 'jose'
 import { UUID } from 'mongodb'
 
 import { IOrgMembership, IUser } from '../../db/index.js'
@@ -66,12 +65,8 @@ export const oauthRoutes = defineRoutes(async (s) => {
 
       const scopes = app.settings.scopes ?? ['user.details']
       const fullAccess = scopes.some((scope) => scope === '*')
-      const jwt = new jose.SignJWT({
-        userId: userId.toString(),
-        tags: fullAccess ? undefined : scopes
-      })
-        .setProtectedHeader({ alg: 'HS256' })
-        .setIssuedAt()
+      const jwt = rep
+        .newPayload({ userId: userId.toString(), tags: fullAccess ? undefined : scopes })
         .setExpirationTime('7d')
       const token = await rep.sign(jwt)
       let user: (Omit<IUser, 'capability'> & { capability?: string }) | undefined

@@ -38,19 +38,13 @@ declare module 'fastify' {
     verify(token: string): Promise<unknown>
   }
   interface FastifyReply {
+    newPayload(payload: unknown): jose.SignJWT
     sign(token: jose.SignJWT): Promise<string>
   }
 }
 
-export const apiUserAuthPlugin = fastifyPlugin(async (s) => {
-  let uaaa: UaaaAuthProvider | undefined
-  if (s.authProviders.uaaa && s.authProviders.uaaa instanceof UaaaAuthProvider) {
-    uaaa = s.authProviders.uaaa
-  }
-  const JWKS = uaaa && jose.createRemoteJWKSet(new URL(uaaa.openidConfig.jwks_uri))
+export const apiAuthPlugin = fastifyPlugin(async (s) => {
   const secret = loadEnv('JWT_SECRET', (value) => new TextEncoder().encode(value))
-
-  const { db } = s
 
   async function decoratedVerify(this: FastifyRequest, token: string): Promise<unknown> {
     const { payload } = await jose.jwtVerify(token, secret)
@@ -61,13 +55,28 @@ export const apiUserAuthPlugin = fastifyPlugin(async (s) => {
     if (IsUserPayload.Check(payload)) return payload
     throw this.server.httpErrors.badRequest()
   }
+  function decoratedNewPayload(this: FastifyReply, payload: unknown): jose.SignJWT {
+    return new jose.SignJWT(JSON.parse(JSON.stringify(payload)))
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+  }
   async function decoratedSign(this: FastifyReply, token: jose.SignJWT): Promise<string> {
     return token.sign(secret)
   }
   s.decorateRequest('verify', decoratedVerify)
   s.decorateRequest('verifyToken', decoratedVerifyToken)
+  s.decorateReply('newPayload', decoratedNewPayload)
   s.decorateReply('sign', decoratedSign)
+})
 
+export const apiUserAuthPlugin = fastifyPlugin(async (s) => {
+  let uaaa: UaaaAuthProvider | undefined
+  if (s.authProviders.uaaa && s.authProviders.uaaa instanceof UaaaAuthProvider) {
+    uaaa = s.authProviders.uaaa
+  }
+  const JWKS = uaaa && jose.createRemoteJWKSet(new URL(uaaa.openidConfig.jwks_uri))
+  const secret = loadEnv('JWT_SECRET', (value) => new TextEncoder().encode(value))
+  const { db } = s
   s.addHook('onRequest', async (req, rep) => {
     if (req.headers.authorization) {
       const token = req.headers.authorization.replace(/^(?:bearer|token) /i, '')

@@ -13,10 +13,12 @@ import { defineRoutes } from './common/index.js'
 import { contestRoutes } from './contest/index.js'
 import { groupRoutes } from './group/index.js'
 import { infoRoutes } from './info/index.js'
+import { instanceRoutes } from './instance/index.js'
 import { oauthRoutes } from './oauth/index.js'
 import { orgRoutes } from './org/index.js'
 import { planRoutes } from './plan/index.js'
 import {
+  apiAuthPlugin,
   apiHealthPlugin,
   apiInjectPlugin,
   apiRatelimitPlugin,
@@ -77,6 +79,7 @@ export const apiRoutes = defineRoutes(async (s) => {
 
   await s.register(apiInjectPlugin)
   await s.register(apiHealthPlugin)
+  await s.register(apiAuthPlugin)
 
   s.register(async (s) => {
     // User routes
@@ -103,6 +106,7 @@ export const apiRoutes = defineRoutes(async (s) => {
     s.register(pubrkRoutes, { prefix: '/rk' })
     s.register(publicRoutes, { prefix: '/public' })
     s.register(appRoutes, { prefix: '/app' })
+    s.register(instanceRoutes, { prefix: '/instance' })
   })
 
   s.register(async (s) => {

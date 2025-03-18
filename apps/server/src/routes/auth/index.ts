@@ -1,5 +1,4 @@
 import * as bcrypt from 'bcrypt'
-import * as jose from 'jose'
 import { BSON } from 'mongodb'
 
 import { ORG_CAPS } from '../../db/index.js'
@@ -78,9 +77,9 @@ export const authRoutes = defineRoutes(async (s) => {
       const impl = authProviders[provider]
       if (!impl.login) return rep.badRequest()
       const [userId, tags] = await impl.login(payload, req, rep)
-      const jwt = new jose.SignJWT({ userId: userId.toString(), tags })
-        .setProtectedHeader({ alg: 'HS256' })
-        .setIssuedAt()
+      const jwt = rep
+        .newPayload({ userId: userId.toString(), tags })
+
         .setExpirationTime('7d')
       const token = await rep.sign(jwt)
       return { token }
@@ -145,10 +144,8 @@ export const authRoutes = defineRoutes(async (s) => {
       if (!Object.hasOwn(authProviders, provider)) return rep.badRequest()
       const verified = await authProviders[provider].verify(req.user.userId, payload, req, rep)
       if (!verified) return rep.forbidden()
-      const jwt = new jose.SignJWT({
-        userId: req.user.userId.toString(),
-        tags: [`.mfa.${provider}`]
-      })
+      const jwt = rep
+        .newPayload({})
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
         .setExpirationTime('30m')
@@ -198,9 +195,9 @@ export const authRoutes = defineRoutes(async (s) => {
         })
       }
 
-      const jwt = new jose.SignJWT({ userId: insertedId.toString() })
-        .setProtectedHeader({ alg: 'HS256' })
-        .setIssuedAt()
+      const jwt = rep
+        .newPayload({ userId: insertedId.toString() })
+
         .setExpirationTime('7d')
       const token = await rep.sign(jwt)
       return { token }

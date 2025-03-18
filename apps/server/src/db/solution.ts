@@ -1,5 +1,5 @@
 import { fastifyPlugin } from 'fastify-plugin'
-import { BSON, Collection } from 'mongodb'
+import { UUID, Collection } from 'mongodb'
 
 export enum SolutionState {
   CREATED = 0,
@@ -10,11 +10,11 @@ export enum SolutionState {
 }
 
 export interface ISolution {
-  _id: BSON.UUID
-  orgId: BSON.UUID
-  problemId: BSON.UUID
-  contestId?: BSON.UUID
-  userId: BSON.UUID
+  _id: UUID
+  orgId: UUID
+  problemId: UUID
+  contestId?: UUID
+  userId: UUID
 
   label: string
   problemDataHash: string
@@ -25,8 +25,8 @@ export interface ISolution {
   metrics: Record<string, number>
   status: string
   message: string
-  runnerId?: BSON.UUID
-  taskId?: BSON.UUID
+  runnerId?: UUID
+  taskId?: UUID
 
   createdAt: number
   submittedAt?: number

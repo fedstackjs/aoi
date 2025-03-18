@@ -1,4 +1,3 @@
-import * as jose from 'jose'
 import { BSON, Document, UUID } from 'mongodb'
 
 import { SUserProfile, T } from '../../schemas/index.js'
@@ -114,10 +113,7 @@ export const adminUserRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const { userId, tags } = req.body
-      const jwt = new jose.SignJWT({ userId: userId.toString(), tags })
-        .setProtectedHeader({ alg: 'HS256' })
-        .setIssuedAt()
-        .setExpirationTime('7d')
+      const jwt = rep.newPayload({ userId: userId.toString(), tags }).setExpirationTime('7d')
       const token = await rep.sign(jwt)
       return { token }
     }

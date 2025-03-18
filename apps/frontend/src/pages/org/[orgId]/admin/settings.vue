@@ -23,6 +23,10 @@
           </div>
         </VAlert>
       </VCardText>
+      <VCardSubtitle>{{ t('other-settings') }}</VCardSubtitle>
+      <VCardText>
+        <VTextField label="Problem Instance Limit" v-model.number="value.problemInstanceLimit" />
+      </VCardText>
       <VCardActions>
         <VBtn color="primary" @click="save">{{ t('action.save') }}</VBtn>
         <VBtn color="error" @click="settings.execute()">{{ t('action.reset') }}</VBtn>
@@ -66,8 +70,10 @@ en:
   oss-settings: OSS Settings
   warn-oss-disabled: OSS is disabled
   enable-oss: Enable OSS
+  other-settings: Other Settings
 zh-Hans:
   oss-settings: OSS 设置
   warn-oss-disabled: OSS 未启用
   enable-oss: 启用 OSS
+  other-settings: 其他设置
 </i18n>

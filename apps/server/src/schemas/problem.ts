@@ -11,7 +11,10 @@ export const SProblemSettings = T.Partial(
     // Allow participant see other's solution's details (control OSS result json file)
     solutionShowOtherDetails: T.Boolean(),
     // Allow participant see other's solution's data (control OSS data file)
-    solutionShowOtherData: T.Boolean()
+    solutionShowOtherData: T.Boolean(),
+
+    allowPublicInstance: T.Boolean(),
+    maxInstanceCount: T.Number()
   })
 )
 

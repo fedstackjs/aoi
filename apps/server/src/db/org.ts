@@ -10,7 +10,8 @@ export const ORG_CAPS = {
   CAP_PROBLEM: capabilityMask(2),
   CAP_CONTEST: capabilityMask(3),
   CAP_PLAN: capabilityMask(4),
-  CAP_APP: capabilityMask(5)
+  CAP_APP: capabilityMask(5),
+  CAP_INSTANCE: capabilityMask(6)
 }
 
 export interface IOrg {

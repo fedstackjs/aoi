@@ -19,17 +19,19 @@ export const PROBLEM_CAPS = {
   CAP_ADMIN: capabilityMask(1), // Can manage problem ACL
   CAP_SOLUTION: capabilityMask(2), // Can submit solution to this problem
   CAP_CONTENT: capabilityMask(3), // Can edit problem content
-  CAP_DATA: capabilityMask(4) // Can manage problem data
+  CAP_DATA: capabilityMask(4), // Can manage problem data
+  CAP_INSTANCE: capabilityMask(5) // Can manage problem instance
 }
 
 export interface IProblemStatus {
   _id: BSON.UUID
   problemId: BSON.UUID
   userId: BSON.UUID
-  solutionCount: number
-  lastSolutionId: BSON.UUID
-  lastSolutionScore: number
-  lastSolutionStatus: string
+  solutionCount?: number
+  instanceCount?: number
+  lastSolutionId?: BSON.UUID
+  lastSolutionScore?: number
+  lastSolutionStatus?: string
 }
 
 export interface IProblemData {

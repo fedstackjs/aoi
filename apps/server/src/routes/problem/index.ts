@@ -106,12 +106,14 @@ export const problemRoutes = defineRoutes(async (s) => {
               accessLevel: T.AccessLevel(),
               createdAt: T.Integer(),
               status: T.Optional(
-                T.Object({
-                  solutionCount: T.Integer(),
-                  lastSolutionId: T.UUID(),
-                  lastSolutionScore: T.Number(),
-                  lastSolutionStatus: T.String()
-                })
+                T.Partial(
+                  T.Object({
+                    solutionCount: T.Integer(),
+                    lastSolutionId: T.UUID(),
+                    lastSolutionScore: T.Number(),
+                    lastSolutionStatus: T.String()
+                  })
+                )
               )
             })
           )
@@ -201,12 +203,14 @@ export const problemRoutes = defineRoutes(async (s) => {
               accessLevel: T.AccessLevel(),
               createdAt: T.Integer(),
               status: T.Optional(
-                T.Object({
-                  solutionCount: T.Integer(),
-                  lastSolutionId: T.UUID(),
-                  lastSolutionScore: T.Number(),
-                  lastSolutionStatus: T.String()
-                })
+                T.Partial(
+                  T.Object({
+                    solutionCount: T.Integer(),
+                    lastSolutionId: T.UUID(),
+                    lastSolutionScore: T.Number(),
+                    lastSolutionStatus: T.String()
+                  })
+                )
               )
             })
           )

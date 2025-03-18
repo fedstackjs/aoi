@@ -20,6 +20,7 @@ pages:
   solutions: Solutions
   not-found: Not Found
   authorize: Authorize
+  instances: Instances
 
 action:
   reload: Reload
@@ -204,6 +205,7 @@ tabs:
   ranklist: Ranklist
   participant: Participant
   problem-description: Description
+  instances: Instances
 
 metrics:
   cpu: CPU
@@ -242,3 +244,13 @@ access-level:
   public: Public
   restricted: Restricted
   private: Private
+
+instance:
+  state:
+    destroyed: 'Destroyed'
+    pending: 'Pending'
+    queued: 'Queued'
+    active: 'Active'
+    error: 'Error'
+    pending-destroy: 'Pending Destroy'
+    unknown: 'Unknown'

@@ -36,6 +36,15 @@ export const SContestStage = T.StrictObject({
       solutionShowOtherDetails: T.Boolean(),
       // Allow participant see other's solution's data (control OSS data file)
       solutionShowOtherData: T.Boolean(),
+
+      // Instance
+      // Enable instance function to participants
+      instanceEnabled: T.Boolean(),
+      // Allow participant to create instances
+      instanceAllowCreate: T.Boolean(),
+      // Max instance count
+      instanceLimit: T.Integer(),
+
       // Enable function function to participants
       ranklistEnabled: T.Boolean(),
       // Skip ranklist calculation
@@ -65,6 +74,8 @@ export const SContestProblemSettings = T.StrictObject({
   showAfter: T.Optional(T.Integer()),
   actions: T.Optional(T.Array(SContestAction)),
   disableCreateSolution: T.Optional(T.Boolean()),
+  disableCreateInstance: T.Optional(T.Boolean()),
+  maxInstanceCount: T.Optional(T.Integer()),
   disableSubmit: T.Optional(T.Boolean())
 })
 

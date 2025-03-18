@@ -8,11 +8,11 @@
               <AoiLogo width="128" />
               <q class="u-text-2xl u-font-italic">The <b>AOI</b> Project</q>
               <span class="text-black u-text-xl">
-                AOI V1.2
-                <ruby class="text-primary">こみち <rt>Komichi</rt> </ruby>
+                AOI V1.3
+                <ruby class="text-primary">あさひ <rt>Asahi</rt> </ruby>
               </span>
               <span class="text-secondary">Released under the AGPL-3.0 License</span>
-              <span class="text-secondary">2024-12-23</span>
+              <span class="text-secondary">2025-03-18</span>
             </a>
           </VCardText>
           <VDivider />
@@ -27,6 +27,11 @@
                 </tr>
               </thead>
               <tbody>
+                <tr>
+                  <td>2024-12-23</td>
+                  <td>1.2.x</td>
+                  <td>こみち</td>
+                </tr>
                 <tr>
                   <td>2024-04-20</td>
                   <td>1.1.x</td>

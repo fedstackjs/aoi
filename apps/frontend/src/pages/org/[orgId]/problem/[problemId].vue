@@ -23,6 +23,9 @@
                 <VTab prepend-icon="mdi-upload-outline" :to="rel('submit')" v-if="value.config">
                   {{ t('tabs.submit') }}
                 </VTab>
+                <VTab prepend-icon="mdi-codepen" :to="rel('instance')" v-if="value.config">
+                  {{ t('tabs.instances') }}
+                </VTab>
                 <VTab prepend-icon="mdi-timer-sand" :to="rel('solution')">
                   {{ t('tabs.solutions') }}
                 </VTab>
@@ -35,6 +38,11 @@
                 <VTab prepend-icon="mdi-cog-outline" :to="rel('admin')" v-if="showAdminTab">
                   {{ t('tabs.management') }}
                 </VTab>
+                <InstanceCreateBtn
+                  v-if="value.config.instanceLabel"
+                  :org-id="orgId"
+                  :problem-id="problemId"
+                />
               </VTabs>
               <RouterView :problem="value" @updated="problem.execute()" />
             </VCard>
@@ -49,6 +57,7 @@
 import { computed, toRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import InstanceCreateBtn from '@/components/instance/InstanceCreateBtn.vue'
 import ProblemTagGroup from '@/components/problem/ProblemTagGroup.vue'
 import AsyncState from '@/components/utils/AsyncState.vue'
 import { useProblem } from '@/utils/problem/inject'
