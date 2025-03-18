@@ -5,6 +5,8 @@ import { T } from '../../schemas/index.js'
 import { hasCapability, paginationSkip } from '../../utils/index.js'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 
+import { instanceScopedRoute } from './scoped.js'
+
 export const instanceRoutes = defineRoutes(async (s) => {
   const { orgMemberships, instances } = s.db
 
@@ -124,4 +126,6 @@ export const instanceRoutes = defineRoutes(async (s) => {
       return { items, total }
     }
   )
+
+  s.register(instanceScopedRoute, { prefix: '/:instanceId' })
 })

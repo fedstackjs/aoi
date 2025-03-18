@@ -24,6 +24,8 @@ const color = computed(() => {
       return 'info'
     case InstanceState.ACTIVE:
       return 'success'
+    case InstanceState.ERROR:
+      return 'error'
     default:
       return 'default'
   }
@@ -39,6 +41,8 @@ const text = computed(() => {
       return t('instance.state.queued')
     case InstanceState.ACTIVE:
       return t('instance.state.active')
+    case InstanceState.ERROR:
+      return t('instance.state.error')
     default:
       return t('instance.state.unknown')
   }

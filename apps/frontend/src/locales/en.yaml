@@ -251,4 +251,5 @@ instance:
     pending: 'Pending'
     queued: 'Queued'
     active: 'Active'
+    error: 'Error'
     unknown: 'Unknown'

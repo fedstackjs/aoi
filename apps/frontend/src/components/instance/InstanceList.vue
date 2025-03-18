@@ -58,6 +58,13 @@
     <template v-slot:[`item.createdAt`]="{ item }">
       <code>{{ item.createdAtStr }}</code>
     </template>
+    <template v-slot:[`item._actions`]="{ item }">
+      <InstanceDeleteBtn
+        :instance-id="item._id"
+        :on-deleted="() => instances.execute(0, page, itemsPerPage)"
+      />
+    </template>
+
     <template v-slot:expanded-row="{ columns, item }">
       <tr>
         <td :colspan="columns.length" class="py-2">
@@ -80,6 +87,7 @@ import { RouterLink } from 'vue-router'
 import MarkdownRenderer from '../utils/MarkdownRenderer.vue'
 import PrincipalProfile from '../utils/PrincipalProfile.vue'
 
+import InstanceDeleteBtn from './InstanceDeleteBtn.vue'
 import InstanceFilter from './InstanceFilter.vue'
 import { useInstanceList } from './InstanceList'
 import InstanceStateChip from './InstanceStateChip.vue'

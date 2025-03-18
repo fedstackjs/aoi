@@ -97,7 +97,8 @@ const stateOptions = [
   { title: t('instance.state.destroyed'), value: InstanceState.DESTROYED },
   { title: t('instance.state.pending'), value: InstanceState.PENDING },
   { title: t('instance.state.queued'), value: InstanceState.QUEUED },
-  { title: t('instance.state.active'), value: InstanceState.ACTIVE }
+  { title: t('instance.state.active'), value: InstanceState.ACTIVE },
+  { title: t('instance.state.error'), value: InstanceState.ERROR }
 ]
 
 const dialog = ref(false)

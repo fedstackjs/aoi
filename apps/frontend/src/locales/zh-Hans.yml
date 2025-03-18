@@ -250,4 +250,5 @@ instance:
     pending: '等待中'
     queued: '排队中'
     active: '运行中'
+    error: '错误'
     unknown: '未知'

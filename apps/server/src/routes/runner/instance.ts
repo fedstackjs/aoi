@@ -18,10 +18,12 @@ const previousStates = (newState: InstanceState) => {
   switch (newState) {
     case InstanceState.QUEUED:
       return [InstanceState.QUEUED]
+    case InstanceState.ERROR:
+      return [InstanceState.ERROR, InstanceState.QUEUED, InstanceState.ACTIVE]
     case InstanceState.ACTIVE:
-      return [InstanceState.ACTIVE, InstanceState.QUEUED]
+      return [InstanceState.ACTIVE, InstanceState.QUEUED, InstanceState.ERROR]
     case InstanceState.DESTROYED:
-      return [InstanceState.QUEUED, InstanceState.ACTIVE]
+      return [InstanceState.QUEUED, InstanceState.ACTIVE, InstanceState.ERROR]
     default:
       return []
   }
@@ -71,13 +73,20 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
           taskId: ctx._taskId,
           state: state ? { $in: previousStates(state) } : { $ne: InstanceState.DESTROYED }
         },
-        {
-          $set: {
-            ...req.body,
-            activatedAt: state === InstanceState.ACTIVE ? Date.now() : undefined,
-            destroyedAt: state === InstanceState.DESTROYED ? Date.now() : undefined
+        [
+          {
+            $set: {
+              ...req.body,
+              // Use first activation time as the activation time
+              activatedAt:
+                state === InstanceState.ACTIVE
+                  ? { $ifNull: ['$activatedAt', Date.now()] }
+                  : undefined,
+              // Since destroyed state can only be set once, we can set destroyedAt to the current time
+              destroyedAt: state === InstanceState.DESTROYED ? Date.now() : undefined
+            }
           }
-        },
+        ],
         { ignoreUndefined: true }
       )
       if (matchedCount === 0) return rep.conflict()

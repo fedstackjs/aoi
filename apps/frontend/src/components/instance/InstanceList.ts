@@ -40,7 +40,8 @@ export function useInstanceList(props: IInstanceListProps) {
       { title: t('term.problem-title'), key: 'problemTitle', align: 'start', sortable: false },
       { title: t('term.contest-title'), key: 'contestTitle', align: 'start', sortable: false },
       // { title: t('term.slot-no'), key: 'slotNo', align: 'start', sortable: false },
-      { title: t('common.created-at'), key: 'createdAt', align: 'start', sortable: false }
+      { title: t('common.created-at'), key: 'createdAt', align: 'start', sortable: false },
+      { title: t('term.actions'), key: '_actions', align: 'end', sortable: false }
     ]
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return headers as any
@@ -90,6 +91,7 @@ export function useInstanceList(props: IInstanceListProps) {
 
   // TODO: support contest instance
   const canCreateInstance = computed(() => props.problemId)
+
   const createInstanceTask = useAsyncTask(async () => {
     switch (mode) {
       case InstanceListMode.PROBLEM: {
