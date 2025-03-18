@@ -1,0 +1,4 @@
+releases:
+  "@aoi-js/common": minor
+  "@aoi-js/frontend": minor
+  "@aoi-js/server": minor
