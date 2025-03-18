@@ -16,8 +16,10 @@ const kRunnerInstanceContext = defineInjectionPoint<{
 
 const previousStates = (newState: InstanceState) => {
   switch (newState) {
-    case InstanceState.ACTIVE:
+    case InstanceState.QUEUED:
       return [InstanceState.QUEUED]
+    case InstanceState.ACTIVE:
+      return [InstanceState.ACTIVE, InstanceState.QUEUED]
     case InstanceState.DESTROYED:
       return [InstanceState.QUEUED, InstanceState.ACTIVE]
     default:

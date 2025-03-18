@@ -10,6 +10,7 @@ import { packageJson } from '../../utils/package.js'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
 
 import { kRunnerContext } from './inject.js'
+import { runnerInstanceRoutes } from './instance.js'
 import { runnerRanklistRoutes } from './ranklist.js'
 import { runnerSolutionRoutes } from './solution.js'
 
@@ -136,4 +137,5 @@ export const runnerRoutes = defineRoutes(async (s) => {
 
   s.register(runnerRanklistRoutes, { prefix: '/ranklist' })
   s.register(runnerSolutionRoutes, { prefix: '/solution' })
+  s.register(runnerInstanceRoutes, { prefix: '/instance' })
 })

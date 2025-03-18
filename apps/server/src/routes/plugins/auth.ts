@@ -38,6 +38,7 @@ declare module 'fastify' {
     verify(token: string): Promise<unknown>
   }
   interface FastifyReply {
+    newPayload(payload: unknown): jose.SignJWT
     sign(token: jose.SignJWT): Promise<string>
   }
 }
@@ -54,11 +55,17 @@ export const apiAuthPlugin = fastifyPlugin(async (s) => {
     if (IsUserPayload.Check(payload)) return payload
     throw this.server.httpErrors.badRequest()
   }
+  function decoratedNewPayload(this: FastifyReply, payload: unknown): jose.SignJWT {
+    return new jose.SignJWT(JSON.parse(JSON.stringify(payload)))
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+  }
   async function decoratedSign(this: FastifyReply, token: jose.SignJWT): Promise<string> {
     return token.sign(secret)
   }
   s.decorateRequest('verify', decoratedVerify)
   s.decorateRequest('verifyToken', decoratedVerifyToken)
+  s.decorateReply('newPayload', decoratedNewPayload)
   s.decorateReply('sign', decoratedSign)
 })
 
