@@ -26,6 +26,8 @@ const color = computed(() => {
       return 'success'
     case InstanceState.ERROR:
       return 'error'
+    case InstanceState.PENDING_DESTROY:
+      return 'warning'
     default:
       return 'default'
   }
@@ -43,6 +45,8 @@ const text = computed(() => {
       return t('instance.state.active')
     case InstanceState.ERROR:
       return t('instance.state.error')
+    case InstanceState.PENDING_DESTROY:
+      return t('instance.state.pending-destroy')
     default:
       return t('instance.state.unknown')
   }

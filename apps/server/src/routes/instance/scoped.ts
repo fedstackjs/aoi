@@ -45,12 +45,7 @@ export const instanceScopedRoute = defineRoutes(async (s) => {
       }
       await instances.updateOne(
         { _id: ctx._instanceId, state: { $ne: InstanceState.DESTROYED } },
-        {
-          $set: {
-            state: InstanceState.DESTROYED,
-            destroyedAt: Date.now()
-          }
-        }
+        { $set: { state: InstanceState.PENDING_DESTROY } }
       )
       return {}
     }

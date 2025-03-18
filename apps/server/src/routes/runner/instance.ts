@@ -23,7 +23,12 @@ const previousStates = (newState: InstanceState) => {
     case InstanceState.ACTIVE:
       return [InstanceState.ACTIVE, InstanceState.QUEUED, InstanceState.ERROR]
     case InstanceState.DESTROYED:
-      return [InstanceState.QUEUED, InstanceState.ACTIVE, InstanceState.ERROR]
+      return [
+        InstanceState.QUEUED,
+        InstanceState.ACTIVE,
+        InstanceState.ERROR,
+        InstanceState.PENDING_DESTROY
+      ]
     default:
       return []
   }

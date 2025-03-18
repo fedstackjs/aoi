@@ -6,7 +6,8 @@ export enum InstanceState {
   PENDING = 1,
   QUEUED = 2,
   ACTIVE = 3,
-  ERROR = 4
+  ERROR = 4,
+  PENDING_DESTROY = 5
 }
 
 export interface IInstance {

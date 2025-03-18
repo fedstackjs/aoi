@@ -252,4 +252,5 @@ instance:
     queued: 'Queued'
     active: 'Active'
     error: 'Error'
+    pending-destroy: 'Pending Destroy'
     unknown: 'Unknown'

@@ -251,4 +251,5 @@ instance:
     queued: '排队中'
     active: '运行中'
     error: '错误'
+    pending-destroy: '待销毁'
     unknown: '未知'
