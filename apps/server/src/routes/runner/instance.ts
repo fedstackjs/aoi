@@ -86,7 +86,7 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
     async (req, rep) => {
       const ctx = req.inject(kRunnerInstanceContext)
       const { matchedCount } = await instances.updateOne(
-        { _id: ctx._instanceId, taskId: ctx._taskId },
+        { _id: ctx._instanceId, taskId: ctx._taskId, state: { $nin: [InstanceState.DESTROYED] } },
         [
           {
             $set: {
