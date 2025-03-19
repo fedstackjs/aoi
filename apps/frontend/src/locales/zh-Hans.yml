@@ -247,9 +247,12 @@ access-level:
 instance:
   state:
     destroyed: '已销毁'
+    destroying: '销毁中'
+    allocated: '已分配'
+    allocating: '分配中'
+    error: '错误'
+  task_state:
     pending: '等待中'
     queued: '排队中'
-    active: '运行中'
-    error: '错误'
-    pending-destroy: '待销毁'
-    unknown: '未知'
+    in_progress: '进行中'
+    completed: '已完成'

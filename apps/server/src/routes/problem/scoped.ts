@@ -2,7 +2,7 @@ import { SProblemConfigSchema } from '@aoi-js/common'
 import { BSON, MongoServerError } from 'mongodb'
 
 import { PROBLEM_CAPS, ORG_CAPS, SolutionState } from '../../db/index.js'
-import { InstanceState } from '../../db/instance.js'
+import { InstanceState, InstanceTaskState } from '../../db/instance.js'
 import { getUploadUrl, solutionDataKey } from '../../oss/index.js'
 import { T, SProblemSettings } from '../../schemas/index.js'
 import { CAP_ALL, ensureCapability, hasCapability } from '../../utils/capability.js'
@@ -298,7 +298,8 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
             slotNo: availableSlot,
             label: config.instanceLabel,
             problemDataHash: currentDataHash,
-            state: InstanceState.PENDING,
+            state: InstanceState.ALLOCATING,
+            taskState: InstanceTaskState.PENDING,
             message: '',
             createdAt: req._now
           },

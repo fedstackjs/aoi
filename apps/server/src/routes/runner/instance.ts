@@ -1,7 +1,7 @@
 import { SProblemConfigSchema } from '@aoi-js/common'
 import { UUID } from 'mongodb'
 
-import { InstanceState } from '../../db/instance.js'
+import { InstanceState, InstanceTaskState } from '../../db/instance.js'
 import { getDownloadUrl, problemDataKey } from '../../oss/index.js'
 import { T } from '../../schemas/common.js'
 import { defineInjectionPoint } from '../../utils/inject.js'
@@ -14,23 +14,14 @@ const kRunnerInstanceContext = defineInjectionPoint<{
   _taskId: UUID
 }>('runnerInstance')
 
-const previousStates = (newState: InstanceState) => {
-  switch (newState) {
-    case InstanceState.QUEUED:
-      return [InstanceState.QUEUED]
-    case InstanceState.ERROR:
-      return [InstanceState.ERROR, InstanceState.QUEUED, InstanceState.ACTIVE]
-    case InstanceState.ACTIVE:
-      return [InstanceState.ACTIVE, InstanceState.QUEUED, InstanceState.ERROR]
-    case InstanceState.DESTROYED:
-      return [
-        InstanceState.QUEUED,
-        InstanceState.ACTIVE,
-        InstanceState.ERROR,
-        InstanceState.PENDING_DESTROY
-      ]
+const nextState = (state: InstanceState, succeeded: boolean) => {
+  switch (state) {
+    case InstanceState.ALLOCATING:
+      return succeeded ? InstanceState.ALLOCATED : InstanceState.ERROR
+    case InstanceState.DESTROYING:
+      return succeeded ? InstanceState.DESTROYED : InstanceState.ERROR
     default:
-      return []
+      return null
   }
 }
 
@@ -84,7 +75,6 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
       schema: {
         body: T.Partial(
           T.StrictObject({
-            state: T.IntegerEnum(InstanceState),
             message: T.String()
           })
         ),
@@ -95,30 +85,65 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
     },
     async (req, rep) => {
       const ctx = req.inject(kRunnerInstanceContext)
-      const state = req.body.state
       const { matchedCount } = await instances.updateOne(
-        {
-          _id: ctx._instanceId,
-          taskId: ctx._taskId,
-          state: state ? { $in: previousStates(state) } : { $ne: InstanceState.DESTROYED }
-        },
+        { _id: ctx._instanceId, taskId: ctx._taskId, state: { $nin: [InstanceState.DESTROYED] } },
         [
           {
             $set: {
               ...req.body,
-              // Use first activation time as the activation time
-              activatedAt:
-                state === InstanceState.ACTIVE
-                  ? { $ifNull: ['$activatedAt', Date.now()] }
-                  : undefined,
-              // Since destroyed state can only be set once, we can set destroyedAt to the current time
-              destroyedAt: state === InstanceState.DESTROYED ? Date.now() : undefined
+              taskState: {
+                $cond: {
+                  if: { $ifNull: ['$taskState', false] },
+                  then: InstanceTaskState.IN_PROGRESS,
+                  else: '$$REMOVE'
+                }
+              },
+              updatedAt: req._now
             }
           }
         ],
         { ignoreUndefined: true }
       )
-      if (matchedCount === 0) return rep.conflict()
+      if (matchedCount === 0) return rep.notFound()
+      return {}
+    }
+  )
+
+  s.post(
+    '/complete',
+    {
+      schema: {
+        body: T.StrictObject({
+          succeeded: T.Boolean(),
+          message: T.Optional(T.String())
+        }),
+        response: {
+          200: T.Object({})
+        }
+      }
+    },
+    async (req, rep) => {
+      const ctx = req.inject(kRunnerInstanceContext)
+      const instance = await instances.findOne({ _id: ctx._instanceId, taskId: ctx._taskId })
+      if (!instance) return rep.notFound()
+      const state = nextState(instance.state, req.body.succeeded)
+      if (state === null) return rep.conflict()
+
+      const { modifiedCount } = await instances.updateOne(
+        { _id: ctx._instanceId, taskId: ctx._taskId, state: instance.state },
+        {
+          $set: {
+            state,
+            message: req.body.message,
+            updatedAt: req._now,
+            allocatedAt: state === InstanceState.ALLOCATED ? req._now : undefined,
+            destroyedAt: state === InstanceState.DESTROYED ? req._now : undefined
+          },
+          $unset: { taskState: '' }
+        },
+        { ignoreUndefined: true }
+      )
+      if (modifiedCount === 0) return rep.conflict()
       return {}
     }
   )
@@ -146,6 +171,7 @@ export const runnerInstanceRoutes = defineRoutes(async (s) => {
               userId: T.UUID(),
               problemId: T.UUID(),
               contestId: T.UUID(),
+              state: T.Integer(),
               problemConfig: SProblemConfigSchema,
               problemDataUrl: T.String(),
               problemDataHash: T.String(),
@@ -161,14 +187,15 @@ export const runnerInstanceRoutes = defineRoutes(async (s) => {
       const instance = await instances.findOneAndUpdate(
         {
           orgId: runnerCtx._runner.orgId,
-          state: InstanceState.PENDING,
           label: {
             $in: runnerCtx._runner.labels
               .filter((label) => label.startsWith('instance:'))
               .map((label) => label.replace(/^instance:/, ''))
-          }
+          },
+          taskState: InstanceTaskState.PENDING,
+          $or: [{ runnerId: runnerCtx._runner._id }, { runnerId: { $exists: false } }]
         },
-        { $set: { state: InstanceState.QUEUED, runnerId: runnerCtx._runner._id, taskId } },
+        { $set: { taskState: InstanceTaskState.QUEUED, runnerId: runnerCtx._runner._id, taskId } },
         { returnDocument: 'after' }
       )
       if (!instance) return {}
@@ -178,7 +205,8 @@ export const runnerInstanceRoutes = defineRoutes(async (s) => {
         orgId: instance.orgId,
         userId: instance.userId,
         problemId: instance.problemId,
-        contestId: instance.contestId
+        contestId: instance.contestId,
+        state: instance.state
       }
 
       const org = await orgs.findOne(
@@ -198,12 +226,7 @@ export const runnerInstanceRoutes = defineRoutes(async (s) => {
       )
 
       return {
-        instanceId: instance._id,
-        taskId,
-        orgId: instance.orgId,
-        userId: instance.userId,
-        problemId: instance.problemId,
-        contestId: instance.contestId,
+        ...info,
         problemConfig: currentData.config,
         problemDataUrl,
         problemDataHash: problem.currentDataHash

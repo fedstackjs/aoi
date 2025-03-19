@@ -7,17 +7,24 @@ export interface IInstanceDTO {
   contestTitle?: string
   slotNo: number
   state: InstanceState
+  taskState: InstanceTaskState
   message: string
   createdAt: number
-  activatedAt?: number
+  updatedAt?: number
+  allocatedAt?: number
   destroyedAt?: number
 }
 
 export enum InstanceState {
   DESTROYED = 0,
-  PENDING = 1,
-  QUEUED = 2,
-  ACTIVE = 3,
-  ERROR = 4,
-  PENDING_DESTROY = 5
+  DESTROYING = 1,
+  ALLOCATED = 2,
+  ALLOCATING = 3,
+  ERROR = 4
+}
+
+export enum InstanceTaskState {
+  PENDING = 0,
+  QUEUED = 1,
+  IN_PROGRESS = 2
 }

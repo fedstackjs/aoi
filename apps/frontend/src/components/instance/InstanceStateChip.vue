@@ -6,49 +6,36 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { InstanceState } from './types'
+import { InstanceState, InstanceTaskState } from './types'
 
 const { t } = useI18n()
 
 const props = defineProps<{
   state: InstanceState
+  taskState?: InstanceTaskState
 }>()
 
 const color = computed(() => {
   switch (props.state) {
     case InstanceState.DESTROYED:
       return 'error'
-    case InstanceState.PENDING:
-      return 'warning'
-    case InstanceState.QUEUED:
-      return 'info'
-    case InstanceState.ACTIVE:
+    case InstanceState.DESTROYING:
+      return 'error'
+    case InstanceState.ALLOCATED:
       return 'success'
+    case InstanceState.ALLOCATING:
+      return 'info'
     case InstanceState.ERROR:
       return 'error'
-    case InstanceState.PENDING_DESTROY:
-      return 'warning'
     default:
       return 'default'
   }
 })
 
 const text = computed(() => {
-  switch (props.state) {
-    case InstanceState.DESTROYED:
-      return t('instance.state.destroyed')
-    case InstanceState.PENDING:
-      return t('instance.state.pending')
-    case InstanceState.QUEUED:
-      return t('instance.state.queued')
-    case InstanceState.ACTIVE:
-      return t('instance.state.active')
-    case InstanceState.ERROR:
-      return t('instance.state.error')
-    case InstanceState.PENDING_DESTROY:
-      return t('instance.state.pending-destroy')
-    default:
-      return t('instance.state.unknown')
-  }
+  const stateText = t(`instance.state.${InstanceState[props.state].toLowerCase()}`)
+  if (!props.taskState) return stateText
+  const taskText = t(`instance.task_state.${InstanceTaskState[props.taskState].toLowerCase()}`)
+  return `${stateText} (${taskText})`
 })
 </script>

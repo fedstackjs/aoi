@@ -248,9 +248,12 @@ access-level:
 instance:
   state:
     destroyed: 'Destroyed'
+    destroying: 'Destroying'
+    allocated: 'Allocated'
+    allocating: 'Allocating'
+    error: 'Error'
+  task_state:
     pending: 'Pending'
     queued: 'Queued'
-    active: 'Active'
-    error: 'Error'
-    pending-destroy: 'Pending Destroy'
-    unknown: 'Unknown'
+    in_progress: 'In Progress'
+    completed: 'Completed'
