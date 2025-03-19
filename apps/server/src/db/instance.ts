@@ -3,11 +3,18 @@ import { Collection, UUID } from 'mongodb'
 
 export enum InstanceState {
   DESTROYED = 0,
-  PENDING = 1,
-  QUEUED = 2,
-  ACTIVE = 3,
-  ERROR = 4,
-  PENDING_DESTROY = 5
+  DESTROYING = 1,
+  ALLOCATED = 2,
+  ALLOCATING = 3,
+  ERROR = 4
+}
+
+export enum InstanceTaskState {
+  PENDING = 0,
+  QUEUED = 1,
+  IN_PROGRESS = 2
+  // After the task is completed InstanceState will be updated
+  // No need for a state for completed tasks
 }
 
 export interface IInstance {
@@ -22,11 +29,13 @@ export interface IInstance {
   problemDataHash: string
 
   state: InstanceState
+  taskState?: InstanceTaskState
   message: string
   runnerId?: UUID
   taskId?: UUID
   createdAt: number
-  activatedAt?: number
+  updatedAt?: number
+  allocatedAt?: number
   destroyedAt?: number
 }
 

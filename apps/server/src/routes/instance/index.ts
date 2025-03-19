@@ -1,6 +1,6 @@
 import { Filter, UUID } from 'mongodb'
 
-import { IInstance, ORG_CAPS } from '../../db/index.js'
+import { IInstance, InstanceState, ORG_CAPS } from '../../db/index.js'
 import { T } from '../../schemas/index.js'
 import { hasCapability, paginationSkip } from '../../utils/index.js'
 import { defineRoutes, loadUUID, swaggerTagMerger } from '../common/index.js'
@@ -22,7 +22,7 @@ export const instanceRoutes = defineRoutes(async (s) => {
           userId: T.Optional(T.UUID()),
           problemId: T.Optional(T.UUID()),
           contestId: T.Optional(T.UUID()),
-          state: T.Optional(T.Integer({ minimum: 0, maximum: 4 })),
+          state: T.Optional(T.IntegerEnum(InstanceState)),
           page: T.Integer({ minimum: 1, default: 1 }),
           perPage: T.Integer({ enum: [15, 30, 50, 100] }),
           count: T.Boolean({ default: false })
@@ -38,6 +38,7 @@ export const instanceRoutes = defineRoutes(async (s) => {
               contestTitle: T.Optional(T.String()),
               slotNo: T.Integer(),
               state: T.Integer(),
+              taskState: T.Optional(T.Integer()),
               message: T.String(),
               createdAt: T.Integer(),
               activatedAt: T.Optional(T.Integer()),
@@ -99,19 +100,9 @@ export const instanceRoutes = defineRoutes(async (s) => {
             },
             { $unwind: { path: '$contest', preserveNullAndEmptyArrays: true } },
             {
-              $project: {
-                _id: 1,
-                userId: 1,
-                problemId: 1,
-                contestId: 1,
+              $addFields: {
                 problemTitle: '$problem.title',
-                contestTitle: '$contest.title',
-                slotNo: 1,
-                state: 1,
-                message: 1,
-                createdAt: 1,
-                activatedAt: 1,
-                destroyedAt: 1
+                contestTitle: '$contest.title'
               }
             }
           ],

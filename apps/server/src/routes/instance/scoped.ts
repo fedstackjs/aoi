@@ -1,6 +1,6 @@
 import { BSON } from 'mongodb'
 
-import { InstanceState } from '../../db/instance.js'
+import { InstanceState, InstanceTaskState } from '../../db/instance.js'
 import { ORG_CAPS } from '../../db/org.js'
 import { T } from '../../schemas/index.js'
 import { hasCapability } from '../../utils/capability.js'
@@ -44,8 +44,11 @@ export const instanceScopedRoute = defineRoutes(async (s) => {
         if (!hasCapability(membership.capability, ORG_CAPS.CAP_INSTANCE)) return rep.forbidden()
       }
       await instances.updateOne(
-        { _id: ctx._instanceId, state: { $ne: InstanceState.DESTROYED } },
-        { $set: { state: InstanceState.PENDING_DESTROY } }
+        {
+          _id: ctx._instanceId,
+          state: { $nin: [InstanceState.DESTROYING, InstanceState.DESTROYED] }
+        },
+        { $set: { state: InstanceState.DESTROYING, taskState: InstanceTaskState.PENDING } }
       )
       return {}
     }

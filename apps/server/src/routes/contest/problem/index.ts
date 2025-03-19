@@ -1,7 +1,7 @@
 import { SProblemConfigSchema } from '@aoi-js/common'
 import { BSON, Document, MongoServerError } from 'mongodb'
 
-import { CONTEST_CAPS, InstanceState, SolutionState } from '../../../db/index.js'
+import { CONTEST_CAPS, InstanceState, InstanceTaskState, SolutionState } from '../../../db/index.js'
 import { getUploadUrl, problemAttachmentKey, solutionDataKey } from '../../../oss/index.js'
 import { SContestProblemSettings } from '../../../schemas/contest.js'
 import { T } from '../../../schemas/index.js'
@@ -389,7 +389,8 @@ const problemViewRoutes = defineRoutes(async (s) => {
             slotNo: availableSlot,
             label: config.instanceLabel,
             problemDataHash: currentDataHash,
-            state: InstanceState.PENDING,
+            state: InstanceState.ALLOCATING,
+            taskState: InstanceTaskState.PENDING,
             message: '',
             createdAt: req._now
           },

@@ -37,7 +37,7 @@
     show-expand
   >
     <template v-slot:[`item.state`]="{ item }">
-      <InstanceStateChip :state="item.state" @click.right="filter.state.value = '' + item.state" />
+      <InstanceStateChip :state="item.state" :task-state="item.taskState" />
     </template>
     <template v-slot:[`item.userId`]="{ item }">
       <PrincipalProfile :principal-id="item.userId" />
