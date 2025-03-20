@@ -37,6 +37,7 @@ export interface IInstance {
   updatedAt?: number
   allocatedAt?: number
   destroyedAt?: number
+  taskStartedAt?: number
 }
 
 declare module './index.js' {

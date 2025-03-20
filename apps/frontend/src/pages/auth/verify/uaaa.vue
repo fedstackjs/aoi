@@ -12,7 +12,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 
 import { useMfa } from '@/stores/app'
-import { useAsyncTask } from '@/utils/async'
+import { noMessage, useAsyncTask } from '@/utils/async'
 import { http, prettyHTTPError } from '@/utils/http'
 import { useUAAALogin } from '@/utils/user/uaaa'
 
@@ -25,11 +25,13 @@ const { postVerify } = useMfa()
 
 const task = useAsyncTask(async () => {
   try {
+    const uaaaToken = await getToken('verify')
+    if (!uaaaToken) return noMessage()
     const resp = await http.post('auth/verify', {
       json: {
         provider: 'uaaa',
         payload: {
-          token: await getToken('verify')
+          token: uaaaToken
         }
       }
     })

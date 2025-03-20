@@ -11,7 +11,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useLogin } from '@/stores/app'
-import { useAsyncTask } from '@/utils/async'
+import { noMessage, useAsyncTask } from '@/utils/async'
 import { http, prettyHTTPError } from '@/utils/http'
 import { useUAAALogin } from '@/utils/user/uaaa'
 
@@ -23,11 +23,13 @@ const { postLogin } = useLogin()
 
 const task = useAsyncTask(async () => {
   try {
+    const uaaaToken = await getToken()
+    if (!uaaaToken) return noMessage()
     const resp = await http.post('auth/login', {
       json: {
         provider: 'uaaa',
         payload: {
-          token: await getToken()
+          token: uaaaToken
         }
       }
     })

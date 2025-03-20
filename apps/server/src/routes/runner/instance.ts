@@ -139,7 +139,7 @@ const runnerTaskRoutes = defineRoutes(async (s) => {
             allocatedAt: state === InstanceState.ALLOCATED ? req._now : undefined,
             destroyedAt: state === InstanceState.DESTROYED ? req._now : undefined
           },
-          $unset: { taskState: '' }
+          $unset: { taskState: '', taskStartedAt: '' }
         },
         { ignoreUndefined: true }
       )

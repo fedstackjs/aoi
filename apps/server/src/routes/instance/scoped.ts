@@ -48,7 +48,13 @@ export const instanceScopedRoute = defineRoutes(async (s) => {
           _id: ctx._instanceId,
           state: { $nin: [InstanceState.DESTROYING, InstanceState.DESTROYED] }
         },
-        { $set: { state: InstanceState.DESTROYING, taskState: InstanceTaskState.PENDING } }
+        {
+          $set: {
+            state: InstanceState.DESTROYING,
+            taskState: InstanceTaskState.PENDING,
+            taskStartedAt: req._now
+          }
+        }
       )
       return {}
     }

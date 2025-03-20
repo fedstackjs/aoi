@@ -300,6 +300,7 @@ export const problemScopedRoutes = defineRoutes(async (s) => {
             problemDataHash: currentDataHash,
             state: InstanceState.ALLOCATING,
             taskState: InstanceTaskState.PENDING,
+            taskStartedAt: req._now,
             message: '',
             createdAt: req._now
           },
